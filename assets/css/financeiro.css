@@ -1,0 +1,935 @@
+/*
+==========================================================
+ EMPIRE ERP V4 PREMIUM FULL ULTRA 4K
+MÓDULO FINANCEIRO
+Luxury Black • Gold • Graphite
+PARTE 1/3
+==========================================================
+*/
+
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap');
+
+:root{
+
+    --black:#050505;
+    --dark:#0b0b0b;
+    --graphite:#151515;
+    --graphite-2:#1d1d1d;
+
+    --gold:#d4af37;
+    --gold-light:#f8e48c;
+    --gold-dark:#8f6b12;
+
+    --text:#d3d3d3;
+    --muted:#7d7d7d;
+
+    --border:rgba(212,175,55,.30);
+
+    --radius:22px;
+
+    --shadow:
+        0 25px 60px rgba(0,0,0,.75);
+
+}
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+
+    font-family:'Poppins',sans-serif;
+
+    color:var(--text);
+
+    background:
+        radial-gradient(circle at top,
+        #242424 0%,
+        #101010 45%,
+        #050505 100%);
+
+    min-height:100vh;
+
+    overflow-x:hidden;
+
+}
+
+body::before{
+
+    content:"";
+
+    position:fixed;
+
+    inset:0;
+
+    background:
+
+    linear-gradient(
+    130deg,
+    transparent,
+    rgba(212,175,55,.04),
+    transparent);
+
+    pointer-events:none;
+
+}
+
+/*============================
+LAYOUT
+=============================*/
+
+.erp-layout{
+
+    display:flex;
+
+    min-height:100vh;
+
+}
+
+/*============================
+SIDEBAR
+=============================*/
+
+.sidebar{
+
+    width:290px;
+
+    background:
+
+    linear-gradient(
+    180deg,
+    #111,
+    #050505);
+
+    border-right:1px solid var(--border);
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:space-between;
+
+    padding:34px 22px;
+
+    box-shadow:var(--shadow);
+
+}
+
+.sidebar-brand{
+
+    text-align:center;
+
+}
+
+.sidebar-brand img{
+
+    width:105px;
+
+    height:105px;
+
+    object-fit:contain;
+
+    filter:drop-shadow(0 0 28px rgba(212,175,55,.45));
+
+}
+
+.sidebar-brand h1{
+
+    margin-top:16px;
+
+    font-family:'Cinzel',serif;
+
+    color:var(--gold);
+
+    letter-spacing:7px;
+
+    font-size:42px;
+
+}
+
+.sidebar-brand h2{
+
+    margin-top:8px;
+
+    font-family:'Cinzel',serif;
+
+    font-size:15px;
+
+    color:var(--gold-light);
+
+}
+
+.sidebar-brand span{
+
+    display:block;
+
+    margin-top:12px;
+
+    color:#666;
+
+    font-size:10px;
+
+    letter-spacing:3px;
+
+}
+/*=========================================================
+MENU
+=========================================================*/
+
+.menu{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:12px;
+
+    margin-top:45px;
+
+}
+
+.menu a{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:14px;
+
+    height:54px;
+
+    padding:0 20px;
+
+    border-radius:18px;
+
+    text-decoration:none;
+
+    color:var(--text);
+
+    transition:.30s;
+
+    border:1px solid transparent;
+
+}
+
+.menu a:hover,
+.menu a.ativo{
+
+    color:var(--gold-light);
+
+    background:
+
+    linear-gradient(
+        135deg,
+        rgba(212,175,55,.18),
+        rgba(212,175,55,.04)
+    );
+
+    border-color:var(--border);
+
+    transform:translateX(6px);
+
+}
+
+.sidebar-footer button{
+
+    width:100%;
+
+    height:54px;
+
+    border:none;
+
+    border-radius:18px;
+
+    cursor:pointer;
+
+    color:#050505;
+
+    font-weight:700;
+
+    letter-spacing:2px;
+
+    background:
+
+    linear-gradient(
+        135deg,
+        var(--gold-dark),
+        var(--gold),
+        var(--gold-light)
+    );
+
+    transition:.30s;
+
+}
+
+.sidebar-footer button:hover{
+
+    transform:translateY(-3px);
+
+}
+
+/*=========================================================
+CONTEÚDO
+=========================================================*/
+
+.main-content{
+
+    flex:1;
+
+    padding:38px;
+
+    overflow:auto;
+
+}
+
+.top-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:35px;
+
+}
+
+.top-header h2{
+
+    font-family:'Cinzel',serif;
+
+    font-size:38px;
+
+    color:var(--gold-light);
+
+    letter-spacing:4px;
+
+}
+
+.top-header p{
+
+    margin-top:8px;
+
+    color:var(--muted);
+
+}
+
+.user-box{
+
+    padding:16px 24px;
+
+    border-radius:20px;
+
+    background:#111;
+
+    border:1px solid var(--border);
+
+    color:var(--gold-light);
+
+    box-shadow:var(--shadow);
+
+}
+
+/*=========================================================
+AÇÕES
+=========================================================*/
+
+.module-actions{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:30px;
+
+    padding:34px;
+
+    border-radius:28px;
+
+    background:
+
+    linear-gradient(
+        145deg,
+        #191919,
+        #090909
+    );
+
+    border:1px solid var(--border);
+
+    box-shadow:var(--shadow);
+
+}
+
+.module-actions h1{
+
+    font-family:'Cinzel',serif;
+
+    font-size:34px;
+
+    color:var(--gold);
+
+}
+
+.module-actions p{
+
+    margin-top:10px;
+
+    color:var(--muted);
+
+}
+
+.btn-primary{
+
+    height:58px;
+
+    padding:0 34px;
+
+    border:none;
+
+    border-radius:18px;
+
+    cursor:pointer;
+
+    font-weight:700;
+
+    letter-spacing:2px;
+
+    color:#050505;
+
+    background:
+
+    linear-gradient(
+        135deg,
+        var(--gold-dark),
+        var(--gold),
+        var(--gold-light)
+    );
+
+    transition:.30s;
+
+}
+
+.btn-primary:hover{
+
+    transform:translateY(-4px);
+
+}
+
+/*=========================================================
+CARDS
+=========================================================*/
+
+.erp-cards{
+
+    display:grid;
+
+    grid-template-columns:repeat(4,1fr);
+
+    gap:22px;
+
+    margin-bottom:32px;
+
+}
+
+.erp-card{
+
+    padding:28px;
+
+    border-radius:26px;
+
+    background:
+
+    linear-gradient(
+        145deg,
+        #1a1a1a,
+        #090909
+    );
+
+    border:1px solid var(--border);
+
+    box-shadow:var(--shadow);
+
+    transition:.30s;
+
+}
+
+.erp-card:hover{
+
+    transform:translateY(-6px);
+
+    border-color:var(--gold);
+
+}
+
+.erp-card span{
+
+    color:var(--gold-light);
+
+    font-size:14px;
+
+}
+
+.erp-card strong{
+
+    display:block;
+
+    margin-top:14px;
+
+    font-family:'Cinzel',serif;
+
+    font-size:34px;
+
+    color:#e4e4e4;
+
+}
+
+.erp-card p{
+
+    margin-top:10px;
+
+    color:var(--muted);
+
+}
+/*=========================================================
+TOOLBAR
+=========================================================*/
+
+.toolbar{
+    display:flex;
+    gap:18px;
+    margin-bottom:30px;
+}
+
+.toolbar input,
+.toolbar select{
+
+    height:54px;
+
+    border-radius:18px;
+
+    border:1px solid var(--border);
+
+    background:linear-gradient(145deg,#161616,#090909);
+
+    color:var(--text);
+
+    padding:0 18px;
+
+    outline:none;
+
+    font-family:'Poppins',sans-serif;
+
+    transition:.25s;
+
+}
+
+.toolbar input{
+    flex:1;
+}
+
+.toolbar select{
+    width:220px;
+}
+
+.toolbar input:focus,
+.toolbar select:focus{
+
+    border-color:var(--gold);
+
+    box-shadow:0 0 18px rgba(212,175,55,.20);
+
+}
+
+
+/*=========================================================
+TABELA
+=========================================================*/
+
+.table-panel{
+
+    background:linear-gradient(145deg,#181818,#090909);
+
+    border:1px solid var(--border);
+
+    border-radius:28px;
+
+    padding:30px;
+
+    overflow:auto;
+
+    box-shadow:var(--shadow);
+
+}
+
+table{
+
+    width:100%;
+
+    border-collapse:collapse;
+
+    min-width:950px;
+
+}
+
+thead{
+
+    background:rgba(212,175,55,.08);
+
+}
+
+th{
+
+    padding:18px;
+
+    text-align:left;
+
+    color:var(--gold-light);
+
+    font-size:13px;
+
+    letter-spacing:1px;
+
+}
+
+td{
+
+    padding:18px;
+
+    color:var(--text);
+
+    border-bottom:1px solid rgba(212,175,55,.08);
+
+}
+
+tbody tr{
+
+    transition:.25s;
+
+}
+
+tbody tr:hover{
+
+    background:rgba(212,175,55,.05);
+
+}
+
+
+/*=========================================================
+BOTÕES DA TABELA
+=========================================================*/
+
+td button{
+
+    width:38px;
+
+    height:38px;
+
+    border:none;
+
+    border-radius:12px;
+
+    cursor:pointer;
+
+    margin-right:6px;
+
+    background:#111;
+
+    color:var(--gold-light);
+
+    border:1px solid var(--border);
+
+    transition:.25s;
+
+}
+
+td button:hover{
+
+    background:var(--gold);
+
+    color:#050505;
+
+}
+
+
+/*=========================================================
+STATUS
+=========================================================*/
+
+.status-pago,
+.status-pendente,
+.status-cancelado{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    min-width:95px;
+
+    padding:8px 14px;
+
+    border-radius:999px;
+
+    font-size:12px;
+
+    font-weight:600;
+
+}
+
+.status-pago{
+
+    color:#f8e48c;
+
+    background:rgba(212,175,55,.12);
+
+    border:1px solid rgba(212,175,55,.35);
+
+}
+
+.status-pendente{
+
+    color:#d0d0d0;
+
+    background:rgba(130,130,130,.10);
+
+    border:1px solid rgba(130,130,130,.35);
+
+}
+
+.status-cancelado{
+
+    color:#a0a0a0;
+
+    background:rgba(70,70,70,.18);
+
+    border:1px solid rgba(90,90,90,.35);
+
+}
+
+
+/*=========================================================
+MODAL
+=========================================================*/
+
+.modal{
+
+    position:fixed;
+
+    inset:0;
+
+    display:none;
+
+    align-items:center;
+
+    justify-content:center;
+
+    background:rgba(0,0,0,.85);
+
+    backdrop-filter:blur(10px);
+
+    z-index:999;
+
+}
+
+.modal-box{
+
+    width:540px;
+
+    max-width:95%;
+
+    background:linear-gradient(145deg,#1a1a1a,#090909);
+
+    border:1px solid var(--border);
+
+    border-radius:30px;
+
+    padding:35px;
+
+    box-shadow:0 40px 100px rgba(0,0,0,.9);
+
+}
+
+.modal-box h2{
+
+    text-align:center;
+
+    font-family:'Cinzel',serif;
+
+    color:var(--gold);
+
+    margin-bottom:25px;
+
+}
+
+.modal-box input,
+.modal-box select{
+
+    width:100%;
+
+    height:52px;
+
+    margin-bottom:15px;
+
+    border-radius:16px;
+
+    border:1px solid var(--border);
+
+    background:#101010;
+
+    color:var(--text);
+
+    padding:0 16px;
+
+    outline:none;
+
+}
+
+.modal-box input:focus,
+.modal-box select:focus{
+
+    border-color:var(--gold);
+
+}
+
+.modal-buttons{
+
+    display:flex;
+
+    gap:15px;
+
+    margin-top:15px;
+
+}
+
+.btn-cancel{
+
+    flex:1;
+
+    height:58px;
+
+    border-radius:18px;
+
+    border:1px solid var(--border);
+
+    background:#101010;
+
+    color:var(--gold-light);
+
+    cursor:pointer;
+
+    transition:.25s;
+
+}
+
+.btn-cancel:hover{
+
+    border-color:var(--gold);
+
+}
+
+
+/*=========================================================
+ANIMAÇÕES
+=========================================================*/
+
+.module-actions,
+.erp-card,
+.table-panel{
+
+    animation:fadeUp .6s ease;
+
+}
+
+@keyframes fadeUp{
+
+    from{
+
+        opacity:0;
+
+        transform:translateY(25px);
+
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:translateY(0);
+
+    }
+
+}
+
+
+/*=========================================================
+RESPONSIVO
+=========================================================*/
+
+@media (max-width:1200px){
+
+    .erp-cards{
+
+        grid-template-columns:repeat(2,1fr);
+
+    }
+
+}
+
+@media (max-width:900px){
+
+    .erp-layout{
+
+        flex-direction:column;
+
+    }
+
+    .sidebar{
+
+        width:100%;
+
+    }
+
+    .main-content{
+
+        padding:20px;
+
+    }
+
+    .module-actions{
+
+        flex-direction:column;
+
+        align-items:flex-start;
+
+        gap:20px;
+
+    }
+
+    .toolbar{
+
+        flex-direction:column;
+
+    }
+
+    .toolbar select{
+
+        width:100%;
+
+    }
+
+    .erp-cards{
+
+        grid-template-columns:1fr;
+
+    }
+
+}
