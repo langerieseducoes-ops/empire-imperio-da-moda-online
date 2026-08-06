@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+<title>EMPIRE ERP | Relatórios</title>
+
+
+<link rel="icon" href="../../assets/img/favicon.png">
+
+
+<link rel="stylesheet" href="../../assets/css/relatorios.css">
+
+  <link rel="stylesheet" href="../../assets/css/modulos-base.css">
+
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800;900&family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+
+
+</head>
+
+
+
+<body>
+
+
+
+<div class="erp-layout">
+
+
+
+<aside class="sidebar">
+
+
+
+<div class="sidebar-brand">
+
+
+<img src="../../assets/img/logo.png" alt="EMPIRE">
+
+
+<h1>EMPIRE</h1>
+
+
+<h2>Império da Moda Online</h2>
+
+
+<span>ERP V4 PREMIUM REMASTER</span>
+
+
+</div>
+
+
+
+
+
+<nav class="menu">
+
+
+
+<a href="dashboard.html">
+🏠 Dashboard
+</a>
+
+
+<a href="produtos.html">
+📦 Produtos
+</a>
+
+
+<a href="clientes.html">
+👥 Clientes
+</a>
+
+
+<a href="vendas.html">
+🛒 Vendas
+</a>
+
+
+<a href="compras.html">
+🛍 Compras
+</a>
+
+
+<a href="financeiro.html">
+💰 Financeiro
+</a>
+
+
+<a href="fornecedores.html">
+🚚 Fornecedores
+</a>
+
+
+<a href="usuarios.html">
+👤 Usuários
+</a>
+
+
+<a href="relatorios.html" class="ativo">
+📊 Relatórios
+</a>
+
+
+<a href="configuracoes.html">
+⚙️ Configurações
+</a>
+
+
+<a href="empresa.html">
+🏢 Empresa
+</a>
+
+
+<a href="monitoramento.html">
+📡 Monitoramento
+</a>
+
+
+<a href="backup.html">
+💾 Backup
+</a>
+
+
+<a href="alterar-senha.html">
+🔐 Alterar Senha
+</a>
+
+
+
+</nav>
+
+
+
+
+
+<div class="sidebar-footer">
+
+
+<button onclick="sairSistema()">
+
+SAIR
+
+</button>
+
+
+</div>
+
+
+
+</aside>
+
+
+
+
+
+
+
+
+<main class="main-content">
+
+
+
+<header class="top-header">
+
+
+<div>
+
+
+<h2>
+
+Relatórios
+
+</h2>
+
+
+<p>
+
+Análises e informações do império.
+
+</p>
+
+
+</div>
+
+
+
+<div class="user-box">
+
+👑 Administrador
+
+</div>
+
+
+</header>
+
+
+
+
+
+
+
+
+<section class="report-grid">
+
+
+
+<div class="report-card">
+
+
+<h3>
+
+📦 Produtos
+
+</h3>
+
+
+<strong id="relProdutos">
+
+0
+
+</strong>
+
+
+<p>
+
+Produtos cadastrados
+
+</p>
+
+
+<button onclick="gerarRelatorio('produtos')">
+
+Gerar
+
+</button>
+
+
+</div>
+
+
+
+
+
+
+
+<div class="report-card">
+
+
+<h3>
+
+👥 Clientes
+
+</h3>
+
+
+<strong id="relClientes">
+
+0
+
+</strong>
+
+
+<p>
+
+Clientes registrados
+
+</p>
+
+
+<button onclick="gerarRelatorio('clientes')">
+
+Gerar
+
+</button>
+
+
+</div>
+
+
+
+
+
+
+
+
+<div class="report-card">
+
+
+<h3>
+
+🛒 Vendas
+
+</h3>
+
+
+<strong id="relVendas">
+
+0
+
+</strong>
+
+
+<p>
+
+Vendas realizadas
+
+</p>
+
+
+<button onclick="gerarRelatorio('vendas')">
+
+Gerar
+
+</button>
+
+
+</div>
+
+
+
+
+
+
+
+
+<div class="report-card">
+
+
+<h3>
+
+💰 Financeiro
+
+</h3>
+
+
+<strong id="relFinanceiro">
+
+R$ 0,00
+
+</strong>
+
+
+<p>
+
+Resumo financeiro
+
+</p>
+
+
+<button onclick="gerarRelatorio('financeiro')">
+
+Gerar
+
+</button>
+
+
+</div>
+
+
+
+</section>
+
+
+
+
+
+
+
+
+<section class="report-panel">
+
+
+
+<h3>
+
+📋 Histórico de Relatórios
+
+</h3>
+
+
+
+<table>
+
+
+<thead>
+
+
+<tr>
+
+
+<th>
+Relatório
+</th>
+
+
+<th>
+Data
+</th>
+
+
+<th>
+Usuário
+</th>
+
+
+</tr>
+
+
+</thead>
+
+
+
+<tbody id="listaRelatorios">
+
+
+</tbody>
+
+
+
+</table>
+
+
+
+</section>
+
+
+
+
+
+
+
+
+</main>
+
+
+</div>
+
+
+
+
+
+
+
+
+<script src="../../assets/js/relatorios.js"></script>
+
+
+
+
+
+<script>
+
+
+function sairSistema(){
+
+
+localStorage.removeItem("empire_logado");
+
+
+localStorage.removeItem("empire_usuario");
+
+
+window.location.href="../../index.html";
+
+
+}
+
+
+</script>
+
+
+
+</body>
+
+
+</html>
