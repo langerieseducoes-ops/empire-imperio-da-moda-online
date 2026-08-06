@@ -1,0 +1,2217 @@
+/* =========================================================
+   EMPIRE ERP V4 PREMIUM
+   USUÁRIOS CSS
+   BLACK | GOLD | GRAPHITE
+========================================================= */
+
+
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
+
+
+:root{
+
+
+    --black:#050505;
+
+    --dark:#0b0b0b;
+
+    --graphite:#161616;
+
+    --gold:#d4af37;
+
+    --gold-light:#f8e48c;
+
+    --gold-dark:#8f6b12;
+
+    --white:#ffffff;
+
+    --text:#d8d8d8;
+
+    --border:rgba(212,175,55,.35);
+
+    --glass:rgba(255,255,255,.06);
+
+    --shadow:
+    0 20px 60px rgba(0,0,0,.65);
+
+
+
+}
+
+
+
+
+
+
+*{
+
+    margin:0;
+
+    padding:0;
+
+    box-sizing:border-box;
+
+    font-family:"Poppins",sans-serif;
+
+}
+
+
+
+
+html{
+
+    scroll-behavior:smooth;
+
+}
+
+
+
+
+body{
+
+
+    min-height:100vh;
+
+    background:
+
+    radial-gradient(
+        circle at top left,
+        rgba(212,175,55,.15),
+        transparent 35%
+    ),
+
+    radial-gradient(
+        circle at bottom right,
+        rgba(212,175,55,.08),
+        transparent 30%
+    ),
+
+    var(--black);
+
+
+    color:var(--white);
+
+    overflow-x:hidden;
+
+
+}
+
+
+
+
+
+
+/* =========================================================
+   LOADER
+========================================================= */
+
+
+
+.users-loader{
+
+
+    position:fixed;
+
+    inset:0;
+
+    z-index:99999;
+
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    flex-direction:column;
+
+
+    background:
+
+    radial-gradient(
+        circle,
+        #181818,
+        #050505
+    );
+
+
+    transition:.7s ease;
+
+
+}
+
+
+
+
+.users-loader.hide{
+
+
+    opacity:0;
+
+    visibility:hidden;
+
+
+}
+
+
+
+
+
+.users-loader-logo{
+
+
+    font-family:"Cinzel",serif;
+
+    font-size:55px;
+
+    font-weight:900;
+
+
+    letter-spacing:12px;
+
+
+    color:var(--gold);
+
+
+    text-shadow:
+
+    0 0 20px rgba(212,175,55,.5);
+
+
+
+    animation:
+
+    empirePulse 2s infinite;
+
+
+}
+
+
+
+
+.users-loader span{
+
+
+    margin-top:15px;
+
+
+    color:var(--text);
+
+
+    letter-spacing:3px;
+
+
+    font-size:14px;
+
+
+
+}
+
+
+
+
+
+
+
+.users-loader-bar{
+
+
+    width:220px;
+
+    height:3px;
+
+
+    margin-top:35px;
+
+
+    overflow:hidden;
+
+
+    background:
+
+    rgba(255,255,255,.1);
+
+
+    position:relative;
+
+
+}
+
+
+
+
+.users-loader-bar::after{
+
+
+    content:"";
+
+
+    position:absolute;
+
+
+    left:-100%;
+
+
+    top:0;
+
+
+    width:100%;
+
+
+    height:100%;
+
+
+    background:var(--gold);
+
+
+    animation:
+
+    loading 2s infinite;
+
+
+}
+
+
+
+
+
+@keyframes loading{
+
+
+    to{
+
+        left:100%;
+
+    }
+
+
+}
+
+
+
+
+
+@keyframes empirePulse{
+
+
+    50%{
+
+        transform:scale(1.05);
+
+        text-shadow:
+
+        0 0 40px rgba(212,175,55,.8);
+
+    }
+
+
+}
+
+
+
+
+
+
+
+/* =========================================================
+   LAYOUT
+========================================================= */
+
+
+.users-layout{
+
+
+    display:flex;
+
+    min-height:100vh;
+
+
+}
+
+
+
+
+
+/* =========================================================
+   SIDEBAR
+========================================================= */
+
+
+.users-sidebar{
+
+
+    width:270px;
+
+
+    background:
+
+    linear-gradient(
+        180deg,
+        #0d0d0d,
+        #050505
+    );
+
+
+    border-right:1px solid var(--border);
+
+
+    padding:30px 20px;
+
+
+    position:fixed;
+
+
+    top:0;
+
+    left:0;
+
+    bottom:0;
+
+
+    z-index:10;
+
+
+
+}
+
+
+
+
+.users-brand{
+
+
+    display:flex;
+
+
+    align-items:center;
+
+
+    gap:15px;
+
+
+    margin-bottom:45px;
+
+
+}
+
+
+
+
+.users-brand img{
+
+
+    width:55px;
+
+    height:55px;
+
+
+    object-fit:contain;
+
+
+
+}
+
+
+
+
+.users-brand h2{
+
+
+    font-family:"Cinzel",serif;
+
+
+    color:var(--gold);
+
+
+    letter-spacing:3px;
+
+
+
+}
+
+
+
+
+.users-brand p{
+
+
+    font-size:11px;
+
+    color:#999;
+
+
+}
+
+
+
+
+
+
+.users-menu{
+
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:10px;
+
+
+}
+
+
+
+
+
+.users-menu a{
+
+
+    display:flex;
+
+    align-items:center;
+
+    gap:15px;
+
+
+    padding:14px;
+
+
+    color:var(--text);
+
+
+    text-decoration:none;
+
+
+    border-radius:12px;
+
+
+    transition:.3s;
+
+
+}
+
+
+
+
+
+.users-menu a:hover,
+
+.users-menu a.active{
+
+
+    background:
+
+    rgba(212,175,55,.12);
+
+
+    color:var(--gold);
+
+
+    border:1px solid var(--border);
+
+
+}
+
+
+
+
+.users-menu i{
+
+
+    width:20px;
+
+}
+/* =========================================================
+   ÁREA PRINCIPAL
+========================================================= */
+
+
+.users-content{
+
+
+    margin-left:270px;
+
+
+    width:calc(100% - 270px);
+
+
+    padding:35px;
+
+
+}
+
+
+
+
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+
+.users-header{
+
+
+    display:flex;
+
+
+    justify-content:space-between;
+
+
+    align-items:center;
+
+
+    margin-bottom:35px;
+
+
+}
+
+
+
+
+.users-header h1{
+
+
+    font-family:"Cinzel",serif;
+
+
+    font-size:32px;
+
+
+    letter-spacing:2px;
+
+
+    color:var(--white);
+
+
+}
+
+
+
+
+.users-header p{
+
+
+    color:#999;
+
+
+    margin-top:8px;
+
+
+}
+
+
+
+
+
+.users-actions{
+
+
+    display:flex;
+
+
+    gap:15px;
+
+
+    align-items:center;
+
+
+}
+
+
+
+
+
+
+.users-primary-btn{
+
+
+    border:none;
+
+
+    cursor:pointer;
+
+
+    display:flex;
+
+
+    align-items:center;
+
+
+    gap:10px;
+
+
+    padding:14px 22px;
+
+
+    border-radius:12px;
+
+
+    background:
+
+
+    linear-gradient(
+
+        135deg,
+
+        var(--gold),
+
+        var(--gold-dark)
+
+    );
+
+
+    color:#000;
+
+
+    font-weight:700;
+
+
+    transition:.3s;
+
+
+}
+
+
+
+
+
+.users-primary-btn:hover{
+
+
+    transform:translateY(-3px);
+
+
+    box-shadow:
+
+
+    0 10px 30px rgba(212,175,55,.35);
+
+
+
+}
+
+
+
+
+
+
+
+.users-notification{
+
+
+    position:relative;
+
+
+    width:50px;
+
+
+    height:50px;
+
+
+    border-radius:50%;
+
+
+    border:1px solid var(--border);
+
+
+    background:var(--glass);
+
+
+    color:var(--gold);
+
+
+    cursor:pointer;
+
+
+}
+
+
+
+
+
+.users-notification strong{
+
+
+    position:absolute;
+
+
+    top:-5px;
+
+
+    right:-5px;
+
+
+    background:#b00020;
+
+
+    color:#fff;
+
+
+    width:22px;
+
+
+    height:22px;
+
+
+    display:flex;
+
+
+    align-items:center;
+
+
+    justify-content:center;
+
+
+    border-radius:50%;
+
+
+    font-size:11px;
+
+
+}
+
+
+
+
+
+
+
+
+/* =========================================================
+   CARDS
+========================================================= */
+
+
+
+.users-cards{
+
+
+    display:grid;
+
+
+    grid-template-columns:
+
+    repeat(3,1fr);
+
+
+    gap:25px;
+
+
+    margin-bottom:30px;
+
+
+}
+
+
+
+
+
+
+.users-info-card{
+
+
+    background:
+
+
+    linear-gradient(
+
+        145deg,
+
+        rgba(255,255,255,.08),
+
+        rgba(255,255,255,.03)
+
+    );
+
+
+    border:1px solid var(--border);
+
+
+    border-radius:20px;
+
+
+    padding:25px;
+
+
+    display:flex;
+
+
+    align-items:center;
+
+
+    gap:20px;
+
+
+    backdrop-filter:blur(12px);
+
+
+    opacity:0;
+
+
+    transform:translateY(30px);
+
+
+    animation:
+
+    cardShow .7s forwards;
+
+
+}
+
+
+
+
+.users-info-card.show{
+
+
+    opacity:1;
+
+
+    transform:none;
+
+
+}
+
+
+
+
+@keyframes cardShow{
+
+
+    to{
+
+
+        opacity:1;
+
+
+        transform:translateY(0);
+
+
+    }
+
+
+}
+
+
+
+
+
+.users-card-icon{
+
+
+    width:60px;
+
+
+    height:60px;
+
+
+    border-radius:18px;
+
+
+    display:flex;
+
+
+    align-items:center;
+
+
+    justify-content:center;
+
+
+    font-size:25px;
+
+
+    color:#000;
+
+
+    background:
+
+
+    linear-gradient(
+
+        135deg,
+
+        var(--gold-light),
+
+        var(--gold)
+
+    );
+
+
+}
+
+
+
+
+.users-info-card span{
+
+
+    color:#999;
+
+
+    display:block;
+
+
+    font-size:13px;
+
+
+}
+
+
+
+
+.users-info-card strong{
+
+
+    font-size:32px;
+
+
+    color:var(--gold);
+
+
+}
+
+
+
+
+
+
+
+
+
+/* =========================================================
+   PAINÉIS
+========================================================= */
+
+
+.users-panels{
+
+
+    display:grid;
+
+
+    grid-template-columns:
+
+    2fr 1fr;
+
+
+    gap:25px;
+
+
+    margin-bottom:30px;
+
+
+}
+
+
+
+
+
+
+.users-box{
+
+
+    background:
+
+
+    rgba(255,255,255,.04);
+
+
+    border:1px solid var(--border);
+
+
+    border-radius:20px;
+
+
+    padding:25px;
+
+
+    backdrop-filter:blur(12px);
+
+
+    margin-bottom:25px;
+
+
+    opacity:0;
+
+
+    transform:translateY(25px);
+
+
+    animation:
+
+    boxShow .8s forwards;
+
+
+}
+
+
+
+
+
+.users-box.show{
+
+
+    opacity:1;
+
+
+    transform:none;
+
+
+}
+
+
+
+
+
+@keyframes boxShow{
+
+
+    to{
+
+
+        opacity:1;
+
+
+        transform:none;
+
+
+    }
+
+
+}
+
+
+
+
+
+
+.users-box-header{
+
+
+    display:flex;
+
+
+    justify-content:space-between;
+
+
+    align-items:center;
+
+
+    margin-bottom:25px;
+
+
+}
+
+
+
+
+
+.users-box-header h3{
+
+
+    font-family:"Cinzel",serif;
+
+
+    letter-spacing:1px;
+
+
+}
+
+
+
+
+
+.users-box-header p{
+
+
+    color:#888;
+
+
+    font-size:13px;
+
+
+}
+
+
+
+
+
+.users-box-header i{
+
+
+    color:var(--gold);
+
+
+    font-size:22px;
+
+
+}
+
+
+
+
+
+
+
+.users-chart-box canvas{
+
+
+    width:100%!important;
+
+
+    height:300px!important;
+
+
+}
+
+
+
+
+
+
+
+/* =========================================================
+   ATIVIDADES
+========================================================= */
+
+
+
+.users-activity-item{
+
+
+    padding:15px;
+
+
+    border-bottom:1px solid rgba(255,255,255,.08);
+
+
+    display:flex;
+
+
+    flex-direction:column;
+
+
+    gap:5px;
+
+
+}
+
+
+
+
+.users-activity-item strong{
+
+
+    color:var(--gold);
+
+
+}
+
+
+
+
+
+.users-activity-item span{
+
+
+    color:var(--text);
+
+
+    font-size:14px;
+
+
+}
+
+
+
+
+
+.users-activity-item small{
+
+
+    color:#777;
+
+
+}
+
+
+
+
+
+
+.users-empty{
+
+
+    text-align:center;
+
+
+    padding:30px;
+
+
+    color:#777;
+
+
+}
+
+
+/* =========================================================
+   PESQUISA E FILTROS
+========================================================= */
+
+
+.users-search{
+
+
+    display:flex;
+
+
+    align-items:center;
+
+
+    gap:10px;
+
+
+    background:rgba(255,255,255,.05);
+
+
+    border:1px solid var(--border);
+
+
+    padding:10px 15px;
+
+
+    border-radius:12px;
+
+
+}
+
+
+
+.users-search i{
+
+
+    color:var(--gold);
+
+
+}
+
+
+
+
+
+.users-search input{
+
+
+    background:none;
+
+
+    border:none;
+
+
+    outline:none;
+
+
+    color:white;
+
+
+    width:220px;
+
+
+}
+
+
+
+
+
+.users-search input::placeholder{
+
+
+    color:#777;
+
+
+}
+
+
+
+
+
+
+
+.users-filters{
+
+
+    display:flex;
+
+
+    gap:15px;
+
+
+    margin-bottom:20px;
+
+
+}
+
+
+
+
+
+.users-filters select{
+
+
+    background:#111;
+
+
+    color:white;
+
+
+    border:1px solid var(--border);
+
+
+    padding:12px;
+
+
+    border-radius:10px;
+
+
+    outline:none;
+
+
+}
+
+
+
+
+
+
+
+
+
+/* =========================================================
+   TABELA
+========================================================= */
+
+
+.users-table-container{
+
+
+    overflow-x:auto;
+
+
+}
+
+
+
+
+
+.users-table{
+
+
+    width:100%;
+
+
+    border-collapse:collapse;
+
+
+}
+
+
+
+
+
+.users-table th{
+
+
+    text-align:left;
+
+
+    padding:15px;
+
+
+    color:var(--gold);
+
+
+    font-family:"Cinzel",serif;
+
+
+    border-bottom:1px solid var(--border);
+
+
+}
+
+
+
+
+
+.users-table td{
+
+
+    padding:15px;
+
+
+    color:var(--text);
+
+
+    border-bottom:
+
+
+    1px solid rgba(255,255,255,.06);
+
+
+}
+
+
+
+
+
+.users-table tr{
+
+
+    transition:.3s;
+
+
+}
+
+
+
+
+
+.users-table tbody tr:hover{
+
+
+    background:
+
+    rgba(212,175,55,.06);
+
+
+}
+
+
+
+
+
+
+.users-status{
+
+
+    padding:6px 12px;
+
+
+    border-radius:20px;
+
+
+    font-size:12px;
+
+
+    text-transform:uppercase;
+
+
+}
+
+
+
+
+
+.users-status.active{
+
+
+    background:
+
+    rgba(0,255,120,.15);
+
+
+    color:#00ff78;
+
+
+}
+
+
+
+
+
+.users-status.inactive{
+
+
+    background:
+
+    rgba(255,0,0,.15);
+
+
+    color:#ff5555;
+
+
+}
+
+
+
+
+
+.users-actions-table{
+
+
+    display:flex;
+
+
+    gap:8px;
+
+
+}
+
+
+
+
+
+.users-action-btn{
+
+
+    width:35px;
+
+
+    height:35px;
+
+
+    border-radius:10px;
+
+
+    border:1px solid var(--border);
+
+
+    background:none;
+
+
+    color:var(--gold);
+
+
+    cursor:pointer;
+
+
+}
+
+
+
+
+
+
+
+
+
+/* =========================================================
+   MODAL
+========================================================= */
+
+
+.users-modal{
+
+
+    position:fixed;
+
+
+    inset:0;
+
+
+    background:
+
+    rgba(0,0,0,.75);
+
+
+    backdrop-filter:blur(10px);
+
+
+    display:flex;
+
+
+    align-items:center;
+
+
+    justify-content:center;
+
+
+    opacity:0;
+
+
+    visibility:hidden;
+
+
+    transition:.4s;
+
+
+    z-index:9999;
+
+
+}
+
+
+
+
+
+.users-modal.active{
+
+
+    opacity:1;
+
+
+    visibility:visible;
+
+
+}
+
+
+
+
+
+
+.users-modal-content{
+
+
+    width:min(700px,90%);
+
+
+    background:
+
+
+    linear-gradient(
+
+        145deg,
+
+        #181818,
+
+        #080808
+
+    );
+
+
+    border:1px solid var(--border);
+
+
+    border-radius:25px;
+
+
+    padding:35px;
+
+
+    position:relative;
+
+
+    max-height:90vh;
+
+
+    overflow-y:auto;
+
+
+}
+
+
+
+
+
+.users-close-modal{
+
+
+    position:absolute;
+
+
+    top:20px;
+
+
+    right:20px;
+
+
+    width:40px;
+
+
+    height:40px;
+
+
+    border-radius:50%;
+
+
+    border:none;
+
+
+    background:#222;
+
+
+    color:white;
+
+
+    cursor:pointer;
+
+
+}
+
+
+
+
+
+.users-modal-content h2{
+
+
+    font-family:"Cinzel",serif;
+
+
+    color:var(--gold);
+
+
+    margin-bottom:25px;
+
+
+}
+
+
+
+
+
+
+.users-form-grid{
+
+
+    display:grid;
+
+
+    grid-template-columns:
+
+    repeat(2,1fr);
+
+
+    gap:20px;
+
+
+}
+
+
+
+
+
+.users-input{
+
+
+    display:flex;
+
+
+    flex-direction:column;
+
+
+    gap:8px;
+
+
+}
+
+
+
+
+
+.users-input label{
+
+
+    color:#aaa;
+
+
+}
+
+
+
+
+
+.users-input input,
+
+
+.users-input select{
+
+
+    background:#101010;
+
+
+    border:1px solid var(--border);
+
+
+    padding:14px;
+
+
+    border-radius:10px;
+
+
+    color:white;
+
+
+    outline:none;
+
+
+}
+
+
+
+
+
+
+
+.users-permissions{
+
+
+    margin:25px 0;
+
+
+    display:flex;
+
+
+    flex-direction:column;
+
+
+    gap:12px;
+
+
+}
+
+
+
+
+
+.users-permissions h3{
+
+
+    color:var(--gold);
+
+
+    font-family:"Cinzel",serif;
+
+
+}
+
+
+
+
+
+
+
+/* =========================================================
+   PARTÍCULAS
+========================================================= */
+
+
+.users-particles{
+
+
+    position:fixed;
+
+
+    inset:0;
+
+
+    pointer-events:none;
+
+
+    overflow:hidden;
+
+
+    z-index:-1;
+
+
+}
+
+
+
+
+.particle{
+
+
+    position:absolute;
+
+
+    bottom:-20px;
+
+
+    width:4px;
+
+
+    height:4px;
+
+
+    border-radius:50%;
+
+
+    background:var(--gold);
+
+
+    opacity:.35;
+
+
+    animation:
+
+    floatParticle linear infinite;
+
+
+}
+
+
+
+
+
+@keyframes floatParticle{
+
+
+    from{
+
+
+        transform:
+
+        translateY(0);
+
+
+    }
+
+
+    to{
+
+
+        transform:
+
+        translateY(-110vh);
+
+
+    }
+
+
+}
+
+
+
+
+
+
+
+
+
+/* =========================================================
+   RESPONSIVIDADE
+========================================================= */
+
+
+@media(max-width:1100px){
+
+
+    .users-cards{
+
+
+        grid-template-columns:
+
+        1fr;
+
+
+    }
+
+
+
+    .users-panels{
+
+
+        grid-template-columns:
+
+        1fr;
+
+
+    }
+
+
+
+}
+
+
+
+
+
+@media(max-width:850px){
+
+
+
+    .users-sidebar{
+
+
+        position:relative;
+
+
+        width:100%;
+
+
+        height:auto;
+
+
+    }
+
+
+
+    .users-layout{
+
+
+        flex-direction:column;
+
+
+    }
+
+
+
+    .users-content{
+
+
+        margin-left:0;
+
+
+        width:100%;
+
+
+        padding:20px;
+
+
+    }
+
+
+
+    .users-header{
+
+
+        flex-direction:column;
+
+
+        align-items:flex-start;
+
+
+        gap:20px;
+
+
+    }
+
+
+
+}
+
+
+
+
+
+
+
+@media(max-width:600px){
+
+
+
+    .users-header h1{
+
+
+        font-size:24px;
+
+
+    }
+
+
+
+
+    .users-form-grid{
+
+
+        grid-template-columns:
+
+        1fr;
+
+
+    }
+
+
+
+
+    .users-actions{
+
+
+        width:100%;
+
+
+    }
+
+
+
+    .users-primary-btn{
+
+
+        width:100%;
+
+
+        justify-content:center;
+
+
+    }
+
+
+
+    .users-search input{
+
+
+        width:130px;
+
+
+    }
+
+
+
+    .users-filters{
+
+
+        flex-direction:column;
+
+
+    }
+
+
+
+    .users-filters select{
+
+
+        width:100%;
+
+
+    }
+
+
+
+}
+
+
+
+
+
+
+
+/* =========================================================
+   SCROLL
+========================================================= */
+
+
+::-webkit-scrollbar{
+
+
+    width:8px;
+
+
+}
+
+
+
+::-webkit-scrollbar-track{
+
+
+    background:#050505;
+
+
+}
+
+
+
+::-webkit-scrollbar-thumb{
+
+
+    background:var(--gold-dark);
+
+
+    border-radius:20px;
+
+
+}
+
