@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+
+<head>
+
+<meta charset="UTF-8">
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+<title>EMPIRE ERP | Monitoramento</title>
+
+
+
+<link rel="icon" href="../../assets/img/favicon.png">
+
+
+<link rel="stylesheet" href="../../assets/css/monitoramento.css">
+
+<link rel="stylesheet" href="../../assets/css/modulos-base.css">
+
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+
+</head>
+
+
+<body>
+
+
+<div class="erp-layout">
+
+
+
+<!-- SIDEBAR -->
+
+
+<aside class="sidebar">
+
+
+<div class="sidebar-brand">
+
+
+<img src="../../assets/img/logo.png" alt="EMPIRE">
+
+
+<h1>EMPIRE</h1>
+
+
+<h2>Império da Moda Online</h2>
+
+
+<span>ERP V4 PREMIUM REMASTER</span>
+
+
+</div>
+
+
+
+
+<nav class="menu">
+
+
+<a href="dashboard.html">🏠 Dashboard</a>
+
+
+<a href="produtos.html">📦 Produtos</a>
+
+
+<a href="clientes.html">👥 Clientes</a>
+
+
+<a href="vendas.html">🛒 Vendas</a>
+
+
+<a href="compras.html">🛍 Compras</a>
+
+
+<a href="financeiro.html">💰 Financeiro</a>
+
+
+<a href="fornecedores.html">🚚 Fornecedores</a>
+
+
+<a href="usuarios.html">👤 Usuários</a>
+
+
+<a href="relatorios.html">📊 Relatórios</a>
+
+
+<a href="configuracoes.html">⚙️ Configurações</a>
+
+
+<a href="empresa.html">🏢 Empresa</a>
+
+
+<a href="monitoramento.html" class="ativo">📡 Monitoramento</a>
+
+
+</nav>
+
+
+
+
+<div class="sidebar-footer">
+
+
+<button onclick="sairSistema()">
+
+SAIR
+
+</button>
+
+
+</div>
+
+
+</aside>
+
+
+
+
+<main class="main-content">
+  <!--=========================================
+HEADER
+=========================================-->
+
+<header class="top-header">
+
+
+<div>
+
+<h2>Monitoramento do Sistema</h2>
+
+
+<p>
+
+Acompanhe atividades e segurança do EMPIRE ERP.
+
+</p>
+
+
+</div>
+
+
+
+<div class="user-box">
+
+👑 Administrador
+
+</div>
+
+
+
+</header>
+
+
+
+
+
+<!--=========================================
+STATUS
+=========================================-->
+
+
+<section class="status-grid">
+
+
+
+<div class="status-card">
+
+
+<h3>🟢 Sistema</h3>
+
+
+<strong id="statusSistema">
+
+Online
+
+</strong>
+
+
+
+<p>
+
+EMPIRE ERP V4 PREMIUM
+
+</p>
+
+
+</div>
+
+
+
+
+<div class="status-card">
+
+
+<h3>👤 Usuário</h3>
+
+
+<strong id="usuarioAtual">
+
+Administrador
+
+</strong>
+
+
+
+<p>
+
+Sessão ativa
+
+</p>
+
+
+</div>
+
+
+
+
+<div class="status-card">
+
+
+<h3>📦 Dados</h3>
+
+
+<strong id="armazenamento">
+
+0 KB
+
+</strong>
+
+
+
+<p>
+
+LocalStorage
+
+</p>
+
+
+</div>
+
+
+
+
+<div class="status-card">
+
+
+<h3>🕒 Acesso</h3>
+
+
+<strong id="ultimoAcesso">
+
+Agora
+
+</strong>
+
+
+
+<p>
+
+Última atividade
+
+</p>
+
+
+</div>
+
+
+
+</section>
+
+
+
+
+
+
+<!--=========================================
+ATIVIDADES
+=========================================-->
+
+<section class="monitor-card">
+
+
+<h3>👥 Atividades Recentes</h3>
+
+
+
+<div class="atividade-lista" id="listaAtividades">
+
+
+
+<div class="atividade-item">
+
+
+<span>
+
+🔐
+
+</span>
+
+
+<p>
+
+Sistema iniciado
+
+</p>
+
+
+<small>
+
+Agora
+
+</small>
+
+
+</div>
+
+
+
+</div>
+
+
+</section>
+
+
+
+
+
+
+
+<!--=========================================
+LOGS
+=========================================-->
+
+<section class="monitor-card">
+
+
+<h3>📝 Logs do Sistema</h3>
+
+
+
+<div class="table-area">
+
+
+<table>
+
+
+<thead>
+
+
+<tr>
+
+
+<th>
+
+Data
+
+</th>
+
+
+<th>
+
+Usuário
+
+</th>
+
+
+<th>
+
+Ação
+
+</th>
+
+
+<th>
+
+Módulo
+
+</th>
+
+
+</tr>
+
+
+</thead>
+
+
+
+<tbody id="tabelaLogs">
+
+
+</tbody>
+
+
+
+</table>
+
+
+</div>
+
+
+
+</section>
+<!--=========================================
+ALERTAS
+=========================================-->
+
+<section class="monitor-card alert-panel">
+
+
+<h3>🔔 Alertas do Sistema</h3>
+
+
+
+<div 
+class="alert-list"
+id="listaAlertas">
+
+
+
+<div class="alert-item">
+
+<span>✅</span>
+
+<p>
+
+Sistema funcionando normalmente.
+
+</p>
+
+
+</div>
+
+
+
+</div>
+
+
+</section>
+
+
+
+
+
+
+<!--=========================================
+AÇÕES
+=========================================-->
+
+<section class="actions-panel">
+
+
+<button
+class="btn-primary"
+id="atualizarMonitoramento">
+
+🔄 Atualizar Status
+
+</button>
+
+
+
+
+<button
+class="btn-secondary"
+id="limparLogs">
+
+🗑️ Limpar Logs
+
+</button>
+
+
+
+
+<button
+class="btn-secondary"
+id="exportarLogs">
+
+⬇️ Exportar Logs
+
+</button>
+
+
+
+</section>
+
+
+
+
+
+
+</main>
+
+
+</div>
+
+
+
+
+
+<script src="../../assets/js/monitoramento.js"></script>
+
+
+
+</body>
+
+
+</html>
