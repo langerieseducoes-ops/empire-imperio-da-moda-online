@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+<title>EMPIRE ERP | Configurações</title>
+
+
+<link rel="icon" href="../../assets/img/favicon.png">
+
+
+<link rel="stylesheet" href="../../assets/css/configuracoes.css">
+
+  <link rel="stylesheet" href="../../assets/css/modulos-base.css">
+
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800;900&family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+
+
+</head>
+
+
+
+<body>
+
+
+
+<div class="erp-layout">
+
+
+
+<aside class="sidebar">
+
+
+
+<div class="sidebar-brand">
+
+
+<img src="../../assets/img/logo.png" alt="EMPIRE">
+
+
+<h1>EMPIRE</h1>
+
+
+<h2>Império da Moda Online</h2>
+
+
+<span>ERP V4 PREMIUM REMASTER</span>
+
+
+</div>
+
+
+
+
+
+<nav class="menu">
+
+
+
+<a href="dashboard.html">
+🏠 Dashboard
+</a>
+
+
+<a href="produtos.html">
+📦 Produtos
+</a>
+
+
+<a href="clientes.html">
+👥 Clientes
+</a>
+
+
+<a href="vendas.html">
+🛒 Vendas
+</a>
+
+
+<a href="compras.html">
+🛍 Compras
+</a>
+
+
+<a href="financeiro.html">
+💰 Financeiro
+</a>
+
+
+<a href="fornecedores.html">
+🚚 Fornecedores
+</a>
+
+
+<a href="usuarios.html">
+👤 Usuários
+</a>
+
+
+<a href="relatorios.html">
+📊 Relatórios
+</a>
+
+
+<a href="configuracoes.html" class="ativo">
+⚙️ Configurações
+</a>
+
+
+<a href="empresa.html">
+🏢 Empresa
+</a>
+
+
+<a href="monitoramento.html">
+📡 Monitoramento
+</a>
+
+
+<a href="backup.html">
+💾 Backup
+</a>
+
+
+<a href="alterar-senha.html">
+🔐 Alterar Senha
+</a>
+
+
+
+</nav>
+
+
+
+
+
+<div class="sidebar-footer">
+
+
+<button onclick="sairSistema()">
+
+SAIR
+
+</button>
+
+
+</div>
+
+
+
+</aside>
+
+
+
+
+
+
+
+
+<main class="main-content">
+
+
+
+<header class="top-header">
+
+
+<div>
+
+
+<h2>
+
+Configurações
+
+</h2>
+
+
+<p>
+
+Preferências gerais do EMPIRE ERP.
+
+</p>
+
+
+</div>
+
+
+
+<div class="user-box">
+
+👑 Administrador
+
+</div>
+
+
+</header>
+
+
+
+
+
+
+
+
+<section class="settings-grid">
+
+
+
+<div class="settings-card">
+
+
+<h3>
+
+🏢 Empresa
+
+</h3>
+
+
+<p>
+
+Dados da empresa e identidade visual.
+
+</p>
+
+
+<a href="empresa.html">
+
+Abrir
+
+</a>
+
+
+</div>
+
+
+
+
+
+
+
+<div class="settings-card">
+
+
+<h3>
+
+📡 Monitoramento
+
+</h3>
+
+
+<p>
+
+Logs e atividades do sistema.
+
+</p>
+
+
+<a href="monitoramento.html">
+
+Abrir
+
+</a>
+
+
+</div>
+
+
+
+
+
+
+
+<div class="settings-card">
+
+
+<h3>
+
+💾 Backup
+
+</h3>
+
+
+<p>
+
+Backup e restauração dos dados.
+
+</p>
+
+
+<a href="backup.html">
+
+Abrir
+
+</a>
+
+
+</div>
+
+
+
+
+
+
+
+<div class="settings-card">
+
+
+<h3>
+
+🔐 Alterar Senha
+
+</h3>
+
+
+<p>
+
+Segurança da conta.
+
+</p>
+
+
+<a href="alterar-senha.html">
+
+Abrir
+
+</a>
+
+
+</div>
+
+
+
+</section>
+
+
+
+
+
+
+
+
+<section class="settings-panel">
+
+
+
+<h3>
+
+⚙️ Preferências do Sistema
+
+</h3>
+
+
+
+
+<div class="form-group">
+
+
+<label>
+
+Nome do Sistema
+
+</label>
+
+
+<input id="nomeSistema" value="EMPIRE ERP">
+
+
+</div>
+
+
+
+
+
+
+<div class="form-group">
+
+
+<label>
+
+Modo
+
+</label>
+
+
+<select id="modoSistema">
+
+
+<option>
+
+Premium Luxury
+
+</option>
+
+
+</select>
+
+
+</div>
+
+
+
+
+
+
+<button id="salvarConfiguracoes">
+
+Salvar Configurações
+
+</button>
+
+
+
+</section>
+
+
+
+
+
+
+
+
+</main>
+
+
+</div>
+
+
+
+
+
+
+
+
+<script src="../../assets/js/configuracoes.js"></script>
+
+
+
+
+
+<script>
+
+
+function sairSistema(){
+
+
+localStorage.removeItem("empire_logado");
+
+
+localStorage.removeItem("empire_usuario");
+
+
+window.location.href="../../index.html";
+
+
+}
+
+
+</script>
+
+
+
+</body>
+
+
+</html>
