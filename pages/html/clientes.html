@@ -1,0 +1,2062 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+
+
+<head>
+
+
+<meta charset="UTF-8">
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+<meta name="theme-color" content="#050505">
+
+
+<meta name="description" content="EMPIRE ERP - Gestão de Clientes">
+
+
+<title>
+
+EMPIRE ERP | Clientes
+
+</title>
+
+
+
+
+<link rel="icon" href="../../assets/img/favicon.png">
+
+
+
+
+
+<!-- FONTES -->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+
+
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+
+
+
+
+
+<!-- ÍCONES -->
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+
+
+
+
+
+<!-- CSS -->
+
+<link rel="stylesheet" href="../../assets/css/clientes.css">
+
+
+
+</head>
+
+
+
+
+
+<body>
+
+
+
+
+
+<!-- ==================================================
+LOADER PREMIUM
+================================================== -->
+
+
+<div class="loader" id="loader">
+
+
+
+<div class="loader-content">
+
+
+
+<div class="loader-logo">
+
+EMPIRE
+
+</div>
+
+
+
+
+<div class="loader-subtitle">
+
+Gestão de Clientes
+
+</div>
+
+
+
+
+<div class="loader-line">
+
+<span></span>
+
+</div>
+
+
+
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<!-- ==================================================
+FUNDO ANIMADO
+================================================== -->
+
+
+<div class="background-animation">
+
+
+<div class="glow glow-1"></div>
+
+
+<div class="glow glow-2"></div>
+
+
+<div class="glow glow-3"></div>
+
+
+
+<div id="particles"></div>
+
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+<!-- ==================================================
+CONTAINER PRINCIPAL
+================================================== -->
+
+
+<div class="erp-container">
+
+
+
+
+
+
+
+<!-- ==================================================
+SIDEBAR
+================================================== -->
+
+
+<aside class="sidebar" id="sidebar">
+
+
+
+
+
+<div class="brand">
+
+
+
+<img src="../../assets/img/logo.png" alt="Logo Empire">
+
+
+
+
+
+<div class="brand-text">
+
+
+
+<h2>
+
+EMPIRE
+
+</h2>
+
+
+
+
+<span>
+
+Império da Moda Online
+
+</span>
+
+
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<div class="profile-card">
+
+
+
+<img src="../../assets/img/avatar.png" alt="Usuário">
+
+
+
+
+
+<div>
+
+
+
+<strong id="userName">
+
+Administrador
+
+</strong>
+
+
+
+
+<p>
+
+
+<span class="status-dot"></span>
+
+
+Online
+
+
+
+</p>
+
+
+
+</div>
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<nav class="navigation">
+
+
+
+
+
+
+<a href="dashboard.html">
+
+
+<i class="fa-solid fa-house"></i>
+
+
+<span>
+
+Tela Inicial
+
+</span>
+
+
+</a>
+
+
+
+
+
+
+
+<a href="produtos.html">
+
+
+<i class="fa-solid fa-box"></i>
+
+
+<span>
+
+Produtos
+
+</span>
+
+
+</a>
+
+
+
+
+
+
+
+<a href="clientes.html" class="active">
+
+
+<i class="fa-solid fa-users"></i>
+
+
+<span>
+
+Clientes
+
+</span>
+
+
+</a>
+
+
+
+
+
+
+
+<a href="vendas.html">
+
+
+<i class="fa-solid fa-cart-shopping"></i>
+
+
+<span>
+
+Vendas
+
+</span>
+
+
+</a>
+
+
+
+
+
+
+
+<a href="financeiro.html">
+
+
+<i class="fa-solid fa-wallet"></i>
+
+
+<span>
+
+Financeiro
+
+</span>
+
+
+</a>
+
+
+
+
+
+
+
+<a href="compras.html">
+
+
+<i class="fa-solid fa-bag-shopping"></i>
+
+
+<span>
+
+Compras
+
+</span>
+
+
+</a>
+
+
+
+
+
+
+
+<a href="fornecedores.html">
+
+
+<i class="fa-solid fa-truck"></i>
+
+
+<span>
+
+Fornecedores
+
+</span>
+
+
+</a>
+
+
+
+
+
+
+
+<a href="relatorios.html">
+
+
+<i class="fa-solid fa-chart-line"></i>
+
+
+<span>
+
+Relatórios
+
+</span>
+
+
+</a>
+
+
+
+
+
+
+
+<a href="configuracoes.html">
+
+
+<i class="fa-solid fa-gear"></i>
+
+
+<span>
+
+Configurações
+
+</span>
+
+
+</a>
+
+
+
+
+
+
+
+</nav>
+
+
+
+
+
+
+
+
+<div class="sidebar-footer">
+
+
+<p>
+
+EMPIRE ERP
+
+</p>
+
+
+<small>
+
+Sistema de Gestão
+
+</small>
+
+
+</div>
+
+
+
+
+
+
+</aside>
+<!-- ==================================================
+ÁREA CENTRAL
+================================================== -->
+
+
+<main class="content">
+
+
+
+
+
+
+
+
+<!-- ==================================================
+TOPBAR
+================================================== -->
+
+
+<header class="topbar">
+
+
+
+
+
+
+<div class="page-title">
+
+
+
+<h1>
+
+Clientes
+
+</h1>
+
+
+
+
+<p id="dateToday">
+
+Carregando...
+
+</p>
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<div class="global-search">
+
+
+
+<i class="fa-solid fa-search"></i>
+
+
+
+
+<input
+
+type="search"
+
+id="searchClients"
+
+placeholder="Pesquisar clientes...">
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<div class="top-actions">
+
+
+
+
+
+
+<button class="icon-button" id="notificationButton">
+
+
+
+<i class="fa-solid fa-bell"></i>
+
+
+
+<span id="notificationBadge">
+
+0
+
+</span>
+
+
+
+</button>
+
+
+
+
+
+
+
+
+
+<div class="time-box">
+
+
+
+<i class="fa-solid fa-clock"></i>
+
+
+
+<strong id="systemClock">
+
+00:00:00
+
+</strong>
+
+
+
+</div>
+
+
+
+
+
+
+</div>
+
+
+
+
+
+</header>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- ==================================================
+INDICADORES CLIENTES
+================================================== -->
+
+
+<section class="metrics-grid">
+
+
+
+
+
+
+
+<div class="metric-card">
+
+
+
+<div class="metric-icon">
+
+
+<i class="fa-solid fa-users"></i>
+
+
+</div>
+
+
+
+
+
+<div class="metric-info">
+
+
+
+<span>
+
+Total Clientes
+
+</span>
+
+
+
+
+<h2 id="totalClients">
+
+0
+
+</h2>
+
+
+
+
+<small>
+
+Clientes cadastrados
+
+</small>
+
+
+
+</div>
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<div class="metric-card">
+
+
+
+<div class="metric-icon">
+
+
+<i class="fa-solid fa-user-check"></i>
+
+
+</div>
+
+
+
+
+
+<div class="metric-info">
+
+
+
+<span>
+
+Clientes Ativos
+
+</span>
+
+
+
+
+<h2 id="activeClients">
+
+0
+
+</h2>
+
+
+
+
+<small>
+
+Cadastros ativos
+
+</small>
+
+
+
+</div>
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<div class="metric-card">
+
+
+
+<div class="metric-icon">
+
+
+<i class="fa-solid fa-user-plus"></i>
+
+
+</div>
+
+
+
+
+
+<div class="metric-info">
+
+
+
+<span>
+
+Novos Clientes
+
+</span>
+
+
+
+
+<h2 id="newClients">
+
+0
+
+</h2>
+
+
+
+
+<small>
+
+Últimos cadastros
+
+</small>
+
+
+
+</div>
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<div class="metric-card">
+
+
+
+<div class="metric-icon">
+
+
+<i class="fa-solid fa-star"></i>
+
+
+</div>
+
+
+
+
+
+<div class="metric-info">
+
+
+
+<span>
+
+Clientes VIP
+
+</span>
+
+
+
+
+<h2 id="vipClients">
+
+0
+
+</h2>
+
+
+
+
+<small>
+
+Categoria especial
+
+</small>
+
+
+
+</div>
+
+
+
+
+</div>
+
+
+
+
+
+
+</section>
+<!-- ==================================================
+ÁREA DE GRÁFICOS
+================================================== -->
+
+
+<section class="charts-area">
+
+
+
+
+
+<div class="dashboard-card large">
+
+
+
+
+
+<div class="card-header">
+
+
+
+<div>
+
+
+<label>
+
+CLIENTES
+
+</label>
+
+
+
+<h3>
+
+Crescimento de clientes
+
+</h3>
+
+
+</div>
+
+
+
+
+<select id="clientsFilter">
+
+
+<option>
+
+Últimos 7 dias
+
+</option>
+
+
+<option>
+
+Últimos 30 dias
+
+</option>
+
+
+<option>
+
+Este ano
+
+</option>
+
+
+</select>
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<div class="chart-box">
+
+
+
+<canvas id="clientsChart"></canvas>
+
+
+
+</div>
+
+
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<div class="dashboard-card">
+
+
+
+
+
+<div class="card-header">
+
+
+
+<div>
+
+
+<label>
+
+STATUS
+
+</label>
+
+
+
+<h3>
+
+Situação dos clientes
+
+</h3>
+
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<div class="status-list">
+
+
+
+<div class="status-item">
+
+
+<span class="online"></span>
+
+
+Ativos
+
+
+<strong id="statusActive">
+
+0
+
+</strong>
+
+
+</div>
+
+
+
+
+
+
+
+<div class="status-item">
+
+
+<span class="offline"></span>
+
+
+Inativos
+
+
+<strong id="statusInactive">
+
+0
+
+</strong>
+
+
+</div>
+
+
+
+
+
+
+
+</div>
+
+
+
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+</section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- ==================================================
+INFORMAÇÕES CLIENTES
+================================================== -->
+
+
+<section class="information-grid">
+
+
+
+
+
+
+
+
+<div class="dashboard-card">
+
+
+
+<div class="card-header">
+
+
+
+<h3>
+
+⭐ Clientes recentes
+
+</h3>
+
+
+
+</div>
+
+
+
+
+
+<div id="recentClients">
+
+
+<div class="empty">
+
+Nenhum cliente cadastrado
+
+</div>
+
+
+
+</div>
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<div class="dashboard-card">
+
+
+
+<div class="card-header">
+
+
+
+<h3>
+
+📌 Anotações
+
+</h3>
+
+
+
+</div>
+
+
+
+
+
+
+<div id="clientNotes">
+
+
+<div class="empty">
+
+Nenhuma observação
+
+</div>
+
+
+</div>
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+</section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- ==================================================
+TABELA CLIENTES
+================================================== -->
+
+
+<section class="dashboard-card client-table-section">
+
+
+
+
+
+
+<div class="card-header">
+
+
+
+
+
+<div>
+
+
+<label>
+
+CADASTRO
+
+</label>
+
+
+
+<h3>
+
+Lista de Clientes
+
+</h3>
+
+
+
+</div>
+
+
+
+
+
+
+<button class="primary-button" id="openClientModal">
+
+
+<i class="fa-solid fa-plus"></i>
+
+
+Novo Cliente
+
+
+
+</button>
+
+
+
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<div class="table-tools">
+
+
+
+
+
+<input
+
+type="search"
+
+id="clientSearch"
+
+placeholder="Buscar cliente...">
+
+
+
+
+
+
+
+<select id="clientStatusFilter">
+
+
+<option value="">
+
+
+Todos
+
+
+</option>
+
+
+<option value="ativo">
+
+
+Ativos
+
+
+</option>
+
+
+<option value="inativo">
+
+
+Inativos
+
+
+</option>
+
+
+
+</select>
+
+
+
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<div class="table-container">
+
+
+
+
+
+
+<table class="erp-table">
+
+
+
+
+
+<thead>
+
+
+
+<tr>
+
+
+<th>
+
+Nome
+
+</th>
+
+
+
+<th>
+
+Telefone
+
+</th>
+
+
+
+<th>
+
+Email
+
+</th>
+
+
+
+<th>
+
+Status
+
+</th>
+
+
+
+<th>
+
+Ações
+
+</th>
+
+
+
+</tr>
+
+
+
+</thead>
+
+
+
+
+
+
+
+
+
+<tbody id="clientsTableBody">
+
+
+
+
+
+<tr>
+
+
+<td colspan="5">
+
+
+
+<div class="empty">
+
+
+<i class="fa-solid fa-users"></i>
+
+
+
+<p>
+
+Nenhum cliente cadastrado
+
+</p>
+
+
+
+</div>
+
+
+
+</td>
+
+
+</tr>
+
+
+
+
+
+</tbody>
+
+
+
+
+
+
+
+
+</table>
+
+
+
+
+
+</div>
+
+
+
+
+
+
+
+</section>
+<!-- ==================================================
+MODAL NOVO CLIENTE
+================================================== -->
+
+
+<div class="modal" id="clientModal">
+
+
+
+
+
+<div class="modal-content">
+
+
+
+
+
+
+<button class="close-modal" id="closeClientModal">
+
+
+<i class="fa-solid fa-xmark"></i>
+
+
+</button>
+
+
+
+
+
+
+
+<h2>
+
+Novo Cliente
+
+</h2>
+
+
+
+
+
+
+
+
+
+<form id="clientForm">
+
+
+
+
+
+
+
+
+<div class="form-grid">
+
+
+
+
+
+
+
+<div class="input-group">
+
+
+<label>
+
+Nome completo
+
+</label>
+
+
+
+<input
+
+type="text"
+
+id="clientName"
+
+required>
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<div class="input-group">
+
+
+<label>
+
+Telefone
+
+</label>
+
+
+
+<input
+
+type="text"
+
+id="clientPhone"
+
+required>
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<div class="input-group">
+
+
+<label>
+
+Email
+
+</label>
+
+
+
+<input
+
+type="email"
+
+id="clientEmail">
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<div class="input-group">
+
+
+<label>
+
+Status
+
+</label>
+
+
+
+<select id="clientStatus">
+
+
+<option value="ativo">
+
+Ativo
+
+</option>
+
+
+<option value="inativo">
+
+Inativo
+
+</option>
+
+
+
+</select>
+
+
+
+</div>
+
+
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<div class="input-group">
+
+
+<label>
+
+Observações
+
+</label>
+
+
+
+<textarea
+
+id="clientObservation"
+
+placeholder="Informações adicionais do cliente...">
+
+</textarea>
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<button
+
+type="submit"
+
+class="primary-button">
+
+
+
+<i class="fa-solid fa-save"></i>
+
+
+Salvar Cliente
+
+
+
+</button>
+
+
+
+
+
+
+
+
+</form>
+
+
+
+
+
+
+
+
+
+</div>
+
+
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- ==================================================
+RODAPÉ
+================================================== -->
+
+
+<footer class="footer">
+
+
+
+
+
+<div>
+
+
+
+<strong>
+
+EMPIRE ERP
+
+</strong>
+
+
+
+
+<span>
+
+Império da Moda Online
+
+</span>
+
+
+
+</div>
+
+
+
+
+
+
+
+
+<div>
+
+
+
+<span>
+
+Última atualização:
+
+</span>
+
+
+
+
+<strong id="lastUpdate">
+
+Aguardando
+
+</strong>
+
+
+
+
+</div>
+
+
+
+
+
+</footer>
+
+
+
+
+
+
+
+
+
+</main>
+
+
+
+
+
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- ==================================================
+SCRIPTS
+================================================== -->
+
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+
+
+<script src="../../assets/js/clientes.js"></script>
+
+
+
+
+
+
+
+
+<!-- ==================================================
+PWA
+================================================== -->
+
+
+
+<script>
+
+
+if("serviceWorker" in navigator){
+
+
+window.addEventListener(
+
+"load",
+
+()=>{
+
+
+navigator.serviceWorker.register(
+
+"../../service-worker.js"
+
+)
+
+.then(()=>{
+
+
+console.log(
+
+"EMPIRE ERP PWA ativo"
+
+);
+
+
+})
+
+.catch(error=>{
+
+
+console.error(
+
+"Erro PWA:",
+
+error
+
+);
+
+
+});
+
+
+
+}
+
+
+
+);
+
+
+}
+
+
+
+</script>
+
+
+
+
+
+
+
+</body>
+
+
+</html>
