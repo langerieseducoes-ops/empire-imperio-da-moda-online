@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+
+<head>
+
+<meta charset="UTF-8">
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+<title>EMPIRE ERP | Backup</title>
+
+
+<link rel="icon" href="../../assets/img/favicon.png">
+
+
+<link rel="stylesheet" href="../../assets/css/backup.css">
+
+<link rel="stylesheet" href="../../assets/css/modulos-base.css">
+
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+
+</head>
+
+
+<body>
+
+
+
+<div class="erp-layout">
+
+
+
+<!-- SIDEBAR -->
+
+
+<aside class="sidebar">
+
+
+<div class="sidebar-brand">
+
+
+<img src="../../assets/img/logo.png" alt="EMPIRE">
+
+
+<h1>EMPIRE</h1>
+
+
+<h2>Império da Moda Online</h2>
+
+
+<span>ERP V4 PREMIUM REMASTER</span>
+
+
+</div>
+
+
+
+
+
+<nav class="menu">
+
+
+<a href="dashboard.html">🏠 Dashboard</a>
+
+
+<a href="produtos.html">📦 Produtos</a>
+
+
+<a href="clientes.html">👥 Clientes</a>
+
+
+<a href="vendas.html">🛒 Vendas</a>
+
+
+<a href="compras.html">🛍 Compras</a>
+
+
+<a href="financeiro.html">💰 Financeiro</a>
+
+
+<a href="fornecedores.html">🚚 Fornecedores</a>
+
+
+<a href="usuarios.html">👤 Usuários</a>
+
+
+<a href="relatorios.html">📊 Relatórios</a>
+
+
+<a href="configuracoes.html">⚙️ Configurações</a>
+
+
+<a href="empresa.html">🏢 Empresa</a>
+
+
+<a href="monitoramento.html">📡 Monitoramento</a>
+
+
+<a href="backup.html" class="ativo">💾 Backup</a>
+
+
+</nav>
+
+
+
+
+
+<div class="sidebar-footer">
+
+
+<button onclick="sairSistema()">
+
+SAIR
+
+</button>
+
+
+</div>
+
+
+</aside>
+
+
+
+
+
+<main class="main-content">
+  <!--=========================================
+HEADER
+=========================================-->
+
+<header class="top-header">
+
+
+<div>
+
+<h2>Central de Backup</h2>
+
+
+<p>
+
+Proteja todos os dados do EMPIRE ERP.
+
+</p>
+
+
+</div>
+
+
+
+<div class="user-box">
+
+👑 Administrador
+
+</div>
+
+
+
+</header>
+
+
+
+
+
+
+<!--=========================================
+CARDS BACKUP
+=========================================-->
+
+<section class="backup-grid">
+
+
+
+<div class="backup-card">
+
+
+<h3>💾 Backup Completo</h3>
+
+
+
+<p>
+
+Crie uma cópia completa dos dados do sistema.
+
+</p>
+
+
+
+
+<button
+
+class="btn-primary"
+
+id="criarBackup">
+
+Criar Backup
+
+</button>
+
+
+
+</div>
+
+
+
+
+
+
+
+<div class="backup-card">
+
+
+<h3>🔄 Restaurar Dados</h3>
+
+
+
+<p>
+
+Recupere informações através de um arquivo backup.
+
+</p>
+
+
+
+
+<input
+
+type="file"
+
+id="arquivoBackup"
+
+accept=".json">
+
+
+
+
+
+<button
+
+class="btn-secondary"
+
+id="restaurarBackup">
+
+Restaurar
+
+</button>
+
+
+
+</div>
+
+
+
+
+
+
+
+<div class="backup-card">
+
+
+<h3>📦 Armazenamento</h3>
+
+
+
+<strong id="tamanhoBackup">
+
+0 KB
+
+</strong>
+
+
+
+<p>
+
+Dados salvos localmente
+
+</p>
+
+
+
+</div>
+
+
+
+</section>
+
+
+
+
+
+
+
+
+<!--=========================================
+LISTA BACKUPS
+=========================================-->
+
+<section class="backup-panel">
+
+
+<h3>📁 Histórico de Backups</h3>
+
+
+
+<div class="table-area">
+
+
+<table>
+
+
+<thead>
+
+
+<tr>
+
+
+<th>
+
+Arquivo
+
+</th>
+
+
+<th>
+
+Data
+
+</th>
+
+
+<th>
+
+Tamanho
+
+</th>
+
+
+<th>
+
+Ação
+
+</th>
+
+
+</tr>
+
+
+</thead>
+
+
+
+
+<tbody id="listaBackups">
+
+
+
+</tbody>
+
+
+
+
+</table>
+
+
+
+</div>
+
+
+
+</section>
+<!--=========================================
+SEGURANÇA
+=========================================-->
+
+<section class="backup-panel security-panel">
+
+
+<h3>🔐 Segurança dos Dados</h3>
+
+
+
+<div class="security-list">
+
+
+
+<div class="security-item">
+
+<span>🛡️</span>
+
+<p>
+
+Backup protege informações do ERP.
+
+</p>
+
+</div>
+
+
+
+<div class="security-item">
+
+<span>🔒</span>
+
+<p>
+
+Restauração exige confirmação.
+
+</p>
+
+</div>
+
+
+
+<div class="security-item">
+
+<span>📡</span>
+
+<p>
+
+Ações registradas no monitoramento.
+
+</p>
+
+</div>
+
+
+
+</div>
+
+
+
+</section>
+
+
+
+
+
+
+
+<!--=========================================
+AÇÕES
+=========================================-->
+
+<section class="actions-panel">
+
+
+
+<button
+
+class="btn-secondary"
+
+id="limparBackups">
+
+🗑️ Limpar Histórico
+
+</button>
+
+
+
+<button
+
+class="btn-secondary"
+
+id="exportarBackup">
+
+⬇️ Exportar Lista
+
+</button>
+
+
+
+</section>
+
+
+
+
+
+
+</main>
+
+
+</div>
+
+
+
+
+
+<script src="../../assets/js/backup.js"></script>
+
+
+
+</body>
+
+
+</html>
