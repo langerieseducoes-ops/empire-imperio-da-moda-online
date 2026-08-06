@@ -1,0 +1,1288 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+<title>EMPIRE ERP | Gestão de Usuários</title>
+
+
+<link rel="icon" href="../../assets/img/favicon.png">
+
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+
+
+<link rel="stylesheet" href="../../assets/css/usuarios.css">
+
+
+</head>
+
+
+
+
+<body>
+
+
+
+<!-- LOADER DO SISTEMA -->
+
+
+<div class="users-loader" id="usersLoader">
+
+
+<div class="users-loader-logo">
+
+EMPIRE
+
+</div>
+
+
+<span>
+
+Gestão de Usuários
+
+</span>
+
+
+<div class="users-loader-bar"></div>
+
+
+</div>
+
+
+
+
+
+
+
+<div class="users-layout">
+
+
+
+
+
+
+
+<!-- MENU LATERAL -->
+
+
+<aside class="users-sidebar">
+
+
+
+<div class="users-brand">
+
+
+<img src="../../assets/img/logo.png" alt="EMPIRE">
+
+
+<div>
+
+<h2>
+
+EMPIRE
+
+</h2>
+
+
+<p>
+
+Império da Moda Online
+
+</p>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+<nav class="users-menu">
+
+
+<a href="dashboard.html">
+
+
+<i class="fa-solid fa-house"></i>
+
+Tela Inicial
+
+</a>
+
+
+
+
+<a href="usuarios.html" class="active">
+
+
+<i class="fa-solid fa-user-shield"></i>
+
+Usuários
+
+</a>
+
+
+
+
+
+<a href="produtos.html">
+
+
+<i class="fa-solid fa-box"></i>
+
+Produtos
+
+</a>
+
+
+
+
+
+<a href="clientes.html">
+
+
+<i class="fa-solid fa-users"></i>
+
+Clientes
+
+</a>
+
+
+
+
+
+<a href="vendas.html">
+
+
+<i class="fa-solid fa-cart-shopping"></i>
+
+Vendas
+
+</a>
+
+
+
+
+
+<a href="financeiro.html">
+
+
+<i class="fa-solid fa-wallet"></i>
+
+Financeiro
+
+</a>
+
+
+
+</nav>
+
+
+
+
+
+</aside>
+
+
+
+
+
+
+
+
+
+<!-- ÁREA PRINCIPAL -->
+
+
+<main class="users-content">
+
+
+
+
+
+<header class="users-header">
+
+
+
+<div>
+
+
+<h1>
+
+Gestão de Usuários
+
+</h1>
+
+
+<p>
+
+Controle de acessos, permissões e segurança do ERP
+
+</p>
+
+
+</div>
+
+
+
+
+
+
+<div class="users-actions">
+
+
+<button class="users-notification" id="usersNotification">
+
+
+<i class="fa-solid fa-bell"></i>
+
+
+<strong id="usersNotificationCount">
+
+0
+
+</strong>
+
+
+</button>
+
+
+
+
+
+
+<button class="users-primary-btn" id="openUserModal">
+
+
+<i class="fa-solid fa-user-plus"></i>
+
+
+Novo Usuário
+
+
+</button>
+
+
+</div>
+
+
+
+</header>
+
+
+
+
+
+
+
+
+
+<!-- CARDS DE INFORMAÇÃO -->
+
+
+<section class="users-cards">
+
+
+
+<div class="users-info-card">
+
+
+<div class="users-card-icon">
+
+
+<i class="fa-solid fa-users"></i>
+
+
+</div>
+
+
+
+<div>
+
+
+<span>
+
+Total cadastrados
+
+</span>
+
+
+<strong id="usersTotalCount">
+
+0
+
+</strong>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+<div class="users-info-card">
+
+
+<div class="users-card-icon">
+
+
+<i class="fa-solid fa-user-check"></i>
+
+
+</div>
+
+
+
+<div>
+
+
+<span>
+
+Usuários ativos
+
+</span>
+
+
+<strong id="usersActiveCount">
+
+0
+
+</strong>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+
+<div class="users-info-card">
+
+
+<div class="users-card-icon">
+
+
+<i class="fa-solid fa-user-lock"></i>
+
+
+</div>
+
+
+
+<div>
+
+
+<span>
+
+Administradores
+
+</span>
+
+
+<strong id="usersAdminCount">
+
+0
+
+</strong>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+</section>
+
+
+
+
+
+<!-- =====================================================
+PAINEL DE USUÁRIOS
+===================================================== -->
+
+
+<section class="users-panels">
+
+
+
+
+
+
+
+<!-- GRÁFICO DE ACESSOS -->
+
+
+<div class="users-box users-chart-box">
+
+
+
+<div class="users-box-header">
+
+
+<div>
+
+
+<h3>
+
+Acessos dos usuários
+
+</h3>
+
+
+<p>
+
+Últimos 7 dias
+
+</p>
+
+
+</div>
+
+
+
+<i class="fa-solid fa-chart-line"></i>
+
+
+</div>
+
+
+
+
+
+<canvas id="usersAccessChart"></canvas>
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<!-- ATIVIDADES -->
+
+
+<div class="users-box users-activity-box">
+
+
+
+<div class="users-box-header">
+
+
+<div>
+
+
+<h3>
+
+Atividades recentes
+
+</h3>
+
+
+<p>
+
+Histórico de ações
+
+</p>
+
+
+</div>
+
+
+
+<i class="fa-solid fa-clock"></i>
+
+
+</div>
+
+
+
+
+
+
+<div id="usersActivityList">
+
+
+<div class="users-empty">
+
+Aguardando atividades...
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+</div>
+
+
+
+
+
+
+</section>
+
+
+
+
+
+
+
+
+
+<!-- =====================================================
+CONTROLE
+===================================================== -->
+
+
+<section class="users-box users-table-box">
+
+
+
+<div class="users-box-header">
+
+
+
+<div>
+
+
+<h3>
+
+Usuários cadastrados
+
+</h3>
+
+
+<p>
+
+Gerenciamento de permissões
+
+</p>
+
+
+</div>
+
+
+
+
+
+
+<div class="users-search">
+
+
+<i class="fa-solid fa-magnifying-glass"></i>
+
+
+<input 
+
+id="usersSearchInput"
+
+type="search"
+
+placeholder="Buscar usuário...">
+
+
+</div>
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<div class="users-filters">
+
+
+
+<select id="usersLevelFilter">
+
+
+<option value="">
+
+Todos os níveis
+
+</option>
+
+
+<option value="Administrador">
+
+Administrador
+
+</option>
+
+
+<option value="Gerente">
+
+Gerente
+
+</option>
+
+
+<option value="Funcionário">
+
+Funcionário
+
+</option>
+
+
+
+</select>
+
+
+
+
+
+
+
+<select id="usersStatusFilter">
+
+
+<option value="">
+
+Todos os status
+
+</option>
+
+
+<option value="ativo">
+
+Ativos
+
+</option>
+
+
+<option value="inativo">
+
+Inativos
+
+</option>
+
+
+
+</select>
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<div class="users-table-container">
+
+
+
+<table class="users-table">
+
+
+
+<thead>
+
+
+<tr>
+
+
+<th>
+
+Nome
+
+</th>
+
+
+<th>
+
+Email
+
+</th>
+
+
+<th>
+
+Nível
+
+</th>
+
+
+<th>
+
+Status
+
+</th>
+
+
+<th>
+
+Último acesso
+
+</th>
+
+
+<th>
+
+Ações
+
+</th>
+
+
+</tr>
+
+
+</thead>
+
+
+
+
+
+
+
+<tbody id="usersTableBody">
+
+
+
+<tr>
+
+
+<td colspan="6">
+
+
+<div class="users-empty">
+
+
+<i class="fa-solid fa-user-slash"></i>
+
+
+<p>
+
+Nenhum usuário carregado
+
+</p>
+
+
+</div>
+
+
+</td>
+
+
+</tr>
+
+
+
+
+</tbody>
+
+
+
+
+
+</table>
+
+
+
+</div>
+
+
+
+</section>
+
+
+
+
+
+
+<!-- =====================================================
+MODAL DE USUÁRIO
+===================================================== -->
+
+
+<div class="users-modal" id="usersModal">
+
+
+
+<div class="users-modal-content">
+
+
+
+
+
+<button class="users-close-modal" id="closeUsersModal">
+
+
+<i class="fa-solid fa-xmark"></i>
+
+
+</button>
+
+
+
+
+
+
+
+<h2>
+
+Novo Usuário
+
+</h2>
+
+
+
+
+
+
+
+<form id="usersForm">
+
+
+
+
+
+
+<div class="users-form-grid">
+
+
+
+
+
+
+<div class="users-input">
+
+
+<label>
+
+Nome completo
+
+</label>
+
+
+<input
+
+id="usersNameInput"
+
+type="text"
+
+required>
+
+
+</div>
+
+
+
+
+
+
+
+<div class="users-input">
+
+
+<label>
+
+Email
+
+</label>
+
+
+<input
+
+id="usersEmailInput"
+
+type="email"
+
+required>
+
+
+</div>
+
+
+
+
+
+
+
+<div class="users-input">
+
+
+<label>
+
+Senha
+
+</label>
+
+
+<input
+
+id="usersPasswordInput"
+
+type="password"
+
+required>
+
+
+</div>
+
+
+
+
+
+
+
+<div class="users-input">
+
+
+<label>
+
+Nível de acesso
+
+</label>
+
+
+
+<select id="usersRoleInput">
+
+
+<option value="Administrador">
+
+Administrador
+
+</option>
+
+
+<option value="Gerente">
+
+Gerente
+
+</option>
+
+
+<option value="Funcionário">
+
+Funcionário
+
+</option>
+
+
+
+</select>
+
+
+
+</div>
+
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<div class="users-permissions">
+
+
+
+<h3>
+
+Permissões
+
+</h3>
+
+
+
+
+
+<label>
+
+<input 
+
+type="checkbox"
+
+checked>
+
+
+Acesso à Tela Inicial
+
+</label>
+
+
+
+
+
+
+<label>
+
+<input 
+
+type="checkbox">
+
+
+Gerenciar Produtos
+
+</label>
+
+
+
+
+
+
+<label>
+
+<input 
+
+type="checkbox">
+
+
+Gerenciar Vendas
+
+</label>
+
+
+
+
+
+
+
+<label>
+
+<input 
+
+type="checkbox">
+
+
+Financeiro
+
+</label>
+
+
+
+
+
+
+<label>
+
+<input 
+
+type="checkbox">
+
+
+Usuários
+
+</label>
+
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<button 
+
+type="submit"
+
+class="users-primary-btn">
+
+
+
+<i class="fa-solid fa-save"></i>
+
+
+Salvar usuário
+
+
+
+</button>
+
+
+
+
+
+
+</form>
+
+
+
+
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<!-- =====================================================
+RODAPÉ
+===================================================== -->
+
+
+<footer class="users-footer">
+
+
+
+<div>
+
+
+<strong>
+
+EMPIRE ERP V4 PREMIUM
+
+</strong>
+
+
+<p>
+
+Gestão de Usuários e Segurança
+
+</p>
+
+
+</div>
+
+
+
+
+
+<span>
+
+Império da Moda Online
+
+</span>
+
+
+
+</footer>
+
+
+
+
+
+
+
+
+
+</main>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+<!-- =====================================================
+BIBLIOTECA GRÁFICOS
+===================================================== -->
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+
+
+
+
+
+<!-- =====================================================
+SISTEMA
+===================================================== -->
+
+
+<script src="../../assets/js/database.js"></script>
+
+
+<script src="../../assets/js/components.js"></script>
+
+
+<script src="../../assets/js/usuarios.js"></script>
+
+
+
+
+
+
+
+
+</body>
+
+</html>
