@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+<title>EMPIRE ERP | Compras</title>
+
+
+<link rel="icon" href="../../assets/img/favicon.png">
+
+
+<link rel="stylesheet" href="../../assets/css/compras.css">
+
+<link rel="stylesheet" href="../../assets/css/modulos-base.css">
+  
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+
+</head>
+
+
+
+<body>
+
+
+
+<div class="erp-layout">
+
+
+
+<aside class="sidebar">
+
+
+
+<div class="sidebar-brand">
+
+
+<img src="../../assets/img/logo.png" alt="EMPIRE">
+
+
+<h1>EMPIRE</h1>
+
+
+<h2>Império da Moda Online</h2>
+
+
+<span>ERP V4 PREMIUM REMASTER</span>
+
+
+</div>
+
+
+
+
+
+<nav class="menu">
+
+
+
+<a href="dashboard.html">
+🏠 Dashboard
+</a>
+
+
+<a href="produtos.html">
+📦 Produtos
+</a>
+
+
+<a href="clientes.html">
+👥 Clientes
+</a>
+
+
+<a href="vendas.html">
+🛒 Vendas
+</a>
+
+
+<a href="compras.html" class="ativo">
+🛍 Compras
+</a>
+
+
+<a href="financeiro.html">
+💰 Financeiro
+</a>
+
+
+<a href="fornecedores.html">
+🚚 Fornecedores
+</a>
+
+
+<a href="usuarios.html">
+👤 Usuários
+</a>
+
+
+<a href="relatorios.html">
+📊 Relatórios
+</a>
+
+
+<a href="configuracoes.html">
+⚙️ Configurações
+</a>
+
+
+<a href="empresa.html">
+🏢 Empresa
+</a>
+
+
+<a href="monitoramento.html">
+📡 Monitoramento
+</a>
+
+
+<a href="backup.html">
+💾 Backup
+</a>
+
+
+<a href="alterar-senha.html">
+🔐 Alterar Senha
+</a>
+
+
+
+</nav>
+
+
+
+
+
+<div class="sidebar-footer">
+
+
+<button onclick="sairSistema()">
+
+SAIR
+
+</button>
+
+
+</div>
+
+
+
+</aside>
+
+
+
+
+
+
+
+
+<main class="main-content">
+
+
+
+<header class="top-header">
+
+
+<div>
+
+
+<h2>
+
+Compras
+
+</h2>
+
+
+<p>
+
+Controle de compras e entradas.
+
+</p>
+
+
+</div>
+
+
+
+<div class="user-box">
+
+👑 Administrador
+
+</div>
+
+
+</header>
+
+
+
+
+
+
+
+
+<section class="purchase-panel">
+
+
+
+<h3>
+
+🛍 Nova Compra
+
+</h3>
+
+
+
+
+<div class="form-grid">
+
+
+
+<input id="fornecedorCompra" placeholder="Fornecedor">
+
+
+<input id="produtoCompra" placeholder="Produto">
+
+
+<input id="quantidadeCompra" placeholder="Quantidade">
+
+
+<input id="valorCompra" placeholder="Valor">
+
+
+
+<button id="salvarCompra">
+
+Registrar Compra
+
+</button>
+
+
+
+</div>
+
+
+</section>
+
+
+
+
+
+
+
+
+<section class="purchase-panel">
+
+
+
+<h3>
+
+📋 Histórico de Compras
+
+</h3>
+
+
+
+<table>
+
+
+<thead>
+
+
+<tr>
+
+
+<th>
+Fornecedor
+</th>
+
+
+<th>
+Produto
+</th>
+
+
+<th>
+Quantidade
+</th>
+
+
+<th>
+Valor
+</th>
+
+
+<th>
+Data
+</th>
+
+
+</tr>
+
+
+</thead>
+
+
+
+<tbody id="listaCompras">
+
+
+</tbody>
+
+
+
+</table>
+
+
+
+</section>
+
+
+
+
+
+
+
+</main>
+
+
+</div>
+
+
+
+
+
+
+
+
+<script src="../../assets/js/compras.js"></script>
+
+
+
+
+<script>
+
+
+function sairSistema(){
+
+
+localStorage.removeItem("empire_logado");
+
+
+localStorage.removeItem("empire_usuario");
+
+
+window.location.href="../../index.html";
+
+
+}
+
+
+</script>
+
+
+
+</body>
+
+
+</html>
