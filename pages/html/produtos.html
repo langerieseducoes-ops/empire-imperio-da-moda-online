@@ -1,0 +1,1320 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+<title>EMPIRE ERP | Produtos</title>
+
+
+<link rel="icon" href="../../assets/img/favicon.png">
+
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+
+<link rel="stylesheet" href="../../assets/css/produtos.css">
+
+
+</head>
+
+
+<body>
+
+
+
+
+<!-- =====================================================
+LOADER
+===================================================== -->
+
+
+<div class="products-loader" id="productsLoader">
+
+
+<div class="products-loader-logo">
+
+EMPIRE
+
+</div>
+
+
+<span>
+
+Gestão de Produtos
+
+</span>
+
+
+<div class="products-loader-bar"></div>
+
+
+</div>
+
+
+
+
+
+
+
+<div class="products-layout">
+
+
+
+
+
+
+
+<!-- =====================================================
+SIDEBAR
+===================================================== -->
+
+
+<aside class="products-sidebar">
+
+
+
+<div class="products-brand">
+
+
+<img src="../../assets/img/logo.png" alt="EMPIRE">
+
+
+<div>
+
+<h2>
+
+EMPIRE
+
+</h2>
+
+
+<p>
+
+Império da Moda Online
+
+</p>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+<nav class="products-menu">
+
+
+<a href="dashboard.html">
+
+<i class="fa-solid fa-house"></i>
+
+Tela Inicial
+
+</a>
+
+
+
+<a href="usuarios.html">
+
+<i class="fa-solid fa-user-shield"></i>
+
+Usuários
+
+</a>
+
+
+
+
+<a href="produtos.html" class="active">
+
+<i class="fa-solid fa-box"></i>
+
+Produtos
+
+</a>
+
+
+
+
+
+<a href="clientes.html">
+
+<i class="fa-solid fa-users"></i>
+
+Clientes
+
+</a>
+
+
+
+
+
+<a href="vendas.html">
+
+<i class="fa-solid fa-cart-shopping"></i>
+
+Vendas
+
+</a>
+
+
+
+
+
+<a href="financeiro.html">
+
+<i class="fa-solid fa-wallet"></i>
+
+Financeiro
+
+</a>
+
+
+
+</nav>
+
+
+
+</aside>
+
+
+
+
+
+
+
+
+
+<!-- =====================================================
+CONTEÚDO
+===================================================== -->
+
+
+<main class="products-content">
+
+
+
+
+
+<header class="products-header">
+
+
+<div>
+
+
+<h1>
+
+Gestão de Produtos
+
+</h1>
+
+
+<p>
+
+Controle de estoque, preços e catálogo
+
+</p>
+
+
+</div>
+
+
+
+
+
+<div class="products-actions">
+
+
+<button class="products-notification">
+
+
+<i class="fa-solid fa-bell"></i>
+
+
+<strong>
+
+0
+
+</strong>
+
+
+</button>
+
+
+
+
+
+<button class="products-primary-btn" id="openProductModal">
+
+
+<i class="fa-solid fa-plus"></i>
+
+
+Novo Produto
+
+
+</button>
+
+
+</div>
+
+
+
+</header>
+
+
+
+
+
+
+
+
+
+<!-- =====================================================
+CARDS
+===================================================== -->
+
+
+<section class="products-cards">
+
+
+
+<div class="products-info-card">
+
+
+<div class="products-card-icon">
+
+
+<i class="fa-solid fa-boxes-stacked"></i>
+
+
+</div>
+
+
+
+<div>
+
+
+<span>
+
+Total Produtos
+
+</span>
+
+
+<strong id="productsTotalCount">
+
+0
+
+</strong>
+
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+
+
+<div class="products-info-card">
+
+
+<div class="products-card-icon">
+
+
+<i class="fa-solid fa-layer-group"></i>
+
+
+</div>
+
+
+
+<div>
+
+
+<span>
+
+Estoque Atual
+
+</span>
+
+
+<strong id="productsStockCount">
+
+0
+
+</strong>
+
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+
+
+<div class="products-info-card">
+
+
+<div class="products-card-icon">
+
+
+<i class="fa-solid fa-triangle-exclamation"></i>
+
+
+</div>
+
+
+
+<div>
+
+
+<span>
+
+Estoque Baixo
+
+</span>
+
+
+<strong id="productsLowCount">
+
+0
+
+</strong>
+
+
+</div>
+
+
+
+</div>
+
+
+
+</section>
+<!-- =====================================================
+PAINÉIS DE PRODUTOS
+===================================================== -->
+
+
+<section class="products-panels">
+
+
+
+
+
+
+
+<!-- GRÁFICO ESTOQUE -->
+
+
+<div class="products-box products-chart-box">
+
+
+
+<div class="products-box-header">
+
+
+<div>
+
+
+<h3>
+
+Movimentação de estoque
+
+</h3>
+
+
+<p>
+
+Últimos registros
+
+</p>
+
+
+</div>
+
+
+
+<i class="fa-solid fa-chart-line"></i>
+
+
+</div>
+
+
+
+
+
+<canvas id="productsStockChart"></canvas>
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<!-- ALERTAS -->
+
+
+<div class="products-box products-alert-box">
+
+
+
+<div class="products-box-header">
+
+
+<div>
+
+
+<h3>
+
+Alertas
+
+</h3>
+
+
+<p>
+
+Controle de estoque
+
+</p>
+
+
+</div>
+
+
+
+<i class="fa-solid fa-bell"></i>
+
+
+</div>
+
+
+
+
+
+
+
+<div id="productsAlertList">
+
+
+<div class="products-empty">
+
+
+<i class="fa-solid fa-box-open"></i>
+
+
+<p>
+
+Nenhum alerta
+
+</p>
+
+
+</div>
+
+
+</div>
+
+
+
+
+</div>
+
+
+
+
+
+</section>
+
+
+
+
+
+
+
+
+
+<!-- =====================================================
+TABELA PRODUTOS
+===================================================== -->
+
+
+<section class="products-box products-table-box">
+
+
+
+<div class="products-box-header">
+
+
+
+<div>
+
+
+<h3>
+
+Produtos cadastrados
+
+</h3>
+
+
+<p>
+
+Gerenciamento do catálogo
+
+</p>
+
+
+</div>
+
+
+
+
+
+
+<div class="products-search">
+
+
+<i class="fa-solid fa-magnifying-glass"></i>
+
+
+<input
+
+id="productsSearchInput"
+
+type="search"
+
+placeholder="Buscar produto...">
+
+
+</div>
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<div class="products-filters">
+
+
+
+<select id="productsCategoryFilter">
+
+
+<option value="">
+
+Todas categorias
+
+</option>
+
+
+<option value="Roupas">
+
+Roupas
+
+</option>
+
+
+<option value="Acessórios">
+
+Acessórios
+
+</option>
+
+
+<option value="Calçados">
+
+Calçados
+
+</option>
+
+
+</select>
+
+
+
+
+
+
+
+<select id="productsStatusFilter">
+
+
+<option value="">
+
+Todos status
+
+</option>
+
+
+<option value="ativo">
+
+Ativos
+
+</option>
+
+
+<option value="inativo">
+
+Inativos
+
+</option>
+
+
+</select>
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<div class="products-table-container">
+
+
+
+<table class="products-table">
+
+
+
+<thead>
+
+
+<tr>
+
+
+<th>
+
+Produto
+
+</th>
+
+
+<th>
+
+Categoria
+
+</th>
+
+
+<th>
+
+Preço
+
+</th>
+
+
+<th>
+
+Estoque
+
+</th>
+
+
+<th>
+
+Status
+
+</th>
+
+
+<th>
+
+Ações
+
+</th>
+
+
+</tr>
+
+
+</thead>
+
+
+
+
+
+
+
+<tbody id="productsTableBody">
+
+
+
+<tr>
+
+
+<td colspan="6">
+
+
+<div class="products-empty">
+
+
+<i class="fa-solid fa-box-open"></i>
+
+
+<p>
+
+Nenhum produto cadastrado
+
+</p>
+
+
+</div>
+
+
+</td>
+
+
+</tr>
+
+
+
+
+</tbody>
+
+
+
+
+
+</table>
+
+
+
+</div>
+
+
+
+</section>
+
+
+
+
+
+
+
+
+
+<!-- =====================================================
+MODAL PRODUTO
+===================================================== -->
+
+
+<div class="products-modal" id="productsModal">
+
+
+
+<div class="products-modal-content">
+
+
+
+
+
+<button class="products-close-modal" id="closeProductsModal">
+
+
+<i class="fa-solid fa-xmark"></i>
+
+
+</button>
+
+
+
+
+
+
+
+<h2>
+
+Novo Produto
+
+</h2>
+
+
+
+
+
+
+
+<form id="productsForm">
+
+
+
+
+
+
+<div class="products-form-grid">
+
+
+
+
+
+
+<div class="products-input">
+
+
+<label>
+
+Nome do produto
+
+</label>
+
+
+<input
+
+id="productsNameInput"
+
+type="text"
+
+required>
+
+
+</div>
+
+
+
+
+
+
+
+<div class="products-input">
+
+
+<label>
+
+Categoria
+
+</label>
+
+
+
+<select id="productsCategoryInput">
+
+
+<option>
+
+Roupas
+
+</option>
+
+
+<option>
+
+Acessórios
+
+</option>
+
+
+<option>
+
+Calçados
+
+</option>
+
+
+
+</select>
+
+
+
+</div>
+
+
+
+
+
+
+
+<div class="products-input">
+
+
+<label>
+
+Preço
+
+</label>
+
+
+<input
+
+id="productsPriceInput"
+
+type="number"
+
+step="0.01"
+
+required>
+
+
+</div>
+
+
+
+
+
+
+
+<div class="products-input">
+
+
+<label>
+
+Quantidade estoque
+
+</label>
+
+
+<input
+
+id="productsStockInput"
+
+type="number"
+
+required>
+
+
+</div>
+
+
+
+
+
+
+
+</div>
+<div class="products-input">
+
+
+<label>
+
+Código do produto
+
+</label>
+
+
+<input
+
+id="productsCodeInput"
+
+type="text">
+
+
+</div>
+
+
+
+
+
+
+
+<div class="products-input">
+
+
+<label>
+
+Marca
+
+</label>
+
+
+<input
+
+id="productsBrandInput"
+
+type="text">
+
+
+</div>
+
+
+
+
+
+
+<div class="products-input">
+
+
+<label>
+
+Fornecedor
+
+</label>
+
+
+<input
+
+id="productsSupplierInput"
+
+type="text">
+
+
+</div>
+
+
+
+
+
+
+<div class="products-input">
+
+
+<label>
+
+Status
+
+</label>
+
+
+<select id="productsStatusInput">
+
+
+<option value="ativo">
+
+Ativo
+
+</option>
+
+
+<option value="inativo">
+
+Inativo
+
+</option>
+
+
+
+</select>
+
+
+</div>
+
+
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<div class="products-extra">
+
+
+
+<h3>
+
+Informações adicionais
+
+</h3>
+
+
+
+
+<textarea
+
+id="productsDescriptionInput"
+
+placeholder="Descrição do produto...">
+
+</textarea>
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<button
+
+type="submit"
+
+class="products-primary-btn">
+
+
+<i class="fa-solid fa-save"></i>
+
+
+Salvar Produto
+
+
+</button>
+
+
+
+
+
+
+
+</form>
+
+
+
+
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<!-- =====================================================
+RODAPÉ
+===================================================== -->
+
+
+<footer class="products-footer">
+
+
+
+<div>
+
+
+<strong>
+
+EMPIRE ERP V4 PREMIUM
+
+</strong>
+
+
+<p>
+
+Gestão de Produtos e Estoque
+
+</p>
+
+
+</div>
+
+
+
+
+
+<span>
+
+Império da Moda Online
+
+</span>
+
+
+
+</footer>
+
+
+
+
+
+
+
+
+
+</main>
+
+</div>
+
+
+
+
+
+
+
+
+
+<!-- =====================================================
+BIBLIOTECA GRÁFICO
+===================================================== -->
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+
+
+
+
+
+
+<!-- =====================================================
+SISTEMA
+===================================================== -->
+
+
+<script src="../../assets/js/produtos.js"></script>
+
+
+
+
+
+
+
+
+</body>
+
+</html>
