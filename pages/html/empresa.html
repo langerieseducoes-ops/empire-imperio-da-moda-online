@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+<title>EMPIRE ERP | Empresa</title>
+
+
+<link rel="icon" href="../../assets/img/favicon.png">
+
+
+<link rel="stylesheet" href="../../assets/css/empresa.css">
+
+  <link rel="stylesheet" href="../../assets/css/modulos-base.css">
+
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+
+</head>
+
+
+<body>
+
+
+<div class="erp-layout">
+
+
+<!-- SIDEBAR -->
+
+<aside class="sidebar">
+
+
+<div class="sidebar-brand">
+
+
+<img src="../../assets/img/logo.png" alt="EMPIRE">
+
+
+<h1>EMPIRE</h1>
+
+
+<h2>Império da Moda Online</h2>
+
+
+<span>ERP V4 PREMIUM REMASTER</span>
+
+
+</div>
+
+
+
+<nav class="menu">
+
+
+<a href="dashboard.html">🏠 Dashboard</a>
+
+
+<a href="produtos.html">📦 Produtos</a>
+
+
+<a href="clientes.html">👥 Clientes</a>
+
+
+<a href="vendas.html">🛒 Vendas</a>
+
+
+<a href="compras.html">🛍 Compras</a>
+
+
+<a href="financeiro.html">💰 Financeiro</a>
+
+
+<a href="fornecedores.html">🚚 Fornecedores</a>
+
+
+<a href="usuarios.html">👤 Usuários</a>
+
+
+<a href="relatorios.html">📊 Relatórios</a>
+
+
+<a href="configuracoes.html">⚙️ Configurações</a>
+
+
+<a href="empresa.html" class="ativo">🏢 Empresa</a>
+
+
+</nav>
+
+
+
+<div class="sidebar-footer">
+
+
+<button onclick="sairSistema()">
+
+SAIR
+
+</button>
+
+
+</div>
+
+
+</aside>
+
+
+
+<main class="main-content">
+  <!--=========================================
+HEADER
+=========================================-->
+
+<header class="top-header">
+
+
+<div>
+
+<h2>Dados da Empresa</h2>
+
+
+<p>
+
+Configure as informações oficiais do EMPIRE ERP.
+
+</p>
+
+
+</div>
+
+
+
+<div class="user-box">
+
+👑 Administrador
+
+</div>
+
+
+</header>
+
+
+
+
+
+<!--=========================================
+DADOS EMPRESA
+=========================================-->
+
+<section class="empresa-grid">
+
+
+
+<div class="empresa-card">
+
+
+<h3>🏢 Informações Gerais</h3>
+
+
+
+<div class="form-group">
+
+
+<label>Nome Fantasia</label>
+
+
+<input 
+type="text"
+id="nomeFantasia"
+placeholder="Nome da empresa">
+
+
+</div>
+
+
+
+
+<div class="form-group">
+
+
+<label>Razão Social</label>
+
+
+<input 
+type="text"
+id="razaoSocial"
+placeholder="Razão social">
+
+
+</div>
+
+
+
+
+<div class="form-group">
+
+
+<label>CNPJ</label>
+
+
+<input 
+type="text"
+id="cnpj"
+placeholder="00.000.000/0000-00">
+
+
+</div>
+
+
+
+
+<div class="form-group">
+
+
+<label>Inscrição Estadual</label>
+
+
+<input 
+type="text"
+id="inscricaoEstadual">
+
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+
+
+<div class="empresa-card">
+
+
+<h3>🖼️ Logotipo</h3>
+
+
+
+
+<div class="logo-preview">
+
+
+<img 
+id="previewLogo"
+src="../../assets/img/logo.png"
+alt="Logo Empresa">
+
+
+</div>
+
+
+
+
+
+<div class="form-group">
+
+
+<label>Enviar Logo</label>
+
+
+<input 
+type="file"
+id="logoEmpresa"
+accept="image/*">
+
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+
+
+<div class="empresa-card">
+
+
+<h3>📍 Endereço</h3>
+
+
+
+<div class="form-group">
+
+
+<label>CEP</label>
+
+
+<input 
+type="text"
+id="cep">
+
+
+</div>
+
+
+
+
+<div class="form-group">
+
+
+<label>Rua</label>
+
+
+<input 
+type="text"
+id="rua">
+
+
+</div>
+
+
+
+
+<div class="form-group">
+
+
+<label>Número</label>
+
+
+<input 
+type="text"
+id="numero">
+
+
+</div>
+
+
+
+
+<div class="form-group">
+
+
+<label>Bairro</label>
+
+
+<input 
+type="text"
+id="bairro">
+
+
+</div>
+
+
+
+</div>
+
+
+
+
+</section>
+<!--=========================================
+CONTATOS
+=========================================-->
+
+<section class="empresa-card full-card">
+
+
+<h3>📞 Contatos</h3>
+
+
+
+<div class="form-grid">
+
+
+
+<div class="form-group">
+
+<label>Telefone</label>
+
+<input 
+type="text"
+id="telefone">
+
+</div>
+
+
+
+<div class="form-group">
+
+<label>WhatsApp</label>
+
+<input 
+type="text"
+id="whatsapp">
+
+</div>
+
+
+
+<div class="form-group">
+
+<label>E-mail</label>
+
+<input 
+type="email"
+id="emailEmpresa">
+
+</div>
+
+
+
+<div class="form-group">
+
+<label>Site</label>
+
+<input 
+type="text"
+id="siteEmpresa">
+
+</div>
+
+
+
+</div>
+
+
+</section>
+
+
+
+
+
+<!--=========================================
+DADOS FINANCEIROS
+=========================================-->
+
+<section class="empresa-card full-card">
+
+
+<h3>💳 Dados Financeiros</h3>
+
+
+
+
+<div class="form-grid">
+
+
+
+<div class="form-group">
+
+<label>Banco</label>
+
+<input 
+type="text"
+id="banco">
+
+</div>
+
+
+
+
+<div class="form-group">
+
+<label>Agência</label>
+
+<input 
+type="text"
+id="agencia">
+
+</div>
+
+
+
+
+<div class="form-group">
+
+<label>Conta</label>
+
+<input 
+type="text"
+id="conta">
+
+</div>
+
+
+
+
+<div class="form-group">
+
+<label>PIX</label>
+
+<input 
+type="text"
+id="pix">
+
+</div>
+
+
+
+</div>
+
+
+
+</section>
+
+
+
+
+
+<!--=========================================
+AÇÕES
+=========================================-->
+
+<section class="actions-panel">
+
+
+<button
+class="btn-primary"
+id="salvarEmpresa">
+
+💾 Salvar Dados
+
+</button>
+
+
+
+<button
+class="btn-secondary"
+id="limparEmpresa">
+
+🗑️ Limpar Campos
+
+</button>
+
+
+</section>
+
+
+
+
+
+</main>
+
+
+</div>
+
+
+
+
+<script src="../../assets/js/empresa.js"></script>
+
+
+
+</body>
+
+
+</html>
