@@ -1,0 +1,1145 @@
+/*
+==========================================================
+ EMPIRE ERP V4 PREMIUM REMASTER
+
+ MÓDULO: EMPRESA
+
+ BLACK • GRAPHITE • GOLD
+
+==========================================================
+*/
+
+
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
+
+
+:root{
+
+
+    --black:#050505;
+
+    --dark:#0b0b0b;
+
+    --graphite:#151515;
+
+    --graphite-light:#202020;
+
+
+    --gold:#d4af37;
+
+    --gold-light:#f8e48c;
+
+    --gold-dark:#8f6b12;
+
+
+    --text:#d8d8d8;
+
+    --muted:#777;
+
+
+    --border:
+
+    rgba(212,175,55,.30);
+
+
+    --shadow:
+
+    0 25px 70px rgba(0,0,0,.75);
+
+
+}
+
+
+
+
+
+*{
+
+
+    margin:0;
+
+    padding:0;
+
+    box-sizing:border-box;
+
+
+}
+
+
+
+
+
+body{
+
+
+    font-family:'Poppins',sans-serif;
+
+
+    background:
+
+
+    radial-gradient(
+
+    circle at top,
+
+    #242424,
+
+    #050505 70%
+
+    );
+
+
+    color:var(--text);
+
+
+    min-height:100vh;
+
+
+}
+
+
+
+
+
+/*===============================
+LAYOUT
+================================*/
+
+
+.erp-layout{
+
+
+    display:flex;
+
+
+    min-height:100vh;
+
+
+}
+
+
+
+
+
+
+/*===============================
+SIDEBAR
+================================*/
+
+
+.sidebar{
+
+
+    width:290px;
+
+
+    background:
+
+
+    linear-gradient(
+
+    180deg,
+
+    #141414,
+
+    #050505
+
+    );
+
+
+    border-right:
+
+    1px solid var(--border);
+
+
+    padding:30px 22px;
+
+
+    display:flex;
+
+
+    flex-direction:column;
+
+
+    justify-content:space-between;
+
+
+    box-shadow:var(--shadow);
+
+
+}
+
+
+
+
+
+.sidebar-brand{
+
+
+    text-align:center;
+
+
+}
+
+
+
+
+
+.sidebar-brand img{
+
+
+    width:100px;
+
+
+    filter:
+
+
+    drop-shadow(
+
+    0 0 25px rgba(212,175,55,.5)
+
+    );
+
+
+}
+
+
+
+
+
+.sidebar-brand h1{
+
+
+    margin-top:15px;
+
+
+    font-family:'Cinzel',serif;
+
+
+    font-size:42px;
+
+
+    letter-spacing:8px;
+
+
+    color:var(--gold);
+
+
+}
+
+
+
+
+
+.sidebar-brand h2{
+
+
+    margin-top:8px;
+
+
+    font-family:'Cinzel',serif;
+
+
+    font-size:15px;
+
+
+    color:var(--gold-light);
+
+
+}
+
+
+
+
+
+.sidebar-brand span{
+
+
+    display:block;
+
+
+    margin-top:10px;
+
+
+    color:#777;
+
+
+    font-size:10px;
+
+
+    letter-spacing:3px;
+
+
+}
+
+
+
+
+
+/*===============================
+MENU
+================================*/
+
+
+.menu{
+
+
+    display:flex;
+
+
+    flex-direction:column;
+
+
+    gap:12px;
+
+
+    margin-top:40px;
+
+
+}
+
+
+
+
+
+.menu a{
+
+
+    height:54px;
+
+
+    display:flex;
+
+
+    align-items:center;
+
+
+    padding:0 18px;
+
+
+    border-radius:18px;
+
+
+    text-decoration:none;
+
+
+    color:var(--text);
+
+
+    border:1px solid transparent;
+
+
+    transition:.3s;
+
+
+}
+
+
+
+
+
+.menu a:hover,
+
+
+.menu a.ativo{
+
+
+    background:
+
+
+    linear-gradient(
+
+    90deg,
+
+
+    rgba(212,175,55,.20),
+
+
+    rgba(212,175,55,.05)
+
+
+    );
+
+
+    border-color:var(--border);
+
+
+    color:var(--gold-light);
+
+
+    transform:translateX(6px);
+
+
+}
+/*===============================
+CONTEÚDO PRINCIPAL
+================================*/
+
+
+.main-content{
+
+
+    flex:1;
+
+
+    padding:40px;
+
+
+    overflow:auto;
+
+
+}
+
+
+
+
+
+/*===============================
+HEADER
+================================*/
+
+
+.top-header{
+
+
+    display:flex;
+
+
+    justify-content:space-between;
+
+
+    align-items:center;
+
+
+    margin-bottom:35px;
+
+
+}
+
+
+
+
+
+.top-header h2{
+
+
+    font-family:'Cinzel',serif;
+
+
+    font-size:38px;
+
+
+    color:var(--gold-light);
+
+
+    letter-spacing:3px;
+
+
+}
+
+
+
+
+
+.top-header p{
+
+
+    margin-top:8px;
+
+
+    color:var(--muted);
+
+
+}
+
+
+
+
+
+.user-box{
+
+
+    padding:16px 25px;
+
+
+    border-radius:20px;
+
+
+    background:rgba(255,255,255,.04);
+
+
+    border:1px solid var(--border);
+
+
+    color:var(--gold-light);
+
+
+    box-shadow:var(--shadow);
+
+
+}
+
+
+
+
+
+
+/*===============================
+GRID EMPRESA
+================================*/
+
+
+.empresa-grid{
+
+
+    display:grid;
+
+
+    grid-template-columns:
+
+    repeat(3,1fr);
+
+
+    gap:25px;
+
+
+    margin-bottom:30px;
+
+
+}
+
+
+
+
+
+.empresa-card{
+
+
+    padding:30px;
+
+
+    border-radius:30px;
+
+
+    background:
+
+
+    linear-gradient(
+
+    145deg,
+
+    #1a1a1a,
+
+    #090909
+
+    );
+
+
+    border:1px solid var(--border);
+
+
+    box-shadow:var(--shadow);
+
+
+    transition:.3s;
+
+
+}
+
+
+
+
+
+.empresa-card:hover{
+
+
+    transform:translateY(-6px);
+
+
+    border-color:var(--gold);
+
+
+}
+
+
+
+
+
+.empresa-card h3{
+
+
+    font-family:'Cinzel',serif;
+
+
+    font-size:22px;
+
+
+    color:var(--gold);
+
+
+    margin-bottom:25px;
+
+
+}
+
+
+
+
+
+.full-card{
+
+
+    width:100%;
+
+
+    margin-bottom:25px;
+
+
+}
+
+
+
+
+
+
+/*===============================
+FORMULÁRIOS
+================================*/
+
+
+.form-grid{
+
+
+    display:grid;
+
+
+    grid-template-columns:
+
+    repeat(4,1fr);
+
+
+    gap:20px;
+
+
+}
+
+
+
+
+
+.form-group{
+
+
+    display:flex;
+
+
+    flex-direction:column;
+
+
+    gap:8px;
+
+
+    margin-bottom:18px;
+
+
+}
+
+
+
+
+
+.form-group label{
+
+
+    font-size:13px;
+
+
+    color:var(--gold-light);
+
+
+}
+
+
+
+
+
+.form-group input{
+
+
+    height:52px;
+
+
+    padding:0 16px;
+
+
+    border-radius:16px;
+
+
+    background:#101010;
+
+
+    color:var(--text);
+
+
+    border:1px solid var(--border);
+
+
+    outline:none;
+
+
+    transition:.3s;
+
+
+}
+
+
+
+
+
+.form-group input:focus{
+
+
+    border-color:var(--gold);
+
+
+    box-shadow:
+
+
+    0 0 20px rgba(212,175,55,.20);
+
+
+}
+
+
+
+
+
+
+/*===============================
+LOGO PREVIEW
+================================*/
+
+
+.logo-preview{
+
+
+    display:flex;
+
+
+    justify-content:center;
+
+
+    align-items:center;
+
+
+    height:180px;
+
+
+    margin-bottom:25px;
+
+
+    border-radius:25px;
+
+
+    background:#090909;
+
+
+    border:1px solid var(--border);
+
+
+}
+
+
+
+
+
+.logo-preview img{
+
+
+    max-width:140px;
+
+
+    max-height:140px;
+
+
+    object-fit:contain;
+
+
+    filter:
+
+
+    drop-shadow(
+
+    0 0 20px rgba(212,175,55,.4)
+
+    );
+
+
+}
+/*===============================
+AÇÕES
+================================*/
+
+
+.actions-panel{
+
+
+    display:flex;
+
+
+    gap:18px;
+
+
+    padding:30px;
+
+
+    margin-top:25px;
+
+
+    border-radius:30px;
+
+
+    background:
+
+
+    linear-gradient(
+
+    145deg,
+
+    #181818,
+
+    #090909
+
+    );
+
+
+    border:1px solid var(--border);
+
+
+    box-shadow:var(--shadow);
+
+
+}
+
+
+
+
+
+/*===============================
+BOTÕES
+================================*/
+
+
+.btn-primary,
+
+
+.btn-secondary{
+
+
+    height:55px;
+
+
+    padding:0 35px;
+
+
+    border-radius:18px;
+
+
+    cursor:pointer;
+
+
+    font-weight:700;
+
+
+    letter-spacing:1px;
+
+
+    transition:.3s;
+
+
+}
+
+
+
+
+
+.btn-primary{
+
+
+    border:none;
+
+
+    color:#050505;
+
+
+    background:
+
+
+    linear-gradient(
+
+    135deg,
+
+    var(--gold-dark),
+
+    var(--gold),
+
+    var(--gold-light)
+
+    );
+
+
+}
+
+
+
+
+
+.btn-secondary{
+
+
+    background:#111;
+
+
+    color:var(--gold-light);
+
+
+    border:1px solid var(--border);
+
+
+}
+
+
+
+
+
+.btn-primary:hover,
+
+
+.btn-secondary:hover{
+
+
+    transform:translateY(-4px);
+
+
+}
+
+
+
+
+
+.btn-primary:hover{
+
+
+    box-shadow:
+
+
+    0 15px 35px rgba(212,175,55,.35);
+
+
+}
+
+
+
+
+
+
+/*===============================
+ANIMAÇÕES
+================================*/
+
+
+.empresa-card,
+
+
+.actions-panel{
+
+
+    animation:
+
+    fadeUp .6s ease;
+
+
+}
+
+
+
+
+
+@keyframes fadeUp{
+
+
+    from{
+
+
+        opacity:0;
+
+
+        transform:translateY(25px);
+
+
+    }
+
+
+    to{
+
+
+        opacity:1;
+
+
+        transform:translateY(0);
+
+
+    }
+
+
+}
+
+
+
+
+
+
+
+/*===============================
+RESPONSIVO
+================================*/
+
+
+@media(max-width:1200px){
+
+
+    .empresa-grid{
+
+
+        grid-template-columns:
+
+        repeat(2,1fr);
+
+
+    }
+
+
+
+    .form-grid{
+
+
+        grid-template-columns:
+
+        repeat(2,1fr);
+
+
+    }
+
+
+}
+
+
+
+
+
+@media(max-width:900px){
+
+
+    .erp-layout{
+
+
+        flex-direction:column;
+
+
+    }
+
+
+
+    .sidebar{
+
+
+        width:100%;
+
+
+    }
+
+
+
+    .main-content{
+
+
+        padding:20px;
+
+
+    }
+
+
+
+    .top-header{
+
+
+        flex-direction:column;
+
+
+        align-items:flex-start;
+
+
+        gap:20px;
+
+
+    }
+
+
+
+    .empresa-grid{
+
+
+        grid-template-columns:
+
+        1fr;
+
+
+    }
+
+
+
+}
+
+
+
+
+
+@media(max-width:600px){
+
+
+    .form-grid{
+
+
+        grid-template-columns:
+
+        1fr;
+
+
+    }
+
+
+
+    .actions-panel{
+
+
+        flex-direction:column;
+
+
+    }
+
+
+
+    .btn-primary,
+
+
+    .btn-secondary{
+
+
+        width:100%;
+
+
+    }
+
+
+}
