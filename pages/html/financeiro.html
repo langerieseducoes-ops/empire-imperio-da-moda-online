@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+<title>EMPIRE ERP | Financeiro</title>
+
+
+<link rel="icon" href="../../assets/img/favicon.png">
+
+<link rel="stylesheet" href="../../assets/css/financeiro.css">
+
+<link rel="stylesheet" href="../../assets/css/modulos-base.css">
+  
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+
+</head>
+
+
+
+<body>
+
+
+
+<div class="erp-layout">
+
+
+
+<aside class="sidebar">
+
+
+
+<div class="sidebar-brand">
+
+
+<img src="../../assets/img/logo.png" alt="EMPIRE">
+
+
+<h1>EMPIRE</h1>
+
+
+<h2>Império da Moda Online</h2>
+
+
+<span>ERP V4 PREMIUM REMASTER</span>
+
+
+</div>
+
+
+
+
+
+<nav class="menu">
+
+
+
+<a href="dashboard.html">
+🏠 Dashboard
+</a>
+
+
+<a href="produtos.html">
+📦 Produtos
+</a>
+
+
+<a href="clientes.html">
+👥 Clientes
+</a>
+
+
+<a href="vendas.html">
+🛒 Vendas
+</a>
+
+
+<a href="compras.html">
+🛍 Compras
+</a>
+
+
+<a href="financeiro.html" class="ativo">
+💰 Financeiro
+</a>
+
+
+<a href="fornecedores.html">
+🚚 Fornecedores
+</a>
+
+
+<a href="usuarios.html">
+👤 Usuários
+</a>
+
+
+<a href="relatorios.html">
+📊 Relatórios
+</a>
+
+
+<a href="configuracoes.html">
+⚙️ Configurações
+</a>
+
+
+<a href="empresa.html">
+🏢 Empresa
+</a>
+
+
+<a href="monitoramento.html">
+📡 Monitoramento
+</a>
+
+
+<a href="backup.html">
+💾 Backup
+</a>
+
+
+<a href="alterar-senha.html">
+🔐 Alterar Senha
+</a>
+
+
+
+</nav>
+
+
+
+
+
+<div class="sidebar-footer">
+
+
+<button onclick="sairSistema()">
+
+SAIR
+
+</button>
+
+
+</div>
+
+
+
+</aside>
+
+
+
+
+
+
+
+
+<main class="main-content">
+
+
+
+<header class="top-header">
+
+
+<div>
+
+
+<h2>
+
+Financeiro
+
+</h2>
+
+
+<p>
+
+Controle financeiro do império.
+
+</p>
+
+
+</div>
+
+
+
+<div class="user-box">
+
+👑 Administrador
+
+</div>
+
+
+</header>
+
+
+
+
+
+
+
+
+<section class="finance-cards">
+
+
+
+<div class="finance-card">
+
+
+<h3>
+
+💵 Entradas
+
+</h3>
+
+
+<strong id="totalEntradas">
+
+R$ 0,00
+
+</strong>
+
+
+</div>
+
+
+
+
+<div class="finance-card">
+
+
+<h3>
+
+📉 Saídas
+
+</h3>
+
+
+<strong id="totalSaidas">
+
+R$ 0,00
+
+</strong>
+
+
+</div>
+
+
+
+
+<div class="finance-card">
+
+
+<h3>
+
+🏦 Saldo
+
+</h3>
+
+
+<strong id="saldoAtual">
+
+R$ 0,00
+
+</strong>
+
+
+</div>
+
+
+
+</section>
+
+
+
+
+
+
+
+
+<section class="finance-panel">
+
+
+
+<h3>
+
+📋 Lançamentos Financeiros
+
+</h3>
+
+
+
+
+<div class="form-grid">
+
+
+
+<input id="descricaoFinanceiro" placeholder="Descrição">
+
+
+<select id="tipoFinanceiro">
+
+
+<option value="entrada">
+
+Entrada
+
+</option>
+
+
+<option value="saida">
+
+Saída
+
+</option>
+
+
+</select>
+
+
+
+<input id="valorFinanceiro" placeholder="Valor">
+
+
+
+<button id="salvarFinanceiro">
+
+Adicionar
+
+</button>
+
+
+
+</div>
+
+
+
+</section>
+
+
+
+
+
+
+
+
+<section class="finance-panel">
+
+
+
+<h3>
+
+📊 Histórico
+
+</h3>
+
+
+
+<table>
+
+
+<thead>
+
+
+<tr>
+
+
+<th>
+Descrição
+</th>
+
+
+<th>
+Tipo
+</th>
+
+
+<th>
+Valor
+</th>
+
+
+<th>
+Data
+</th>
+
+
+</tr>
+
+
+</thead>
+
+
+
+<tbody id="listaFinanceiro">
+
+
+</tbody>
+
+
+
+</table>
+
+
+
+</section>
+
+
+
+
+
+
+
+
+</main>
+
+
+</div>
+
+
+
+
+
+
+
+<script src="../../assets/js/financeiro.js"></script>
+
+
+
+
+<script>
+
+
+function sairSistema(){
+
+
+localStorage.removeItem("empire_logado");
+
+
+localStorage.removeItem("empire_usuario");
+
+
+window.location.href="../../index.html";
+
+
+}
+
+
+</script>
+
+
+
+</body>
+
+
+</html>
