@@ -1,986 +1,860 @@
+/* ======================================================
+   EMPIRE ERP | TELA INICIAL CSS
+   PREMIUM LUXURY - PRETO | OURO | GRAFITE
+====================================================== */
 
-/* =====================================================
-EMPIRE ERP
-DASHBOARD CSS
-VERSÃO PREMIUM
-===================================================== */
 
+/* =========================
+   RESET
+========================= */
 
-/* =====================================================
-VARIÁVEIS DO SISTEMA
-===================================================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
-:root{
 
+html {
+    scroll-behavior: smooth;
+}
 
---black:#050505;
 
---dark:#0b0b0b;
+body {
 
---gray:#161616;
+    min-height: 100vh;
 
---gray-light:#222222;
+    background:
+    radial-gradient(
+        circle at top,
+        rgba(212,175,55,.12),
+        transparent 40%
+    ),
+    #050505;
 
+    color: #ffffff;
 
---gold:#d4af37;
+    font-family: "Poppins", sans-serif;
 
---gold-light:#f8e48c;
+    overflow-x: hidden;
 
---gold-dark:#8f6b12;
+}
 
 
---white:#ffffff;
 
---text:#d8d8d8;
 
---muted:#888888;
 
+/* =========================
+   VARIÁVEIS EMPIRE
+========================= */
 
---border:
+:root {
 
-rgba(212,175,55,.30);
 
+    --empire-black:#050505;
 
---glass:
+    --empire-dark:#0b0b0b;
 
-rgba(255,255,255,.06);
+    --empire-gray:#161616;
 
 
---danger:#ff5252;
+    --empire-gold:#d4af37;
 
---success:#00d98b;
+    --empire-gold-light:#f8e48c;
 
---warning:#ffc107;
+    --empire-gold-dark:#8f6b12;
 
 
+    --empire-white:#ffffff;
 
---radius:18px;
 
+    --text:#d8d8d8;
 
---transition:
 
-.35s ease;
+    --glass:
+    rgba(255,255,255,.06);
 
 
---shadow:
+    --border:
+    rgba(212,175,55,.35);
 
-0 20px 50px rgba(0,0,0,.45);
 
+    --shadow:
+    0 20px 60px rgba(0,0,0,.8);
 
 
 }
-
 
 
 
 
-/* =====================================================
-RESET
-===================================================== */
 
+/* =========================
+   LOADER PREMIUM
+========================= */
 
-*{
 
-margin:0;
-
-padding:0;
-
-box-sizing:border-box;
-
-font-family:"Poppins",sans-serif;
-
-}
+.empire-loader {
 
 
+    position:fixed;
 
-html{
+    inset:0;
 
-scroll-behavior:smooth;
+    z-index:9999;
 
-}
 
+    display:flex;
 
+    flex-direction:column;
 
-body{
+    justify-content:center;
 
-background:
+    align-items:center;
 
-var(--black);
 
-color:var(--text);
+    background:#050505;
 
-min-height:100vh;
 
-overflow-x:hidden;
+    transition:.8s ease;
 
 }
-
-
-
-a{
-
-text-decoration:none;
 
-color:inherit;
 
-}
 
+.empire-loader.hide {
 
 
-button{
+    opacity:0;
 
-cursor:pointer;
+    visibility:hidden;
 
-border:none;
 
 }
-
-
-
-img{
-
-max-width:100%;
 
-display:block;
 
-}
-
 
 
+.loader-logo {
 
 
+    font-family:"Cinzel",serif;
 
 
-/* =====================================================
-FUNDO ANIMADO
-===================================================== */
+    font-size:70px;
 
 
-.background-animation{
+    font-weight:900;
 
 
-position:fixed;
+    letter-spacing:15px;
 
-inset:0;
 
-z-index:-1;
+    color:var(--empire-gold);
 
-overflow:hidden;
 
-background:
+    text-shadow:
 
-radial-gradient(
+    0 0 15px rgba(212,175,55,.8),
+    0 0 40px rgba(212,175,55,.5);
 
-circle at top,
 
-#211900,
 
-#050505 55%
+    animation:
 
-);
+    empirePulse 2s infinite;
 
 
 }
-
-
 
 
 
-.glow{
+.loader-subtitle {
 
 
-position:absolute;
+    margin-top:15px;
 
-border-radius:50%;
 
-filter:blur(90px);
-
-opacity:.20;
-
-animation:
-
-floatGlow 12s infinite alternate;
-
-}
+    color:#ffffff;
 
 
+    font-size:15px;
 
 
-.glow-1{
+    letter-spacing:5px;
 
 
-width:350px;
+    text-transform:uppercase;
 
-height:350px;
 
-background:
+}
 
-var(--gold);
 
-top:-120px;
 
-left:-100px;
 
+.loader-bar {
 
-}
 
+    width:280px;
 
 
+    height:5px;
 
-.glow-2{
 
+    margin-top:40px;
 
-width:300px;
 
-height:300px;
+    background:#222;
 
-background:
 
-var(--gold-dark);
+    border-radius:50px;
 
-right:-100px;
 
-top:40%;
+    overflow:hidden;
 
 
 }
-
-
-
 
-.glow-3{
 
 
-width:250px;
+.loader-bar span {
 
-height:250px;
 
-background:
+    display:block;
 
-var(--gold-light);
 
-bottom:-100px;
+    width:0%;
 
-left:40%;
 
+    height:100%;
 
-}
-
 
+    background:
 
+    linear-gradient(
+    90deg,
+    var(--empire-gold-dark),
+    var(--empire-gold-light)
+    );
 
-@keyframes floatGlow{
 
+    animation:
 
-from{
+    loadingEmpire 2.5s forwards;
 
-transform:translateY(0px);
 
 }
-
-
-to{
-
-transform:translateY(70px);
 
-}
 
 
 
-}
 
+@keyframes loadingEmpire {
 
 
+    from{
+        width:0%;
+    }
 
 
+    to{
+        width:100%;
+    }
 
 
-/* =====================================================
-LOADER
-===================================================== */
+}
 
 
-.loader{
 
 
-position:fixed;
+@keyframes empirePulse {
 
-inset:0;
 
-background:#050505;
+    50%{
 
-display:flex;
+        transform:scale(1.05);
 
-align-items:center;
+    }
 
-justify-content:center;
+}
 
-z-index:9999;
 
-transition:1s;
 
 
-}
 
+/* =========================
+   CONTAINER PRINCIPAL
+========================= */
 
 
+.dashboard-container {
 
-.loader.hide{
 
+    display:flex;
 
-opacity:0;
 
-pointer-events:none;
+    min-height:100vh;
 
 
 }
-
 
 
 
-.loader-content{
 
 
-text-align:center;
 
-}
 
+/* =========================
+   SIDEBAR
+========================= */
 
 
-.loader-logo{
+.sidebar {
 
 
-font-family:"Cinzel",serif;
+    width:280px;
 
-font-size:48px;
 
-font-weight:800;
+    min-height:100vh;
 
-letter-spacing:8px;
 
-color:var(--gold);
+    position:fixed;
 
-animation:
 
-logoPulse 2s infinite;
+    left:0;
 
 
-}
+    top:0;
 
 
+    background:
 
-.loader-subtitle{
 
+    linear-gradient(
+    180deg,
+    rgba(20,20,20,.95),
+    rgba(5,5,5,.98)
+    );
 
-margin-top:12px;
 
-font-size:13px;
+    border-right:
 
-color:var(--gold-light);
+    1px solid var(--border);
 
 
-}
+    backdrop-filter:blur(20px);
 
 
+    box-shadow:
 
+    20px 0 60px rgba(0,0,0,.8);
 
-.loader-line{
 
 
-width:240px;
+    display:flex;
 
-height:4px;
 
-background:#222;
+    flex-direction:column;
 
-margin:25px auto;
 
-border-radius:20px;
+    z-index:100;
 
-overflow:hidden;
 
 
 }
 
 
 
-.loader-line span{
 
 
-display:block;
+/* =========================
+   MARCA SIDEBAR
+========================= */
 
-height:100%;
 
-width:0;
+.sidebar-brand {
 
-background:
 
-linear-gradient(
+    text-align:center;
 
-90deg,
 
-var(--gold-dark),
+    padding:35px 20px;
 
-var(--gold-light)
 
-);
-
-
-animation:
-
-loading 2s forwards;
-
-
 }
-
-
-
-@keyframes loading{
-
-
-to{
 
-width:100%;
 
-}
 
+.logo-empresa {
 
-}
 
+    width:90px;
 
 
-@keyframes logoPulse{
+    height:90px;
 
 
-50%{
+    object-fit:contain;
 
-text-shadow:
 
-0 0 35px var(--gold);
+    filter:
 
-}
+    drop-shadow(
+    0 0 20px rgba(212,175,55,.6)
+    );
 
 
 }
 
 
 
+.sidebar-brand h1 {
 
 
+    margin-top:15px;
 
 
+    font-family:"Cinzel",serif;
 
 
-/* =====================================================
-CONTAINER ERP
-===================================================== */
+    font-size:34px;
 
 
-.erp-container{
+    letter-spacing:5px;
 
 
-display:flex;
+    color:var(--empire-gold);
 
-min-height:100vh;
 
-
 }
-
-
-
-
-
-
 
-/* =====================================================
-SIDEBAR
-===================================================== */
 
 
-.sidebar{
+.sidebar-brand p {
 
 
-position:fixed;
+    margin-top:8px;
 
-left:0;
 
-top:0;
+    color:#aaa;
 
-bottom:0;
 
+    font-size:12px;
 
-width:260px;
 
+    letter-spacing:2px;
 
-padding:22px 16px;
 
+}
 
-background:
 
-rgba(11,11,11,.90);
 
 
-border-right:
 
-1px solid var(--border);
+/* =========================
+   MENU
+========================= */
 
 
-backdrop-filter:
+.sidebar-menu {
 
-blur(20px);
 
+    flex:1;
 
-display:flex;
 
-flex-direction:column;
+    padding:20px;
 
 
-z-index:50;
+}
 
 
-}
 
 
+.sidebar-menu a {
 
 
+    display:flex;
 
-.brand{
 
+    align-items:center;
 
-display:flex;
 
-align-items:center;
+    gap:15px;
 
-gap:12px;
 
-margin-bottom:25px;
+    padding:15px;
 
 
-}
+    margin-bottom:10px;
 
 
+    color:#aaa;
 
 
-.brand img{
+    text-decoration:none;
 
 
-width:52px;
+    border-radius:15px;
 
-height:52px;
 
-object-fit:contain;
+    transition:.4s;
 
 
 }
-
 
 
 
-.brand h2{
+.sidebar-menu a i {
 
 
-font-family:"Cinzel";
+    width:25px;
 
-font-size:25px;
 
-color:var(--gold);
+    font-size:18px;
 
 
 }
-
-
-
-
-.brand span{
-
 
-font-size:10px;
 
-color:var(--muted);
 
 
-}
-
 
+.sidebar-menu a:hover,
+.sidebar-menu a.ativo {
 
 
+    color:#fff;
 
 
+    background:
 
-/* =====================================================
-PERFIL
-===================================================== */
+    linear-gradient(
+    90deg,
+    rgba(212,175,55,.25),
+    transparent
+    );
 
 
-.profile-card{
+    box-shadow:
 
+    inset 0 0 20px rgba(212,175,55,.15);
 
-display:flex;
 
-align-items:center;
 
-gap:12px;
+}
 
 
-padding:14px;
 
 
-background:
 
-var(--glass);
+/* =========================
+   CONTEÚDO
+========================= */
 
 
-border:
+.dashboard-main {
 
-1px solid rgba(255,255,255,.08);
 
+    margin-left:280px;
 
-border-radius:
 
-16px;
+    width:calc(100% - 280px);
 
 
-margin-bottom:25px;
+    padding:35px;
 
 
 }
-
+/* ======================================================
+   PARTE 2
+   HEADER + BANNER PREMIUM EMPIRE
+====================================================== */
 
 
 
+/* =========================
+   HEADER
+========================= */
 
-.profile-card img{
 
+.dashboard-header {
 
-width:45px;
 
-height:45px;
+    display:flex;
 
-border-radius:50%;
+    justify-content:space-between;
 
+    align-items:center;
 
-}
 
+    margin-bottom:30px;
 
 
+    padding:25px;
 
 
-.profile-card strong{
+    background:
 
+    rgba(255,255,255,.04);
 
-font-size:13px;
 
-display:block;
+    border:
 
+    1px solid rgba(212,175,55,.25);
 
-}
 
+    border-radius:25px;
 
 
-.profile-card p{
+    backdrop-filter:blur(15px);
 
 
-font-size:11px;
+    box-shadow:
 
-color:#aaa;
+    0 15px 40px rgba(0,0,0,.5);
 
 
 }
 
 
 
+.dashboard-header h2 {
 
-.status-dot{
 
+    font-family:"Cinzel",serif;
 
-display:inline-block;
 
-width:7px;
+    font-size:35px;
 
-height:7px;
 
-background:
+    letter-spacing:3px;
 
-var(--success);
 
+    color:#fff;
 
-border-radius:50%;
 
-margin-right:5px;
-
-
 }
-
 
 
-/* =====================================================
-MENU LATERAL
-===================================================== */
 
+.dashboard-header p {
 
-.navigation{
 
+    margin-top:8px;
 
-display:flex;
 
-flex-direction:column;
+    color:#999;
 
-gap:6px;
 
-flex:1;
+    font-size:14px;
 
 
 }
-
-
-
-
-
-.navigation a{
-
-
-display:flex;
-
-align-items:center;
-
-gap:14px;
-
 
-padding:12px 14px;
 
 
-border-radius:14px;
 
 
-font-size:13px;
 
+/* =========================
+   AÇÕES DO HEADER
+========================= */
 
-color:#999;
 
+.header-actions {
 
-transition:var(--transition);
 
+    display:flex;
 
-}
-
-
-
+    align-items:center;
 
-.navigation a i{
+    gap:25px;
 
 
-width:20px;
-
-color:var(--gold);
-
-
 }
-
-
 
 
 
-.navigation a:hover,
 
 
-.navigation a.active{
+.notification-btn {
 
 
-background:
+    position:relative;
 
-rgba(212,175,55,.12);
 
+    width:55px;
 
-color:white;
+    height:55px;
 
 
-transform:translateX(5px);
+    border-radius:50%;
 
 
-}
-
-
-
-
+    border:1px solid var(--border);
 
-.sidebar-footer{
 
+    background:
 
-border-top:
+    rgba(212,175,55,.12);
 
-1px solid var(--border);
 
+    color:var(--empire-gold);
 
-padding-top:15px;
 
+    font-size:20px;
 
-color:var(--gold);
 
+    cursor:pointer;
 
-font-family:"Cinzel";
 
+    transition:.4s;
 
-font-size:14px;
 
-
 }
-
 
 
 
+.notification-btn:hover {
 
-.sidebar-footer small{
 
+    transform:translateY(-5px);
 
-display:block;
 
-font-family:"Poppins";
+    box-shadow:
 
-font-size:10px;
+    0 0 30px rgba(212,175,55,.5);
 
-color:#777;
 
-
 }
-
-
 
 
 
 
+.notification-btn span {
 
 
+    position:absolute;
 
-/* =====================================================
-CONTEÚDO PRINCIPAL
-===================================================== */
 
+    top:-5px;
 
-.content{
+    right:-5px;
 
 
-margin-left:260px;
+    width:22px;
 
+    height:22px;
 
-width:
 
-calc(100% - 260px);
+    display:flex;
 
+    justify-content:center;
 
-padding:22px;
+    align-items:center;
 
 
-}
-
-
-
+    background:#d4af37;
 
 
+    color:#000;
 
 
+    border-radius:50%;
 
-/* =====================================================
-TOPBAR
-===================================================== */
 
+    font-size:12px;
 
-.topbar{
 
+    font-weight:bold;
 
-display:flex;
 
-align-items:center;
-
-justify-content:space-between;
-
+}
 
-gap:18px;
 
 
-margin-bottom:25px;
 
 
-}
 
 
+/* =========================
+   PERFIL
+========================= */
 
 
-.page-title h1{
+.user-profile {
 
 
-font-family:"Cinzel";
+    display:flex;
 
 
-font-size:28px;
+    align-items:center;
 
 
-color:var(--gold);
+    gap:15px;
 
 
-}
+    padding:10px 20px;
 
 
+    border-radius:20px;
 
 
+    background:
 
-.page-title p{
+    rgba(255,255,255,.05);
 
 
-font-size:12px;
+    border:
 
-color:var(--muted);
+    1px solid rgba(255,255,255,.08);
 
 
 }
 
 
 
+.user-profile img {
 
 
-.global-search{
+    width:50px;
 
 
-flex:1;
+    height:50px;
 
 
-max-width:420px;
+    border-radius:50%;
 
 
-display:flex;
+    object-fit:contain;
 
 
-align-items:center;
+    border:
 
+    2px solid var(--empire-gold);
 
-gap:12px;
 
-
-padding:12px 18px;
-
+}
 
-background:
 
-var(--glass);
 
+.user-profile strong {
 
-border:
 
-1px solid var(--border);
+    display:block;
 
 
-border-radius:18px;
+    color:white;
 
 
 }
-
-
 
 
 
-.global-search i{
+.user-profile small {
 
 
-color:var(--gold);
+    color:#38ff75;
 
 
 }
@@ -988,323 +862,297 @@ color:var(--gold);
 
 
 
-.global-search input{
 
+/* =========================
+   BANNER PRINCIPAL
+========================= */
 
-width:100%;
 
+.dashboard-banner {
 
-background:none;
 
+    position:relative;
 
-border:none;
 
+    width:100%;
 
-outline:none;
 
+    height:350px;
 
-color:white;
 
+    border-radius:30px;
 
-font-size:13px;
 
+    overflow:hidden;
 
-}
-
 
+    margin-bottom:35px;
 
 
 
+    background-image:
 
+    url("../img/dashboard-banner.jpg");
 
-.top-actions{
 
+    background-size:cover;
 
-display:flex;
 
+    background-position:center;
 
-align-items:center;
 
 
-gap:10px;
+    box-shadow:
 
 
-}
+    0 30px 80px rgba(0,0,0,.8);
 
 
 
+    animation:
 
-.icon-button{
+    bannerEntrada 1s ease;
 
 
-width:42px;
 
-
-height:42px;
+}
 
 
-background:
 
-var(--glass);
 
 
-border-radius:14px;
 
+.dashboard-banner::before {
 
-color:var(--gold);
 
+    content:"";
 
-position:relative;
 
+    position:absolute;
 
-transition:.3s;
 
+    inset:0;
 
-}
 
+    background:
 
 
+    linear-gradient(
 
+    90deg,
 
-.icon-button:hover{
+    rgba(0,0,0,.92),
 
+    rgba(0,0,0,.45),
 
-transform:
+    rgba(0,0,0,.75)
 
-translateY(-4px);
+    );
 
 
 }
-
-
-
-
 
-.icon-button span{
 
 
-position:absolute;
 
 
-right:-4px;
 
+.banner-overlay {
 
-top:-4px;
 
+    position:relative;
 
-width:17px;
 
+    z-index:2;
 
-height:17px;
 
+    height:100%;
 
-background:#ff3b3b;
 
+    display:flex;
 
-border-radius:50%;
 
+    flex-direction:column;
 
-font-size:9px;
 
+    justify-content:center;
 
-display:flex;
 
+    padding-left:60px;
 
-align-items:center;
 
 
-justify-content:center;
-
-
-color:white;
-
-
 }
-
 
 
 
 
-.time-box{
+.banner-overlay h1 {
 
 
-display:flex;
+    font-family:"Cinzel",serif;
 
 
-align-items:center;
+    font-size:75px;
 
 
-gap:8px;
+    letter-spacing:15px;
 
 
-padding:11px;
+    color:var(--empire-gold);
 
 
-background:
+    text-shadow:
 
-var(--glass);
 
+    0 0 20px rgba(212,175,55,.7);
 
-border-radius:15px;
 
 
-font-size:12px;
-
-
-color:var(--gold-light);
-
-
 }
-
-
-
-
-
-
 
 
-/* =====================================================
-CARDS DE INDICADORES
-===================================================== */
 
 
-.metrics-grid{
+.banner-overlay p {
 
 
-display:grid;
+    margin-top:15px;
 
 
-grid-template-columns:
+    font-size:22px;
 
-repeat(4,1fr);
 
+    color:white;
 
-gap:18px;
 
+    letter-spacing:3px;
 
-margin-bottom:22px;
 
-
 }
 
 
 
 
+.banner-overlay button {
 
-.metric-card{
 
+    margin-top:30px;
 
-display:flex;
 
+    width:220px;
 
-align-items:center;
 
+    padding:15px;
 
-gap:15px;
 
+    border:none;
 
-padding:20px;
 
+    border-radius:50px;
 
-background:
 
-rgba(255,255,255,.05);
+    cursor:pointer;
 
 
-border:
+    font-weight:700;
 
-1px solid var(--border);
 
+    color:#000;
 
-border-radius:
 
-20px;
+    background:
 
 
-cursor:pointer;
+    linear-gradient(
 
+    135deg,
 
-transition:.35s;
+    var(--empire-gold-light),
 
+    var(--empire-gold)
 
-animation:
+    );
 
-cardShow .6s ease;
 
+    transition:.4s;
 
-}
 
+}
 
 
 
 
-.metric-card:hover{
+.banner-overlay button:hover {
 
 
-transform:
+    transform:translateY(-5px);
 
-translateY(-7px);
 
+    box-shadow:
 
-box-shadow:
 
-var(--shadow);
+    0 15px 40px rgba(212,175,55,.5);
 
 
 }
-
 
 
 
 
-.metric-icon{
 
 
-width:52px;
+@keyframes bannerEntrada {
 
 
-height:52px;
+    from{
 
+        opacity:0;
 
-display:flex;
+        transform:translateY(30px);
 
+    }
 
-align-items:center;
 
+    to{
 
-justify-content:center;
+        opacity:1;
 
+        transform:translateY(0);
 
-background:
+    }
 
-rgba(212,175,55,.15);
 
-
-border-radius:16px;
-
+}
+/* ======================================================
+   PARTE 3
+   CARDS + GRÁFICOS PREMIUM EMPIRE
+====================================================== */
 
-color:var(--gold);
 
+/* =========================
+   CARDS DASHBOARD
+========================= */
 
-font-size:20px;
 
+.dashboard-cards {
 
-}
 
+    display:grid;
 
 
+    grid-template-columns:
 
 
-.metric-info span{
+    repeat(4,1fr);
 
 
-display:block;
 
+    gap:25px;
 
-font-size:12px;
 
+    margin-bottom:40px;
 
-color:#999;
 
 
 }
@@ -1313,116 +1161,114 @@ color:#999;
 
 
 
-.metric-info h2{
 
+.dashboard-card {
 
-font-size:26px;
 
+    position:relative;
 
-color:white;
 
+    overflow:hidden;
 
-margin:3px 0;
 
+    display:flex;
 
-}
 
+    align-items:center;
 
 
+    gap:20px;
 
 
-.metric-info small{
+    padding:30px;
 
 
-font-size:10px;
 
+    min-height:150px;
 
-color:var(--gold-light);
 
 
-}
+    background:
 
 
+    linear-gradient(
 
+    145deg,
 
+    rgba(255,255,255,.08),
 
+    rgba(255,255,255,.02)
 
+    );
 
 
 
-/* =====================================================
-ÁREA DE GRÁFICOS
-===================================================== */
+    border:
 
 
-.charts-area{
+    1px solid rgba(212,175,55,.25);
 
 
-display:grid;
 
+    border-radius:25px;
 
-grid-template-columns:
 
-2fr 1fr;
 
+    backdrop-filter:
 
-gap:18px;
 
+    blur(20px);
 
-margin-bottom:18px;
 
 
-}
+    box-shadow:
 
 
+    0 20px 50px rgba(0,0,0,.6);
 
 
 
-.dashboard-card{
+    transition:.5s;
 
 
-background:
 
-rgba(255,255,255,.05);
+}
 
 
-border:
 
-1px solid var(--border);
 
 
-border-radius:
+.dashboard-card::before {
 
-20px;
 
+    content:"";
 
-padding:20px;
 
+    position:absolute;
 
-backdrop-filter:
 
-blur(15px);
+    width:120px;
 
 
-}
+    height:120px;
 
 
+    right:-40px;
 
 
+    top:-40px;
 
-.card-header{
 
 
-display:flex;
+    background:
 
 
-align-items:center;
+    rgba(212,175,55,.12);
 
 
-justify-content:space-between;
 
+    border-radius:50%;
 
-margin-bottom:18px;
 
 
 }
@@ -1431,28 +1277,28 @@ margin-bottom:18px;
 
 
 
-.card-header label{
+.dashboard-card:hover {
 
 
-font-size:10px;
+    transform:
 
 
-color:var(--gold);
+    translateY(-12px);
 
 
-}
 
+    border-color:
 
 
+    var(--empire-gold);
 
 
-.card-header h3{
 
+    box-shadow:
 
-font-size:16px;
 
+    0 30px 70px rgba(212,175,55,.25);
 
-color:white;
 
 
 }
@@ -1461,127 +1307,100 @@ color:white;
 
 
 
-.card-header a{
 
 
-font-size:12px;
+.dashboard-card i {
 
 
-color:var(--gold-light);
+    display:flex;
 
 
-}
-
+    justify-content:center;
 
 
+    align-items:center;
 
 
-.card-header select{
+    width:65px;
 
 
-background:#111;
+    height:65px;
 
 
-border:
 
-1px solid var(--border);
+    border-radius:20px;
 
 
-color:white;
 
+    font-size:28px;
 
-padding:8px;
 
 
-border-radius:10px;
+    color:
 
 
-}
+    var(--empire-gold);
 
 
 
+    background:
 
 
-.chart-box{
+    rgba(212,175,55,.12);
 
 
-height:270px;
 
-
 }
-
 
 
 
 
 
 
+.dashboard-card h3 {
 
 
-/* =====================================================
-INFORMAÇÕES
-===================================================== */
+    color:#999;
 
 
-.information-grid{
+    font-size:14px;
 
 
-display:grid;
+    font-weight:400;
 
 
-grid-template-columns:
+    text-transform:uppercase;
 
-repeat(3,1fr);
 
+    letter-spacing:2px;
 
-gap:18px;
 
 
-margin-bottom:18px;
-
-
 }
-
-
-
-
-
-.bottom-grid{
-
-
-display:grid;
 
 
-grid-template-columns:
 
-repeat(2,1fr);
 
 
-gap:18px;
+.dashboard-card strong {
 
 
-margin-bottom:18px;
+    display:block;
 
 
-}
-
-
-
-
+    margin-top:8px;
 
-.empty{
 
 
-text-align:center;
+    font-size:32px;
 
 
-padding:20px;
 
+    color:white;
 
-font-size:12px;
 
+    font-weight:700;
 
-color:#777;
 
 
 }
@@ -1590,94 +1409,78 @@ color:#777;
 
 
 
-.notification-box,
 
 
-.email-box,
 
+/* =========================
+   ÁREA DOS GRÁFICOS
+========================= */
 
-.stock-list,
 
+.dashboard-charts {
 
-#calendarEvents,
 
+    display:grid;
 
-#taskList{
 
+    grid-template-columns:
 
-display:flex;
 
+    repeat(2,1fr);
 
-flex-direction:column;
 
 
-gap:10px;
+    gap:30px;
 
 
 }
-
-
-/* =====================================================
-ATIVIDADES DO SISTEMA
-===================================================== */
-
-
-.activity-section{
-
 
-margin-bottom:18px;
 
 
-}
-
 
 
 
 
-.timeline{
+.chart-box {
 
 
-display:flex;
+    min-height:400px;
 
 
-flex-direction:column;
+    padding:30px;
 
 
-gap:12px;
 
-
-}
+    background:
 
 
+    rgba(255,255,255,.05);
 
 
 
-.timeline-item{
+    border:
 
 
-display:flex;
+    1px solid rgba(212,175,55,.25);
 
 
-align-items:center;
 
+    border-radius:30px;
 
-gap:15px;
 
 
-padding:15px;
+    backdrop-filter:
 
 
-background:
+    blur(20px);
 
-rgba(255,255,255,.03);
 
 
-border-radius:15px;
+    box-shadow:
 
 
-border:
+    0 25px 60px rgba(0,0,0,.7);
 
-1px solid rgba(255,255,255,.05);
 
 
 }
@@ -1686,51 +1489,48 @@ border:
 
 
 
-.timeline-icon{
+.chart-title {
 
 
-width:38px;
+    margin-bottom:25px;
 
 
-height:38px;
+}
 
 
-border-radius:50%;
 
 
-display:flex;
 
+.chart-title h3 {
 
-align-items:center;
 
+    font-family:"Cinzel",serif;
 
-justify-content:center;
 
+    color:
 
-background:
 
-rgba(212,175,55,.15);
+    var(--empire-gold);
 
 
-color:var(--gold);
 
+    font-size:22px;
 
-}
 
+    letter-spacing:2px;
 
 
 
+}
 
-.timeline-item strong{
 
 
-font-size:13px;
 
 
-color:white;
+.chart-box canvas {
 
 
-display:block;
+    max-height:280px;
 
 
 }
@@ -1739,342 +1539,324 @@ display:block;
 
 
 
-.timeline-item p{
 
 
-font-size:11px;
+/* =========================
+   SIDEBAR FOOTER
+========================= */
 
 
-color:#999;
+.sidebar-footer {
 
 
-}
+    padding:25px;
 
 
 
+}
 
 
-.timeline-item small{
 
 
-font-size:10px;
+.sidebar-footer button {
 
 
-color:var(--gold-light);
+    width:100%;
 
 
-}
+    padding:15px;
 
 
+    border-radius:15px;
 
 
 
+    border:
 
 
+    1px solid rgba(212,175,55,.3);
 
 
-/* =====================================================
-MONITORAMENTO
-===================================================== */
 
+    background:
 
-.monitor-grid{
 
+    rgba(212,175,55,.1);
 
-display:grid;
 
 
-grid-template-columns:
+    color:
 
-repeat(4,1fr);
 
+    var(--empire-gold);
 
-gap:18px;
 
 
-margin-bottom:18px;
+    cursor:pointer;
 
 
-}
 
+    font-size:15px;
 
 
 
+    transition:.4s;
 
-.monitor-card{
 
 
-display:flex;
+}
 
 
-align-items:center;
 
+.sidebar-footer button:hover {
 
-gap:15px;
 
+    background:
 
-padding:18px;
 
+    var(--empire-gold);
 
-background:
 
-rgba(255,255,255,.05);
 
+    color:black;
 
-border:
 
-1px solid var(--border);
 
+    box-shadow:
 
-border-radius:18px;
 
+    0 0 30px rgba(212,175,55,.5);
 
-transition:.3s;
 
 
 }
-
-
 
 
 
-.monitor-card:hover{
 
+.sidebar-footer i {
 
-transform:
 
-translateY(-5px);
+    margin-right:10px;
 
 
 }
+/* ======================================================
+   PARTE 4
+   RESPONSIVIDADE + ACABAMENTO PREMIUM
+====================================================== */
 
 
+/* =========================
+   ANIMAÇÕES GERAIS
+========================= */
 
 
+.dashboard-card,
+.chart-box,
+.sidebar-menu a,
+.user-profile {
 
-.monitor-card i{
 
+    animation:
 
-font-size:24px;
+    fadeUp .8s ease forwards;
 
 
-color:var(--gold);
-
-
 }
-
-
-
 
 
-.monitor-card span{
 
+@keyframes fadeUp {
 
-display:block;
 
+    from {
 
-font-size:11px;
+        opacity:0;
 
+        transform:translateY(25px);
 
-color:#888;
+    }
 
 
-}
-
+    to {
 
+        opacity:1;
 
+        transform:translateY(0);
 
+    }
 
-.monitor-card strong{
 
+}
 
-font-size:15px;
 
 
-color:white;
 
 
-}
 
+/* =========================
+   NOTEBOOKS
+========================= */
 
 
+@media(max-width:1400px){
 
 
 
+.dashboard-cards {
 
 
+    grid-template-columns:
 
-/* =====================================================
-ACESSO RÁPIDO
-===================================================== */
+    repeat(2,1fr);
 
 
-.quick-buttons{
 
+}
 
-display:grid;
 
 
-grid-template-columns:
+.dashboard-banner {
 
-repeat(8,1fr);
 
+    height:320px;
 
-gap:12px;
 
 
 }
 
 
 
+.banner-overlay h1 {
 
 
-.quick-buttons a{
+    font-size:60px;
 
 
-height:85px;
-
-
-display:flex;
+}
 
 
-flex-direction:column;
 
+}
 
-align-items:center;
 
 
-justify-content:center;
 
 
-gap:8px;
 
 
-background:
 
-rgba(255,255,255,.04);
 
+/* =========================
+   TABLETS
+========================= */
 
-border-radius:16px;
 
+@media(max-width:1000px){
 
-border:
 
-1px solid rgba(212,175,55,.2);
 
+.sidebar {
 
-color:#aaa;
 
+    width:90px;
 
-transition:.35s;
 
 
 }
-
 
 
 
+.sidebar-brand h1,
 
-.quick-buttons i{
+.sidebar-brand p,
 
+.sidebar-menu span {
 
-font-size:22px;
 
+    display:none;
 
-color:var(--gold);
 
 
 }
 
 
 
+.sidebar-brand {
 
 
-.quick-buttons span{
+    padding:25px 10px;
 
 
-font-size:11px;
-
-
 }
-
-
-
 
 
-.quick-buttons a:hover{
 
+.logo-empresa {
 
-background:
 
-rgba(212,175,55,.15);
+    width:55px;
 
+    height:55px;
 
-color:white;
 
 
-transform:
+}
 
-translateY(-6px);
 
 
-}
+.dashboard-main {
 
 
+    margin-left:90px;
 
 
+    width:calc(100% - 90px);
 
 
 
+}
 
 
-/* =====================================================
-FOOTER
-===================================================== */
 
+.sidebar-menu a {
 
-.footer{
 
+    justify-content:center;
 
-display:flex;
 
 
-justify-content:space-between;
+}
 
 
-align-items:center;
 
+.dashboard-header {
 
-padding:20px 5px;
 
+    flex-direction:column;
 
-font-size:12px;
 
+    gap:25px;
 
-color:#777;
 
 
 }
-
 
 
 
+.dashboard-charts {
 
-.footer strong{
 
+    grid-template-columns:1fr;
 
-font-family:"Cinzel";
 
 
-color:var(--gold);
-
+}
 
-margin-right:8px;
 
 
 }
-
-
 
 
 
@@ -2082,128 +1864,106 @@ margin-right:8px;
 
 
 
-/* =====================================================
-ANIMAÇÕES
-===================================================== */
 
 
-@keyframes cardShow{
+/* =========================
+   CELULAR
+========================= */
 
 
-from{
+@media(max-width:650px){
 
 
-opacity:0;
 
+body {
 
-transform:
 
-translateY(25px);
+    overflow-x:hidden;
 
 
 }
-
-
-
-to{
-
-
-opacity:1;
 
 
-transform:
 
-translateY(0);
+.dashboard-container {
 
 
-}
+    display:block;
 
 
 
 }
-
 
 
 
+.sidebar {
 
 
+    position:fixed;
 
-/* =====================================================
-PARTÍCULAS
-===================================================== */
 
+    bottom:0;
 
-.particle{
 
+    top:auto;
 
-position:absolute;
 
+    width:100%;
 
-width:3px;
 
+    height:75px;
 
-height:3px;
 
+    min-height:75px;
 
-background:
 
-var(--gold);
 
+    flex-direction:row;
 
-border-radius:50%;
 
+    justify-content:center;
 
-animation:
 
-particleFloat linear infinite;
 
+    border-right:none;
 
-}
 
+    border-top:
 
+    1px solid rgba(212,175,55,.3);
 
 
 
-@keyframes particleFloat{
+}
 
 
-from{
 
+.sidebar-brand,
 
-transform:
+.sidebar-footer {
 
-translateY(100vh);
 
+    display:none;
 
-opacity:0;
 
 
 }
-
-
-
-30%{
-
-
-opacity:1;
-
 
-}
 
 
+.sidebar-menu {
 
-to{
 
+    display:flex;
 
-transform:
 
-translateY(-100vh);
+    padding:5px;
 
 
-opacity:0;
+    width:100%;
 
 
-}
+    justify-content:space-around;
 
 
 
@@ -2211,349 +1971,286 @@ opacity:0;
 
 
 
+.sidebar-menu a {
 
 
+    margin:0;
 
 
+    padding:12px;
 
 
-/* =====================================================
-TABLET
-===================================================== */
 
-
-@media(max-width:1200px){
+}
 
 
 
-.metrics-grid{
+.sidebar-menu i {
 
 
-grid-template-columns:
+    font-size:20px;
 
-repeat(2,1fr);
 
 
 }
-
 
 
-.information-grid{
 
+.dashboard-main {
 
-grid-template-columns:
 
-1fr;
+    margin-left:0;
 
 
-}
-
+    width:100%;
 
 
-.monitor-grid{
+    padding:20px;
 
 
-grid-template-columns:
+    padding-bottom:100px;
 
-repeat(2,1fr);
 
 
 }
-
-
-
-.quick-buttons{
 
 
-grid-template-columns:
 
-repeat(4,1fr);
+.dashboard-header {
 
 
-}
+    padding:20px;
 
 
 
 }
-
 
 
 
+.dashboard-header h2 {
 
 
+    font-size:25px;
 
 
 
-/* =====================================================
-CELULAR
-===================================================== */
-
+}
 
-@media(max-width:768px){
 
 
+.header-actions {
 
-.sidebar{
 
+    width:100%;
 
-width:75px;
 
+    justify-content:center;
 
-padding:20px 8px;
 
 
 }
-
-
-
-
-
-.brand-text,
-
 
-.profile-card div,
 
 
-.navigation span,
+.user-profile {
 
 
-.sidebar-footer{
+    display:none;
 
 
-display:none;
 
-
 }
-
 
 
 
+.dashboard-banner {
 
-.brand img{
 
+    height:280px;
 
-width:50px;
 
 
 }
-
-
 
 
 
-.content{
+.banner-overlay {
 
 
-margin-left:75px;
+    padding-left:25px;
 
 
-width:
 
-calc(100% - 75px);
-
-
-padding:15px;
-
-
 }
-
 
 
 
+.banner-overlay h1 {
 
-.topbar{
 
+    font-size:40px;
 
-flex-direction:column;
 
+    letter-spacing:8px;
 
-align-items:stretch;
 
 
 }
 
 
 
+.banner-overlay p {
 
 
-.page-title h1{
+    font-size:15px;
 
 
-font-size:23px;
 
-
 }
-
 
 
 
+.banner-overlay button {
 
-.global-search{
 
+    width:180px;
 
-max-width:none;
 
 
 }
 
 
 
+.dashboard-cards {
 
 
-.top-actions{
+    grid-template-columns:1fr;
 
 
-justify-content:center;
 
-
 }
-
-
 
 
 
-.metrics-grid,
+.dashboard-card {
 
 
-.charts-area,
+    padding:25px;
 
 
-.bottom-grid{
 
-
-grid-template-columns:
-
-1fr;
-
-
 }
-
 
 
 
+.dashboard-card strong {
 
-.monitor-grid{
 
+    font-size:25px;
 
-grid-template-columns:
 
-1fr;
 
-
 }
-
 
 
 
+.dashboard-charts {
 
-.quick-buttons{
 
+    grid-template-columns:1fr;
 
-grid-template-columns:
 
-repeat(2,1fr);
 
-
 }
-
-
 
 
 
-.chart-box{
+.chart-box {
 
 
-height:220px;
+    padding:20px;
 
 
 }
-
-
-
-
-
-.footer{
 
 
-flex-direction:column;
 
-
-gap:10px;
-
-
 }
 
 
 
-}
 
 
 
 
 
+/* =========================
+   SCROLLBAR PREMIUM
+========================= */
 
 
+::-webkit-scrollbar {
 
 
-/* =====================================================
-CELULAR PEQUENO
-===================================================== */
+    width:10px;
 
 
-@media(max-width:450px){
+}
 
 
 
-.sidebar{
+::-webkit-scrollbar-track {
 
 
-width:60px;
+    background:#050505;
 
 
 }
 
 
 
+::-webkit-scrollbar-thumb {
 
 
-.content{
+    background:
 
 
-margin-left:60px;
+    linear-gradient(
 
+    var(--empire-gold-dark),
 
-width:
+    var(--empire-gold)
 
-calc(100% - 60px);
+    );
 
 
-}
-
 
+    border-radius:20px;
 
 
 
-.metric-info h2{
+}
 
 
-font-size:21px;
 
 
-}
 
 
 
+/* =========================
+   SELEÇÃO DE TEXTO
+========================= */
 
 
-.quick-buttons{
+::selection {
 
 
-grid-template-columns:
+    background:
 
-1fr;
+    var(--empire-gold);
 
 
-}
+    color:black;
 
 
 
