@@ -1,21 +1,26 @@
 /*
 ====================================================
  EMPIRE | Império da Moda Online
- LOGIN JS
+ LOGIN JS V2
  PARTE 1/3
 ====================================================
 */
 
 
+
+
+
 // ================================================
-// INICIALIZAÇÃO DO SISTEMA
+// INICIALIZAÇÃO
 // ================================================
 
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener(
+"DOMContentLoaded",
+()=>{
 
 
-    iniciarSistema();
+    iniciarLogin();
 
 
 });
@@ -24,96 +29,79 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 
+
+
+
+
 // ================================================
-// LOADER DO SISTEMA
+// INICIAR LOGIN
 // ================================================
 
 
-function iniciarSistema(){
-
-
-    const loader = document.getElementById("empireLoader");
-
-
-    const loaderText = document.getElementById("loaderText");
+function iniciarLogin(){
 
 
 
-    if(loader){
+    iniciarLoader();
 
 
-
-        const mensagens = [
-
-            "Iniciando sistema...",
-
-            "Carregando segurança...",
-
-            "Preparando ambiente...",
-
-            "Sistema pronto..."
-
-        ];
+    configurarSenha();
 
 
-
-        let contador = 0;
-
-
-
-        const intervalo = setInterval(()=>{
-
-
-
-            if(loaderText){
-
-
-                loaderText.textContent =
-                mensagens[contador];
-
-
-
-            }
-
-
-
-
-            contador++;
-
-
-
-
-            if(contador >= mensagens.length){
-
-
-                clearInterval(intervalo);
-
-
-
-                setTimeout(()=>{
-
-
-                    loader.classList.add("hide");
-
-
-
-                },700);
-
-
-
-            }
-
-
-
-        },700);
-
-
-
-    }
+    carregarUsuarioSalvo();
 
 
 
 }
+
+
+
+
+
+
+
+
+
+// ================================================
+// LOADER
+// ================================================
+
+
+function iniciarLoader(){
+
+
+
+    const loader =
+
+    document.getElementById(
+        "loginLoader"
+    );
+
+
+
+
+    if(!loader) return;
+
+
+
+
+
+
+    setTimeout(()=>{
+
+
+        loader.classList.add(
+            "hide"
+        );
+
+
+
+    },1800);
+
+
+
+}
+
 
 
 
@@ -127,35 +115,62 @@ function iniciarSistema(){
 // ================================================
 
 
-const showPassword =
-document.getElementById("showPassword");
+function configurarSenha(){
 
 
 
-const passwordInput =
-document.getElementById("loginPassword");
+    const botao =
+
+    document.getElementById(
+        "showPassword"
+    );
+
+
+
+    const campo =
+
+    document.getElementById(
+        "loginPassword"
+    );
 
 
 
 
 
-if(showPassword && passwordInput){
+
+
+    if(!botao || !campo)
+    return;
 
 
 
-    showPassword.addEventListener("click", ()=>{
 
 
 
-        if(passwordInput.type === "password"){
 
 
 
-            passwordInput.type = "text";
+    botao.addEventListener(
+    "click",
+    ()=>{
 
 
 
-            showPassword.innerHTML =
+
+
+        if(
+        campo.type === "password"
+        ){
+
+
+
+            campo.type =
+            "text";
+
+
+
+            botao.innerHTML =
+
             '<i class="fa-solid fa-eye-slash"></i>';
 
 
@@ -163,16 +178,22 @@ if(showPassword && passwordInput){
         }else{
 
 
-            passwordInput.type = "password";
+
+            campo.type =
+            "password";
 
 
 
-            showPassword.innerHTML =
+            botao.innerHTML =
+
             '<i class="fa-solid fa-eye"></i>';
 
 
 
         }
+
+
+
 
 
 
@@ -189,102 +210,109 @@ if(showPassword && passwordInput){
 
 
 
+
 // ================================================
-// ELEMENTOS DO LOGIN
+// ELEMENTOS PRINCIPAIS
 // ================================================
 
 
 const loginForm =
-document.getElementById("loginForm");
+
+document.getElementById(
+    "loginForm"
+);
+
+
 
 
 
 const loginUser =
-document.getElementById("loginUser");
+
+document.getElementById(
+    "loginUser"
+);
+
+
 
 
 
 const loginPassword =
-document.getElementById("loginPassword");
+
+document.getElementById(
+    "loginPassword"
+);
+
+
 
 
 
 const loginMessage =
-document.getElementById("loginMessage");
+
+document.getElementById(
+    "loginMessage"
+);
 
 
 
+
+
+const rememberUser =
+
+document.getElementById(
+    "rememberUser"
+);
 /* ================================================
-   VALIDAÇÃO E AUTENTICAÇÃO
+   AUTENTICAÇÃO EMPIRE
    PARTE 2/3
 ================================================ */
 
 
 
-// ================================================
-// USUÁRIOS BASE DO SISTEMA
-// FUTURA INTEGRAÇÃO COM USUÁRIOS.HTML / BANCO
-// ================================================
-
-
-const usuariosSistema = [
-
-
-    {
-
-
-        usuario: "admin",
-
-
-        email: "admin@empire.com",
-
-
-        senha: "123456",
-
-
-        nome: "Administrador",
-
-
-        nivel: "Administrador"
-
-
-
-    }
-
-
-];
-
-
-
-
-
 
 
 
 // ================================================
-// FUNÇÃO MENSAGEM
+// USUÁRIOS PADRÃO
 // ================================================
 
 
-function mostrarMensagem(texto, tipo){
+let usuariosEmpire = JSON.parse(
+
+localStorage.getItem(
+"empireUsuarios"
+)
+
+) || [
 
 
-
-    if(!loginMessage) return;
-
+{
 
 
-
-    loginMessage.textContent = texto;
-
+id:1,
 
 
-    loginMessage.className =
-    "login-message " + tipo;
+nome:"Administrador",
+
+
+usuario:"admin",
+
+
+senha:"123456",
+
+
+perfil:"Administrador",
+
+
+status:"Ativo"
 
 
 
 }
+
+
+
+];
+
 
 
 
@@ -302,33 +330,13 @@ if(loginForm){
 
 
 
-    loginForm.addEventListener("submit", (evento)=>{
+loginForm.addEventListener(
+"submit",
+(e)=>{
 
 
 
-        evento.preventDefault();
-
-
-
-
-
-        const usuarioDigitado =
-        loginUser.value.trim();
-
-
-
-        const senhaDigitada =
-        loginPassword.value.trim();
-
-
-
-
-
-
-        // LIMPA MENSAGEM
-
-
-        mostrarMensagem("", "");
+e.preventDefault();
 
 
 
@@ -336,21 +344,338 @@ if(loginForm){
 
 
 
-        if(usuarioDigitado === "" || senhaDigitada === ""){
+const usuario =
+
+loginUser.value.trim();
 
 
 
-            mostrarMensagem(
 
-                "Preencha todos os campos.",
 
-                "error"
+const senha =
 
-            );
+loginPassword.value.trim();
 
 
 
-            return;
+
+
+
+
+if(!usuario || !senha){
+
+
+
+mostrarMensagem(
+
+"Preencha todos os campos.",
+
+"error"
+
+);
+
+
+
+return;
+
+
+
+}
+
+
+
+
+
+
+
+const encontrado =
+
+usuariosEmpire.find(
+(user)=>{
+
+
+return (
+
+user.usuario === usuario &&
+
+user.senha === senha
+
+);
+
+
+
+}
+
+);
+
+
+
+
+
+
+
+
+if(!encontrado){
+
+
+
+mostrarMensagem(
+
+"Usuário ou senha inválidos.",
+
+"error"
+
+);
+
+
+
+return;
+
+
+
+}
+
+
+
+
+
+
+
+
+
+// CRIAR SESSÃO
+
+
+const sessao = {
+
+
+
+id:
+
+encontrado.id,
+
+
+
+nome:
+
+encontrado.nome,
+
+
+
+usuario:
+
+encontrado.usuario,
+
+
+
+perfil:
+
+encontrado.perfil,
+
+
+
+entrada:
+
+new Date()
+.toLocaleString("pt-BR")
+
+
+
+};
+
+
+
+
+
+
+
+localStorage.setItem(
+
+"empireSessao",
+
+JSON.stringify(sessao)
+
+);
+
+
+
+
+
+
+
+
+
+
+
+// SALVAR USUÁRIO
+
+
+if(
+rememberUser &&
+rememberUser.checked
+){
+
+
+
+localStorage.setItem(
+
+"empireUsuarioSalvo",
+
+usuario
+
+);
+
+
+
+}else{
+
+
+
+localStorage.removeItem(
+
+"empireUsuarioSalvo"
+
+);
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+mostrarMensagem(
+
+"Acesso autorizado. Entrando no sistema...",
+
+"success"
+
+);
+
+
+
+
+
+
+
+setTimeout(()=>{
+
+
+
+window.location.href =
+
+"pages/html/dashboard.html";
+
+
+
+},1500);
+
+
+
+
+
+
+});
+
+
+
+}
+
+
+
+
+
+
+
+
+
+// ================================================
+// MENSAGENS
+// ================================================
+
+
+function mostrarMensagem(
+texto,
+tipo
+){
+
+
+
+if(!loginMessage)
+return;
+
+
+
+
+
+
+loginMessage.textContent =
+texto;
+
+
+
+loginMessage.className =
+
+"login-message " + tipo;
+
+
+
+
+
+}
+/* ================================================
+   SEGURANÇA E RECUPERAÇÃO
+   PARTE 3/3
+================================================ */
+
+
+
+
+
+
+// ================================================
+// CARREGAR USUÁRIO SALVO
+// ================================================
+
+
+function carregarUsuarioSalvo(){
+
+
+
+    const salvo =
+
+    localStorage.getItem(
+        "empireUsuarioSalvo"
+    );
+
+
+
+
+
+    if(
+    salvo &&
+    loginUser
+    ){
+
+
+
+        loginUser.value =
+        salvo;
+
+
+
+        if(rememberUser){
+
+
+
+            rememberUser.checked =
+            true;
 
 
 
@@ -358,27 +683,80 @@ if(loginForm){
 
 
 
+    }
+
+
+
+}
 
 
 
 
 
 
-        const usuarioEncontrado =
-        usuariosSistema.find((usuario)=>{
 
 
-            return (
 
-                usuario.usuario === usuarioDigitado ||
+// ================================================
+// RECUPERAR SENHA
+// ================================================
 
-                usuario.email === usuarioDigitado
 
-            )
+const forgotPassword =
 
-            &&
+document.getElementById(
+    "forgotPassword"
+);
 
-            usuario.senha === senhaDigitada;
+
+
+
+
+if(forgotPassword){
+
+
+
+    forgotPassword.addEventListener(
+    "click",
+    (e)=>{
+
+
+        e.preventDefault();
+
+
+
+
+        const usuario =
+
+        prompt(
+
+        "Digite seu usuário para recuperar a senha:"
+
+        );
+
+
+
+
+
+
+        if(!usuario)
+        return;
+
+
+
+
+
+
+
+
+
+        const encontrado =
+
+        usuariosEmpire.find(
+        (user)=>{
+
+
+            return user.usuario === usuario;
 
 
 
@@ -391,142 +769,15 @@ if(loginForm){
 
 
 
-
-        if(usuarioEncontrado){
-
+        if(encontrado){
 
 
 
+            alert(
 
-            mostrarMensagem(
-
-                "Login realizado com sucesso.",
-
-                "success"
+            "Usuário encontrado. Procure o administrador para redefinir a senha."
 
             );
-
-
-
-
-
-
-
-            // CRIA SESSÃO
-
-
-
-            const sessao = {
-
-
-
-                nome:
-
-                usuarioEncontrado.nome,
-
-
-
-                usuario:
-
-                usuarioEncontrado.usuario,
-
-
-
-                nivel:
-
-                usuarioEncontrado.nivel,
-
-
-
-                entrada:
-
-                new Date().toLocaleString("pt-BR")
-
-
-
-            };
-
-
-
-
-
-
-
-            localStorage.setItem(
-
-                "empireSessao",
-
-                JSON.stringify(sessao)
-
-            );
-
-
-
-
-
-
-
-            // LEMBRAR ACESSO
-
-
-
-            const lembrar =
-            document.getElementById("rememberUser");
-
-
-
-
-            if(lembrar && lembrar.checked){
-
-
-
-                localStorage.setItem(
-
-                    "empireUsuario",
-
-                    usuarioDigitado
-
-                );
-
-
-
-            }else{
-
-
-
-                localStorage.removeItem(
-
-                    "empireUsuario"
-
-                );
-
-
-
-            }
-
-
-
-
-
-
-
-
-
-            setTimeout(()=>{
-
-
-
-                window.location.href =
-                "dashboard.html";
-
-
-
-            },1200);
-
-
-
-
-
 
 
 
@@ -534,17 +785,11 @@ if(loginForm){
 
 
 
+            alert(
 
-
-            mostrarMensagem(
-
-                "Usuário ou senha inválidos.",
-
-                "error"
+            "Usuário não encontrado."
 
             );
-
-
 
 
 
@@ -569,61 +814,7 @@ if(loginForm){
 
 
 // ================================================
-// CARREGAR USUÁRIO LEMBRADO
-// ================================================
-
-
-window.addEventListener("load", ()=>{
-
-
-
-    const usuarioSalvo =
-
-    localStorage.getItem(
-        "empireUsuario"
-    );
-
-
-
-
-    if(usuarioSalvo && loginUser){
-
-
-
-        loginUser.value =
-        usuarioSalvo;
-
-
-
-        const lembrar =
-        document.getElementById(
-            "rememberUser"
-        );
-
-
-
-        if(lembrar){
-
-            lembrar.checked = true;
-
-        }
-
-
-
-    }
-
-
-
-});
-/* ================================================
-   CONTROLE DE SESSÃO E MONITORAMENTO
-   PARTE 3/3
-================================================ */
-
-
-
-// ================================================
-// VERIFICAR SESSÃO ATIVA
+// VERIFICAR SESSÃO
 // ================================================
 
 
@@ -639,183 +830,15 @@ function verificarSessao(){
 
 
 
-    if(sessao){
-
-
-
-        return JSON.parse(sessao);
-
-
-
-    }
-
-
-
-    return null;
-
-
-
-}
-
-
-
-
-
-
-
-// ================================================
-// USUÁRIO ONLINE
-// ================================================
-
-
-function registrarOnline(){
-
-
-
-    const sessao =
-    verificarSessao();
-
-
-
-    if(!sessao) return;
-
-
-
-
-
-    const atividade = {
-
-
-
-        usuario:
-
-        sessao.nome,
-
-
-
-        entrada:
-
-        sessao.entrada,
-
-
-
-        status:
-
-        "online",
-
-
-
-        ultimaAtividade:
-
-        new Date().toLocaleString("pt-BR")
-
-
-
-    };
-
-
-
-
-
-    localStorage.setItem(
-
-        "empireOnline",
-
-        JSON.stringify(atividade)
-
-    );
-
-
-
-}
-
-
-
-
-
-
-
-
-
-// Atualiza atividade
-
-setInterval(()=>{
-
-
-
-    registrarOnline();
-
-
-
-},30000);
-
-
-
-
-
-
-
-
-
-// ================================================
-// LOGOUT
-// ================================================
-
-
-function sairSistema(){
-
-
-
-    const sessao =
-    verificarSessao();
-
-
 
 
     if(sessao){
 
 
 
-        const registroSaida = {
+        console.log(
 
-
-
-            usuario:
-
-            sessao.nome,
-
-
-
-            entrada:
-
-            sessao.entrada,
-
-
-
-            saida:
-
-            new Date().toLocaleString("pt-BR"),
-
-
-
-            status:
-
-            "offline"
-
-
-
-        };
-
-
-
-
-
-
-        localStorage.setItem(
-
-            "empireUltimoAcesso",
-
-            JSON.stringify(registroSaida)
+        "Sessão EMPIRE ativa"
 
         );
 
@@ -825,35 +848,6 @@ function sairSistema(){
 
 
 
-
-
-
-    localStorage.removeItem(
-
-        "empireSessao"
-
-    );
-
-
-
-
-
-    localStorage.removeItem(
-
-        "empireOnline"
-
-    );
-
-
-
-
-
-
-    window.location.href =
-    "index.html";
-
-
-
 }
 
 
@@ -863,14 +857,7 @@ function sairSistema(){
 
 
 
-
-// ================================================
-// DISPONIBILIZAR LOGOUT GLOBAL
-// ================================================
-
-
-window.sairSistema =
-sairSistema;
+verificarSessao();
 
 
 
@@ -881,113 +868,20 @@ sairSistema;
 
 
 // ================================================
-// PROTEÇÃO DE PÁGINA
-// USAR NAS TELAS INTERNAS
+// LOG SISTEMA
 // ================================================
 
 
-function protegerPagina(){
+console.log(
 
+"👑 EMPIRE | Império da Moda Online"
 
+);
 
-    const sessao =
-    verificarSessao();
 
 
+console.log(
 
-    if(!sessao){
+"Login V2 carregado com sucesso."
 
-
-
-        window.location.href =
-        "index.html";
-
-
-
-    }
-
-
-
-}
-
-
-
-
-
-
-window.protegerPagina =
-protegerPagina;
-
-
-
-
-
-
-
-
-
-// ================================================
-// SAÍDA AUTOMÁTICA
-// ================================================
-
-
-window.addEventListener(
-
-"beforeunload",
-
-()=>{
-
-
-
-    const sessao =
-    verificarSessao();
-
-
-
-    if(sessao){
-
-
-
-        const atividade = {
-
-
-
-            usuario:
-
-            sessao.nome,
-
-
-
-            status:
-
-            "offline",
-
-
-
-            saida:
-
-            new Date().toLocaleString("pt-BR")
-
-
-
-        };
-
-
-
-
-
-        localStorage.setItem(
-
-            "empireUltimoAcesso",
-
-            JSON.stringify(atividade)
-
-        );
-
-
-
-    }
-
-
-
-});
+);
