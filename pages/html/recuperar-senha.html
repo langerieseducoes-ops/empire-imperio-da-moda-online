@@ -1,18 +1,21 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 
-
 <head>
 
-
 <meta charset="UTF-8">
-
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 
+<meta name="theme-color" content="#050505">
 
-<title>EMPIRE | Recuperar Senha</title>
+
+<meta name="description" content="EMPIRE | Império da Moda Online">
+
+
+<title>EMPIRE | Império da Moda Online</title>
+
 
 
 
@@ -20,15 +23,41 @@
 
 
 
+
+
+<!-- FONTES -->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+
+
+
+
+<!-- ÍCONES -->
+
+<link rel="stylesheet"
+
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+
+
+
+
+<!-- CSS -->
+
 <link rel="stylesheet" href="../../assets/css/recuperar-senha.css">
-
-<link rel="stylesheet" href="../../assets/css/modulos-base.css">
-
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
 
 
 </head>
+
+
+
 
 
 
@@ -39,13 +68,74 @@
 
 
 
-<div class="recover-page">
+
+<!-- ==================================================
+LOADER
+================================================== -->
+
+
+<div class="loader" id="loader">
+
+
+
+<div class="loader-content">
+
+
+
+<div class="loader-logo">
+
+EMPIRE
+
+</div>
+
+
+
+
+<div class="loader-subtitle">
+
+Império da Moda Online
+
+</div>
+
+
+
+
+<div class="loader-line">
+
+<span></span>
+
+</div>
+
+
+
+</div>
+
+
+
+</div>
 
 
 
 
 
-<div class="background-overlay"></div>
+
+
+<!-- ==================================================
+FUNDO
+================================================== -->
+
+
+<div class="background-animation">
+
+
+<div class="glow glow-1"></div>
+
+<div class="glow glow-2"></div>
+
+<div class="glow glow-3"></div>
+
+
+</div>
 
 
 
@@ -53,29 +143,34 @@
 
 
 
-<div class="recover-card">
+
+
+<!-- ==================================================
+RECUPERAÇÃO
+================================================== -->
+
+
+<main class="recover-container">
 
 
 
 
 
-<div class="brand">
+<section class="recover-card">
 
 
 
 
 
-<img
-
-src="../../assets/img/logo.png"
-
-alt="EMPIRE"
-
-class="logo"
+<div class="recover-brand">
 
 
 
->
+<img src="../../assets/img/logo.png"
+
+alt="Logo Empire">
+
+
 
 
 
@@ -88,17 +183,10 @@ EMPIRE
 
 
 
-<h2>
-
-Império da Moda Online
-
-</h2>
-
-
 
 <span>
 
-ERP V4 PREMIUM FULL ULTRA 4K
+Império da Moda Online
 
 </span>
 
@@ -111,40 +199,28 @@ ERP V4 PREMIUM FULL ULTRA 4K
 
 
 
+<!-- ==================================================
+FORMULÁRIO RECUPERAÇÃO
+================================================== -->
 
 
-
-<div class="divider"></div>
-
-
-
-
-
-
-
-<h3>
-
-Recuperar Senha
-
-</h3>
-
-
-
-
-<p class="description">
-
-
-Informe seus dados para recuperar o acesso ao sistema.
-
-
-</p>
+<form id="recoverForm" class="recover-form">
 
 
 
 
 
 
-<form id="recuperarForm">
+
+<div class="input-group">
+
+
+
+<label>
+
+Usuário
+
+</label>
 
 
 
@@ -154,11 +230,7 @@ Informe seus dados para recuperar o acesso ao sistema.
 
 
 
-<label>
-
-Usuário ou E-mail
-
-</label>
+<i class="fa-solid fa-user"></i>
 
 
 
@@ -167,13 +239,15 @@ Usuário ou E-mail
 
 type="text"
 
-id="emailRecuperacao"
+id="recoverUser"
 
-placeholder="Digite seu usuário ou e-mail"
+placeholder="Digite seu usuário"
+
+required>
 
 
 
->
+</div>
 
 
 
@@ -185,15 +259,211 @@ placeholder="Digite seu usuário ou e-mail"
 
 
 
+
+
+<div class="input-group">
+
+
+
+<label>
+
+Cargo
+
+</label>
+
+
+
+
+
+<div class="input-box">
+
+
+
+<i class="fa-solid fa-user-shield"></i>
+
+
+
+
+
+
+<select id="recoverCargo" required>
+
+
+
+<option value="">
+
+Selecione o cargo
+
+</option>
+
+
+
+<option value="Administrador">
+
+Administrador
+
+</option>
+
+
+
+
+<option value="Gerente">
+
+Gerente
+
+</option>
+
+
+
+
+<option value="Vendedor">
+
+Vendedor
+
+</option>
+
+
+
+</select>
+
+
+
+
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<div class="input-group">
+
+
+
+<label>
+
+Nova senha
+
+</label>
+
+
+
+
+
+<div class="input-box">
+
+
+
+<i class="fa-solid fa-lock"></i>
+
+
+
+
+
+<input
+
+type="password"
+
+id="newPassword"
+
+placeholder="Digite a nova senha"
+
+required>
+
+
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<div class="input-group">
+
+
+
+<label>
+
+Confirmar senha
+
+</label>
+
+
+
+
+
+<div class="input-box">
+
+
+
+<i class="fa-solid fa-lock"></i>
+
+
+
+
+
+<input
+
+type="password"
+
+id="confirmPassword"
+
+placeholder="Confirme a nova senha"
+
+required>
+
+
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
 <button
 
 type="submit"
 
-id="btnRecuperar"
+class="recover-button">
 
->
 
-RECUPERAR ACESSO
+
+
+
+<i class="fa-solid fa-key"></i>
+
+
+
+
+Recuperar senha
+
+
+
+
 
 </button>
 
@@ -203,7 +473,33 @@ RECUPERAR ACESSO
 
 
 
-<div id="mensagemRecuperacao"></div>
+
+<div id="recoverMessage" class="recover-message">
+
+</div>
+
+
+
+
+
+
+
+
+
+<a class="back-login"
+
+href="../../index.html">
+
+
+
+<i class="fa-solid fa-arrow-left"></i>
+
+
+Voltar para login
+
+
+
+</a>
 
 
 
@@ -218,68 +514,93 @@ RECUPERAR ACESSO
 
 
 
-
-
-<a href="../../index.html" class="voltar">
-
-
-← Voltar para login
-
-
-</a>
-
-
-
-
-
-
-
-
-<div class="system-info">
-
-
-
-<p>
-
-EMPIRE
-
-</p>
-
-
-
-<span>
-
-ERP V4 PREMIUM FULL ULTRA 4K
-
-</span>
-
-
-
-</div>
-
-
-
-
-
-
-
-</div>
-
-
-
-
-
-
-</div>
-
-
-
-
-
-
+<!-- ==================================================
+SCRIPTS
+================================================== -->
 
 
 <script src="../../assets/js/recuperar-senha.js"></script>
+
+
+
+
+
+
+
+
+
+<!-- ==================================================
+PWA SERVICE WORKER
+================================================== -->
+
+
+<script>
+
+
+if("serviceWorker" in navigator){
+
+
+
+window.addEventListener(
+
+"load",
+
+()=>{
+
+
+
+navigator.serviceWorker.register(
+
+"../../service-worker.js"
+
+)
+
+.then(()=>{
+
+
+console.log(
+
+"EMPIRE ERP PWA ativo"
+
+);
+
+
+
+})
+
+.catch(error=>{
+
+
+console.error(
+
+"Erro PWA:",
+
+error
+
+);
+
+
+
+});
+
+
+
+}
+
+
+
+);
+
+
+
+}
+
+
+
+</script>
+
+
+
 
 
 
