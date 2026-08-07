@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="pt-BR">
 
 <head>
@@ -9,48 +8,74 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 
-<title>EMPIRE ERP | Vendas</title>
+<title>EMPIRE | Império da Moda Online</title>
 
 
-<link rel="icon" href="../../assets/img/favicon.png">
+<link rel="icon" type="image/png" href="../../assets/img/favicon.png">
 
 
-<link rel="stylesheet" href="../../assets/css/vendas.css">
 
-<link rel="stylesheet" href="../../assets/css/modulos-base.css">
-  
+<!-- FONTES -->
+
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
 
-</head>
 
+<!-- ICONES -->
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+
+
+<!-- CSS -->
+
+<link rel="stylesheet" href="../../assets/css/vendas.css">
+
+
+</head>
 
 
 <body>
 
 
 
-<div class="erp-layout">
 
 
-
-<aside class="sidebar">
-
-
-
-<div class="sidebar-brand">
+<!-- =====================================
+     LOADER
+===================================== -->
 
 
-<img src="../../assets/img/logo.png" alt="EMPIRE">
+<div class="sales-loader" id="salesLoader">
 
 
-<h1>EMPIRE</h1>
+    <div class="sales-loader-content">
 
 
-<h2>Império da Moda Online</h2>
+        <div class="sales-logo">
+            EMPIRE
+        </div>
 
 
-<span>ERP V4 PREMIUM REMASTER</span>
+        <div class="sales-subtitle">
+            Império da Moda Online
+        </div>
+
+
+        <div class="sales-loading">
+            Carregando vendas...
+        </div>
+
+
+        <div class="sales-progress">
+
+            <span></span>
+
+        </div>
+
+
+    </div>
 
 
 </div>
@@ -59,78 +84,131 @@
 
 
 
-<nav class="menu">
 
+
+<!-- =====================================
+     SISTEMA
+===================================== -->
+
+
+<div class="sales-system">
+
+
+
+
+
+<!-- =====================================
+     MENU LATERAL
+===================================== -->
+
+
+<aside class="sales-sidebar">
+
+
+    <div class="sidebar-brand">
+
+
+        <img src="../../assets/img/logo.png"
+        alt="EMPIRE">
+
+
+        <h1>
+            EMPIRE
+        </h1>
+
+
+        <p>
+            Império da Moda Online
+        </p>
+
+
+    </div>
+
+
+
+
+
+
+<nav class="sidebar-menu">
 
 
 <a href="dashboard.html">
-🏠 Dashboard
+
+<i class="fa-solid fa-house"></i>
+
+<span>
+Tela Inicial
+</span>
+
 </a>
 
-
-<a href="produtos.html">
-📦 Produtos
-</a>
-
-
-<a href="clientes.html">
-👥 Clientes
-</a>
-
-
-<a href="vendas.html" class="ativo">
-🛒 Vendas
-</a>
-
-
-<a href="compras.html">
-🛍 Compras
-</a>
-
-
-<a href="financeiro.html">
-💰 Financeiro
-</a>
-
-
-<a href="fornecedores.html">
-🚚 Fornecedores
-</a>
 
 
 <a href="usuarios.html">
-👤 Usuários
+
+<i class="fa-solid fa-users"></i>
+
+<span>
+Usuários
+</span>
+
 </a>
 
 
-<a href="relatorios.html">
-📊 Relatórios
+
+
+<a href="produtos.html">
+
+<i class="fa-solid fa-box"></i>
+
+<span>
+Produtos
+</span>
+
 </a>
 
 
-<a href="configuracoes.html">
-⚙️ Configurações
+
+
+
+<a href="clientes.html">
+
+<i class="fa-solid fa-user-group"></i>
+
+<span>
+Clientes
+</span>
+
 </a>
 
 
-<a href="empresa.html">
-🏢 Empresa
+
+
+
+<a href="vendas.html" class="active">
+
+<i class="fa-solid fa-cart-shopping"></i>
+
+<span>
+Vendas
+</span>
+
 </a>
 
 
-<a href="monitoramento.html">
-📡 Monitoramento
+
+
+
+<a href="financeiro.html">
+
+<i class="fa-solid fa-coins"></i>
+
+<span>
+Financeiro
+</span>
+
 </a>
 
-
-<a href="backup.html">
-💾 Backup
-</a>
-
-
-<a href="alterar-senha.html">
-🔐 Alterar Senha
-</a>
 
 
 </nav>
@@ -139,61 +217,71 @@
 
 
 
-<div class="sidebar-footer">
-
-
-<button onclick="sairSistema()">
-
-SAIR
-
-</button>
-
-
-</div>
-
-
 
 </aside>
+<!-- =====================================
+     CONTEÚDO PRINCIPAL
+===================================== -->
+
+
+<main class="sales-content">
 
 
 
 
 
+<!-- HEADER -->
+
+<header class="sales-header">
 
 
-<main class="main-content">
+    <div>
 
 
-
-<header class="top-header">
-
-
-<div>
+        <h2>
+            Vendas
+        </h2>
 
 
-<h2>
-
-Vendas
-
-</h2>
+        <p>
+            Controle de pedidos, clientes e faturamento
+        </p>
 
 
-<p>
-
-Controle de vendas e pedidos.
-
-</p>
-
-
-</div>
+    </div>
 
 
 
-<div class="user-box">
 
-👑 Administrador
 
-</div>
+    <div class="sales-actions">
+
+
+        <button class="notification-button">
+
+            <i class="fa-solid fa-bell"></i>
+
+        </button>
+
+
+
+
+        <button class="new-sale-button"
+        id="openSale">
+
+
+            <i class="fa-solid fa-plus"></i>
+
+
+            Nova Venda
+
+
+        </button>
+
+
+
+    </div>
+
 
 
 </header>
@@ -204,45 +292,157 @@ Controle de vendas e pedidos.
 
 
 
-<section class="sales-panel">
+
+<!-- =====================================
+     CARDS RESUMO
+===================================== -->
+
+
+<section class="sales-cards">
 
 
 
-<h3>
-
-🛒 Nova Venda
-
-</h3>
 
 
 
-
-<div class="form-grid">
-
+<div class="sales-card">
 
 
-<input id="clienteVenda" placeholder="Cliente">
+    <div class="card-icon">
 
+        <i class="fa-solid fa-cart-shopping"></i>
 
-<input id="produtoVenda" placeholder="Produto">
-
-
-<input id="quantidadeVenda" placeholder="Quantidade">
-
-
-<input id="valorVenda" placeholder="Valor">
+    </div>
 
 
 
-<button id="salvarVenda">
+    <div>
 
-Registrar Venda
+        <span>
+            Vendas Hoje
+        </span>
 
-</button>
+
+        <strong id="salesToday">
+            0
+        </strong>
+
+
+    </div>
 
 
 
 </div>
+
+
+
+
+
+
+
+<div class="sales-card">
+
+
+    <div class="card-icon">
+
+        <i class="fa-solid fa-money-bill-wave"></i>
+
+    </div>
+
+
+
+    <div>
+
+        <span>
+            Faturamento
+        </span>
+
+
+        <strong id="salesRevenue">
+            R$ 0,00
+        </strong>
+
+
+    </div>
+
+
+
+</div>
+
+
+
+
+
+
+
+<div class="sales-card">
+
+
+    <div class="card-icon">
+
+        <i class="fa-solid fa-clock"></i>
+
+    </div>
+
+
+
+    <div>
+
+        <span>
+            Pendentes
+        </span>
+
+
+        <strong id="salesPending">
+            0
+        </strong>
+
+
+    </div>
+
+
+
+</div>
+
+
+
+
+
+
+
+
+<div class="sales-card">
+
+
+    <div class="card-icon">
+
+        <i class="fa-solid fa-check-circle"></i>
+
+    </div>
+
+
+
+    <div>
+
+        <span>
+            Finalizadas
+        </span>
+
+
+        <strong id="salesFinished">
+            0
+        </strong>
+
+
+    </div>
+
+
+
+</div>
+
+
+
+
 
 
 </section>
@@ -254,16 +454,202 @@ Registrar Venda
 
 
 
-<section class="sales-panel">
 
+<!-- =====================================
+     NOVA VENDA
+===================================== -->
+
+
+<section class="sale-register">
+
+
+
+<div class="section-title">
 
 
 <h3>
-
-📋 Histórico de Vendas
-
+    Registrar Venda
 </h3>
 
+
+<p>
+    Adicione cliente e produtos
+</p>
+
+
+</div>
+
+
+
+
+
+
+
+<div class="sale-grid">
+
+
+
+
+
+<!-- CLIENTE -->
+
+
+<div class="sale-box">
+
+
+<label>
+Cliente
+</label>
+
+
+
+<div class="select-box">
+
+
+<i class="fa-solid fa-user"></i>
+
+
+<select id="saleClient">
+
+
+<option value="">
+Selecionar cliente
+</option>
+
+
+</select>
+
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<!-- PRODUTO -->
+
+
+<div class="sale-box">
+
+
+<label>
+Produto
+</label>
+
+
+
+<div class="select-box">
+
+
+<i class="fa-solid fa-box"></i>
+
+
+<select id="saleProduct">
+
+
+<option value="">
+Selecionar produto
+</option>
+
+
+</select>
+
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+
+<!-- QUANTIDADE -->
+
+
+<div class="sale-box">
+
+
+<label>
+Quantidade
+</label>
+
+
+<input
+
+type="number"
+
+id="saleQuantity"
+
+value="1"
+
+min="1">
+
+
+</div>
+
+
+
+
+
+
+
+
+<div class="sale-box button-box">
+
+
+<button id="addProductSale">
+
+
+<i class="fa-solid fa-plus"></i>
+
+
+Adicionar
+
+
+</button>
+
+
+</div>
+
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<!-- CARRINHO -->
+
+
+<div class="sale-cart">
+
+
+
+<h4>
+
+Produtos da Venda
+
+</h4>
 
 
 
@@ -274,11 +660,6 @@ Registrar Venda
 
 
 <tr>
-
-
-<th>
-Cliente
-</th>
 
 
 <th>
@@ -297,7 +678,7 @@ Valor
 
 
 <th>
-Data
+Ação
 </th>
 
 
@@ -308,14 +689,196 @@ Data
 
 
 
-<tbody id="listaVendas">
+<tbody id="saleCart">
 
 
 </tbody>
 
 
 
+
 </table>
+
+
+
+
+
+
+
+<div class="sale-total">
+
+
+<span>
+Total:
+</span>
+
+
+<strong id="saleTotal">
+
+R$ 0,00
+
+</strong>
+
+
+
+</div>
+
+
+
+
+
+<button class="finish-sale"
+id="finishSale">
+
+
+Finalizar Venda
+
+
+</button>
+
+
+
+
+</div>
+
+
+
+</section>
+<!-- =====================================
+     HISTÓRICO DE VENDAS
+===================================== -->
+
+
+<section class="sales-history">
+
+
+
+<header class="history-header">
+
+
+<div>
+
+<h3>
+Histórico de Vendas
+</h3>
+
+
+<p>
+Acompanhe todos os pedidos realizados
+</p>
+
+
+</div>
+
+
+
+
+
+<div class="history-filter">
+
+
+<input
+
+type="search"
+
+id="searchSale"
+
+placeholder="Pesquisar venda...">
+
+
+<button>
+
+<i class="fa-solid fa-filter"></i>
+
+Filtrar
+
+</button>
+
+
+
+</div>
+
+
+
+</header>
+
+
+
+
+
+
+
+<div class="sales-table-container">
+
+
+
+<table class="sales-table">
+
+
+<thead>
+
+
+<tr>
+
+
+<th>
+Código
+</th>
+
+
+<th>
+Cliente
+</th>
+
+
+<th>
+Data
+</th>
+
+
+<th>
+Valor
+</th>
+
+
+<th>
+Status
+</th>
+
+
+<th>
+Ações
+</th>
+
+
+</tr>
+
+
+</thead>
+
+
+
+
+
+<tbody id="salesTableBody">
+
+
+<!-- JS INSERE VENDAS -->
+
+
+</tbody>
+
+
+
+
+</table>
+
+
+
+
+</div>
+
+
 
 
 
@@ -328,7 +891,53 @@ Data
 
 
 
-</main>
+
+<!-- =====================================
+     MODAL DETALHES VENDA
+===================================== -->
+
+
+<div class="sale-modal" id="saleModal">
+
+
+
+<div class="modal-content">
+
+
+
+<button class="close-modal"
+id="closeSaleModal">
+
+
+<i class="fa-solid fa-xmark"></i>
+
+
+</button>
+
+
+
+
+
+
+<h3>
+Detalhes da Venda
+</h3>
+
+
+
+
+
+<div id="saleDetails">
+
+
+</div>
+
+
+
+
+
+</div>
+
 
 
 </div>
@@ -339,34 +948,61 @@ Data
 
 
 
+
+
+<!-- =====================================
+     FOOTER
+===================================== -->
+
+
+<footer class="sales-footer">
+
+
+<strong>
+EMPIRE
+</strong>
+
+
+<p>
+Império da Moda Online
+</p>
+
+
+<span>
+Gestão • Vendas • Controle
+</span>
+
+
+</footer>
+
+
+
+
+
+
+
+</main>
+
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+<!-- JAVASCRIPT -->
+
+
 <script src="../../assets/js/vendas.js"></script>
 
 
 
-
-<script>
-
-
-function sairSistema(){
-
-
-localStorage.removeItem("empire_logado");
-
-
-localStorage.removeItem("empire_usuario");
-
-
-window.location.href="../../index.html";
-
-
-}
-
-
-</script>
-
-
-
 </body>
-
 
 </html>
