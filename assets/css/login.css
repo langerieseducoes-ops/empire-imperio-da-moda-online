@@ -1,53 +1,41 @@
+
 /*
 ====================================================
  EMPIRE ERP
- LOGIN CSS REMASTERIZADO
- Império da Moda Online
+ LOGIN PREMIUM
+ Preto | Ouro | Grafite
 ====================================================
 */
 
 
-/* ================================
+/* ================================================
 RESET
-================================ */
-
+================================================ */
 
 *{
 
-margin:0;
-
-padding:0;
-
-box-sizing:border-box;
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
 
 }
 
 
-
 :root{
 
+    --black:#050505;
+    --dark:#0b0b0b;
+    --graphite:#161616;
 
---black:#050505;
+    --gold:#d4af37;
+    --gold-light:#f8e48c;
+    --gold-dark:#8f6b12;
 
---dark:#0b0b0b;
+    --white:#ffffff;
+    --text:#d8d8d8;
 
---graphite:#161616;
-
---gold:#d4af37;
-
---gold-light:#f8e48c;
-
---gold-dark:#8f6b12;
-
---white:#ffffff;
-
---text:#d8d8d8;
-
---border:rgba(212,175,55,.35);
-
---glass:rgba(255,255,255,.06);
-
-
+    --border:
+    rgba(212,175,55,.35);
 
 }
 
@@ -57,77 +45,137 @@ box-sizing:border-box;
 
 body{
 
+    min-height:100vh;
 
-min-height:100vh;
+    overflow:hidden;
 
+    font-family:"Poppins",sans-serif;
 
-font-family:"Poppins",sans-serif;
+    background:var(--black);
 
-
-background:var(--black);
-
-
-color:var(--white);
-
-
-overflow:hidden;
-
-
+    color:white;
 
 }
 
 
 
-
-
-
-
-
-/* ================================
+/* ================================================
 FUNDO ANIMADO
-================================ */
+================================================ */
 
 
-.login-background{
+.background{
+
+    position:fixed;
+
+    inset:0;
+
+    overflow:hidden;
+
+    z-index:-1;
 
 
-position:fixed;
+    background:
 
 
-inset:0;
+    radial-gradient(
+
+    circle at top,
+
+    rgba(212,175,55,.25),
+
+    transparent 45%
 
 
-overflow:hidden;
+    ),
 
 
-z-index:-1;
+    linear-gradient(
+
+    135deg,
+
+    #050505,
+
+    #161616
+
+    );
+
+
+}
 
 
 
-background:
 
 
-radial-gradient(
 
-circle at top,
-
-rgba(212,175,55,.20),
-
-transparent 40%
-
-),
+.light{
 
 
-linear-gradient(
+    position:absolute;
 
-135deg,
+    border-radius:50%;
 
-#050505,
+    filter:blur(120px);
 
-#161616
+    opacity:.4;
 
-);
+    animation:
 
+    moveLight 12s infinite alternate;
+
+
+}
+
+
+
+.light1{
+
+
+    width:450px;
+
+    height:450px;
+
+    background:var(--gold);
+
+    top:-150px;
+
+    left:-150px;
+
+
+}
+
+
+
+.light2{
+
+
+    width:350px;
+
+    height:350px;
+
+    background:var(--gold-dark);
+
+    right:-120px;
+
+    top:40%;
+
+
+}
+
+
+
+.light3{
+
+
+    width:300px;
+
+    height:300px;
+
+    background:var(--gold);
+
+    bottom:-120px;
+
+    left:40%;
 
 
 }
@@ -138,370 +186,46 @@ linear-gradient(
 
 
 
-
-.gold-light{
-
-
-position:absolute;
-
-
-border-radius:50%;
-
-
-filter:blur(120px);
-
-
-opacity:.35;
-
-
-animation:
-
-moveLight 12s infinite alternate;
-
-
-
-}
-
-
-
-
-
-.light-one{
-
-
-width:450px;
-
-
-height:450px;
-
-
-background:var(--gold);
-
-
-top:-180px;
-
-
-left:-150px;
-
-
-
-}
-
-
-
-
-.light-two{
-
-
-width:350px;
-
-
-height:350px;
-
-
-background:var(--gold-dark);
-
-
-right:-120px;
-
-
-top:40%;
-
-
-
-}
-
-
-
-
-.light-three{
-
-
-width:280px;
-
-
-height:280px;
-
-
-background:var(--gold);
-
-
-bottom:-120px;
-
-
-left:40%;
-
-
-
-}
-
-
-
-
-
-
-
-
-/* ================================
-LOADER
-================================ */
-
-
-.login-loader{
-
-
-position:fixed;
-
-
-inset:0;
-
-
-z-index:9999;
-
-
-display:flex;
-
-
-align-items:center;
-
-
-justify-content:center;
-
-
-
-background:
-
-
-radial-gradient(
-
-circle,
-
-#181818,
-
-#050505
-
-);
-
-
-
-transition:.8s;
-
-
-
-}
-
-
-
-
-.login-loader.hide{
-
-
-opacity:0;
-
-
-visibility:hidden;
-
-
-
-}
-
-
-
-
-.loader-content{
-
-
-text-align:center;
-
-
-
-}
-
-
-
-
-
-.loader-logo{
-
-
-font-family:"Cinzel",serif;
-
-
-font-size:75px;
-
-
-font-weight:900;
-
-
-letter-spacing:18px;
-
-
-color:var(--gold);
-
-
-
-text-shadow:
-
-
-0 0 30px rgba(212,175,55,.8),
-
-
-0 0 80px rgba(212,175,55,.4);
-
-
-
-animation:
-
-logoPulse 3s infinite;
-
-
-
-}
-
-
-
-
-
-.loader-subtitle{
-
-
-margin-top:15px;
-
-
-font-size:13px;
-
-
-letter-spacing:5px;
-
-
-color:var(--gold-light);
-
-
-
-}
-
-
-
-
-
-.loader-progress{
-
-
-width:280px;
-
-
-height:4px;
-
-
-background:#222;
-
-
-margin:30px auto;
-
-
-border-radius:20px;
-
-
-overflow:hidden;
-
-
-
-}
-
-
-
-
-.loader-progress span{
-
-
-display:block;
-
-
-height:100%;
-
-
-width:40%;
-
-
-
-background:
-
-
-linear-gradient(
-
-90deg,
-
-transparent,
-
-var(--gold),
-
-transparent
-
-);
-
-
-
-animation:
-
-loading 2s infinite;
-
-
-
-}
-
-/* ================================
+/* ================================================
 PARTÍCULAS
-================================ */
+================================================ */
 
 
-.particles{
+#particles{
 
+    position:absolute;
 
-position:absolute;
-
-
-inset:0;
-
-
-overflow:hidden;
-
-
+    inset:0;
 
 }
-
-
 
 
 
 .particle{
 
 
-position:absolute;
+    position:absolute;
+
+    bottom:-20px;
 
 
-bottom:-20px;
+    width:4px;
+
+    height:4px;
 
 
-width:4px;
+    background:var(--gold);
 
 
-height:4px;
+    border-radius:50%;
 
 
-background:var(--gold);
+    opacity:.5;
 
 
-border-radius:50%;
+    animation:
 
-
-opacity:.5;
-
-
-
-animation:
-
-particleFloat linear infinite;
-
+    particleUp linear infinite;
 
 
 }
@@ -511,103 +235,236 @@ particleFloat linear infinite;
 
 
 
+/* ================================================
+LOADER
+================================================ */
+
+
+.loader{
+
+
+    position:fixed;
+
+
+    inset:0;
+
+
+    background:
+
+
+    radial-gradient(
+
+    circle,
+
+    #181818,
+
+    #050505
+
+    );
+
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+
+    z-index:9999;
+
+
+    animation:
+
+    loaderOut 1s ease 2s forwards;
+
+
+}
 
 
 
-/* ================================
-CONTAINER LOGIN
-================================ */
+.loader-box{
 
+    text-align:center;
+
+}
+
+
+
+
+
+.loader-box h1{
+
+
+    font-family:"Cinzel",serif;
+
+
+    font-size:80px;
+
+
+    letter-spacing:18px;
+
+
+    color:var(--gold);
+
+
+    animation:
+
+    empirePulse 2s infinite;
+
+
+    text-shadow:
+
+
+    0 0 30px rgba(212,175,55,.9);
+
+
+}
+
+
+
+.loader-box span{
+
+
+    color:var(--gold-light);
+
+
+    letter-spacing:5px;
+
+
+    font-size:13px;
+
+
+}
+
+
+
+
+
+
+.loader-line{
+
+
+    width:280px;
+
+
+    height:4px;
+
+
+    background:#222;
+
+
+    border-radius:20px;
+
+
+    margin:30px auto;
+
+
+    overflow:hidden;
+
+
+}
+
+
+
+.loader-line div{
+
+
+    width:40%;
+
+
+    height:100%;
+
+
+    background:
+
+
+    linear-gradient(
+
+    90deg,
+
+    transparent,
+
+    var(--gold),
+
+    transparent
+
+    );
+
+
+    animation:
+
+    loading 2s infinite;
+
+
+}
+
+
+/* ================================================
+LOGIN CONTAINER
+================================================ */
 
 .login-container{
 
+    min-height:100vh;
 
-min-height:100vh;
+    display:flex;
 
+    justify-content:center;
 
-display:flex;
+    align-items:center;
 
-
-align-items:center;
-
-
-justify-content:center;
-
-
-padding:20px;
-
-
+    padding:25px;
 
 }
 
 
 
-
-
-
-
-
-/* ================================
+/* ================================================
 CARD LOGIN PREMIUM
-================================ */
-
+================================================ */
 
 .login-card{
 
 
-width:430px;
+    width:100%;
+
+    max-width:460px;
 
 
-padding:45px;
+    padding:45px;
 
 
+    background:
 
-background:
-
-
-rgba(255,255,255,.06);
+    rgba(255,255,255,.05);
 
 
+    border:
 
-border:
-
-
-1px solid var(--border);
+    1px solid var(--border);
 
 
-
-border-radius:35px;
-
+    border-radius:30px;
 
 
-backdrop-filter:
-
-blur(25px);
+    backdrop-filter:blur(25px);
 
 
 
-box-shadow:
+    box-shadow:
 
 
-0 30px 80px rgba(0,0,0,.7),
+    0 30px 80px rgba(0,0,0,.7),
 
 
-0 0 40px rgba(212,175,55,.15);
-
-
-
-animation:
-
-
-cardEnter 1s ease;
+    0 0 50px rgba(212,175,55,.12);
 
 
 
-position:relative;
+    animation:
 
 
-overflow:hidden;
-
+    cardEntrance 1s ease;
 
 
 }
@@ -618,45 +475,161 @@ overflow:hidden;
 
 
 
-.login-card::before{
+/* ================================================
+LOGO EMPIRE ANIMADO
+================================================ */
 
 
-content:"";
+.logo-area{
 
 
-position:absolute;
+    text-align:center;
+
+    margin-bottom:35px;
 
 
-inset:0;
-
-
-border-radius:35px;
-
-
-background:
-
-
-linear-gradient(
-
-120deg,
-
-transparent,
-
-rgba(212,175,55,.15),
-
-transparent
-
-);
+}
 
 
 
-animation:
-
-cardGlow 6s infinite;
+.logo-area img{
 
 
+    width:90px;
 
-pointer-events:none;
+    height:90px;
+
+    object-fit:contain;
+
+
+    animation:
+
+
+    logoFloat 4s infinite ease-in-out;
+
+
+}
+
+
+
+
+
+
+.logo-area h1{
+
+
+    position:relative;
+
+
+    font-family:"Cinzel",serif;
+
+
+    font-size:65px;
+
+
+    font-weight:900;
+
+
+    letter-spacing:15px;
+
+
+    margin-top:15px;
+
+
+
+    background:
+
+
+    linear-gradient(
+
+    90deg,
+
+    #8f6b12,
+
+    #f8e48c,
+
+    #ffffff,
+
+    #d4af37,
+
+    #8f6b12
+
+    );
+
+
+
+    background-size:300%;
+
+
+    -webkit-background-clip:text;
+
+
+    -webkit-text-fill-color:transparent;
+
+
+    animation:
+
+
+    empireLight 5s linear infinite,
+
+
+    empireFloat 4s ease-in-out infinite;
+
+
+
+    filter:
+
+
+    drop-shadow(
+
+    0 0 25px rgba(212,175,55,.8)
+
+    );
+
+
+
+}
+
+
+
+.logo-area h1::after{
+
+
+    content:"";
+
+
+    position:absolute;
+
+
+    inset:0;
+
+
+
+    background:
+
+
+    linear-gradient(
+
+    120deg,
+
+    transparent 40%,
+
+    rgba(255,255,255,.9),
+
+    transparent 60%
+
+    );
+
+
+
+    transform:translateX(-120%);
+
+
+
+    animation:
+
+
+    shineEmpire 4s infinite;
 
 
 
@@ -667,73 +640,19 @@ pointer-events:none;
 
 
 
+.logo-area p{
 
 
-/* ================================
-MARCA
-================================ */
+    color:var(--gold-light);
 
 
-.login-brand{
+    font-size:12px;
 
 
-text-align:center;
+    letter-spacing:4px;
 
 
-margin-bottom:35px;
-
-
-
-}
-
-
-
-
-.login-brand h1{
-
-
-font-family:"Cinzel",serif;
-
-
-font-size:55px;
-
-
-letter-spacing:12px;
-
-
-color:var(--gold);
-
-
-
-text-shadow:
-
-
-0 0 30px rgba(212,175,55,.7);
-
-
-
-}
-
-
-
-
-.login-brand span{
-
-
-display:block;
-
-
-margin-top:10px;
-
-
-font-size:12px;
-
-
-letter-spacing:4px;
-
-
-color:var(--gold-light);
-
+    margin-top:10px;
 
 
 }
@@ -743,57 +662,51 @@ color:var(--gold-light);
 
 
 
-
-
-
-/* ================================
+/* ================================================
 INPUTS
-================================ */
+================================================ */
 
 
-.input-group{
+.input-box{
 
 
-height:55px;
+    height:58px;
 
 
-display:flex;
+    display:flex;
 
 
-align-items:center;
+    align-items:center;
 
 
-gap:15px;
+    gap:15px;
 
 
-
-background:
-
-rgba(0,0,0,.45);
+    padding:0 18px;
 
 
-
-border:
-
-
-1px solid rgba(212,175,55,.25);
+    margin-bottom:20px;
 
 
 
-border-radius:16px;
+    background:
+
+    rgba(0,0,0,.35);
 
 
 
-padding:0 18px;
+    border:
+
+
+    1px solid rgba(212,175,55,.25);
 
 
 
-margin-bottom:20px;
+    border-radius:18px;
 
 
 
-transition:.3s;
-
+    transition:.4s;
 
 
 }
@@ -801,62 +714,20 @@ transition:.3s;
 
 
 
-.input-group:focus-within{
+.input-box:focus-within{
 
 
-border-color:var(--gold);
+    border-color:var(--gold);
 
 
-box-shadow:
+    box-shadow:
 
 
-0 0 20px rgba(212,175,55,.25);
-
-
-
-}
+    0 0 25px rgba(212,175,55,.2);
 
 
 
-
-
-.input-group i{
-
-
-color:var(--gold);
-
-
-font-size:18px;
-
-
-
-}
-
-
-
-
-.input-group input{
-
-
-flex:1;
-
-
-height:100%;
-
-
-background:none;
-
-
-border:none;
-
-
-outline:none;
-
-
-color:white;
-
-
-font-size:15px;
+    transform:translateY(-3px);
 
 
 
@@ -866,11 +737,50 @@ font-size:15px;
 
 
 
-.input-group input::placeholder{
+.input-box i{
 
 
-color:#888;
+    color:var(--gold);
 
+
+    font-size:18px;
+
+
+}
+
+
+
+
+.input-box input{
+
+
+    flex:1;
+
+
+    background:none;
+
+
+    border:none;
+
+
+    outline:none;
+
+
+    color:white;
+
+
+    font-size:15px;
+
+
+}
+
+
+
+
+.input-box input::placeholder{
+
+
+    color:#888;
 
 
 }
@@ -880,58 +790,27 @@ color:#888;
 
 
 
+/* ================================================
+BOTÃO MOSTRAR SENHA
+================================================ */
 
 
-.show-password{
+#mostrarSenha{
 
 
-background:none;
+    background:none;
 
 
-border:none;
+    border:none;
 
 
-color:var(--gold);
+    cursor:pointer;
 
 
-cursor:pointer;
+    color:var(--gold);
 
 
-font-size:18px;
-
-
-
-}
-
-
-
-
-
-
-
-
-/* ================================
-MENSAGEM LOGIN
-================================ */
-
-
-.login-message{
-
-
-min-height:20px;
-
-
-text-align:center;
-
-
-font-size:13px;
-
-
-color:#ff8888;
-
-
-margin-bottom:15px;
-
+    font-size:18px;
 
 
 }
@@ -941,73 +820,123 @@ margin-bottom:15px;
 
 
 
+/* ================================================
+MENSAGEM
+================================================ */
 
 
-/* ================================
-BOTÃO
-================================ */
+#mensagem{
 
 
-.login-button{
+    min-height:25px;
 
 
-width:100%;
+    text-align:center;
 
 
-height:55px;
+    font-size:14px;
 
 
-
-border:none;
-
-
-border-radius:18px;
+    margin-bottom:15px;
 
 
-
-cursor:pointer;
+}
 
 
 
-display:flex;
-
-
-align-items:center;
-
-
-justify-content:center;
-
-
-gap:15px;
 
 
 
-background:
+/* ================================================
+BOTÃO LOGIN
+================================================ */
 
 
-linear-gradient(
-
-135deg,
-
-var(--gold-light),
-
-var(--gold)
-
-);
+.btn-login{
 
 
-
-color:#050505;
-
-
-font-weight:900;
+    width:100%;
 
 
-letter-spacing:2px;
+    height:60px;
+
+
+    border:none;
+
+
+    border-radius:18px;
 
 
 
-transition:.3s;
+    cursor:pointer;
+
+
+    display:flex;
+
+
+    align-items:center;
+
+
+    justify-content:center;
+
+
+    gap:15px;
+
+
+
+
+    background:
+
+
+    linear-gradient(
+
+    135deg,
+
+    var(--gold-light),
+
+    var(--gold)
+
+    );
+
+
+
+    color:#050505;
+
+
+    font-weight:800;
+
+
+    font-size:16px;
+
+
+    letter-spacing:2px;
+
+
+    transition:.4s;
+
+
+    position:relative;
+
+
+    overflow:hidden;
+
+
+}
+
+
+
+
+.btn-login:hover{
+
+
+    transform:translateY(-5px);
+
+
+
+    box-shadow:
+
+
+    0 15px 35px rgba(212,175,55,.35);
 
 
 
@@ -1017,17 +946,34 @@ transition:.3s;
 
 
 
-.login-button:hover{
+.btn-login::before{
 
 
-transform:translateY(-5px);
+    content:"";
 
 
-box-shadow:
+    position:absolute;
 
 
-0 15px 35px rgba(212,175,55,.45);
+    width:80px;
 
+
+    height:200%;
+
+
+    background:
+
+    rgba(255,255,255,.5);
+
+
+
+    transform:rotate(35deg);
+
+
+    left:-120px;
+
+
+    transition:.6s;
 
 
 }
@@ -1036,45 +982,50 @@ box-shadow:
 
 
 
-/* ================================
+.btn-login:hover::before{
+
+
+    left:120%;
+
+
+}
+
+
+
+
+
+
+/* ================================================
 ESQUECI SENHA
-================================ */
+================================================ */
 
 
-.forgot-password{
+.forgot{
 
 
-display:flex;
+    display:flex;
 
 
-justify-content:center;
+    justify-content:center;
 
 
-align-items:center;
+    align-items:center;
 
 
-gap:10px;
+    gap:10px;
 
 
-
-margin-top:25px;
-
-
-
-color:var(--gold-light);
+    margin-top:25px;
 
 
 
-text-decoration:none;
+    color:var(--gold-light);
 
 
-
-font-size:13px;
-
+    text-decoration:none;
 
 
-transition:.3s;
-
+    transition:.3s;
 
 
 }
@@ -1082,249 +1033,104 @@ transition:.3s;
 
 
 
-.forgot-password:hover{
+.forgot:hover{
 
 
-color:white;
+    color:white;
 
 
-transform:translateY(-2px);
-
+    transform:translateY(-3px);
 
 
 }
 
-/* ================================
-RODAPÉ
-================================ */
+/* ================================================
+FOOTER
+================================================ */
+
+footer{
+
+    position:fixed;
+
+    bottom:25px;
+
+    left:0;
+
+    width:100%;
+
+    text-align:center;
+
+    color:#777;
+
+    font-size:12px;
+
+    letter-spacing:2px;
+
+}
 
 
-.login-footer{
+footer strong{
 
+    color:var(--gold);
 
-position:fixed;
-
-
-bottom:25px;
-
-
-left:0;
-
-
-width:100%;
-
-
-
-display:flex;
-
-
-flex-direction:column;
-
-
-align-items:center;
-
-
-
-gap:5px;
-
-
-
-font-size:12px;
-
-
-
-color:#777;
-
-
-
-letter-spacing:1px;
-
-
+    font-family:"Cinzel",serif;
 
 }
 
 
 
-
-.login-footer strong{
-
-
-color:var(--gold);
-
-
-
-font-family:"Cinzel",serif;
-
-
-
-}
-
-
-
-
-
-/* ================================
+/* ================================================
 ANIMAÇÕES
-================================ */
-
-
-@keyframes loading{
-
-
-from{
-
-
-transform:translateX(-150%);
-
-
-
-}
-
-
-
-to{
-
-
-transform:translateX(350%);
-
-
-
-}
-
-
-
-}
-
-
-
-
-
-@keyframes logoPulse{
-
-
-0%,100%{
-
-
-transform:scale(1);
-
-
-
-text-shadow:
-
-
-0 0 30px rgba(212,175,55,.7);
-
-
-
-}
-
-
-
-50%{
-
-
-transform:scale(1.05);
-
-
-
-text-shadow:
-
-
-0 0 70px rgba(212,175,55,1);
-
-
-
-}
-
-
-
-}
-
-
-
+================================================ */
 
 
 @keyframes moveLight{
 
 
-from{
+    from{
+
+        transform:translate(0,0);
+
+    }
 
 
-transform:translate(0);
+    to{
 
+        transform:translate(80px,50px);
 
-
-}
-
-
-
-to{
-
-
-transform:translate(80px,50px);
-
+    }
 
 
 }
 
 
 
-}
+@keyframes particleUp{
 
 
+    0%{
+
+        transform:translateY(0) scale(1);
+
+        opacity:0;
+
+    }
 
 
+    20%{
 
-@keyframes particleFloat{
+        opacity:.8;
 
-
-0%{
-
-
-transform:
-
-translateY(0)
-
-scale(1);
+    }
 
 
+    100%{
 
-opacity:0;
+        transform:translateY(-110vh) scale(1.8);
 
+        opacity:0;
 
-
-}
-
-
-
-20%{
-
-
-opacity:.6;
-
-
-
-}
-
-
-
-100%{
-
-
-transform:
-
-translateY(-110vh)
-
-scale(1.8);
-
-
-
-opacity:0;
-
-
-
-}
-
+    }
 
 
 }
@@ -1333,44 +1139,38 @@ opacity:0;
 
 
 
-@keyframes cardEnter{
+@keyframes loading{
 
 
-from{
+    from{
+
+        transform:translateX(-150%);
+
+    }
 
 
-opacity:0;
+    to{
 
+        transform:translateX(350%);
 
-transform:
-
-
-translateY(40px)
-
-scale(.95);
-
-
-
-}
-
-
-
-to{
-
-
-opacity:1;
-
-
-transform:
-
-translateY(0)
-
-scale(1);
-
+    }
 
 
 }
 
+
+
+
+@keyframes loaderOut{
+
+
+    to{
+
+        opacity:0;
+
+        visibility:hidden;
+
+    }
 
 
 }
@@ -1379,40 +1179,25 @@ scale(1);
 
 
 
-@keyframes cardGlow{
+
+@keyframes empirePulse{
 
 
-0%{
+    0%,100%{
 
 
-transform:translateX(-100%);
+        transform:scale(1);
 
-
-
-}
-
-
-
-50%{
-
-
-transform:translateX(100%);
+    }
 
 
 
-}
+    50%{
 
 
+        transform:scale(1.05);
 
-100%{
-
-
-transform:translateX(100%);
-
-
-
-}
-
+    }
 
 
 }
@@ -1423,73 +1208,237 @@ transform:translateX(100%);
 
 
 
+@keyframes logoFloat{
 
 
-/* ================================
+    0%,100%{
+
+
+        transform:translateY(0);
+
+    }
+
+
+    50%{
+
+
+        transform:translateY(-10px);
+
+    }
+
+
+}
+
+
+
+
+
+
+
+@keyframes empireLight{
+
+
+    0%{
+
+        background-position:0%;
+
+    }
+
+
+
+    100%{
+
+        background-position:300%;
+
+    }
+
+
+}
+
+
+
+
+
+
+
+@keyframes empireFloat{
+
+
+    0%,100%{
+
+        transform:
+
+        translateY(0)
+
+        scale(1);
+
+
+    }
+
+
+
+    50%{
+
+
+        transform:
+
+        translateY(-8px)
+
+        scale(1.03);
+
+
+    }
+
+
+}
+
+
+
+
+
+@keyframes shineEmpire{
+
+
+    0%{
+
+
+        transform:translateX(-120%);
+
+
+    }
+
+
+    35%{
+
+
+        transform:translateX(120%);
+
+
+    }
+
+
+
+    100%{
+
+
+        transform:translateX(120%);
+
+
+    }
+
+
+}
+
+
+
+
+
+
+
+@keyframes cardEntrance{
+
+
+    from{
+
+
+        opacity:0;
+
+
+        transform:
+
+        translateY(50px)
+
+        scale(.95);
+
+
+    }
+
+
+    to{
+
+
+        opacity:1;
+
+
+        transform:
+
+        translateY(0)
+
+        scale(1);
+
+
+    }
+
+
+}
+
+
+
+
+
+
+
+
+/* ================================================
 RESPONSIVO
-================================ */
-
+================================================ */
 
 
 @media(max-width:700px){
 
 
+    body{
 
-body{
+        overflow:auto;
 
-
-overflow:auto;
-
-
-
-}
+    }
 
 
 
+    .login-card{
 
 
-.login-card{
+        padding:30px 22px;
 
 
-width:100%;
-
-
-max-width:380px;
-
-
-padding:35px 25px;
+    }
 
 
 
-}
+    .logo-area h1{
+
+
+        font-size:42px;
+
+
+        letter-spacing:8px;
+
+
+    }
 
 
 
+    .logo-area img{
 
 
-.login-brand h1{
+        width:70px;
+
+        height:70px;
 
 
-font-size:42px;
-
-
-letter-spacing:8px;
-
-
-
-}
+    }
 
 
 
+    footer{
 
 
-.loader-logo{
+        position:relative;
+
+        margin-top:30px;
 
 
-font-size:55px;
-
-
-letter-spacing:10px;
+    }
 
 
 
@@ -1499,88 +1448,42 @@ letter-spacing:10px;
 
 
 
-.loader-subtitle{
 
-
-font-size:11px;
-
-
-letter-spacing:3px;
+@media(max-width:420px){
 
 
 
-}
+    .login-card{
 
 
+        border-radius:22px;
 
 
-
-.login-footer{
-
-
-position:relative;
-
-
-margin-top:-50px;
-
-
-
-}
-
-
-
-}
+    }
 
 
 
 
-
-@media(max-width:400px){
-
+    .logo-area h1{
 
 
-.login-card{
+        font-size:34px;
 
 
-padding:30px 20px;
+        letter-spacing:5px;
 
 
-
-}
+    }
 
 
 
-
-.login-brand h1{
-
-
-font-size:36px;
+    .btn-login{
 
 
-
-}
-
+        height:52px;
 
 
-.input-group{
-
-
-height:50px;
-
-
-
-}
-
-
-
-.login-button{
-
-
-height:50px;
-
-
-
-}
+    }
 
 
 
