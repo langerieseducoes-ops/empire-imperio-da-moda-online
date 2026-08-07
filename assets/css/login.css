@@ -1,53 +1,46 @@
 /*
 ====================================================
  EMPIRE | Império da Moda Online
- LOGIN CSS V2
+ LOGIN CSS
  PARTE 1/3
 ====================================================
 */
 
 
 /* ================================================
-   RESET
+RESET
 ================================================ */
 
 
 *{
 
-    margin:0;
+margin:0;
 
-    padding:0;
+padding:0;
 
-    box-sizing:border-box;
-
-}
-
-
-
-html{
-
-    scroll-behavior:smooth;
+box-sizing:border-box;
 
 }
+
 
 
 
 body{
 
 
-    min-height:100vh;
+min-height:100vh;
 
 
-    background:#050505;
+font-family:"Poppins",sans-serif;
 
 
-    color:#fff;
+background:#050505;
 
 
-    font-family:"Poppins",sans-serif;
+color:#fff;
 
 
-    overflow-x:hidden;
+overflow:hidden;
 
 
 
@@ -59,57 +52,199 @@ body{
 
 
 
-
 /* ================================================
-   VARIÁVEIS EMPIRE
+VARIÁVEIS
 ================================================ */
 
 
 :root{
 
 
-    --black:#050505;
+--black:#050505;
 
 
-    --dark:#0b0b0b;
+--dark:#0b0b0b;
 
 
-    --graphite:#161616;
+--graphite:#161616;
 
 
-
-    --gold:#d4af37;
-
-
-    --gold-light:#f8e48c;
+--gold:#d4af37;
 
 
-    --gold-dark:#8f6b12;
+--gold-light:#f8e48c;
 
 
-
-    --white:#ffffff;
-
-
-    --text:#d8d8d8;
+--gold-dark:#8f6b12;
 
 
+--white:#fff;
 
-    --border:
 
-    rgba(212,175,55,.35);
+--text:#d8d8d8;
+
+
+--border:
+
+rgba(212,175,55,.35);
 
 
 
-    --glass:
-
-    rgba(255,255,255,.06);
+}
 
 
 
-    --shadow:
 
-    0 0 40px rgba(212,175,55,.25);
+
+/* ================================================
+FUNDO ANIMADO
+================================================ */
+
+
+.background-animation{
+
+
+position:fixed;
+
+
+inset:0;
+
+
+z-index:-1;
+
+
+background:
+
+
+radial-gradient(
+
+circle at top,
+
+rgba(212,175,55,.18),
+
+transparent 40%
+
+),
+
+
+
+linear-gradient(
+
+135deg,
+
+#050505,
+
+#161616,
+
+#050505
+
+);
+
+
+
+overflow:hidden;
+
+
+
+}
+
+
+
+
+
+.glow{
+
+
+position:absolute;
+
+
+border-radius:50%;
+
+
+filter:blur(110px);
+
+
+opacity:.35;
+
+
+animation:
+
+floatGlow 12s infinite alternate;
+
+
+
+}
+
+
+
+
+
+.glow-1{
+
+
+width:450px;
+
+
+height:450px;
+
+
+background:#d4af37;
+
+
+top:-150px;
+
+
+left:-150px;
+
+
+
+}
+
+
+
+
+
+.glow-2{
+
+
+width:350px;
+
+
+height:350px;
+
+
+background:#8f6b12;
+
+
+right:-100px;
+
+
+top:40%;
+
+
+
+}
+
+
+
+
+
+.glow-3{
+
+
+width:300px;
+
+
+height:300px;
+
+
+background:#d4af37;
+
+
+bottom:-100px;
+
+
+left:40%;
 
 
 
@@ -124,35 +259,63 @@ body{
 
 
 /* ================================================
-   LOGIN PAGE
+LOADER
 ================================================ */
 
 
-.login-page{
+.loader{
 
 
-    min-height:100vh;
+position:fixed;
 
 
-    position:relative;
+inset:0;
+
+
+z-index:9999;
+
+
+display:flex;
+
+
+align-items:center;
+
+
+justify-content:center;
+
+
+background:
+
+
+radial-gradient(
+
+circle,
+
+#171717,
+
+#050505
+
+);
 
 
 
-    display:flex;
-
-
-    align-items:center;
-
-
-    justify-content:center;
+transition:.8s;
 
 
 
-    padding:40px;
+}
 
 
 
-    overflow:hidden;
+
+
+.loader.hide{
+
+
+opacity:0;
+
+
+visibility:hidden;
 
 
 
@@ -164,188 +327,14 @@ body{
 
 
 
+.loader-content{
 
 
-/* ================================================
-   FUNDO
-================================================ */
-
-
-.login-background,
-
-
-.login-overlay{
-
-
-    position:absolute;
-
-
-    inset:0;
+text-align:center;
 
 
 
 }
-
-
-
-.login-background{
-
-
-    background:
-
-
-    radial-gradient(
-
-    circle at top,
-
-    rgba(212,175,55,.18),
-
-    transparent 40%
-
-    ),
-
-
-    radial-gradient(
-
-    circle at bottom,
-
-    rgba(212,175,55,.08),
-
-    transparent 45%
-
-    ),
-
-
-    linear-gradient(
-
-    135deg,
-
-    #050505,
-
-    #111,
-
-    #050505
-
-    );
-
-
-
-}
-
-
-
-
-
-
-.login-overlay{
-
-
-    background:
-
-
-    linear-gradient(
-
-    90deg,
-
-    rgba(0,0,0,.8),
-
-    rgba(0,0,0,.45)
-
-    );
-
-
-
-}
-
-
-
-
-
-
-
-
-/* ================================================
-   LOADER
-================================================ */
-
-
-.login-loader{
-
-
-    position:fixed;
-
-
-    inset:0;
-
-
-    z-index:9999;
-
-
-
-    display:flex;
-
-
-    align-items:center;
-
-
-    justify-content:center;
-
-
-
-    background:
-
-
-    radial-gradient(
-
-    circle,
-
-    #171717,
-
-    #050505
-
-    );
-
-
-
-    transition:.8s;
-
-
-
-}
-
-
-
-
-
-.login-loader.hide{
-
-
-    opacity:0;
-
-
-    visibility:hidden;
-
-
-
-}
-
-
-
-
-
-
-.loader-box{
-
-
-    width:330px;
-
-
-    text-align:center;
-
-
-
-}
-
 
 
 
@@ -354,34 +343,31 @@ body{
 .loader-logo{
 
 
-    font-family:"Cinzel",serif;
+font-family:"Cinzel",serif;
 
 
-    font-size:60px;
+font-size:75px;
 
 
-    font-weight:900;
-
-
-
-    letter-spacing:12px;
+font-weight:900;
 
 
 
-    color:var(--gold);
+letter-spacing:18px;
+
+
+color:var(--gold);
 
 
 
-    text-shadow:
+text-shadow:
 
 
-    0 0 30px rgba(212,175,55,.7);
+0 0 40px rgba(212,175,55,.8);
 
 
 
 }
-
-
 
 
 
@@ -390,34 +376,16 @@ body{
 .loader-subtitle{
 
 
-    margin-top:12px;
+margin-top:15px;
 
 
-    color:var(--gold-light);
+font-size:15px;
 
 
-    letter-spacing:3px;
+letter-spacing:5px;
 
 
-    font-size:14px;
-
-
-
-}
-
-
-
-
-.loader-status{
-
-
-    margin-top:25px;
-
-
-    color:#aaa;
-
-
-    font-size:13px;
+color:var(--gold-light);
 
 
 
@@ -427,65 +395,25 @@ body{
 
 
 
-
-.loader-progress{
-
-
-    margin-top:25px;
+.loader-line{
 
 
-    height:4px;
+width:280px;
 
 
-    background:#222;
+height:4px;
 
 
-    border-radius:20px;
+margin:30px auto;
 
 
-    overflow:hidden;
+background:#222;
 
 
-
-}
-
+border-radius:20px;
 
 
-
-
-.loader-progress span{
-
-
-    display:block;
-
-
-    height:100%;
-
-
-    width:35%;
-
-
-
-    background:
-
-
-    linear-gradient(
-
-    90deg,
-
-    transparent,
-
-    var(--gold),
-
-    transparent
-
-    );
-
-
-
-    animation:
-
-    loginLoading 2s infinite;
+overflow:hidden;
 
 
 
@@ -495,46 +423,64 @@ body{
 
 
 
+.loader-line span{
+
+
+display:block;
+
+
+width:40%;
+
+
+height:100%;
 
 
 
+background:
 
+
+linear-gradient(
+
+90deg,
+
+transparent,
+
+var(--gold),
+
+transparent
+
+);
+
+
+
+animation:
+
+loading 2s infinite;
+
+
+
+}
 /* ================================================
-   CONTAINER
+CONTAINER LOGIN
 ================================================ */
 
 
 .login-container{
 
 
-    position:relative;
+min-height:100vh;
 
 
-    z-index:2;
+display:flex;
 
 
-
-    width:1200px;
-
-
-    max-width:100%;
+align-items:center;
 
 
-
-    display:grid;
-
-
-    grid-template-columns:
-
-    1fr 450px;
+justify-content:center;
 
 
-
-    gap:80px;
-
-
-
-    align-items:center;
+padding:20px;
 
 
 
@@ -549,304 +495,59 @@ body{
 
 
 /* ================================================
-   MARCA
-================================================ */
-
-
-.login-brand{
-
-
-    animation:
-
-    loginFade 1s ease;
-
-
-
-}
-
-
-
-
-
-.login-logo{
-
-
-    width:130px;
-
-
-    height:130px;
-
-
-    object-fit:contain;
-
-
-
-    filter:
-
-    drop-shadow(
-
-    0 0 25px rgba(212,175,55,.5)
-
-    );
-
-
-
-}
-
-
-
-.login-brand h1{
-
-
-    margin-top:25px;
-
-
-    font-family:"Cinzel",serif;
-
-
-    font-size:70px;
-
-
-
-    letter-spacing:15px;
-
-
-
-    color:var(--gold);
-
-
-
-}
-
-
-
-.login-brand h2{
-
-
-    margin-top:10px;
-
-
-    color:var(--gold-light);
-
-
-
-    font-size:18px;
-
-
-    letter-spacing:4px;
-
-
-
-}
-
-
-
-.login-brand p{
-
-
-    margin-top:25px;
-
-
-    max-width:450px;
-
-
-    color:#aaa;
-
-
-    line-height:1.8;
-
-
-
-}
-/* ================================================
-   STATUS SISTEMA
-================================================ */
-
-
-.login-status{
-
-
-    margin-top:30px;
-
-
-    display:flex;
-
-
-    align-items:center;
-
-
-    gap:10px;
-
-
-
-    color:#aaa;
-
-
-    font-size:14px;
-
-
-
-}
-
-
-
-.login-status i{
-
-
-    color:#22c55e;
-
-
-    font-size:10px;
-
-
-
-}
-
-
-
-
-
-
-
-
-
-/* ================================================
-   INFORMAÇÕES MARCA
-================================================ */
-
-
-.brand-info{
-
-
-    margin-top:35px;
-
-
-
-    display:flex;
-
-
-    gap:20px;
-
-
-
-    flex-wrap:wrap;
-
-
-
-}
-
-
-
-
-.brand-info div{
-
-
-    display:flex;
-
-
-    align-items:center;
-
-
-    gap:10px;
-
-
-
-    padding:12px 18px;
-
-
-
-    border-radius:12px;
-
-
-
-    background:
-
-    rgba(255,255,255,.05);
-
-
-
-    border:
-
-    1px solid rgba(212,175,55,.2);
-
-
-
-    color:#ccc;
-
-
-
-    font-size:13px;
-
-
-
-}
-
-
-
-
-.brand-info i{
-
-
-    color:var(--gold);
-
-
-
-}
-
-
-
-
-
-
-
-
-/* ================================================
-   CARD LOGIN
+CARD LOGIN
 ================================================ */
 
 
 .login-card{
 
 
-    background:
-
-
-    rgba(255,255,255,.06);
+width:430px;
 
 
 
-    border:
-
-
-    1px solid var(--border);
+padding:45px;
 
 
 
-    backdrop-filter:
-
-    blur(25px);
+background:
 
 
-
-    border-radius:30px;
+rgba(255,255,255,.05);
 
 
 
-    padding:45px;
+border:
+
+
+1px solid rgba(212,175,55,.35);
 
 
 
-    box-shadow:
-
-
-    0 25px 80px rgba(0,0,0,.6);
+border-radius:30px;
 
 
 
-    animation:
+backdrop-filter:
+
+blur(25px);
 
 
-    loginFade 1s ease;
+
+box-shadow:
+
+
+0 30px 80px rgba(0,0,0,.7),
+
+
+0 0 40px rgba(212,175,55,.15);
+
+
+
+animation:
+
+
+cardEnter 1s ease;
 
 
 
@@ -861,34 +562,17 @@ body{
 
 
 /* ================================================
-   HEADER LOGIN
+MARCA
 ================================================ */
 
 
-.login-header{
+.login-brand{
 
 
-    text-align:center;
+text-align:center;
 
 
-    margin-bottom:35px;
-
-
-
-}
-
-
-
-.login-header h3{
-
-
-    font-family:"Cinzel",serif;
-
-
-    font-size:28px;
-
-
-    color:var(--gold);
+margin-bottom:35px;
 
 
 
@@ -896,16 +580,72 @@ body{
 
 
 
-.login-header p{
 
 
-    margin-top:10px;
+.login-brand img{
 
 
-    color:#aaa;
+width:90px;
 
 
-    font-size:14px;
+height:90px;
+
+
+object-fit:contain;
+
+
+
+filter:
+
+
+drop-shadow(
+
+0 0 20px rgba(212,175,55,.5)
+
+);
+
+
+
+}
+
+
+
+
+.login-brand h1{
+
+
+margin-top:15px;
+
+
+font-family:"Cinzel",serif;
+
+
+font-size:42px;
+
+
+letter-spacing:8px;
+
+
+color:var(--gold);
+
+
+
+}
+
+
+
+
+
+.login-brand span{
+
+
+font-size:14px;
+
+
+letter-spacing:3px;
+
+
+color:var(--gold-light);
 
 
 
@@ -920,14 +660,20 @@ body{
 
 
 /* ================================================
-   FORMULÁRIO
+FORMULÁRIO
 ================================================ */
 
 
 .login-form{
 
 
-    width:100%;
+display:flex;
+
+
+flex-direction:column;
+
+
+gap:22px;
 
 
 
@@ -936,34 +682,28 @@ body{
 
 
 
-.input-group{
 
-
-    margin-bottom:25px;
-
-
-
-}
 
 
 
 .input-group label{
 
 
-    display:block;
+display:block;
 
 
-    margin-bottom:10px;
+margin-bottom:8px;
 
 
-    color:var(--gold-light);
+font-size:13px;
 
 
-    font-size:13px;
+color:var(--gold-light);
 
 
 
 }
+
 
 
 
@@ -974,34 +714,90 @@ body{
 .input-box{
 
 
-    position:relative;
+height:55px;
 
 
-    display:flex;
+display:flex;
 
 
-    align-items:center;
+align-items:center;
+
+
+gap:12px;
+
+
+
+background:
+
+
+rgba(0,0,0,.45);
+
+
+
+border:
+
+
+1px solid rgba(212,175,55,.25);
+
+
+
+border-radius:15px;
+
+
+
+padding:0 18px;
+
+
+
+transition:.3s;
 
 
 
 }
+
+
+
+
+
+
+
+
+.input-box:focus-within{
+
+
+border-color:var(--gold);
+
+
+
+box-shadow:
+
+
+0 0 20px rgba(212,175,55,.2);
+
+
+
+}
+
+
+
+
 
 
 
 .input-box i{
 
 
-    position:absolute;
+color:var(--gold);
 
 
-    left:18px;
-
-
-    color:var(--gold);
+font-size:18px;
 
 
 
 }
+
+
+
 
 
 
@@ -1010,39 +806,22 @@ body{
 .input-box input{
 
 
-    width:100%;
+width:100%;
 
 
-    height:55px;
+background:none;
 
 
-
-    padding:0 50px;
-
+border:none;
 
 
-    background:#080808;
+outline:none;
 
 
-
-    border:
-
-    1px solid rgba(212,175,55,.25);
+color:white;
 
 
-
-    border-radius:15px;
-
-
-
-    color:white;
-
-
-    outline:none;
-
-
-
-    transition:.3s;
+font-size:15px;
 
 
 
@@ -1052,17 +831,10 @@ body{
 
 
 
-.input-box input:focus{
+.input-box input::placeholder{
 
 
-    border-color:var(--gold);
-
-
-
-    box-shadow:
-
-
-    0 0 20px rgba(212,175,55,.25);
+color:#777;
 
 
 
@@ -1075,35 +847,22 @@ body{
 
 
 
-
-/* ================================================
-   BOTÃO MOSTRAR SENHA
-================================================ */
+.password-toggle{
 
 
-.show-password{
+background:none;
 
 
-    position:absolute;
+border:none;
 
 
-    right:15px;
+color:var(--gold);
 
 
-
-    background:none;
-
-
-    border:none;
+cursor:pointer;
 
 
-    color:var(--gold);
-
-
-    cursor:pointer;
-
-
-    font-size:16px;
+font-size:18px;
 
 
 
@@ -1118,27 +877,24 @@ body{
 
 
 /* ================================================
-   OPÇÕES
+OPÇÕES
 ================================================ */
 
 
 .login-options{
 
 
-    display:flex;
+display:flex;
 
 
-    justify-content:space-between;
+justify-content:space-between;
 
 
-    align-items:center;
+align-items:center;
 
 
 
-    margin-bottom:25px;
-
-
-    font-size:13px;
+font-size:13px;
 
 
 
@@ -1151,17 +907,16 @@ body{
 .remember{
 
 
-    display:flex;
+display:flex;
 
 
-    align-items:center;
+align-items:center;
 
 
-    gap:8px;
+gap:8px;
 
 
-
-    color:#aaa;
+color:#aaa;
 
 
 
@@ -1172,7 +927,7 @@ body{
 .remember input{
 
 
-    accent-color:var(--gold);
+accent-color:var(--gold);
 
 
 
@@ -1184,23 +939,24 @@ body{
 .login-options a{
 
 
-    color:var(--gold-light);
+color:var(--gold-light);
 
 
-    text-decoration:none;
+text-decoration:none;
+
+
+transition:.3s;
 
 
 
 }
-
-
 
 
 
 .login-options a:hover{
 
 
-    color:var(--gold);
+color:white;
 
 
 
@@ -1215,130 +971,77 @@ body{
 
 
 /* ================================================
-   MENSAGEM
-================================================ */
-
-
-.login-message{
-
-
-    min-height:25px;
-
-
-    text-align:center;
-
-
-    margin-bottom:15px;
-
-
-    font-size:13px;
-
-
-
-}
-
-
-
-.login-message.success{
-
-
-    color:#22c55e;
-
-
-
-}
-
-
-
-.login-message.error{
-
-
-    color:#ef4444;
-
-
-
-}
-
-
-
-
-
-
-
-
-
-/* ================================================
-   BOTÃO LOGIN
+BOTÃO LOGIN
 ================================================ */
 
 
 .login-button{
 
 
-    width:100%;
+height:58px;
 
 
-    height:58px;
+border:none;
 
 
-
-    border:none;
-
-
-    border-radius:15px;
+border-radius:18px;
 
 
 
-    cursor:pointer;
+background:
+
+
+linear-gradient(
+
+135deg,
+
+var(--gold-light),
+
+var(--gold),
+
+var(--gold-dark)
+
+);
 
 
 
-    display:flex;
+color:#050505;
 
 
-    align-items:center;
+font-size:15px;
 
 
-    justify-content:center;
+font-weight:800;
 
 
-
-    gap:15px;
-
+letter-spacing:3px;
 
 
-    background:
-
-
-    linear-gradient(
-
-    135deg,
-
-    var(--gold-light),
-
-    var(--gold),
-
-    var(--gold-dark)
-
-    );
+cursor:pointer;
 
 
 
-    color:#050505;
+display:flex;
 
 
-    font-weight:800;
+align-items:center;
 
 
-    letter-spacing:2px;
+justify-content:center;
+
+
+gap:12px;
 
 
 
-    transition:.4s;
+transition:.4s;
 
 
 
 }
+
+
+
 
 
 
@@ -1346,90 +1049,16 @@ body{
 .login-button:hover{
 
 
-    transform:
+transform:
 
-    translateY(-4px);
-
-
-
-    box-shadow:
-
-
-    0 15px 40px rgba(212,175,55,.5);
+translateY(-5px);
 
 
 
-}
-/* ================================================
-   SEGURANÇA
-================================================ */
+box-shadow:
 
 
-.login-security{
-
-
-    margin-top:30px;
-
-
-    padding-top:25px;
-
-
-
-    border-top:
-
-
-    1px solid rgba(255,255,255,.1);
-
-
-
-    display:flex;
-
-
-    justify-content:center;
-
-
-    gap:20px;
-
-
-
-    flex-wrap:wrap;
-
-
-
-}
-
-
-
-
-.login-security div{
-
-
-    display:flex;
-
-
-    align-items:center;
-
-
-    gap:8px;
-
-
-
-    color:#999;
-
-
-    font-size:12px;
-
-
-
-}
-
-
-
-
-.login-security i{
-
-
-    color:var(--gold);
+0 20px 40px rgba(212,175,55,.35);
 
 
 
@@ -1444,17 +1073,39 @@ body{
 
 
 /* ================================================
-   FOOTER
+MENSAGEM
 ================================================ */
 
 
-.login-footer{
+.login-message{
 
 
-    margin-top:30px;
+text-align:center;
 
 
-    text-align:center;
+font-size:13px;
+
+
+min-height:20px;
+
+
+color:#ffcc00;
+
+
+
+}
+/* ================================================
+ANIMAÇÕES
+================================================ */
+
+
+@keyframes loading{
+
+
+from{
+
+
+transform:translateX(-150%);
 
 
 
@@ -1462,42 +1113,14 @@ body{
 
 
 
-.login-footer strong{
+to{
 
 
-    display:block;
-
-
-    font-family:"Cinzel",serif;
-
-
-    color:var(--gold);
-
-
-
-    letter-spacing:5px;
-
-
-    font-size:20px;
+transform:translateX(350%);
 
 
 
 }
-
-
-
-
-
-.login-footer p{
-
-
-    margin-top:5px;
-
-
-    color:var(--gold-light);
-
-
-    font-size:13px;
 
 
 
@@ -1507,19 +1130,79 @@ body{
 
 
 
-.login-footer span{
 
 
-    display:block;
+
+@keyframes floatGlow{
 
 
-    margin-top:8px;
+from{
 
 
-    color:#777;
+transform:translate(0,0);
 
 
-    font-size:12px;
+
+}
+
+
+
+to{
+
+
+transform:translate(80px,50px);
+
+
+
+}
+
+
+
+}
+
+
+
+
+
+
+
+
+@keyframes cardEnter{
+
+
+from{
+
+
+opacity:0;
+
+
+transform:
+
+translateY(40px)
+
+scale(.95);
+
+
+
+}
+
+
+
+to{
+
+
+opacity:1;
+
+
+transform:
+
+translateY(0)
+
+scale(1);
+
+
+
+}
 
 
 
@@ -1534,30 +1217,53 @@ body{
 
 
 /* ================================================
-   ANIMAÇÕES
+EFEITO PARTICULAS
 ================================================ */
 
 
-@keyframes loginLoading{
+#particles{
 
 
-    0%{
+position:absolute;
 
 
-        transform:translateX(-120%);
+inset:0;
 
 
-    }
+overflow:hidden;
 
 
 
-    100%{
+}
 
 
-        transform:translateX(300%);
+
+.particle{
 
 
-    }
+position:absolute;
+
+
+width:4px;
+
+
+height:4px;
+
+
+background:var(--gold);
+
+
+border-radius:50%;
+
+
+opacity:.5;
+
+
+
+animation:
+
+
+particleMove 10s infinite;
 
 
 
@@ -1567,40 +1273,19 @@ body{
 
 
 
+@keyframes particleMove{
 
 
-@keyframes loginFade{
+from{
 
 
-    from{
+transform:
 
-
-        opacity:0;
-
-
-        transform:
-
-        translateY(30px);
+translateY(100vh);
 
 
 
-    }
-
-
-
-    to{
-
-
-        opacity:1;
-
-
-        transform:
-
-        translateY(0);
-
-
-
-    }
+opacity:0;
 
 
 
@@ -1608,42 +1293,31 @@ body{
 
 
 
+50%{
+
+
+opacity:.8;
 
 
 
+}
 
 
 
-@keyframes goldPulse{
+to{
 
 
-    0%{
+transform:
 
-
-        opacity:.7;
-
-
-    }
+translateY(-20vh);
 
 
 
-    50%{
-
-
-        opacity:1;
-
-
-    }
+opacity:0;
 
 
 
-    100%{
-
-
-        opacity:.7;
-
-
-    }
+}
 
 
 
@@ -1658,74 +1332,59 @@ body{
 
 
 /* ================================================
-   RESPONSIVIDADE NOTEBOOK / TABLET
+RESPONSIVIDADE
 ================================================ */
 
 
-@media(max-width:1100px){
+
+@media(max-width:600px){
 
 
 
-    .login-container{
+body{
 
 
-        grid-template-columns:
-
-        1fr;
-
-
-
-        gap:40px;
+overflow:auto;
 
 
 
-        max-width:500px;
-
-
-
-    }
+}
 
 
 
 
-
-    .login-brand{
-
-
-        text-align:center;
+.login-container{
 
 
+padding:15px;
 
-    }
+
+}
 
 
 
+.login-card{
 
 
-    .login-brand p{
+width:100%;
 
 
-        margin-left:auto;
-
-
-        margin-right:auto;
+padding:30px 22px;
 
 
 
-    }
+}
 
 
 
 
-
-    .brand-info{
-
-
-        justify-content:center;
+.login-brand h1{
 
 
+font-size:32px;
 
-    }
+
+letter-spacing:5px;
 
 
 
@@ -1735,71 +1394,64 @@ body{
 
 
 
+.login-brand img{
+
+
+width:70px;
+
+
+height:70px;
+
+
+
+}
 
 
 
 
-/* ================================================
-   TABLET
-================================================ */
+
+.loader-logo{
 
 
-@media(max-width:700px){
+font-size:50px;
 
 
-
-    .login-page{
-
-
-        padding:25px;
+letter-spacing:10px;
 
 
 
-    }
+}
 
 
 
 
-    .login-brand h1{
+
+.loader-subtitle{
 
 
-        font-size:45px;
-
-
-
-        letter-spacing:8px;
+font-size:12px;
 
 
 
-    }
+}
 
 
 
 
-    .login-brand h2{
+.login-options{
 
 
-        font-size:14px;
+flex-direction:column;
 
 
-
-    }
-
+gap:15px;
 
 
-
-    .login-card{
-
-
-        padding:30px 25px;
+align-items:flex-start;
 
 
 
-        border-radius:22px;
-
-
-
-    }
+}
 
 
 
@@ -1814,137 +1466,30 @@ body{
 
 
 
-/* ================================================
-   MOBILE
-================================================ */
+@media(max-height:700px){
 
 
-@media(max-width:450px){
 
+.login-card{
 
 
-    .login-page{
+padding:25px;
 
 
-        padding:15px;
 
+}
 
 
-    }
 
 
+.login-brand{
 
 
-    .login-logo{
+margin-bottom:20px;
 
 
-        width:90px;
 
-
-        height:90px;
-
-
-
-    }
-
-
-
-
-
-    .login-brand h1{
-
-
-        font-size:35px;
-
-
-
-        letter-spacing:5px;
-
-
-
-    }
-
-
-
-
-    .brand-info{
-
-
-        flex-direction:column;
-
-
-
-    }
-
-
-
-
-
-    .login-card{
-
-
-        padding:25px 18px;
-
-
-
-    }
-
-
-
-
-
-    .login-header h3{
-
-
-        font-size:22px;
-
-
-
-    }
-
-
-
-
-
-    .login-options{
-
-
-        flex-direction:column;
-
-
-        gap:15px;
-
-
-
-    }
-
-
-
-
-
-    .login-security{
-
-
-        flex-direction:column;
-
-
-        align-items:center;
-
-
-
-    }
-
-
-
-
-    .login-button{
-
-
-        height:52px;
-
-
-
-    }
+}
 
 
 
@@ -1959,29 +1504,6 @@ body{
 
 
 /* ================================================
-   FINAL AJUSTES
+FINAL LOGIN
+EMPIRE | Império da Moda Online
 ================================================ */
-
-
-button{
-
-
-    font-family:"Poppins",sans-serif;
-
-
-
-}
-
-
-
-::selection{
-
-
-    background:var(--gold);
-
-
-    color:#050505;
-
-
-
-}
