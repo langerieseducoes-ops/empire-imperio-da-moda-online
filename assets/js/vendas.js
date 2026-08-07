@@ -2,34 +2,20 @@
 ====================================================
  EMPIRE | Império da Moda Online
  VENDAS JS
- PARTE 1/3
+ SISTEMA DE VENDAS PREMIUM
 ====================================================
 */
 
 
-// ==================================================
-// PROTEÇÃO CONTRA DUPLICAÇÃO
-// ==================================================
+// ================================================
+// CONTROLE DE INICIALIZAÇÃO
+// ================================================
 
 
-if(window.empireVendasIniciado){
+if(!window.empireVendasStart){
 
 
-console.warn(
-
-"EMPIRE Vendas já iniciado"
-
-);
-
-
-
-}else{
-
-
-window.empireVendasIniciado = true;
-
-
-
+window.empireVendasStart = true;
 
 
 
@@ -40,13 +26,12 @@ document.addEventListener(
 ()=>{
 
 
-iniciarVendas();
+iniciarModuloVendas();
 
 
 });
 
 
-
 }
 
 
@@ -56,26 +41,16 @@ iniciarVendas();
 
 
 
+// ================================================
+// INICIAR SISTEMA
+// ================================================
 
-// ==================================================
-// INICIAR MÓDULO
-// ==================================================
 
-
-function iniciarVendas(){
-
+function iniciarModuloVendas(){
 
 
 
-
-if(!verificarSessao()){
-
-return;
-
-}
-
-
-
+verificarUsuario();
 
 
 
@@ -83,23 +58,15 @@ iniciarLoader();
 
 
 
-mostrarData();
-
-
-
 iniciarRelogio();
 
 
 
+mostrarData();
+
+
+
 carregarVendas();
-
-
-
-console.log(
-
-"EMPIRE | Vendas iniciado"
-
-);
 
 
 
@@ -109,16 +76,12 @@ console.log(
 
 
 
+// ================================================
+// USUÁRIO
+// ================================================
 
 
-
-
-// ==================================================
-// VERIFICAR LOGIN
-// ==================================================
-
-
-function verificarSessao(){
+function verificarUsuario(){
 
 
 
@@ -134,19 +97,13 @@ localStorage.getItem(
 
 
 
-
 if(!sessao){
 
 
-
-window.location.href =
-
-"../../index.html";
+window.location.href="../../index.html";
 
 
-
-return false;
-
+return;
 
 
 }
@@ -164,8 +121,6 @@ JSON.parse(sessao);
 
 
 
-
-
 const nome =
 
 document.getElementById(
@@ -178,25 +133,15 @@ document.getElementById(
 
 
 
-
 if(nome){
-
 
 
 nome.textContent =
 
-usuario.usuario;
-
+usuario.usuario || "Administrador";
 
 
 }
-
-
-
-
-
-
-return true;
 
 
 
@@ -210,9 +155,9 @@ return true;
 
 
 
-// ==================================================
+// ================================================
 // LOADER
-// ==================================================
+// ================================================
 
 
 function iniciarLoader(){
@@ -231,7 +176,6 @@ document.getElementById(
 
 
 
-
 if(!loader)
 
 return;
@@ -240,10 +184,7 @@ return;
 
 
 
-
-
 setTimeout(()=>{
-
 
 
 loader.classList.add(
@@ -253,8 +194,7 @@ loader.classList.add(
 );
 
 
-
-},1500);
+},1200);
 
 
 
@@ -268,9 +208,9 @@ loader.classList.add(
 
 
 
-// ==================================================
+// ================================================
 // DATA
-// ==================================================
+// ================================================
 
 
 function mostrarData(){
@@ -289,15 +229,7 @@ document.getElementById(
 
 
 
-
-if(!data)
-
-return;
-
-
-
-
-
+if(data){
 
 
 data.textContent =
@@ -311,6 +243,9 @@ new Date()
 );
 
 
+}
+
+
 
 }
 
@@ -322,30 +257,12 @@ new Date()
 
 
 
-// ==================================================
+// ================================================
 // RELÓGIO
-// ==================================================
+// ================================================
 
 
 function iniciarRelogio(){
-
-
-
-
-
-if(window.empireVendaClock)
-
-return;
-
-
-
-
-
-
-
-window.empireVendaClock =
-
-setInterval(()=>{
 
 
 
@@ -362,8 +279,10 @@ document.getElementById(
 
 
 
-if(clock){
+setInterval(()=>{
 
+
+if(clock){
 
 
 clock.textContent =
@@ -377,7 +296,6 @@ new Date()
 );
 
 
-
 }
 
 
@@ -387,16 +305,17 @@ new Date()
 
 
 }
-/* ==================================================
-   BANCO LOCAL DE VENDAS
-================================================== */
+
+/* ================================================
+BANCO LOCAL
+================================================ */
 
 
-function carregarBancoVendas(){
+function obterVendas(){
 
 
 
-const banco =
+const dados =
 
 localStorage.getItem(
 
@@ -408,8 +327,7 @@ localStorage.getItem(
 
 
 
-
-if(!banco){
+if(!dados){
 
 
 
@@ -433,8 +351,7 @@ return [];
 
 
 
-
-return JSON.parse(banco);
+return JSON.parse(dados);
 
 
 
@@ -448,16 +365,16 @@ return JSON.parse(banco);
 
 
 
-// ==================================================
+// ================================================
 // CARREGAR VENDAS
-// ==================================================
+// ================================================
 
 
 function carregarVendas(){
 
 
 
-renderizarVendas();
+renderizarListaVendas();
 
 
 
@@ -465,7 +382,11 @@ atualizarIndicadores();
 
 
 
-configurarNovaVenda();
+criarGraficos();
+
+
+
+ativarFormulario();
 
 
 
@@ -479,12 +400,12 @@ configurarNovaVenda();
 
 
 
-// ==================================================
-// FORMULÁRIO NOVA VENDA
-// ==================================================
+// ================================================
+// FORMULÁRIO
+// ================================================
 
 
-function configurarNovaVenda(){
+function ativarFormulario(){
 
 
 
@@ -500,10 +421,10 @@ document.getElementById(
 
 
 
-
 if(!form)
 
 return;
+
 
 
 
@@ -514,14 +435,11 @@ form.addEventListener(
 
 "submit",
 
-(e)=>{
+function(event){
 
 
 
-e.preventDefault();
-
-
-
+event.preventDefault();
 
 
 
@@ -547,9 +465,9 @@ registrarVenda();
 
 
 
-// ==================================================
+// ================================================
 // REGISTRAR VENDA
-// ==================================================
+// ================================================
 
 
 function registrarVenda(){
@@ -569,6 +487,7 @@ document.getElementById(
 
 
 
+
 const produto =
 
 document.getElementById(
@@ -576,6 +495,7 @@ document.getElementById(
 "productName"
 
 ).value.trim();
+
 
 
 
@@ -600,7 +520,16 @@ document.getElementById(
 
 
 
-if(!cliente || !produto || !valor){
+
+if(
+
+!cliente ||
+
+!produto ||
+
+!valor
+
+){
 
 
 
@@ -628,7 +557,7 @@ return;
 
 const vendas =
 
-carregarBancoVendas();
+obterVendas();
 
 
 
@@ -637,31 +566,27 @@ carregarBancoVendas();
 
 
 
-const novaVenda = {
+vendas.push({
 
 
 
-id:
-
-Date.now(),
+id:Date.now(),
 
 
 
-cliente,
+cliente:cliente,
 
 
 
-produto,
+produto:produto,
 
 
 
-valor,
+valor:valor,
 
 
 
-data:
-
-new Date()
+data:new Date()
 
 .toLocaleString(
 
@@ -671,21 +596,7 @@ new Date()
 
 
 
-};
-
-
-
-
-
-
-
-
-
-vendas.push(
-
-novaVenda
-
-);
+});
 
 
 
@@ -713,6 +624,7 @@ vendas
 
 
 
+
 document.getElementById(
 
 "saleForm"
@@ -726,11 +638,15 @@ document.getElementById(
 
 
 
-renderizarVendas();
+renderizarListaVendas();
 
 
 
 atualizarIndicadores();
+
+
+
+criarGraficos();
 
 
 
@@ -744,12 +660,12 @@ atualizarIndicadores();
 
 
 
-// ==================================================
-// LISTA DE VENDAS
-// ==================================================
+// ================================================
+// LISTA
+// ================================================
 
 
-function renderizarVendas(){
+function renderizarListaVendas(){
 
 
 
@@ -766,6 +682,7 @@ document.getElementById(
 
 
 
+
 if(!lista)
 
 return;
@@ -775,20 +692,23 @@ return;
 
 
 
+
+
 const vendas =
 
-carregarBancoVendas();
+obterVendas();
 
 
 
 
 
 
-if(vendas.length === 0){
+
+if(vendas.length===0){
 
 
 
-lista.innerHTML =
+lista.innerHTML=
 
 
 
@@ -818,7 +738,7 @@ return;
 
 
 
-lista.innerHTML = "";
+lista.innerHTML="";
 
 
 
@@ -827,36 +747,26 @@ lista.innerHTML = "";
 
 
 
-vendas.reverse()
+
+vendas.slice()
+
+.reverse()
 
 .forEach(venda=>{
 
 
 
-const item =
-
-document.createElement(
-
-"div"
-
-);
 
 
 
-item.className =
-
-"sale-item";
-
-
-
-
-
-
-item.innerHTML =
+lista.innerHTML +=
 
 
 
 `
+
+<div class="sale-item">
+
 
 <div>
 
@@ -866,7 +776,9 @@ ${venda.cliente}
 
 </strong>
 
+
 <br>
+
 
 <span>
 
@@ -874,10 +786,13 @@ ${venda.produto}
 
 </span>
 
+
 </div>
 
 
+
 <div>
+
 
 <strong>
 
@@ -885,7 +800,10 @@ R$ ${venda.valor.toFixed(2)}
 
 </strong>
 
+
+
 <br>
+
 
 <small>
 
@@ -893,7 +811,13 @@ ${venda.data}
 
 </small>
 
+
+
 </div>
+
+
+</div>
+
 
 `;
 
@@ -901,16 +825,9 @@ ${venda.data}
 
 
 
-
-lista.appendChild(
-
-item
-
-);
-
-
-
 });
+
+
 
 
 
@@ -924,9 +841,9 @@ item
 
 
 
-// ==================================================
+// ================================================
 // INDICADORES
-// ==================================================
+// ================================================
 
 
 function atualizarIndicadores(){
@@ -935,14 +852,14 @@ function atualizarIndicadores(){
 
 const vendas =
 
-carregarBancoVendas();
+obterVendas();
 
 
 
 
 
 
-const total =
+const quantidade =
 
 vendas.length;
 
@@ -951,14 +868,15 @@ vendas.length;
 
 
 
-const faturamento =
+
+const total =
 
 vendas.reduce(
 
-(total,venda)=>{
+(soma,venda)=>{
 
 
-return total + venda.valor;
+return soma + venda.valor;
 
 
 },
@@ -973,7 +891,7 @@ return total + venda.valor;
 
 
 
-const totalSales =
+const cardVendas =
 
 document.getElementById(
 
@@ -986,8 +904,7 @@ document.getElementById(
 
 
 
-
-const revenue =
+const cardValor =
 
 document.getElementById(
 
@@ -1001,47 +918,45 @@ document.getElementById(
 
 
 
+if(cardVendas)
 
-if(totalSales)
-
-totalSales.textContent = total;
-
+cardVendas.textContent = quantidade;
 
 
 
 
 
-if(revenue)
-
-revenue.textContent =
 
 
+if(cardValor)
+
+cardValor.textContent =
 
 "R$ " +
 
-faturamento.toFixed(2);
+total.toFixed(2);
 
 
 
 }
-/* ==================================================
-   GRÁFICOS
-================================================== */
+
+/* ================================================
+GRÁFICOS
+================================================ */
 
 
-let salesChartInstance = null;
+let salesChart = null;
 
-let paymentChartInstance = null;
-
-
-
-
+let paymentChart = null;
 
 
 
 
 
-function carregarGraficos(){
+
+
+
+function criarGraficos(){
 
 
 
@@ -1067,9 +982,9 @@ calcularCrescimento();
 
 
 
-// ==================================================
+// ================================================
 // GRÁFICO DE VENDAS
-// ==================================================
+// ================================================
 
 
 function criarGraficoVendas(){
@@ -1088,7 +1003,6 @@ document.getElementById(
 
 
 
-
 if(!canvas)
 
 return;
@@ -1098,12 +1012,11 @@ return;
 
 
 
-if(salesChartInstance){
+
+if(salesChart){
 
 
-
-salesChartInstance.destroy();
-
+salesChart.destroy();
 
 
 }
@@ -1113,22 +1026,34 @@ salesChartInstance.destroy();
 
 
 
+
+
 const vendas =
 
-carregarBancoVendas();
+obterVendas();
 
 
 
 
 
 
-const labels =
+
+
+const nomes =
 
 vendas.map(
 
-v=>v.data
+(venda,index)=>{
+
+
+return "Venda "+(index+1);
+
+
+}
 
 );
+
+
 
 
 
@@ -1139,7 +1064,7 @@ const valores =
 
 vendas.map(
 
-v=>v.valor
+venda=>venda.valor
 
 );
 
@@ -1151,7 +1076,7 @@ v=>v.valor
 
 
 
-salesChartInstance =
+salesChart =
 
 new Chart(
 
@@ -1167,21 +1092,25 @@ type:"line",
 data:{
 
 
-labels,
+
+labels:nomes,
+
 
 
 
 datasets:[{
 
 
-label:"Vendas",
+label:"Faturamento",
 
 
 data:valores,
 
 
+borderWidth:3,
 
-borderWidth:3
+
+tension:.4
 
 
 
@@ -1199,7 +1128,6 @@ options:{
 
 
 responsive:true,
-
 
 
 maintainAspectRatio:false
@@ -1226,9 +1154,9 @@ maintainAspectRatio:false
 
 
 
-// ==================================================
+// ================================================
 // GRÁFICO PAGAMENTOS
-// ==================================================
+// ================================================
 
 
 function criarGraficoPagamento(){
@@ -1248,6 +1176,7 @@ document.getElementById(
 
 
 
+
 if(!canvas)
 
 return;
@@ -1257,11 +1186,13 @@ return;
 
 
 
-if(paymentChartInstance){
+
+
+if(paymentChart){
 
 
 
-paymentChartInstance.destroy();
+paymentChart.destroy();
 
 
 
@@ -1272,7 +1203,10 @@ paymentChartInstance.destroy();
 
 
 
-paymentChartInstance =
+
+
+
+paymentChart =
 
 new Chart(
 
@@ -1305,15 +1239,10 @@ labels:[
 datasets:[{
 
 
-data:[
+label:"Pagamentos",
 
-60,
 
-30,
-
-10
-
-],
+data:[60,30,10],
 
 
 borderWidth:2
@@ -1334,7 +1263,6 @@ options:{
 
 
 responsive:true,
-
 
 
 maintainAspectRatio:false
@@ -1361,21 +1289,12 @@ maintainAspectRatio:false
 
 
 
-// ==================================================
+// ================================================
 // CRESCIMENTO
-// ==================================================
+// ================================================
 
 
 function calcularCrescimento(){
-
-
-
-const vendas =
-
-carregarBancoVendas();
-
-
-
 
 
 
@@ -1392,9 +1311,22 @@ document.getElementById(
 
 
 
+
 if(!crescimento)
 
 return;
+
+
+
+
+
+
+
+const vendas =
+
+obterVendas();
+
+
 
 
 
@@ -1405,9 +1337,7 @@ if(vendas.length===0){
 
 
 
-crescimento.textContent=
-
-"0%";
+crescimento.textContent="0%";
 
 
 
@@ -1423,9 +1353,8 @@ return;
 
 
 
-crescimento.textContent=
 
-"100%";
+crescimento.textContent="100%";
 
 
 
@@ -1439,32 +1368,26 @@ crescimento.textContent=
 
 
 
-// ==================================================
-// ATUALIZAÇÃO FINAL
-// ==================================================
+// ================================================
+// ATUALIZAÇÃO AUTOMÁTICA
+// ================================================
 
 
 window.addEventListener(
 
-"load",
+"storage",
 
 ()=>{
 
 
 
-if(typeof carregarGraficos === "function"){
-
-
-
-carregarGraficos();
+carregarVendas();
 
 
 
 }
 
-
-
-});
+);
 
 
 
@@ -1474,15 +1397,14 @@ carregarGraficos();
 
 
 
-// ==================================================
+// ================================================
 // EXPORTAR
-// ==================================================
+// ================================================
 
 
 window.registrarVenda =
 
 registrarVenda;
-
 
 
 window.carregarVendas =
