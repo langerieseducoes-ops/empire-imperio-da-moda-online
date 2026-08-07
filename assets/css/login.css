@@ -1,43 +1,113 @@
 /*
-==========================================================
- EMPIRE
-
- Império da Moda Online
-
- ERP V4 PREMIUM FULL ULTRA 4K
-
- LOGIN STYLE
-
+====================================================
+ EMPIRE | Império da Moda Online
+ LOGIN CSS
  PARTE 1/3
-
-==========================================================
+====================================================
 */
 
 
-@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800&display=swap');
+/* ================================================
+   RESET GLOBAL
+================================================ */
+
+
+* {
+
+    margin: 0;
+
+    padding: 0;
+
+    box-sizing: border-box;
+
+}
+
+
+html {
+
+    scroll-behavior: smooth;
+
+}
+
+
+body {
+
+
+    width: 100%;
+
+    min-height: 100vh;
+
+    font-family: "Poppins", sans-serif;
+
+    background: #050505;
+
+    color: #ffffff;
+
+    overflow-x: hidden;
+
+
+}
 
 
 
 
 
-:root{
+/* ================================================
+   VARIÁVEIS EMPIRE
+================================================ */
 
 
---black:#050505;
+:root {
 
---dark:#0b0b0b;
 
---graphite:#161616;
+    --black:
+    #050505;
 
---gold:#d4af37;
 
---gold-light:#f8e48c;
+    --dark:
+    #0b0b0b;
 
---gold-dark:#8f6b12;
 
---white:#ffffff;
+    --graphite:
+    #161616;
 
---text:#d8d8d8;
+
+    --gold:
+    #d4af37;
+
+
+    --gold-light:
+    #f8e48c;
+
+
+    --gold-dark:
+    #8f6b12;
+
+
+    --white:
+    #ffffff;
+
+
+    --text:
+    #d8d8d8;
+
+
+
+    --border:
+
+    rgba(212,175,55,.35);
+
+
+
+    --glass:
+
+    rgba(255,255,255,.06);
+
+
+
+    --shadow-gold:
+
+    0 0 40px rgba(212,175,55,.25);
 
 
 
@@ -47,17 +117,72 @@
 
 
 
+/* ================================================
+   LOADER PREMIUM
+================================================ */
+
+
+.empire-loader {
+
+
+    position: fixed;
+
+    inset: 0;
+
+    z-index: 9999;
+
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+
+    background:
+
+
+    radial-gradient(
+
+        circle,
+
+        #191919 0%,
+
+        #050505 65%
+
+    );
+
+
+    transition:
+
+    opacity .8s ease,
+
+    visibility .8s ease;
+
+
+}
 
 
 
-*{
+.empire-loader.hide {
 
 
-margin:0;
+    opacity: 0;
 
-padding:0;
+    visibility: hidden;
 
-box-sizing:border-box;
+
+}
+
+
+
+
+.loader-content {
+
+
+    width: 330px;
+
+    text-align: center;
 
 
 }
@@ -66,151 +191,48 @@ box-sizing:border-box;
 
 
 
+.loader-logo {
 
 
+    font-family:
 
-body{
+    "Cinzel",
+    serif;
 
 
-width:100%;
+    font-size:
 
-height:100vh;
+    60px;
 
 
+    font-weight:
 
-font-family:'Poppins',sans-serif;
+    900;
 
 
+    letter-spacing:
 
-background:#050505;
+    12px;
 
 
-color:white;
+    color:
 
+    var(--gold);
 
-overflow:hidden;
 
 
+    text-shadow:
 
-}
 
+    0 0 10px rgba(212,175,55,.7),
 
+    0 0 35px rgba(212,175,55,.35);
 
 
 
+    animation:
 
-
-
-/* ======================================================
-   LOADER
-====================================================== */
-
-
-
-
-
-#loader{
-
-
-position:fixed;
-
-
-inset:0;
-
-
-background:
-
-
-radial-gradient(
-
-circle,
-
-#222,
-
-#050505 70%
-
-);
-
-
-
-display:flex;
-
-
-align-items:center;
-
-
-justify-content:center;
-
-
-
-z-index:9999;
-
-
-
-animation:
-
-
-sumirLoader 1s ease 3.5s forwards;
-
-
-
-}
-
-
-
-
-
-
-
-
-.loader-content{
-
-
-text-align:center;
-
-
-}
-
-
-
-
-
-
-
-
-.loader-logo{
-
-
-font-family:'Cinzel',serif;
-
-
-font-size:85px;
-
-
-font-weight:900;
-
-
-letter-spacing:18px;
-
-
-color:var(--gold);
-
-
-
-text-shadow:
-
-
-0 0 20px rgba(212,175,55,.5),
-
-
-0 0 60px rgba(212,175,55,.3);
-
-
-
-animation:
-
-
-pulso 2s infinite;
+    empireGlow 2.5s infinite;
 
 
 
@@ -220,22 +242,50 @@ pulso 2s infinite;
 
 
 
+.loader-subtitle {
+
+
+    margin-top:
+
+    10px;
+
+
+    font-size:
+
+    14px;
+
+
+    letter-spacing:
+
+    4px;
+
+
+    color:
+
+    var(--text);
+
+
+}
 
 
 
-.loader-subtitle{
+
+.loader-text {
 
 
-margin-top:15px;
+    margin-top:
+
+    25px;
 
 
-letter-spacing:5px;
+    font-size:
+
+    13px;
 
 
-font-size:15px;
+    color:
 
-
-color:var(--gold-light);
+    #aaa;
 
 
 }
@@ -244,67 +294,37 @@ color:var(--gold-light);
 
 
 
+.loader-progress {
 
 
+    width:
 
-.loader-line{
-
-
-width:320px;
+    100%;
 
 
-height:4px;
+    height:
+
+    5px;
 
 
-margin:45px auto 15px;
+    margin-top:
+
+    25px;
 
 
-background:#222;
+    background:
+
+    rgba(255,255,255,.1);
 
 
-border-radius:20px;
+    overflow:
+
+    hidden;
 
 
-overflow:hidden;
+    border-radius:
 
-
-
-}
-
-
-
-.loader-progress{
-
-
-height:100%;
-
-
-width:0;
-
-
-
-background:
-
-
-linear-gradient(
-
-90deg,
-
-var(--gold-dark),
-
-var(--gold-light),
-
-var(--gold)
-
-);
-
-
-
-animation:
-
-
-carregar 3.5s forwards;
-
+    20px;
 
 
 }
@@ -312,738 +332,44 @@ carregar 3.5s forwards;
 
 
 
+.loader-progress span {
 
-.loader-content p{
 
+    display:
 
-font-size:12px;
+    block;
 
 
-letter-spacing:3px;
+    width:
 
+    40%;
 
-color:#aaa;
 
+    height:
 
+    100%;
 
-}
-/* ======================================================
-   LOGIN PRINCIPAL
-   PARTE 2/3
-====================================================== */
 
+    background:
 
 
+    linear-gradient(
 
+        90deg,
 
-.login-page{
+        transparent,
 
+        var(--gold),
 
-width:100%;
+        transparent
 
+    );
 
-height:100vh;
 
 
+    animation:
 
-display:flex;
-
-
-align-items:center;
-
-
-justify-content:center;
-
-
-
-position:relative;
-
-
-
-}
-
-
-
-
-
-
-
-
-.background-overlay{
-
-
-position:absolute;
-
-
-inset:0;
-
-
-
-background:
-
-
-linear-gradient(
-
-90deg,
-
-rgba(0,0,0,.95),
-
-rgba(0,0,0,.55),
-
-rgba(0,0,0,.95)
-
-),
-
-
-
-url("../img/fundo-login.jpg");
-
-
-
-background-size:cover;
-
-
-
-background-position:center;
-
-
-
-}
-
-
-
-
-
-
-
-
-.login-container{
-
-
-position:relative;
-
-
-z-index:2;
-
-
-
-}
-
-
-
-
-
-
-
-
-.login-card{
-
-
-width:440px;
-
-
-
-padding:50px;
-
-
-
-background:
-
-
-rgba(255,255,255,.06);
-
-
-
-border:
-
-
-1px solid rgba(212,175,55,.35);
-
-
-
-border-radius:35px;
-
-
-
-backdrop-filter:
-
-
-blur(25px);
-
-
-
-box-shadow:
-
-
-0 40px 100px rgba(0,0,0,.8);
-
-
-
-animation:
-
-
-entradaLogin 1s ease;
-
-
-
-}
-
-
-
-
-
-
-
-
-.brand{
-
-
-text-align:center;
-
-
-}
-
-
-
-.logo{
-
-
-width:120px;
-
-
-height:120px;
-
-
-
-object-fit:contain;
-
-
-
-filter:
-
-
-drop-shadow(
-
-0 0 25px rgba(212,175,55,.5)
-
-);
-
-
-
-}
-
-
-
-
-
-
-
-
-.brand h1{
-
-
-font-family:'Cinzel',serif;
-
-
-font-size:55px;
-
-
-
-letter-spacing:10px;
-
-
-color:var(--gold);
-
-
-
-margin-top:15px;
-
-
-
-}
-
-
-
-
-
-.brand h2{
-
-
-font-family:'Cinzel',serif;
-
-
-font-size:18px;
-
-
-
-color:var(--gold-light);
-
-
-
-margin-top:8px;
-
-
-
-letter-spacing:2px;
-
-
-
-}
-
-
-
-
-
-.brand span{
-
-
-display:block;
-
-
-font-size:11px;
-
-
-letter-spacing:3px;
-
-
-color:#aaa;
-
-
-
-margin-top:12px;
-
-
-
-}
-
-
-
-
-
-
-
-
-.divider{
-
-
-height:1px;
-
-
-margin:35px 0;
-
-
-
-background:
-
-
-linear-gradient(
-
-90deg,
-
-transparent,
-
-var(--gold),
-
-transparent
-
-);
-
-
-
-}
-
-
-
-
-
-
-
-
-.input-box{
-
-
-margin-bottom:20px;
-
-
-}
-
-
-
-
-.input-box label{
-
-
-display:block;
-
-
-font-size:13px;
-
-
-color:var(--gold-light);
-
-
-margin-bottom:8px;
-
-
-
-}
-
-
-
-
-.input-box input{
-
-
-width:100%;
-
-
-height:55px;
-
-
-
-padding:0 20px;
-
-
-
-border-radius:15px;
-
-
-
-border:
-
-
-1px solid rgba(212,175,55,.3);
-
-
-
-background:
-
-
-rgba(0,0,0,.6);
-
-
-
-color:white;
-
-
-
-outline:none;
-
-
-
-font-size:15px;
-
-
-
-}
-
-
-
-.input-box input:focus{
-
-
-border-color:var(--gold);
-
-
-
-box-shadow:
-
-
-0 0 25px rgba(212,175,55,.35);
-
-
-
-}
-/* ======================================================
-   FINAL LOGIN
-   PARTE 3/3
-====================================================== */
-
-
-
-
-
-
-.login-options{
-
-
-display:flex;
-
-
-justify-content:space-between;
-
-
-align-items:center;
-
-
-
-font-size:13px;
-
-
-
-margin:15px 0 25px;
-
-
-
-}
-
-
-
-
-.login-options label{
-
-
-display:flex;
-
-
-align-items:center;
-
-
-gap:8px;
-
-
-
-color:#bbb;
-
-
-
-}
-
-
-
-
-.login-options input{
-
-
-accent-color:var(--gold);
-
-
-}
-
-
-
-
-
-.login-options a{
-
-
-color:var(--gold-light);
-
-
-
-text-decoration:none;
-
-
-
-transition:.3s;
-
-
-
-}
-
-
-
-.login-options a:hover{
-
-
-color:var(--gold);
-
-
-}
-
-
-
-
-
-
-
-
-#btnEntrar{
-
-
-width:100%;
-
-
-height:60px;
-
-
-
-border:none;
-
-
-
-border-radius:18px;
-
-
-
-cursor:pointer;
-
-
-
-font-weight:800;
-
-
-
-letter-spacing:4px;
-
-
-
-color:#111;
-
-
-
-background:
-
-
-linear-gradient(
-
-135deg,
-
-var(--gold-dark),
-
-var(--gold-light),
-
-var(--gold)
-
-);
-
-
-
-transition:.4s;
-
-
-
-}
-
-
-
-
-
-#btnEntrar:hover{
-
-
-transform:
-
-
-translateY(-4px);
-
-
-
-box-shadow:
-
-
-0 20px 45px rgba(212,175,55,.45);
-
-
-
-}
-
-
-
-
-
-
-
-
-#mensagemLogin{
-
-
-text-align:center;
-
-
-margin-top:20px;
-
-
-font-size:14px;
-
-
-min-height:20px;
-
-
-
-}
-
-
-
-.sucesso{
-
-
-color:#6dff91;
-
-
-}
-
-
-
-
-.erro{
-
-
-color:#ff7070;
-
-
-}
-
-
-
-
-
-
-
-
-.system-info{
-
-
-text-align:center;
-
-
-margin-top:30px;
-
-
-
-}
-
-
-
-.system-info p{
-
-
-font-family:'Cinzel',serif;
-
-
-font-size:18px;
-
-
-
-color:var(--gold);
-
-
-
-letter-spacing:5px;
-
-
-
-}
-
-
-
-.system-info span{
-
-
-display:block;
-
-
-font-size:11px;
-
-
-color:#888;
-
-
-letter-spacing:3px;
-
-
-
-margin-top:8px;
+    loading 1.8s infinite;
 
 
 
@@ -1057,139 +383,1554 @@ margin-top:8px;
 
 
 
-/* ======================================================
+/* ================================================
+   LOGIN PAGE
+================================================ */
+
+
+.login-page {
+
+
+    position:
+
+    relative;
+
+
+    width:
+
+    100%;
+
+
+    min-height:
+
+    100vh;
+
+
+
+    display:
+
+    flex;
+
+
+    align-items:
+
+    center;
+
+
+    justify-content:
+
+    center;
+
+
+
+    overflow:
+
+    hidden;
+
+
+}
+
+
+
+
+
+
+
+/* FUNDO */
+
+
+.login-background {
+
+
+    position:
+
+    absolute;
+
+
+    inset:
+
+    0;
+
+
+
+    background-image:
+
+
+    url("../../assets/img/fundo-login.jpg");
+
+
+
+    background-size:
+
+    cover;
+
+
+
+    background-position:
+
+    center;
+
+
+
+    filter:
+
+    brightness(.45);
+
+
+
+    transform:
+
+    scale(1.05);
+
+
+
+}
+
+
+
+
+
+
+/* CAMADA ESCURA */
+
+
+.login-overlay {
+
+
+    position:
+
+    absolute;
+
+
+    inset:
+
+    0;
+
+
+
+    background:
+
+
+    linear-gradient(
+
+        135deg,
+
+        rgba(5,5,5,.95),
+
+        rgba(10,10,10,.75)
+
+    );
+
+
+
+}
+
+
+
+
+
+
+
+/* BRILHO DECORATIVO */
+
+
+.login-page::before {
+
+
+    content:"";
+
+
+    position:
+
+    absolute;
+
+
+    width:
+
+    600px;
+
+
+    height:
+
+    600px;
+
+
+
+    background:
+
+    radial-gradient(
+
+        circle,
+
+        rgba(212,175,55,.15),
+
+        transparent 70%
+
+    );
+
+
+
+    top:
+
+    -200px;
+
+
+    left:
+
+    -200px;
+
+
+
+}
+
+
+
+.login-page::after {
+
+
+    content:"";
+
+
+    position:
+
+    absolute;
+
+
+    width:
+
+    500px;
+
+
+    height:
+
+    500px;
+
+
+
+    background:
+
+    radial-gradient(
+
+        circle,
+
+        rgba(212,175,55,.12),
+
+        transparent 70%
+
+    );
+
+
+
+    bottom:
+
+    -200px;
+
+
+    right:
+
+    -200px;
+
+
+
+}
+
+
+
+
+
+
+/* CONTAINER PRINCIPAL */
+
+
+.login-main {
+
+
+    position:
+
+    relative;
+
+
+    z-index:
+
+    2;
+
+
+
+    width:
+
+    100%;
+
+
+    max-width:
+
+    1200px;
+
+
+
+    display:
+
+    flex;
+
+
+
+    align-items:
+
+    center;
+
+
+
+    justify-content:
+
+    center;
+
+
+
+    gap:
+
+    80px;
+
+
+
+    padding:
+
+    40px;
+
+
+}
+/* ================================================
+   ÁREA DA MARCA EMPIRE
+================================================ */
+
+
+.login-company {
+
+
+    width:
+
+    420px;
+
+
+}
+
+
+
+.company-box {
+
+
+    text-align:
+
+    center;
+
+
+    animation:
+
+    fadeUp .8s ease;
+
+
+}
+
+
+
+.company-logo {
+
+
+    width:
+
+    150px;
+
+
+    height:
+
+    150px;
+
+
+    object-fit:
+
+    contain;
+
+
+    filter:
+
+    drop-shadow(
+
+        0 0 25px rgba(212,175,55,.5)
+
+    );
+
+
+    margin-bottom:
+
+    20px;
+
+
+
+}
+
+
+
+.login-company h1 {
+
+
+    font-family:
+
+    "Cinzel",
+    serif;
+
+
+    font-size:
+
+    65px;
+
+
+    letter-spacing:
+
+    12px;
+
+
+    color:
+
+    var(--gold);
+
+
+
+    text-shadow:
+
+
+    0 0 20px rgba(212,175,55,.5);
+
+
+
+}
+
+
+
+.login-company h2 {
+
+
+    margin-top:
+
+    15px;
+
+
+    font-size:
+
+    18px;
+
+
+    font-weight:
+
+    400;
+
+
+    letter-spacing:
+
+    4px;
+
+
+    color:
+
+    var(--gold-light);
+
+
+}
+
+
+
+.login-company p {
+
+
+    margin-top:
+
+    25px;
+
+
+    line-height:
+
+    1.7;
+
+
+    color:
+
+    var(--text);
+
+
+    font-size:
+
+    14px;
+
+
+
+}
+
+
+
+
+
+
+/* STATUS SISTEMA */
+
+
+.system-indicator {
+
+
+    margin-top:
+
+    35px;
+
+
+    display:
+
+    inline-flex;
+
+
+    align-items:
+
+    center;
+
+
+    gap:
+
+    12px;
+
+
+    padding:
+
+    12px 25px;
+
+
+    border:
+
+    1px solid var(--border);
+
+
+    border-radius:
+
+    50px;
+
+
+    background:
+
+    rgba(255,255,255,.04);
+
+
+    backdrop-filter:
+
+    blur(10px);
+
+
+
+}
+
+
+
+.online-dot {
+
+
+    width:
+
+    10px;
+
+
+    height:
+
+    10px;
+
+
+    border-radius:
+
+    50%;
+
+
+
+    background:
+
+    #22c55e;
+
+
+
+    box-shadow:
+
+
+    0 0 15px #22c55e;
+
+
+
+}
+
+
+
+
+
+
+
+/* ================================================
+   PAINEL LOGIN
+================================================ */
+
+
+.login-panel {
+
+
+    width:
+
+    430px;
+
+
+}
+
+
+
+.login-card {
+
+
+    padding:
+
+    45px;
+
+
+    background:
+
+
+    rgba(255,255,255,.06);
+
+
+
+    border:
+
+
+    1px solid rgba(212,175,55,.25);
+
+
+
+    border-radius:
+
+    25px;
+
+
+
+    backdrop-filter:
+
+    blur(25px);
+
+
+
+    box-shadow:
+
+
+    0 25px 80px rgba(0,0,0,.7),
+
+
+    var(--shadow-gold);
+
+
+
+    animation:
+
+
+    fadeUp .8s ease;
+
+
+
+}
+
+
+
+
+
+
+
+/* HEADER */
+
+
+.login-header {
+
+
+    text-align:
+
+    center;
+
+
+    margin-bottom:
+
+    35px;
+
+
+
+}
+
+
+
+.login-header h3 {
+
+
+    font-family:
+
+    "Cinzel",
+    serif;
+
+
+    font-size:
+
+    28px;
+
+
+
+    color:
+
+    var(--gold);
+
+
+
+}
+
+
+
+.login-header p {
+
+
+    margin-top:
+
+    10px;
+
+
+    font-size:
+
+    14px;
+
+
+    color:
+
+    var(--text);
+
+
+
+}
+
+
+
+
+
+
+
+/* ================================================
+   INPUTS
+================================================ */
+
+
+.input-group {
+
+
+    margin-bottom:
+
+    25px;
+
+
+
+}
+
+
+
+.input-group label {
+
+
+    display:
+
+    block;
+
+
+    margin-bottom:
+
+    10px;
+
+
+    font-size:
+
+    13px;
+
+
+    color:
+
+    var(--gold-light);
+
+
+
+}
+
+
+
+.input-field {
+
+
+    position:
+
+    relative;
+
+
+    display:
+
+    flex;
+
+
+    align-items:
+
+    center;
+
+
+
+}
+
+
+
+.input-field i {
+
+
+    position:
+
+    absolute;
+
+
+    left:
+
+    18px;
+
+
+    color:
+
+    var(--gold);
+
+
+
+}
+
+
+
+.input-field input {
+
+
+    width:
+
+    100%;
+
+
+    height:
+
+    55px;
+
+
+    padding:
+
+    0 50px;
+
+
+    border-radius:
+
+    15px;
+
+
+
+    border:
+
+    1px solid rgba(212,175,55,.25);
+
+
+
+    background:
+
+    rgba(0,0,0,.45);
+
+
+
+    color:
+
+    white;
+
+
+    outline:
+
+    none;
+
+
+
+    transition:
+
+    .3s;
+
+
+
+}
+
+
+
+.input-field input:focus {
+
+
+    border-color:
+
+    var(--gold);
+
+
+
+    box-shadow:
+
+
+    0 0 20px rgba(212,175,55,.25);
+
+
+
+}
+
+
+
+
+
+
+
+.password-button {
+
+
+    position:
+
+    absolute;
+
+
+    right:
+
+    15px;
+
+
+    background:
+
+    none;
+
+
+    border:
+
+    none;
+
+
+    color:
+
+    var(--gold);
+
+
+
+    cursor:
+
+    pointer;
+
+
+    font-size:
+
+    16px;
+
+
+
+}
+
+
+
+
+
+
+
+
+/* ================================================
+   OPÇÕES LOGIN
+================================================ */
+
+
+.login-options {
+
+
+    display:
+
+    flex;
+
+
+    justify-content:
+
+    space-between;
+
+
+    align-items:
+
+    center;
+
+
+    font-size:
+
+    13px;
+
+
+    margin-bottom:
+
+    25px;
+
+
+
+}
+
+
+
+.login-options a {
+
+
+    color:
+
+    var(--gold-light);
+
+
+    text-decoration:
+
+    none;
+
+
+
+}
+
+
+
+.remember {
+
+
+    display:
+
+    flex;
+
+
+    gap:
+
+    8px;
+
+
+    align-items:
+
+    center;
+
+
+    color:
+
+    var(--text);
+
+
+
+}
+/* ================================================
+   BOTÃO LOGIN
+================================================ */
+
+
+.login-submit {
+
+
+    width:
+
+    100%;
+
+
+    height:
+
+    58px;
+
+
+    border:
+
+    none;
+
+
+
+    border-radius:
+
+    15px;
+
+
+
+    cursor:
+
+    pointer;
+
+
+
+    display:
+
+    flex;
+
+
+
+    align-items:
+
+    center;
+
+
+
+    justify-content:
+
+    center;
+
+
+
+    gap:
+
+    15px;
+
+
+
+    background:
+
+
+    linear-gradient(
+
+        135deg,
+
+        var(--gold-light),
+
+        var(--gold),
+
+        var(--gold-dark)
+
+    );
+
+
+
+    color:
+
+    #050505;
+
+
+
+    font-weight:
+
+    800;
+
+
+
+    letter-spacing:
+
+    2px;
+
+
+
+    font-size:
+
+    15px;
+
+
+
+    transition:
+
+    .4s;
+
+
+
+    box-shadow:
+
+
+    0 10px 35px rgba(212,175,55,.35);
+
+
+
+}
+
+
+
+.login-submit:hover {
+
+
+    transform:
+
+    translateY(-3px);
+
+
+    box-shadow:
+
+
+    0 15px 45px rgba(212,175,55,.55);
+
+
+
+}
+
+
+
+.login-submit i {
+
+
+    font-size:
+
+    18px;
+
+
+
+}
+
+
+
+
+
+
+
+
+/* ================================================
+   MENSAGEM LOGIN
+================================================ */
+
+
+.login-message {
+
+
+    min-height:
+
+    25px;
+
+
+    margin-bottom:
+
+    15px;
+
+
+    text-align:
+
+    center;
+
+
+    font-size:
+
+    13px;
+
+
+}
+
+
+
+.login-message.success {
+
+
+    color:
+
+    #22c55e;
+
+
+}
+
+
+
+.login-message.error {
+
+
+    color:
+
+    #ef4444;
+
+
+}
+
+
+
+
+
+
+
+/* ================================================
+   SEGURANÇA
+================================================ */
+
+
+.login-security {
+
+
+    margin-top:
+
+    30px;
+
+
+    padding-top:
+
+    25px;
+
+
+    border-top:
+
+    1px solid rgba(255,255,255,.1);
+
+
+
+    display:
+
+    flex;
+
+
+    justify-content:
+
+    center;
+
+
+    gap:
+
+    25px;
+
+
+    flex-wrap:
+
+    wrap;
+
+
+
+}
+
+
+
+.login-security div {
+
+
+    display:
+
+    flex;
+
+
+    align-items:
+
+    center;
+
+
+    gap:
+
+    8px;
+
+
+    font-size:
+
+    12px;
+
+
+    color:
+
+    #aaa;
+
+
+
+}
+
+
+
+.login-security i {
+
+
+    color:
+
+    var(--gold);
+
+
+
+}
+
+
+
+
+
+
+
+
+/* ================================================
+   FOOTER LOGIN
+================================================ */
+
+
+.login-footer {
+
+
+    margin-top:
+
+    35px;
+
+
+    text-align:
+
+    center;
+
+
+
+}
+
+
+
+.login-footer strong {
+
+
+    font-family:
+
+    "Cinzel",
+    serif;
+
+
+
+    color:
+
+    var(--gold);
+
+
+
+    letter-spacing:
+
+    4px;
+
+
+
+}
+
+
+
+.login-footer p {
+
+
+    color:
+
+    var(--gold-light);
+
+
+
+    font-size:
+
+    13px;
+
+
+    margin-top:
+
+    5px;
+
+
+
+}
+
+
+
+.login-footer small {
+
+
+    color:
+
+    #777;
+
+
+
+}
+
+
+
+
+
+
+
+
+
+/* ================================================
    ANIMAÇÕES
-====================================================== */
+================================================ */
 
 
+@keyframes empireGlow {
 
 
-
-@keyframes carregar{
-
-
-from{
+    0% {
 
 
-width:0;
+        opacity:
+
+        .7;
 
 
-}
+    }
 
 
-
-to{
-
-
-width:100%;
+    50% {
 
 
-}
+        opacity:
+
+        1;
 
 
-
-}
-
+    }
 
 
+    100% {
 
 
+        opacity:
+
+        .7;
 
 
-
-@keyframes pulso{
-
-
-0%,100%{
-
-
-transform:scale(1);
+    }
 
 
 }
 
 
 
-50%{
+@keyframes loading {
 
 
-transform:scale(1.06);
+    0% {
 
 
-}
+        transform:
+
+        translateX(-120%);
 
 
-
-}
-
-
-
-
+    }
 
 
 
-
-@keyframes sumirLoader{
-
-
-to{
+    100% {
 
 
-opacity:0;
+        transform:
+
+        translateX(300%);
 
 
-visibility:hidden;
-
+    }
 
 
 }
 
 
 
-}
+@keyframes fadeUp {
+
+
+    from {
+
+
+        opacity:
+
+        0;
+
+
+        transform:
+
+        translateY(30px);
+
+
+    }
 
 
 
+    to {
 
 
+        opacity:
+
+        1;
 
 
+        transform:
 
-@keyframes entradaLogin{
-
-
-from{
+        translateY(0);
 
 
-opacity:0;
-
-
-transform:
-
-
-translateY(50px);
-
-
-
-}
-
-
-
-to{
-
-
-opacity:1;
-
-
-transform:
-
-
-translateY(0);
-
-
-
-}
-
+    }
 
 
 }
@@ -1201,25 +1942,111 @@ translateY(0);
 
 
 
-/* ======================================================
-   RESPONSIVO
-====================================================== */
+/* ================================================
+   RESPONSIVIDADE
+================================================ */
+
+
+
+@media(max-width:1100px){
+
+
+    .login-main {
+
+
+        gap:
+
+        40px;
+
+
+
+    }
+
+
+
+    .login-company {
+
+
+        width:
+
+        350px;
+
+
+
+    }
+
+
+}
 
 
 
 
 
-@media(max-width:600px){
+
+@media(max-width:850px){
 
 
 
-.login-card{
+    .login-main {
 
 
-width:90vw;
+        flex-direction:
+
+        column;
 
 
-padding:35px 25px;
+
+        padding:
+
+        25px;
+
+
+
+    }
+
+
+
+    .login-company {
+
+
+        width:
+
+        100%;
+
+
+
+    }
+
+
+
+    .login-company h1 {
+
+
+        font-size:
+
+        45px;
+
+
+
+    }
+
+
+
+    .login-panel {
+
+
+        width:
+
+        100%;
+
+
+        max-width:
+
+        430px;
+
+
+
+    }
 
 
 
@@ -1227,28 +2054,108 @@ padding:35px 25px;
 
 
 
-.loader-logo{
-
-
-font-size:55px;
-
-
-letter-spacing:10px;
-
-
-
-}
 
 
 
 
-.brand h1{
+@media(max-width:480px){
 
 
-font-size:38px;
+
+    .login-card {
 
 
-}
+        padding:
+
+        30px 20px;
+
+
+
+        border-radius:
+
+        20px;
+
+
+
+    }
+
+
+
+
+    .company-logo {
+
+
+        width:
+
+        100px;
+
+
+    }
+
+
+
+    .login-company h1 {
+
+
+        font-size:
+
+        35px;
+
+
+
+        letter-spacing:
+
+        7px;
+
+
+
+    }
+
+
+
+
+    .login-header h3 {
+
+
+        font-size:
+
+        22px;
+
+
+
+    }
+
+
+
+
+    .login-options {
+
+
+        flex-direction:
+
+        column;
+
+
+        gap:
+
+        15px;
+
+
+
+    }
+
+
+
+    .login-submit {
+
+
+        height:
+
+        52px;
+
+
+
+    }
 
 
 
