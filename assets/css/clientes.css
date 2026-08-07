@@ -1,0 +1,1013 @@
+/* ==========================================================
+   EMPIRE ERP - GESTÃO DE CLIENTES
+   LUXURY ERP PREMIUM
+   Preto | Ouro | Grafite
+========================================================== */
+
+
+/* ==========================================================
+   RESET
+========================================================== */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+
+:root{
+
+    --black:#050505;
+    --dark:#0b0b0b;
+    --graphite:#161616;
+
+    --gold:#d4af37;
+    --gold-light:#f8e48c;
+    --gold-dark:#8f6b12;
+
+    --white:#ffffff;
+    --text:#d8d8d8;
+
+    --border:rgba(212,175,55,.35);
+
+    --glass:rgba(255,255,255,.05);
+
+    --shadow:
+    0 20px 50px rgba(0,0,0,.7);
+
+}
+
+
+/* ==========================================================
+   BODY
+========================================================== */
+
+body{
+
+    min-height:100vh;
+    background:
+    radial-gradient(circle at top,
+    rgba(212,175,55,.15),
+    transparent 35%),
+    var(--black);
+
+    color:var(--text);
+
+    overflow-x:hidden;
+
+}
+
+
+/* ==========================================================
+   LOADER PREMIUM
+========================================================== */
+
+
+.loader{
+
+    position:fixed;
+
+    inset:0;
+
+    background:#050505;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    z-index:9999;
+
+    transition:.8s ease;
+
+}
+
+
+.loader.hide{
+
+    opacity:0;
+
+    visibility:hidden;
+
+}
+
+
+
+.loader-content{
+
+    text-align:center;
+
+}
+
+
+.loader-logo{
+
+    font-family:'Cinzel',serif;
+
+    font-size:70px;
+
+    letter-spacing:15px;
+
+    color:var(--gold);
+
+    text-shadow:
+
+    0 0 20px rgba(212,175,55,.5);
+
+
+    animation:pulseLogo 2s infinite;
+
+}
+
+
+
+.loader-subtitle{
+
+    margin-top:15px;
+
+    color:#aaa;
+
+    letter-spacing:4px;
+
+    font-size:13px;
+
+}
+
+
+
+.loader-line{
+
+    width:250px;
+
+    height:3px;
+
+    background:#222;
+
+    margin:30px auto;
+
+    overflow:hidden;
+
+}
+
+
+
+.loader-line span{
+
+    display:block;
+
+    width:40%;
+
+    height:100%;
+
+    background:linear-gradient(
+    90deg,
+    transparent,
+    var(--gold),
+    transparent
+    );
+
+    animation:loading 1.5s infinite;
+
+}
+
+
+
+@keyframes loading{
+
+    from{
+        transform:translateX(-100%);
+    }
+
+    to{
+        transform:translateX(300%);
+    }
+
+}
+
+
+@keyframes pulseLogo{
+
+    50%{
+
+        transform:scale(1.05);
+
+    }
+
+}
+
+
+
+/* ==========================================================
+   FUNDO ANIMADO
+========================================================== */
+
+
+.background-animation{
+
+    position:fixed;
+
+    inset:0;
+
+    z-index:-1;
+
+    overflow:hidden;
+
+}
+
+
+
+.glow{
+
+    position:absolute;
+
+    width:450px;
+
+    height:450px;
+
+    border-radius:50%;
+
+    filter:blur(120px);
+
+    opacity:.25;
+
+}
+
+
+
+.glow-1{
+
+    background:#d4af37;
+
+    top:-150px;
+
+    left:-150px;
+
+}
+
+
+
+.glow-2{
+
+    background:#8f6b12;
+
+    right:-150px;
+
+    top:40%;
+
+}
+
+
+
+.glow-3{
+
+    background:#ffffff;
+
+    bottom:-200px;
+
+    left:40%;
+
+    opacity:.05;
+
+}
+
+
+
+/* ==========================================================
+   ESTRUTURA PRINCIPAL
+========================================================== */
+
+
+.erp-container{
+
+    display:flex;
+
+    min-height:100vh;
+
+}
+
+
+/* ==========================================================
+   SIDEBAR
+========================================================== */
+
+
+.sidebar{
+
+    width:280px;
+
+    background:
+
+    linear-gradient(
+    180deg,
+    rgba(255,255,255,.05),
+    transparent
+    ),
+
+    var(--dark);
+
+
+    border-right:1px solid var(--border);
+
+    padding:25px 20px;
+
+    position:fixed;
+
+    height:100vh;
+
+    z-index:100;
+
+}
+
+
+
+.brand{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:15px;
+
+    margin-bottom:30px;
+
+}
+
+
+
+.brand img{
+
+    width:55px;
+
+    height:55px;
+
+    object-fit:contain;
+
+}
+
+
+
+.brand h2{
+
+    font-family:'Cinzel',serif;
+
+    color:var(--gold);
+
+    letter-spacing:3px;
+
+}
+
+
+
+.brand span{
+
+    font-size:11px;
+
+    color:#aaa;
+
+}
+
+
+
+/* ==========================================================
+   PERFIL
+========================================================== */
+
+
+.profile-card{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+    padding:15px;
+
+    background:var(--glass);
+
+    border:
+
+    1px solid var(--border);
+
+    border-radius:15px;
+
+    margin-bottom:30px;
+
+}
+
+
+
+.profile-card img{
+
+    width:45px;
+
+    height:45px;
+
+    border-radius:50%;
+
+    object-fit:cover;
+
+}
+
+
+
+.profile-card strong{
+
+    color:white;
+
+}
+
+
+
+.profile-card p{
+
+    font-size:12px;
+
+    color:#aaa;
+
+}
+
+
+
+.status-dot{
+
+    display:inline-block;
+
+    width:8px;
+
+    height:8px;
+
+    background:#00ff88;
+
+    border-radius:50%;
+
+    margin-right:5px;
+
+}
+
+
+
+/* ==========================================================
+   MENU
+========================================================== */
+
+
+.navigation{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:8px;
+
+}
+
+
+
+.navigation a{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:15px;
+
+    padding:14px;
+
+    color:#aaa;
+
+    text-decoration:none;
+
+    border-radius:12px;
+
+    transition:.3s;
+
+}
+
+
+
+.navigation a:hover,
+.navigation a.active{
+
+    background:
+
+    linear-gradient(
+    90deg,
+    rgba(212,175,55,.25),
+    transparent
+    );
+
+
+    color:var(--gold-light);
+
+}
+
+
+
+.navigation i{
+
+    width:22px;
+
+    text-align:center;
+
+}
+
+
+/* ==========================================================
+   CONTEÚDO
+========================================================== */
+
+
+.content{
+
+    margin-left:280px;
+
+    width:calc(100% - 280px);
+
+    padding:30px;
+
+}
+/* ==========================================================
+   TOPBAR
+========================================================== */
+
+.topbar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:20px;
+    margin-bottom:30px;
+    flex-wrap:wrap;
+}
+
+.page-title h1{
+    font-family:'Cinzel',serif;
+    color:var(--gold);
+    font-size:34px;
+    letter-spacing:2px;
+}
+
+.page-title p{
+    color:#999;
+    margin-top:6px;
+    font-size:14px;
+}
+
+.global-search{
+    flex:1;
+    max-width:450px;
+    position:relative;
+}
+
+.global-search i{
+    position:absolute;
+    left:18px;
+    top:50%;
+    transform:translateY(-50%);
+    color:var(--gold);
+}
+
+.global-search input{
+    width:100%;
+    padding:14px 18px 14px 48px;
+    background:var(--glass);
+    border:1px solid var(--border);
+    border-radius:14px;
+    color:#fff;
+    outline:none;
+}
+
+.global-search input::placeholder{
+    color:#888;
+}
+
+.top-actions{
+    display:flex;
+    align-items:center;
+    gap:15px;
+}
+
+.icon-button{
+    position:relative;
+    width:50px;
+    height:50px;
+    border:none;
+    cursor:pointer;
+    background:var(--glass);
+    border:1px solid var(--border);
+    border-radius:14px;
+    color:var(--gold);
+    transition:.3s;
+}
+
+.icon-button:hover{
+    transform:translateY(-3px);
+}
+
+.icon-button span{
+    position:absolute;
+    top:-6px;
+    right:-6px;
+    width:22px;
+    height:22px;
+    border-radius:50%;
+    background:#d32f2f;
+    color:#fff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:11px;
+}
+
+.time-box{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    background:var(--glass);
+    border:1px solid var(--border);
+    padding:14px 18px;
+    border-radius:14px;
+    color:var(--gold-light);
+}
+
+/* ==========================================================
+   MÉTRICAS
+========================================================== */
+
+.metrics-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+    gap:22px;
+    margin-bottom:30px;
+}
+
+.metric-card{
+    background:var(--glass);
+    border:1px solid var(--border);
+    border-radius:18px;
+    padding:22px;
+    display:flex;
+    align-items:center;
+    gap:18px;
+    transition:.35s;
+}
+
+.metric-card:hover{
+    transform:translateY(-6px);
+    box-shadow:var(--shadow);
+}
+
+.metric-icon{
+    width:70px;
+    height:70px;
+    border-radius:18px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:28px;
+    color:var(--gold);
+    background:rgba(212,175,55,.12);
+}
+
+.metric-info span{
+    color:#aaa;
+    font-size:13px;
+}
+
+.metric-info h2{
+    margin:8px 0;
+    color:#fff;
+    font-size:30px;
+}
+
+.metric-info small{
+    color:#777;
+}
+
+/* ==========================================================
+   CARDS
+========================================================== */
+
+.dashboard-card{
+    background:var(--glass);
+    border:1px solid var(--border);
+    border-radius:20px;
+    padding:24px;
+    margin-bottom:25px;
+}
+
+.dashboard-card.large{
+    flex:2;
+}
+
+.card-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:20px;
+    margin-bottom:20px;
+}
+
+.card-header label{
+    color:var(--gold);
+    font-size:12px;
+    letter-spacing:2px;
+}
+
+.card-header h3{
+    margin-top:5px;
+    color:#fff;
+}
+
+.card-header select{
+    background:#121212;
+    border:1px solid var(--border);
+    color:#fff;
+    padding:10px 15px;
+    border-radius:10px;
+}
+
+/* ==========================================================
+   CHARTS
+========================================================== */
+
+.charts-area{
+    display:flex;
+    gap:25px;
+    flex-wrap:wrap;
+}
+
+.chart-box{
+    width:100%;
+    height:350px;
+}
+
+.chart-box canvas{
+    width:100% !important;
+    height:100% !important;
+}
+
+.status-list{
+    display:flex;
+    flex-direction:column;
+    gap:15px;
+}
+
+.status-item{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:15px;
+    background:#111;
+    border-radius:12px;
+}
+
+.online,
+.offline{
+    width:12px;
+    height:12px;
+    border-radius:50%;
+    display:inline-block;
+    margin-right:8px;
+}
+
+.online{
+    background:#00d26a;
+}
+
+.offline{
+    background:#ff5252;
+}
+
+/* ==========================================================
+   INFORMATION GRID
+========================================================== */
+
+.information-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(350px,1fr));
+    gap:25px;
+}
+
+/* ==========================================================
+   TABELA
+========================================================== */
+
+.table-tools{
+    display:flex;
+    gap:15px;
+    margin-bottom:20px;
+    flex-wrap:wrap;
+}
+
+.table-tools input,
+.table-tools select{
+    background:#111;
+    color:#fff;
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:12px 15px;
+}
+
+.table-container{
+    overflow:auto;
+}
+
+.erp-table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+.erp-table th{
+    background:#121212;
+    color:var(--gold);
+    padding:16px;
+    text-align:left;
+}
+
+.erp-table td{
+    padding:16px;
+    border-top:1px solid rgba(255,255,255,.06);
+}
+
+.erp-table tr:hover{
+    background:rgba(255,255,255,.03);
+}
+
+/* ==========================================================
+   BOTÕES
+========================================================== */
+
+.primary-button{
+    background:linear-gradient(135deg,var(--gold),var(--gold-dark));
+    color:#000;
+    border:none;
+    border-radius:12px;
+    padding:14px 22px;
+    cursor:pointer;
+    font-weight:700;
+    transition:.3s;
+}
+
+.primary-button:hover{
+    transform:translateY(-3px);
+    box-shadow:0 0 30px rgba(212,175,55,.4);
+}
+
+/* ==========================================================
+   MODAL
+========================================================== */
+
+.modal{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.75);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    z-index:1000;
+}
+
+.modal.show{
+    display:flex;
+}
+
+.modal-content{
+    width:min(700px,95%);
+    background:#101010;
+    border:1px solid var(--border);
+    border-radius:20px;
+    padding:30px;
+    position:relative;
+}
+
+.close-modal{
+    position:absolute;
+    right:18px;
+    top:18px;
+    background:none;
+    border:none;
+    color:#fff;
+    font-size:24px;
+    cursor:pointer;
+}
+
+.form-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:18px;
+}
+
+.input-group{
+    display:flex;
+    flex-direction:column;
+    margin-bottom:18px;
+}
+
+.input-group label{
+    margin-bottom:8px;
+    color:#ccc;
+}
+
+.input-group input,
+.input-group select,
+.input-group textarea{
+    background:#0f0f0f;
+    color:#fff;
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:13px;
+    outline:none;
+}
+
+textarea{
+    resize:vertical;
+    min-height:120px;
+}
+
+/* ==========================================================
+   EMPTY
+========================================================== */
+
+.empty{
+    text-align:center;
+    color:#888;
+    padding:35px;
+}
+
+.empty i{
+    font-size:50px;
+    margin-bottom:15px;
+    color:var(--gold);
+}
+
+/* ==========================================================
+   FOOTER
+========================================================== */
+
+.footer{
+    margin-top:35px;
+    display:flex;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:15px;
+    padding-top:25px;
+    border-top:1px solid rgba(255,255,255,.08);
+    color:#888;
+}
+
+.footer strong{
+    color:var(--gold);
+}
+
+/* ==========================================================
+   RESPONSIVO
+========================================================== */
+
+@media(max-width:1100px){
+
+    .sidebar{
+        width:90px;
+    }
+
+    .brand-text,
+    .navigation span,
+    .profile-card div,
+    .sidebar-footer{
+        display:none;
+    }
+
+    .content{
+        margin-left:90px;
+        width:calc(100% - 90px);
+    }
+}
+
+@media(max-width:768px){
+
+    .content{
+        margin-left:0;
+        width:100%;
+        padding:18px;
+    }
+
+    .sidebar{
+        display:none;
+    }
+
+    .topbar{
+        flex-direction:column;
+        align-items:stretch;
+    }
+
+    .charts-area{
+        flex-direction:column;
+    }
+
+    .information-grid{
+        grid-template-columns:1fr;
+    }
+}
