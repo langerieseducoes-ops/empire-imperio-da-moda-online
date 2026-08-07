@@ -1,24 +1,127 @@
 /* ======================================================
-   DADOS INICIAIS DO ERP
-   SEM VALORES FIXOS
+   EMPIRE ERP
+   DASHBOARD JS PREMIUM
+   PARTE 1 - SISTEMA BASE
 ====================================================== */
 
 
-const empireData = {
 
-    produtos: 0,
+document.addEventListener("DOMContentLoaded",()=>{
 
-    clientes: 0,
 
-    vendas: 0,
 
-    custoProdutos: 0,
+// ===============================
+// LOADER
+// ===============================
 
-    precoProdutos: 0,
 
-    financeiro: 0
+const loader =
+
+document.getElementById(
+"empireLoader"
+);
+
+
+
+if(loader){
+
+
+setTimeout(()=>{
+
+
+loader.classList.add("hide");
+
+
+},2500);
+
+
+}
+
+
+
+
+
+
+// ===============================
+// BANCO LOCAL ERP
+// ===============================
+
+
+window.empireDatabase =
+
+JSON.parse(
+
+localStorage.getItem(
+"empireERP"
+)
+
+)
+
+||
+
+{
+
+
+produtos:[],
+
+
+clientes:[],
+
+
+vendas:[],
+
+
+financeiro:{
+
+
+saldo:0,
+
+
+custos:0
+
+
+},
+
+
+
+notificacoes:[]
+
+
 
 };
+
+
+
+
+
+
+
+// ===============================
+// SALVAR BANCO
+// ===============================
+
+
+function salvarERP(){
+
+
+
+localStorage.setItem(
+
+"empireERP",
+
+JSON.stringify(
+
+empireDatabase
+
+)
+
+);
+
+
+
+}
+
+
 
 
 
@@ -29,67 +132,93 @@ const empireData = {
 // ===============================
 
 
-function atualizarDashboard(){
+function atualizarCards(){
 
 
 
-    const produtos =
-    document.getElementById("totalProdutos");
+const produtos =
 
-
-    const clientes =
-    document.getElementById("totalClientes");
-
-
-    const vendas =
-    document.getElementById("totalVendas");
-
-
-    const financeiro =
-    document.getElementById("saldoFinanceiro");
+document.getElementById(
+"totalProdutos"
+);
 
 
 
+const clientes =
 
-
-    if(produtos){
-
-        produtos.innerText =
-        empireData.produtos;
-
-    }
+document.getElementById(
+"totalClientes"
+);
 
 
 
+const vendas =
 
-    if(clientes){
+document.getElementById(
+"totalVendas"
+);
 
-        clientes.innerText =
-        empireData.clientes;
 
-    }
+
+const saldo =
+
+document.getElementById(
+"saldoFinanceiro"
+);
 
 
 
 
-    if(vendas){
-
-        vendas.innerText =
-        empireData.vendas;
-
-    }
 
 
 
+if(produtos)
 
-    if(financeiro){
+produtos.innerText =
 
-        financeiro.innerText =
-        "R$ " +
-        empireData.financeiro.toFixed(2)
-        .replace(".",",");
+empireDatabase.produtos.length;
 
-    }
+
+
+
+
+if(clientes)
+
+clientes.innerText =
+
+empireDatabase.clientes.length;
+
+
+
+
+
+if(vendas)
+
+vendas.innerText =
+
+empireDatabase.vendas.length;
+
+
+
+
+
+
+if(saldo)
+
+saldo.innerText =
+
+
+"R$ "
+
++
+
+empireDatabase.financeiro.saldo
+
+.toFixed(2)
+
+.replace(".",",");
+
+
 
 
 
@@ -99,12 +228,96 @@ function atualizarDashboard(){
 
 
 
-// iniciar sistema vazio
 
-atualizarDashboard();
+
+atualizarCards();
+
+
+
+
+
+
+// ===============================
+// RELÓGIO
+// ===============================
+
+
+function atualizarRelogio(){
+
+
+
+const clock =
+
+document.getElementById(
+"systemClock"
+);
+
+
+
+
+if(clock){
+
+
+
+const agora =
+
+new Date();
+
+
+
+
+clock.innerHTML =
+
+
+`
+
+<strong>
+
+${agora.toLocaleTimeString("pt-BR")}
+
+</strong>
+
+<small>
+
+${agora.toLocaleDateString("pt-BR")}
+
+</small>
+
+
+`;
+
+
+
+}
+
+
+
+}
+
+
+
+
+setInterval(
+
+atualizarRelogio,
+
+1000
+
+);
+
+
+
+atualizarRelogio();
+
+
+
+
+
+});
 /* ======================================================
-   GRÁFICOS DO DASHBOARD
-   EMPIRE ERP - DADOS REAIS
+   EMPIRE ERP
+   DASHBOARD JS PREMIUM
+   PARTE 2 - GRÁFICOS
 ====================================================== */
 
 
@@ -114,16 +327,22 @@ atualizarDashboard();
 // ===============================
 
 
-const salesCanvas =
-document.getElementById("salesChart");
-
-
 
 let salesChart;
 
 
 
-if(salesCanvas){
+const salesCanvas =
+
+document.getElementById(
+"salesChart"
+);
+
+
+
+
+
+if(salesCanvas && typeof Chart !== "undefined"){
 
 
 
@@ -135,6 +354,7 @@ salesCanvas,
 
 
 type:"line",
+
 
 
 data:{
@@ -153,10 +373,12 @@ labels:[
 ],
 
 
+
 datasets:[{
 
 
 label:"Vendas",
+
 
 data:[
 
@@ -191,6 +413,10 @@ options:{
 responsive:true,
 
 
+maintainAspectRatio:false,
+
+
+
 plugins:{
 
 
@@ -203,13 +429,11 @@ display:true
 }
 
 
-
 },
 
 
 
 scales:{
-
 
 
 y:{
@@ -218,20 +442,18 @@ y:{
 beginAtZero:true
 
 
-
-}
-
-
-
 }
 
 
 }
 
 
+
 }
 
 
+
+}
 
 );
 
@@ -252,6 +474,10 @@ beginAtZero:true
 
 
 
+let productsChart;
+
+
+
 const productsCanvas =
 
 document.getElementById(
@@ -261,19 +487,15 @@ document.getElementById(
 
 
 
-let productsChart;
 
 
-
-
-if(productsCanvas){
+if(productsCanvas && typeof Chart !== "undefined"){
 
 
 
 productsChart = new Chart(
 
 productsCanvas,
-
 
 {
 
@@ -287,7 +509,7 @@ data:{
 
 labels:[
 
-"Sem produtos cadastrados"
+"Produtos cadastrados"
 
 ],
 
@@ -296,13 +518,14 @@ labels:[
 datasets:[{
 
 
-data:[1]
+data:[0]
+
 
 
 }]
 
-},
 
+},
 
 
 
@@ -310,6 +533,10 @@ options:{
 
 
 responsive:true,
+
+
+maintainAspectRatio:false,
+
 
 
 plugins:{
@@ -351,7 +578,6 @@ position:"bottom"
 
 // ===============================
 // ATUALIZAR GRÁFICOS
-// FUTURO BANCO ERP
 // ===============================
 
 
@@ -363,23 +589,29 @@ function atualizarGraficos(){
 if(salesChart){
 
 
-salesChart.data.datasets[0].data = [
 
-0,
-0,
-0,
-0,
-0,
-0,
-0
+const vendas =
 
-];
+empireDatabase.vendas;
+
+
+
+salesChart.data.datasets[0].data =
+
+vendas.map(
+
+v=>v.valor || 0
+
+);
+
 
 
 salesChart.update();
 
 
+
 }
+
 
 
 
@@ -388,64 +620,66 @@ salesChart.update();
 if(productsChart){
 
 
-productsChart.data.datasets[0].data=[1];
+
+productsChart.data.datasets[0].data = [
+
+
+
+empireDatabase.produtos.length
+
+
+
+];
+
 
 
 productsChart.update();
 
 
+
+}
+
+
+
 }
 
 
 
-}
+
 
 
 
 atualizarGraficos();
 /* ======================================================
-   SISTEMA DE DADOS LOCAL
    EMPIRE ERP
+   DASHBOARD JS PREMIUM
+   PARTE 3 - NOTIFICAÇÕES + STATUS
 ====================================================== */
 
 
 
 // ===============================
-// BANCO LOCAL DO ERP
+// SISTEMA DE NOTIFICAÇÕES
 // ===============================
 
 
-let empireDatabase = JSON.parse(
 
-localStorage.getItem("empireERP")
-
-)
-
-|| {
+function criarNotificacao(mensagem){
 
 
-produtos:[],
+
+const notificacao = {
 
 
-clientes:[],
+mensagem: mensagem,
 
 
-vendas:[],
+data:
 
+new Date()
 
-financeiro:{
+.toLocaleString("pt-BR")
 
-
-saldo:0,
-
-
-custos:0
-
-
-},
-
-
-notificacoes:[]
 
 
 };
@@ -454,193 +688,19 @@ notificacoes:[]
 
 
 
+empireDatabase.notificacoes.push(
 
-
-// ===============================
-// SALVAR BANCO
-// ===============================
-
-
-function salvarEmpire(){
-
-
-localStorage.setItem(
-
-"empireERP",
-
-JSON.stringify(empireDatabase)
+notificacao
 
 );
 
 
-}
 
+salvarERP();
 
 
 
-
-
-
-// ===============================
-// ATUALIZAR DASHBOARD PELOS DADOS
-// ===============================
-
-
-function carregarDadosERP(){
-
-
-
-const produtos =
-
-document.getElementById(
-"totalProdutos"
-);
-
-
-
-const clientes =
-
-document.getElementById(
-"totalClientes"
-);
-
-
-
-
-const vendas =
-
-document.getElementById(
-"totalVendas"
-);
-
-
-
-
-const financeiro =
-
-document.getElementById(
-"saldoFinanceiro"
-);
-
-
-
-
-
-
-if(produtos){
-
-
-produtos.innerText =
-
-empireDatabase.produtos.length;
-
-
-}
-
-
-
-
-
-if(clientes){
-
-
-clientes.innerText =
-
-empireDatabase.clientes.length;
-
-
-}
-
-
-
-
-
-if(vendas){
-
-
-vendas.innerText =
-
-empireDatabase.vendas.length;
-
-
-}
-
-
-
-
-
-if(financeiro){
-
-
-financeiro.innerText =
-
-
-"R$ " +
-
-empireDatabase.financeiro.saldo
-
-.toFixed(2)
-
-.replace(".",",");
-
-
-
-}
-
-
-
-
-}
-
-
-
-
-
-carregarDadosERP();
-
-
-
-
-
-
-
-
-// ===============================
-// NOTIFICAÇÕES
-// ===============================
-
-
-
-function criarNotificacao(texto){
-
-
-
-const nova = {
-
-
-mensagem:texto,
-
-
-data:new Date()
-
-.toLocaleString(
-"pt-BR"
-)
-
-
-};
-
-
-
-empireDatabase.notificacoes.push(nova);
-
-
-
-salvarEmpire();
-
-
-
-mostrarNotificacoes();
+atualizarNotificacoes();
 
 
 
@@ -652,21 +712,22 @@ mostrarNotificacoes();
 
 
 
-function mostrarNotificacoes(){
+
+function atualizarNotificacoes(){
 
 
 
 const contador =
 
-document.querySelector(
-
-".notification-btn span"
-
+document.getElementById(
+"notificationCount"
 );
 
 
 
+
 if(contador){
+
 
 
 contador.innerText =
@@ -679,15 +740,13 @@ empireDatabase.notificacoes.length;
 
 
 
-
 }
 
 
 
 
 
-
-mostrarNotificacoes();
+atualizarNotificacoes();
 
 
 
@@ -697,38 +756,73 @@ mostrarNotificacoes();
 
 
 // ===============================
-// STATUS ONLINE
+// STATUS DE CONEXÃO
 // ===============================
 
 
 
-function atualizarStatusSistema(){
+function atualizarConexao(){
 
 
 
-const online =
+const status =
 
-navigator.onLine;
-
-
-
-console.log(
-
-online
-
-?
-
-"🟢 Sistema Online"
-
-:
-
-"🔴 Sistema Offline"
-
+document.getElementById(
+"connectionStatus"
 );
 
 
 
+
+
+if(!status) return;
+
+
+
+
+
+if(navigator.onLine){
+
+
+
+status.innerText =
+"Online";
+
+
+
+status.style.color =
+"#32ff70";
+
+
+
 }
+
+
+
+else{
+
+
+
+status.innerText =
+"Offline";
+
+
+
+status.style.color =
+"#ff4444";
+
+
+
+}
+
+
+
+
+
+}
+
+
+
 
 
 
@@ -736,7 +830,7 @@ window.addEventListener(
 
 "online",
 
-atualizarStatusSistema
+atualizarConexao
 
 );
 
@@ -746,65 +840,84 @@ window.addEventListener(
 
 "offline",
 
-atualizarStatusSistema
+atualizarConexao
 
 );
 
 
 
-atualizarStatusSistema();
-/* ======================================================
-   SESSÃO DO USUÁRIO
-   EMPIRE ERP
-====================================================== */
+atualizarConexao();
+
+
+
+
+
 
 
 
 // ===============================
-// VERIFICAR LOGIN
+// STATUS BANCO LOCAL
 // ===============================
 
 
-function verificarSessao(){
 
+const banco =
 
-
-const usuario =
-
-localStorage.getItem(
-"empireUsuario"
+document.getElementById(
+"databaseStatus"
 );
 
 
 
-
-if(!usuario){
-
-
-console.log(
-
-"Usuário não autenticado"
-
-);
+if(banco){
 
 
-
-// futuramente redireciona para login
-
-return;
+banco.innerText =
+"Ativo";
 
 
 }
 
 
 
+
+
+// TESTE INICIAL (DESATIVADO)
+// criarNotificacao("Sistema EMPIRE iniciado");
+/* ======================================================
+   EMPIRE ERP
+   DASHBOARD JS PREMIUM
+   PARTE 4 - SESSÃO + API GLOBAL
+====================================================== */
+
+
+
+// ===============================
+// USUÁRIO DA SESSÃO
+// ===============================
+
+
+
+const usuarioAtual =
+
+localStorage.getItem(
+"empireUsuario"
+)
+
+||
+
+"Administrador";
+
+
+
+
+
 const nomeUsuario =
 
-document.querySelector(
-
-".user-profile strong"
-
+document.getElementById(
+"userName"
 );
+
 
 
 
@@ -812,18 +925,34 @@ document.querySelector(
 if(nomeUsuario){
 
 
-nomeUsuario.innerText = usuario;
+nomeUsuario.innerText =
+
+usuarioAtual;
 
 
 }
 
 
 
-}
 
 
 
-verificarSessao();
+
+// ===============================
+// REGISTRAR ACESSO
+// ===============================
+
+
+
+localStorage.setItem(
+
+"ultimoAcesso",
+
+new Date()
+
+.toLocaleString("pt-BR")
+
+);
 
 
 
@@ -836,7 +965,8 @@ verificarSessao();
 // ===============================
 
 
-const botaoLogout =
+
+const logout =
 
 document.getElementById(
 "logout"
@@ -846,11 +976,12 @@ document.getElementById(
 
 
 
-if(botaoLogout){
+
+if(logout){
 
 
 
-botaoLogout.addEventListener(
+logout.addEventListener(
 
 "click",
 
@@ -862,7 +993,7 @@ const confirmar =
 
 confirm(
 
-"Deseja realmente sair do EMPIRE ERP?"
+"Deseja sair do EMPIRE ERP?"
 
 );
 
@@ -879,8 +1010,6 @@ localStorage.removeItem(
 "empireUsuario"
 
 );
-
-
 
 
 
@@ -911,112 +1040,10 @@ window.location.href =
 
 
 
-// ===============================
-// DATA DE ACESSO
-// ===============================
-
-
-
-function registrarAcesso(){
-
-
-
-const acesso = {
-
-
-entrada:
-
-new Date()
-
-.toLocaleString(
-"pt-BR"
-)
-
-
-
-};
-
-
-
-
-
-localStorage.setItem(
-
-"ultimoAcesso",
-
-JSON.stringify(acesso)
-
-);
-
-
-
-}
-
-
-
-registrarAcesso();
-
-
-
-
-
-
-
 
 // ===============================
-// EFEITO DE ENTRADA
+// API GLOBAL EMPIRE ERP
 // ===============================
-
-
-document.addEventListener(
-
-"DOMContentLoaded",
-
-()=>{
-
-
-
-const elementos =
-
-document.querySelectorAll(
-
-".dashboard-card, .chart-box"
-
-);
-
-
-
-
-
-elementos.forEach(
-
-(elemento,index)=>{
-
-
-
-elemento.style.animationDelay =
-
-(index * 0.15)
-
-+
-
-"s";
-
-
-
-}
-
-
-
-);
-
-
-
-});
-/* ======================================================
-   API GLOBAL DO EMPIRE ERP
-   COMUNICAÇÃO ENTRE MÓDULOS
-====================================================== */
 
 
 
@@ -1026,21 +1053,36 @@ window.EmpireERP = {
 
 
 
-// ===============================
-// ADICIONAR PRODUTO
-// ===============================
-
 
 adicionarProduto(produto){
 
 
-empireDatabase.produtos.push(produto);
+
+empireDatabase.produtos.push(
+
+produto
+
+);
 
 
-salvarEmpire();
+
+salvarERP();
 
 
-carregarDadosERP();
+
+atualizarCards();
+
+
+
+atualizarGraficos();
+
+
+
+criarNotificacao(
+
+"Novo produto cadastrado"
+
+);
 
 
 
@@ -1050,25 +1092,33 @@ carregarDadosERP();
 
 
 
-
-// ===============================
-// ADICIONAR CLIENTE
-// ===============================
 
 
 adicionarCliente(cliente){
 
 
 
-empireDatabase.clientes.push(cliente);
+empireDatabase.clientes.push(
+
+cliente
+
+);
 
 
 
-salvarEmpire();
+salvarERP();
 
 
 
-carregarDadosERP();
+atualizarCards();
+
+
+
+criarNotificacao(
+
+"Novo cliente cadastrado"
+
+);
 
 
 
@@ -1080,16 +1130,16 @@ carregarDadosERP();
 
 
 
-// ===============================
-// REGISTRAR VENDA
-// ===============================
-
 
 registrarVenda(venda){
 
 
 
-empireDatabase.vendas.push(venda);
+empireDatabase.vendas.push(
+
+venda
+
+);
 
 
 
@@ -1098,9 +1148,14 @@ empireDatabase.vendas.push(venda);
 if(venda.valor){
 
 
+
 empireDatabase.financeiro.saldo +=
 
-Number(venda.valor);
+Number(
+
+venda.valor
+
+);
 
 
 
@@ -1109,11 +1164,24 @@ Number(venda.valor);
 
 
 
-salvarEmpire();
+
+salvarERP();
 
 
 
-carregarDadosERP();
+atualizarCards();
+
+
+
+atualizarGraficos();
+
+
+
+criarNotificacao(
+
+"Nova venda registrada"
+
+);
 
 
 
@@ -1123,11 +1191,6 @@ carregarDadosERP();
 
 
 
-
-
-// ===============================
-// LANÇAR CUSTO
-// ===============================
 
 
 registrarCusto(valor){
@@ -1141,7 +1204,6 @@ Number(valor);
 
 
 
-
 empireDatabase.financeiro.saldo -=
 
 Number(valor);
@@ -1149,12 +1211,19 @@ Number(valor);
 
 
 
-
-salvarEmpire();
-
+salvarERP();
 
 
-carregarDadosERP();
+
+atualizarCards();
+
+
+
+criarNotificacao(
+
+"Custo lançado no financeiro"
+
+);
 
 
 
@@ -1166,21 +1235,15 @@ carregarDadosERP();
 
 
 
-// ===============================
-// CONSULTAR DADOS
-// ===============================
-
-
 dados(){
+
 
 
 return empireDatabase;
 
 
+
 }
-
-
-
 
 
 
@@ -1195,7 +1258,7 @@ return empireDatabase;
 
 console.log(
 
-"👑 EMPIRE ERP iniciado com sucesso"
+"👑 EMPIRE ERP carregado"
 
 );
 
