@@ -1,7 +1,8 @@
+
 /*
 ====================================================
  EMPIRE ERP
- LOGIN JS REMASTERIZADO
+ LOGIN SYSTEM
  Controle de usuários e permissões
 ====================================================
 */
@@ -12,7 +13,7 @@ document.addEventListener(
 ()=>{
 
 
-iniciarLogin();
+iniciarSistema();
 
 
 });
@@ -22,9 +23,37 @@ iniciarLogin();
 
 
 
+// ================================================
+// INICIAR SISTEMA
+// ================================================
+
+
+function iniciarSistema(){
+
+
+criarUsuariosPadrao();
+
+
+ativarLogin();
+
+
+ativarMostrarSenha();
+
+
+iniciarLoader();
+
+
+}
+
+
+
+
+
+
+
 
 // ================================================
-// USUÁRIOS PADRÃO
+// CRIAR USUÁRIOS PADRÃO
 // ================================================
 
 
@@ -34,9 +63,11 @@ function criarUsuariosPadrao(){
 
 let usuarios =
 
-localStorage.getItem(
+JSON.parse(
 
+localStorage.getItem(
 "empire_usuarios"
+)
 
 );
 
@@ -44,69 +75,123 @@ localStorage.getItem(
 
 
 
-if(!usuarios){
+
+if(usuarios){
+
+return;
+
+}
 
 
 
-const lista = [
+
+
+
+usuarios=[
 
 
 
 {
 
+id:1,
 
 usuario:"admin",
 
-
 senha:"123456",
 
+nome:"Administrador",
 
 cargo:"Administrador",
 
+permissoes:[
 
-permissaoSenha:true
+"todos"
 
-
+]
 
 },
 
 
 
+
+
 {
 
+id:2,
 
 usuario:"gerente",
 
-
 senha:"123456",
 
+nome:"Gerente Geral",
 
 cargo:"Gerente",
 
+permissoes:[
 
-permissaoSenha:false
+"vendas",
 
+"clientes",
 
+"relatorios"
+
+]
 
 },
 
 
 
+
+
+
 {
 
+id:3,
 
-usuario:"vendedor",
-
+usuario:"estoquista",
 
 senha:"123456",
 
+nome:"Responsável Estoque",
+
+cargo:"Estoquista",
+
+permissoes:[
+
+"produtos",
+
+"estoque",
+
+"compras"
+
+]
+
+},
+
+
+
+
+
+
+{
+
+id:4,
+
+usuario:"vendedor",
+
+senha:"123456",
+
+nome:"Vendedor",
 
 cargo:"Vendedor",
 
+permissoes:[
 
-permissaoSenha:false
+"vendas",
 
+"clientes"
 
+]
 
 }
 
@@ -123,7 +208,7 @@ localStorage.setItem(
 
 "empire_usuarios",
 
-JSON.stringify(lista)
+JSON.stringify(usuarios)
 
 );
 
@@ -133,49 +218,35 @@ JSON.stringify(lista)
 
 
 
-}
-
-
-
-
-
 
 
 
 
 // ================================================
-// INICIAR LOGIN
+// ATIVAR LOGIN
 // ================================================
 
 
-function iniciarLogin(){
-
-
-
-criarUsuariosPadrao();
-
-
-
-
-animacaoLoader();
+function ativarLogin(){
 
 
 
 const form =
 
 document.getElementById(
-
 "loginForm"
-
 );
 
 
 
 
 
+if(!form)
+
+return;
 
 
-if(form){
+
 
 
 
@@ -187,6 +258,7 @@ form.addEventListener(
 
 
 e.preventDefault();
+
 
 
 validarLogin();
@@ -206,94 +278,56 @@ validarLogin();
 
 
 
-ativarMostrarSenha();
-
-
-
-}
-
-
-
-
-
-
 
 
 // ================================================
-// LOADER
+// VALIDAR LOGIN
 // ================================================
 
-
-function animacaoLoader(){
-
-
-
-const loader =
-
-document.getElementById(
-
-"loginLoader"
-
-);
-
-
-
-
-
-if(!loader)
-
-return;
-
-
-
-
-
-
-
-setTimeout(()=>{
-
-
-loader.classList.add(
-
-"hide"
-
-);
-
-
-
-},1200);
-
-
-
-}
-/* ================================================
-VALIDAR LOGIN
-================================================ */
 
 function validarLogin(){
 
 
-const usuario =
+
+const usuarioInput =
 
 document.getElementById(
-"username"
+"usuario"
 ).value.trim();
 
 
 
-const senha =
+
+
+const senhaInput =
 
 document.getElementById(
-"password"
+"senha"
 ).value;
 
 
 
-const mensagem =
 
-document.getElementById(
-"loginMessage"
+
+
+if(!usuarioInput || !senhaInput){
+
+
+
+mostrarMensagem(
+
+"Preencha usuário e senha."
+
 );
+
+
+return;
+
+
+}
+
+
+
 
 
 
@@ -309,31 +343,91 @@ localStorage.getItem(
 
 
 
-const encontrado =
 
-usuarios.find(u =>
 
-u.usuario.toLowerCase() === usuario.toLowerCase()
+const usuarioEncontrado =
+
+usuarios.find(
+
+(u)=>
+
+
+u.usuario &&
+
+u.usuario.toLowerCase()
+
+===
+
+usuarioInput.toLowerCase()
 
 &&
 
-u.senha === senha
+
+u.senha === senhaInput
+
 
 );
 
 
 
-if(!encontrado){
 
-if(mensagem){
 
-mensagem.textContent="Usuário ou senha inválidos.";
 
-}
+if(!usuarioEncontrado){
+
+
+
+mostrarMensagem(
+
+"Usuário ou senha incorretos."
+
+);
+
+
 
 return;
 
+
+
 }
+ 
+
+// ================================================
+// CRIAR SESSÃO
+// ================================================
+
+
+function criarSessao(usuario){
+
+
+
+const sessao = {
+
+
+id:usuario.id,
+
+
+usuario:usuario.usuario,
+
+
+nome:usuario.nome,
+
+
+cargo:usuario.cargo,
+
+
+permissoes:usuario.permissoes,
+
+
+entrada:new Date().toLocaleString(
+"pt-BR"
+)
+
+
+};
+
+
+
 
 
 
@@ -341,23 +435,11 @@ localStorage.setItem(
 
 "empire_sessao",
 
-JSON.stringify({
-
-usuario:encontrado.usuario,
-
-cargo:encontrado.cargo,
-
-permissaoSenha:encontrado.permissaoSenha,
-
-login:new Date().toISOString()
-
-})
+JSON.stringify(sessao)
 
 );
 
 
-
-window.location.href="pages/html/dashboard.html";
 
 }
 
@@ -368,94 +450,208 @@ window.location.href="pages/html/dashboard.html";
 
 
 
-/* ================================================
-MOSTRAR / OCULTAR SENHA
-================================================ */
+
+// ================================================
+// FINAL LOGIN
+// ================================================
+
+
+function finalizarLogin(usuario){
+
+
+
+criarSessao(usuario);
+
+
+
+
+
+mostrarMensagem(
+
+"Login realizado. Bem-vindo ao EMPIRE!",
+
+"sucesso"
+
+);
+
+
+
+
+
+
+setTimeout(()=>{
+
+
+
+window.location.href=
+
+"pages/html/dashboard.html";
+
+
+
+},1200);
+
+
+
+
+}
+
+
+
+
+
+
+
+
+// ================================================
+// MENSAGEM
+// ================================================
+
+
+function mostrarMensagem(
+
+texto,
+
+tipo="erro"
+
+){
+
+
+
+const box =
+
+document.getElementById(
+"mensagem"
+);
+
+
+
+
+
+if(!box)
+
+return;
+
+
+
+
+
+
+box.textContent=texto;
+
+
+
+
+
+box.style.color =
+
+tipo==="sucesso"
+
+?
+
+"#00d27a"
+
+:
+
+"#ff4d4f";
+
+
+
+}
+
+
+
+
+
+
+
+
+
+// ================================================
+// MOSTRAR / OCULTAR SENHA
+// ================================================
+
 
 function ativarMostrarSenha(){
+
 
 
 const botao =
 
 document.getElementById(
-"showPassword"
+"mostrarSenha"
 );
 
 
 
-const senha =
+
+
+const campo =
 
 document.getElementById(
-"password"
+"senha"
 );
 
 
 
-if(!botao || !senha){
+
+
+
+if(!botao || !campo)
 
 return;
 
-}
 
 
 
-botao.addEventListener("click",()=>{
 
 
-if(senha.type==="password"){
+botao.addEventListener(
 
-senha.type="text";
+"click",
 
-botao.innerHTML='<i class="fa-solid fa-eye-slash"></i>';
+()=>{
+
+
+
+if(campo.type==="password"){
+
+
+
+campo.type="text";
+
+
+
+botao.innerHTML=
+
+'<i class="fa-solid fa-eye-slash"></i>';
+
+
 
 }else{
 
-senha.type="password";
 
-botao.innerHTML='<i class="fa-solid fa-eye"></i>';
+
+campo.type="password";
+
+
+
+botao.innerHTML=
+
+'<i class="fa-solid fa-eye"></i>';
+
+
 
 }
 
 
 
-});
-
 }
-
-
-
-
-
-
-
-
-/* ================================================
-OBTER SESSÃO
-================================================ */
-
-function obterSessao(){
-
-
-const sessao =
-
-localStorage.getItem(
-
-"empire_sessao"
 
 );
 
 
 
-if(!sessao){
-
-return null;
-
-}
-
-
-
-return JSON.parse(sessao);
-
 }
 
 
@@ -465,11 +661,154 @@ return JSON.parse(sessao);
 
 
 
-/* ================================================
-LOGOUT
-================================================ */
 
-function logout(){
+// ================================================
+// LOADER LOGIN
+// ================================================
+
+
+function iniciarLoader(){
+
+
+
+const loader =
+
+document.getElementById(
+"loader"
+);
+
+
+
+
+
+if(!loader)
+
+return;
+
+
+
+
+
+
+setTimeout(()=>{
+
+
+loader.style.opacity="0";
+
+
+setTimeout(()=>{
+
+
+loader.style.display="none";
+
+
+},800);
+
+
+
+},2000);
+
+
+
+}
+ 
+
+// ================================================
+// VERIFICAR SESSÃO
+// ================================================
+
+
+function verificarSessao(){
+
+
+
+const sessao = JSON.parse(
+
+localStorage.getItem(
+"empire_sessao"
+)
+
+);
+
+
+
+
+
+if(sessao){
+
+
+
+console.log(
+
+"Usuário conectado:",
+
+sessao.usuario
+
+);
+
+
+
+}
+
+
+
+}
+
+
+
+
+
+
+// ================================================
+// LOGOUT
+// ================================================
+
+
+function sairSistema(){
+
+
+
+const sessao = JSON.parse(
+
+localStorage.getItem(
+"empire_sessao"
+)
+
+);
+
+
+
+
+
+
+if(sessao){
+
+
+
+sessao.saida =
+
+new Date().toLocaleString(
+"pt-BR"
+);
+
+
+
+localStorage.setItem(
+
+"ultimo_acesso",
+
+JSON.stringify(sessao)
+
+);
+
+
+
+}
+
+
+
+
+
 
 
 localStorage.removeItem(
@@ -480,36 +819,14 @@ localStorage.removeItem(
 
 
 
-window.location.href="../../index.html";
 
-}
 
-window.logout = logout;
-/* ================================================
-AUTORIZAÇÃO DO ADMINISTRADOR
-================================================ */
 
-function autorizarAlteracaoSenha(adminUsuario, adminSenha){
+window.location.href=
 
-const usuarios = JSON.parse(
-localStorage.getItem("empire_usuarios")
-) || [];
+"../../index.html";
 
-const administrador = usuarios.find(usuario =>
 
-usuario.usuario.toLowerCase() === adminUsuario.toLowerCase()
-
-&&
-
-usuario.senha === adminSenha
-
-&&
-
-usuario.cargo === "Administrador"
-
-);
-
-return !!administrador;
 
 }
 
@@ -518,104 +835,66 @@ return !!administrador;
 
 
 
-/* ================================================
-ALTERAR SENHA
-================================================ */
 
-function alterarSenha(
+// ================================================
+// VERIFICAR PERMISSÃO
+// ================================================
 
-usuarioAlvo,
 
-novaSenha,
-
-usuarioAdministrador,
-
-senhaAdministrador
-
-){
-
-const usuarios = JSON.parse(
-
-localStorage.getItem("empire_usuarios")
-
-) || [];
+function temPermissao(permissao){
 
 
 
-const autorizado = autorizarAlteracaoSenha(
+const sessao = JSON.parse(
 
-usuarioAdministrador,
-
-senhaAdministrador
+localStorage.getItem(
+"empire_sessao"
+)
 
 );
 
 
 
-if(!autorizado){
 
-return{
 
-sucesso:false,
+if(!sessao)
 
-mensagem:"Administrador não autorizado."
+return false;
 
-};
+
+
+
+
+
+
+if(
+
+sessao.permissoes.includes(
+
+"todos"
+
+)
+
+)
+
+{
+
+return true;
 
 }
 
 
 
-const indice = usuarios.findIndex(
 
-usuario =>
 
-usuario.usuario.toLowerCase()
+return sessao.permissoes.includes(
 
-===
-
-usuarioAlvo.toLowerCase()
+permissao
 
 );
 
 
 
-if(indice === -1){
-
-return{
-
-sucesso:false,
-
-mensagem:"Usuário não encontrado."
-
-};
-
-}
-
-
-
-usuarios[indice].senha = novaSenha;
-
-
-
-localStorage.setItem(
-
-"empire_usuarios",
-
-JSON.stringify(usuarios)
-
-);
-
-
-
-return{
-
-sucesso:true,
-
-mensagem:"Senha alterada com sucesso."
-
-};
-
 }
 
 
@@ -623,12 +902,20 @@ mensagem:"Senha alterada com sucesso."
 
 
 
-/* ================================================
-DISPONIBILIZA FUNÇÕES
-================================================ */
 
-window.obterSessao = obterSessao;
+// ================================================
+// EXPOR FUNÇÕES
+// ================================================
 
-window.alterarSenha = alterarSenha;
 
-window.autorizarAlteracaoSenha = autorizarAlteracaoSenha;
+window.sairSistema = sairSistema;
+
+window.temPermissao = temPermissao;
+
+window.verificarSessao = verificarSessao;
+
+
+
+// inicia verificação
+
+verificarSessao();
