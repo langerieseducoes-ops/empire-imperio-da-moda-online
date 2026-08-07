@@ -1,23 +1,10 @@
 /*
-==========================================================
- EMPIRE
-
- Império da Moda Online
-
- ERP V4 PREMIUM FULL ULTRA 4K
-
- RECUPERAR SENHA SCRIPT
-
+====================================================
+ EMPIRE | Império da Moda Online
+ RECUPERAR SENHA JS
  PARTE 1/2
-
-==========================================================
+====================================================
 */
-
-
-"use strict";
-
-
-
 
 
 document.addEventListener(
@@ -27,52 +14,129 @@ document.addEventListener(
 ()=>{
 
 
+iniciarRecuperacao();
+
+
+});
 
 
 
-const formulario =
+
+
+
+
+
+
+// ==================================================
+// INICIALIZAÇÃO
+// ==================================================
+
+
+function iniciarRecuperacao(){
+
+
+
+iniciarLoader();
+
+
+
+ativarFormulario();
+
+
+
+console.log(
+
+"EMPIRE | Recuperação de senha iniciada"
+
+);
+
+
+
+}
+
+
+
+
+
+
+
+
+
+// ==================================================
+// LOADER
+// ==================================================
+
+
+function iniciarLoader(){
+
+
+
+const loader =
 
 document.getElementById(
-
-"recuperarForm"
-
+"loader"
 );
 
 
 
 
 
-const campo =
+
+if(!loader)
+return;
+
+
+
+
+
+
+setTimeout(()=>{
+
+
+
+loader.classList.add(
+"hide"
+);
+
+
+
+},1800);
+
+
+
+}
+
+
+
+
+
+
+
+
+
+// ==================================================
+// FORMULÁRIO
+// ==================================================
+
+
+function ativarFormulario(){
+
+
+
+const form =
 
 document.getElementById(
-
-"emailRecuperacao"
-
+"recoverForm"
 );
 
 
 
 
 
-const mensagem =
-
-document.getElementById(
-
-"mensagemRecuperacao"
-
-);
 
 
-
-
-
-const botao =
-
-document.getElementById(
-
-"btnRecuperar"
-
-);
+if(!form)
+return;
 
 
 
@@ -81,12 +145,7 @@ document.getElementById(
 
 
 
-
-if(formulario){
-
-
-
-formulario.addEventListener(
+form.addEventListener(
 
 "submit",
 
@@ -99,31 +158,107 @@ e.preventDefault();
 
 
 
-
-const valor =
-
-campo.value.trim();
+validarRecuperacao();
 
 
 
+}
+
+
+
+);
+
+
+
+}
 
 
 
 
 
-if(valor === ""){
 
 
 
-mensagem.innerHTML =
 
-"Informe seu usuário ou e-mail."
-
-;
-
+// ==================================================
+// VALIDAR DADOS
+// ==================================================
 
 
-mensagem.className="erro";
+function validarRecuperacao(){
+
+
+
+const usuario =
+
+document.getElementById(
+"recoverUser"
+).value.trim();
+
+
+
+
+
+
+const cargo =
+
+document.getElementById(
+"recoverCargo"
+).value;
+
+
+
+
+
+
+const senha =
+
+document.getElementById(
+"newPassword"
+).value.trim();
+
+
+
+
+
+
+const confirmar =
+
+document.getElementById(
+"confirmPassword"
+).value.trim();
+
+
+
+
+
+
+
+const mensagem =
+
+document.getElementById(
+"recoverMessage"
+);
+
+
+
+
+
+
+
+
+
+if(!usuario || !cargo || !senha || !confirmar){
+
+
+
+mostrarMensagem(
+
+"Preencha todos os campos",
+
+"erro"
+
+);
 
 
 
@@ -139,13 +274,40 @@ return;
 
 
 
-enviarRecuperacao(valor);
+if(senha !== confirmar){
+
+
+
+mostrarMensagem(
+
+"As senhas não conferem",
+
+"erro"
+
+);
+
+
+
+return;
 
 
 
 }
 
 
+
+
+
+
+
+
+processarNovaSenha(
+
+usuario,
+
+cargo,
+
+senha
 
 );
 
@@ -160,74 +322,161 @@ enviarRecuperacao(valor);
 
 
 
+// ==================================================
+// MENSAGEM
+// ==================================================
 
-function enviarRecuperacao(valor){
+
+function mostrarMensagem(
+
+texto,
+
+tipo
+
+){
 
 
 
-mensagem.innerHTML =
 
-"Processando recuperação..."
+
+const mensagem =
+
+document.getElementById(
+"recoverMessage"
+);
+
+
+
+
+
+
+
+if(!mensagem)
+return;
+
+
+
+
+
+
+mensagem.textContent =
+
+texto;
+
+
+
+
+
+
+mensagem.style.color =
+
+
+
+tipo==="erro"
+
+?
+
+"#ff5555"
+
+:
+
+"#d4af37";
+
+
+
+
+
+}
+/* ==================================================
+   ALTERAR SENHA
+================================================== */
+
+
+
+function processarNovaSenha(
+
+usuario,
+
+cargo,
+
+novaSenha
+
+){
+
+
+
+
+
+
+
+let usuarios =
+
+JSON.parse(
+
+localStorage.getItem(
+
+"empire_usuarios"
+
+)
+
+)
 
 ;
 
 
 
-mensagem.className="";
 
 
 
 
 
-botao.disabled=true;
+// Caso ainda não exista banco de usuários
+
+if(!usuarios){
 
 
 
-botao.innerHTML=
-
-"ENVIANDO...";
+usuarios = [
 
 
 
+{
 
+usuario:"admin",
+
+senha:"123456",
+
+cargo:"Administrador"
+
+},
+
+
+
+{
+
+usuario:"gerente",
+
+senha:"123456",
+
+cargo:"Gerente"
+
+},
+
+
+
+{
+
+usuario:"vendedor",
+
+senha:"123456",
+
+cargo:"Vendedor"
 
 }
-  /* ======================================================
-   FINAL RECUPERAÇÃO
-   PARTE 2/2
-====================================================== */
 
 
 
-
-
-function concluirRecuperacao(){
-
-
-
-mensagem.innerHTML =
-
-"Solicitação enviada. Verifique seus dados de acesso."
-
-;
-
-
-
-mensagem.className="sucesso";
-
-
-
-
-
-botao.innerHTML=
-
-"ENVIADO";
-
-
-
-
-
-botao.disabled=true;
+];
 
 
 
@@ -240,26 +489,16 @@ botao.disabled=true;
 
 
 
-// Simulação inicial de recuperação
-// futuramente conectado ao banco de dados
 
+const encontrado =
 
+usuarios.find(
 
+u =>
 
+u.usuario === usuario &&
 
-window.addEventListener(
-
-"beforeunload",
-
-()=>{
-
-
-
-campo.value="";
-
-
-
-}
+u.cargo === cargo
 
 
 
@@ -272,21 +511,59 @@ campo.value="";
 
 
 
-console.log(
 
-`
-================================
+if(!encontrado){
 
-👑 EMPIRE
 
-Império da Moda Online
 
-ERP V4 PREMIUM FULL ULTRA 4K
+mostrarMensagem(
 
-Recuperação de senha carregada.
+"Usuário ou cargo inválido",
 
-================================
-`
+"erro"
+
+);
+
+
+
+return;
+
+
+
+}
+
+
+
+
+
+
+
+
+
+// ALTERA SENHA
+
+
+encontrado.senha =
+
+novaSenha;
+
+
+
+
+
+
+
+
+
+localStorage.setItem(
+
+"empire_usuarios",
+
+JSON.stringify(
+
+usuarios
+
+)
 
 );
 
@@ -294,4 +571,61 @@ Recuperação de senha carregada.
 
 
 
-});
+
+
+
+
+mostrarMensagem(
+
+"Senha alterada com sucesso",
+
+"ok"
+
+);
+
+
+
+
+
+
+
+
+
+setTimeout(()=>{
+
+
+
+window.location.href =
+
+"../../index.html";
+
+
+
+},1500);
+
+
+
+
+
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+// ==================================================
+// EXPOR FUNÇÃO
+// ==================================================
+
+
+window.processarNovaSenha =
+
+processarNovaSenha;
