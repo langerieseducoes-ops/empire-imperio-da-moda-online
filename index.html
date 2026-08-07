@@ -7,34 +7,35 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+<meta name="theme-color" content="#050505">
+
+<meta name="description" content="EMPIRE | Império da Moda Online">
+
 
 <title>EMPIRE | Império da Moda Online</title>
 
 
-<link rel="icon" type="image/png" href="assets/img/favicon.png">
+
+<link rel="icon" href="assets/img/favicon.png">
 
 
 
-<!-- =====================================
-     FONTES
-===================================== -->
 
+
+<!-- FONTES -->
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
 
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
 
 
 
 
-<!-- =====================================
-     ICONES
-===================================== -->
-
+<!-- ÍCONES -->
 
 <link rel="stylesheet"
 
@@ -44,16 +45,14 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
 
 
 
-<!-- =====================================
-     CSS
-===================================== -->
-
+<!-- CSS LOGIN -->
 
 <link rel="stylesheet" href="assets/css/login.css">
 
 
 
 </head>
+
 
 
 
@@ -66,15 +65,18 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
 
 
 
-<!-- =====================================
-     LOADER PREMIUM
-===================================== -->
 
 
-<div class="login-loader" id="loginLoader">
+<!-- ==================================================
+LOADER PREMIUM
+================================================== -->
 
 
-<div class="loader-box">
+<div class="loader" id="loader">
+
+
+
+<div class="loader-content">
 
 
 
@@ -86,6 +88,7 @@ EMPIRE
 
 
 
+
 <div class="loader-subtitle">
 
 Império da Moda Online
@@ -94,16 +97,10 @@ Império da Moda Online
 
 
 
-<div class="loader-status">
-
-Inicializando sistema...
-
-</div>
 
 
 
-
-<div class="loader-progress">
+<div class="loader-line">
 
 
 <span></span>
@@ -113,34 +110,13 @@ Inicializando sistema...
 
 
 
-</div>
 
 
 </div>
 
 
 
-
-
-
-
-
-
-<!-- =====================================
-     PÁGINA LOGIN
-===================================== -->
-
-
-<div class="login-page">
-
-
-
-
-
-
-<!-- FUNDO -->
-
-<div class="login-overlay"></div>
+</div>
 
 
 
@@ -150,7 +126,30 @@ Inicializando sistema...
 
 
 
-<div class="login-container">
+<!-- ==================================================
+FUNDO ANIMADO
+================================================== -->
+
+
+<div class="background-animation">
+
+
+
+<div class="glow glow-1"></div>
+
+
+<div class="glow glow-2"></div>
+
+
+<div class="glow glow-3"></div>
+
+
+
+<div id="particles"></div>
+
+
+
+</div>
 
 
 
@@ -158,13 +157,28 @@ Inicializando sistema...
 
 
 
-<!-- =====================================
-     LADO MARCA
-===================================== -->
 
 
-<section class="login-brand">
+<!-- ==================================================
+LOGIN
+================================================== -->
 
+
+<main class="login-container">
+
+
+
+
+
+<section class="login-card">
+
+
+
+
+
+
+
+<div class="login-brand">
 
 
 
@@ -172,9 +186,7 @@ Inicializando sistema...
 
 <img src="assets/img/logo.png"
 
-alt="EMPIRE"
-
-class="login-logo">
+alt="Logo Empire">
 
 
 
@@ -191,88 +203,15 @@ EMPIRE
 
 
 
-<h2>
+
+<span>
 
 Império da Moda Online
 
-</h2>
+</span>
 
 
 
-
-
-
-<p>
-
-Gestão inteligente para seu império da moda.
-
-</p>
-
-
-
-
-
-
-
-
-<div class="login-status">
-
-
-<i class="fa-solid fa-circle"></i>
-
-
-Sistema Online
-
-
-</div>
-
-
-
-
-
-
-
-<div class="brand-info">
-
-
-<div>
-
-
-<i class="fa-solid fa-chart-line"></i>
-
-
-Gestão
-
-
-</div>
-
-
-
-
-<div>
-
-
-<i class="fa-solid fa-cart-shopping"></i>
-
-
-Vendas
-
-
-</div>
-
-
-
-
-<div>
-
-
-<i class="fa-solid fa-users"></i>
-
-
-Clientes
-
-
-</div>
 
 
 
@@ -282,49 +221,9 @@ Clientes
 
 
 
-
-</section>
-
-
-
-
-
-
-
-<!-- =====================================
-     CARD LOGIN
-===================================== -->
-
-
-<section class="login-card">
-
-
-
-
-
-
-<div class="login-header">
-
-
-<h3>
-
-Acesso ao Sistema
-
-</h3>
-
-
-
-<p>
-
-Digite seus dados para entrar
-
-</p>
-
-
-</div>
-<!-- =====================================
-     FORMULÁRIO LOGIN
-===================================== -->
+<!-- ==================================================
+FORMULÁRIO LOGIN
+================================================== -->
 
 
 <form id="loginForm" class="login-form">
@@ -333,7 +232,6 @@ Digite seus dados para entrar
 
 
 
-<!-- USUÁRIO -->
 
 
 <div class="input-group">
@@ -342,9 +240,10 @@ Digite seus dados para entrar
 
 <label>
 
-Usuário ou Email
+Usuário
 
 </label>
+
 
 
 
@@ -352,7 +251,9 @@ Usuário ou Email
 <div class="input-box">
 
 
+
 <i class="fa-solid fa-user"></i>
+
 
 
 
@@ -360,13 +261,13 @@ Usuário ou Email
 
 type="text"
 
-id="loginUser"
-
-name="usuario"
+id="username"
 
 placeholder="Digite seu usuário"
 
-autocomplete="username">
+autocomplete="username"
+
+required>
 
 
 
@@ -381,10 +282,6 @@ autocomplete="username">
 
 
 
-
-
-
-<!-- SENHA -->
 
 
 <div class="input-group">
@@ -410,17 +307,19 @@ Senha
 
 
 
+
 <input
 
 type="password"
 
-id="loginPassword"
-
-name="senha"
+id="password"
 
 placeholder="Digite sua senha"
 
-autocomplete="current-password">
+autocomplete="current-password"
+
+required>
+
 
 
 
@@ -430,9 +329,9 @@ autocomplete="current-password">
 
 type="button"
 
-class="show-password"
+id="showPassword"
 
-id="showPassword">
+class="password-toggle">
 
 
 
@@ -445,21 +344,19 @@ id="showPassword">
 
 
 
-</div>
-
-
 
 </div>
 
 
 
+</div>
 
 
 
 
 
 
-<!-- OPÇÕES -->
+
 
 
 <div class="login-options">
@@ -480,11 +377,9 @@ id="rememberUser">
 
 
 
-
-
 <span>
 
-Lembrar acesso
+Lembrar usuário
 
 </span>
 
@@ -498,13 +393,12 @@ Lembrar acesso
 
 
 
-<a href="#"
 
-id="forgotPassword">
+
+<a href="pages/html/recuperar-senha.html">
 
 
 Esqueci minha senha
-
 
 </a>
 
@@ -513,26 +407,6 @@ Esqueci minha senha
 
 
 
-</div>
-
-
-
-
-
-
-
-
-
-<!-- MENSAGEM -->
-
-
-<div
-
-id="loginMessage"
-
-class="login-message">
-
-
 
 </div>
 
@@ -542,31 +416,26 @@ class="login-message">
 
 
 
-
-
-<!-- BOTÃO -->
 
 
 <button
 
 type="submit"
 
-class="login-button">
+class="login-button"
+
+id="loginButton">
 
 
 
 
 
-<span>
-
-Entrar no Sistema
-
-</span>
+<i class="fa-solid fa-right-to-bracket"></i>
 
 
 
 
-<i class="fa-solid fa-arrow-right"></i>
+Entrar
 
 
 
@@ -581,105 +450,20 @@ Entrar no Sistema
 
 
 
+<div id="loginMessage" class="login-message">
+
+
+
+
+
+</div>
+
+
+
+
+
 
 </form>
-<!-- =====================================
-     SEGURANÇA
-===================================== -->
-
-
-<div class="login-security">
-
-
-
-<div>
-
-
-<i class="fa-solid fa-shield-halved"></i>
-
-
-Sistema protegido
-
-
-</div>
-
-
-
-
-
-<div>
-
-
-<i class="fa-solid fa-lock"></i>
-
-
-Acesso seguro
-
-
-</div>
-
-
-
-
-
-<div>
-
-
-<i class="fa-solid fa-clock"></i>
-
-
-Monitoramento ativo
-
-
-</div>
-
-
-
-</div>
-
-
-
-
-
-
-
-
-
-<!-- =====================================
-     FOOTER LOGIN
-===================================== -->
-
-
-<footer class="login-footer">
-
-
-
-<strong>
-
-EMPIRE
-
-</strong>
-
-
-
-<p>
-
-Império da Moda Online
-
-</p>
-
-
-
-<span>
-
-ERP • Gestão • Controle
-
-</span>
-
-
-
-</footer>
-
 
 
 
@@ -694,15 +478,7 @@ ERP • Gestão • Controle
 
 
 
-
-</div>
-
-
-
-
-
-
-</div>
+</main>
 
 
 
@@ -710,14 +486,90 @@ ERP • Gestão • Controle
 
 
 
-
-
-<!-- =====================================
-     JAVASCRIPT
-===================================== -->
+<!-- ==================================================
+SCRIPTS
+================================================== -->
 
 
 <script src="assets/js/login.js"></script>
+
+
+
+
+
+
+
+
+<!-- ==================================================
+PWA SERVICE WORKER
+================================================== -->
+
+
+<script>
+
+
+if("serviceWorker" in navigator){
+
+
+window.addEventListener(
+
+"load",
+
+()=>{
+
+
+navigator.serviceWorker.register(
+
+"service-worker.js"
+
+)
+
+.then(()=>{
+
+
+console.log(
+
+"EMPIRE ERP PWA ativo"
+
+);
+
+
+
+})
+
+
+.catch(error=>{
+
+
+console.error(
+
+"Erro PWA:",
+
+error
+
+);
+
+
+
+});
+
+
+
+}
+
+
+
+);
+
+
+
+}
+
+
+
+</script>
+
+
 
 
 
