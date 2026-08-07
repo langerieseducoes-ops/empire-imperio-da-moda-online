@@ -1,131 +1,59 @@
 /*
-==========================================================
- EMPIRE
-
- Império da Moda Online
-
- ERP V4 PREMIUM FULL ULTRA 4K
-
- MÓDULO VENDAS
-
- LUXURY ERP SCRIPT
-
+====================================================
+ EMPIRE | Império da Moda Online
+ VENDAS JS
  PARTE 1/3
-==========================================================
+====================================================
 */
 
 
-"use strict";
-
+// ================================================
+// INICIALIZAÇÃO
+// ================================================
 
 
 document.addEventListener("DOMContentLoaded",()=>{
 
 
+    iniciarVendas();
 
 
+});
 
 
-// ===============================================
-// PROTEÇÃO LOGIN
-// ===============================================
 
 
 
-const logado =
 
-localStorage.getItem(
 
-"empire_logado"
+// ================================================
+// VARIÁVEIS
+// ================================================
 
-);
 
-
-
-
-
-
-if(logado !== "true"){
-
-
-window.location.href="../../index.html";
-
-
-return;
-
-
-}
-
-
-
-
-
-
-
-
-
-// ===============================================
-// USUÁRIO
-// ===============================================
-
-
-
-const usuario =
-
-localStorage.getItem(
-
-"empire_usuario"
-
-);
-
-
-
-
-
-
-const userBox =
-
-document.querySelector(".user-box");
-
-
-
-
-
-
-
-if(userBox && usuario){
-
-
-
-userBox.innerHTML=
-
-"👑 " + usuario;
-
-
-
-}
-
-
-
-
-
-
-
-
-
-// ===============================================
-// BANCO DE VENDAS
-// ===============================================
+let carrinhoVenda = [];
 
 
 
 let vendas = JSON.parse(
 
-localStorage.getItem(
+    localStorage.getItem("empireVendas")
 
-"empire_vendas"
+) || [];
 
-)
+
+
+let produtos = JSON.parse(
+
+    localStorage.getItem("empireProdutos")
+
+) || [];
+
+
+
+let clientes = JSON.parse(
+
+    localStorage.getItem("empireClientes")
 
 ) || [];
 
@@ -134,103 +62,35 @@ localStorage.getItem(
 
 
 
-let vendaEditando = null;
 
 
 
+// ================================================
+// INICIAR SISTEMA
+// ================================================
 
 
+function iniciarVendas(){
 
 
 
+    iniciarLoader();
 
-// ===============================================
-// ELEMENTOS
-// ===============================================
 
 
+    carregarClientes();
 
-const lista =
 
-document.getElementById(
 
-"listaVendas"
+    carregarProdutos();
 
-);
 
 
+    atualizarResumo();
 
 
 
-
-const modal =
-
-document.getElementById(
-
-"modalVenda"
-
-);
-
-
-
-
-
-
-const formulario =
-
-document.getElementById(
-
-"formVenda"
-
-);
-
-
-
-
-
-
-
-const novaVenda =
-
-document.getElementById(
-
-"novaVenda"
-
-);
-
-
-
-
-
-
-
-const fecharModal =
-
-document.getElementById(
-
-"fecharModalVenda"
-
-);
-
-
-
-
-
-
-
-
-
-// ===============================================
-// ABRIR MODAL
-// ===============================================
-
-
-
-function abrirModal(){
-
-
-
-modal.style.display="flex";
+    carregarTabelaVendas();
 
 
 
@@ -243,49 +103,39 @@ modal.style.display="flex";
 
 
 
-// ===============================================
-// FECHAR MODAL
-// ===============================================
+
+// ================================================
+// LOADER
+// ================================================
+
+
+function iniciarLoader(){
 
 
 
-function fechar(){
+    const loader =
+
+    document.getElementById(
+        "salesLoader"
+    );
 
 
 
-modal.style.display="none";
-
-
-
-formulario.reset();
-
-
-
-vendaEditando=null;
-
-
-
-}
+    if(!loader) return;
 
 
 
 
 
-
-
-if(novaVenda){
-
-
-
-novaVenda.onclick=()=>{
+    setTimeout(()=>{
 
 
 
-abrirModal();
+        loader.classList.add("hide");
 
 
 
-};
+    },1500);
 
 
 
@@ -298,253 +148,341 @@ abrirModal();
 
 
 
-if(fecharModal){
+
+// ================================================
+// CARREGAR CLIENTES
+// ================================================
+
+
+function carregarClientes(){
 
 
 
-fecharModal.onclick=fechar;
+    const select =
+
+    document.getElementById(
+        "saleClient"
+    );
+
+
+
+    if(!select) return;
+
+
+
+
+
+    clientes.forEach(cliente=>{
+
+
+
+        const option =
+
+        document.createElement("option");
+
+
+
+        option.value = cliente.id;
+
+
+
+        option.textContent =
+        cliente.nome;
+
+
+
+        select.appendChild(option);
+
+
+
+    });
 
 
 
 }
-  /* ======================================================
-   CRUD VENDAS + CÁLCULO
+
+
+
+
+
+
+
+
+
+// ================================================
+// CARREGAR PRODUTOS
+// ================================================
+
+
+function carregarProdutos(){
+
+
+
+    const select =
+
+    document.getElementById(
+        "saleProduct"
+    );
+
+
+
+    if(!select) return;
+
+
+
+
+
+    produtos.forEach(produto=>{
+
+
+
+        const option =
+
+        document.createElement("option");
+
+
+
+        option.value =
+        produto.id;
+
+
+
+        option.textContent =
+
+        produto.nome
+        +
+        " - R$ "
+        +
+        produto.valor;
+
+
+
+        select.appendChild(option);
+
+
+
+    });
+
+
+
+}
+
+
+
+
+
+
+
+
+
+// ================================================
+// RESUMO VENDAS
+// ================================================
+
+
+function atualizarResumo(){
+
+
+
+    const hoje =
+
+    new Date()
+    .toLocaleDateString("pt-BR");
+
+
+
+
+
+    const vendasHoje =
+
+    vendas.filter(venda=>{
+
+
+        return venda.data
+        .includes(hoje);
+
+
+
+    });
+
+
+
+
+
+
+
+
+    const total =
+
+    vendas.reduce((soma,venda)=>{
+
+
+        return soma + venda.total;
+
+
+
+    },0);
+
+
+
+
+
+
+
+
+    const finalizadas =
+
+    vendas.filter(v=>{
+
+
+        return v.status === "Finalizada";
+
+
+
+    }).length;
+
+
+
+
+
+
+
+
+    const pendentes =
+
+    vendas.filter(v=>{
+
+
+        return v.status === "Pendente";
+
+
+
+    }).length;
+
+
+
+
+
+
+
+
+
+    const hojeElement =
+
+    document.getElementById(
+        "salesToday"
+    );
+
+
+
+    const revenueElement =
+
+    document.getElementById(
+        "salesRevenue"
+    );
+
+
+
+    const finishedElement =
+
+    document.getElementById(
+        "salesFinished"
+    );
+
+
+
+    const pendingElement =
+
+    document.getElementById(
+        "salesPending"
+    );
+
+
+
+
+
+
+    if(hojeElement)
+
+        hojeElement.textContent =
+        vendasHoje.length;
+
+
+
+
+
+    if(revenueElement)
+
+        revenueElement.textContent =
+
+        "R$ "
+        +
+        total.toFixed(2)
+        .replace(".",",");
+
+
+
+
+
+    if(finishedElement)
+
+        finishedElement.textContent =
+        finalizadas;
+
+
+
+
+
+    if(pendingElement)
+
+        pendingElement.textContent =
+        pendentes;
+
+
+
+}
+/* ================================================
+   CARRINHO E FINALIZAÇÃO DE VENDA
    PARTE 2/3
-====================================================== */
+================================================ */
 
 
 
 
 
-
-// ===============================================
-// SALVAR VENDA
-// ===============================================
-
+// ================================================
+// ELEMENTOS
+// ================================================
 
 
-if(formulario){
-
-
-
-formulario.addEventListener(
-
-"submit",
-
-(e)=>{
-
-
-
-e.preventDefault();
-
-
-
-
-
-
-const quantidade = Number(
+const addProductSale =
 
 document.getElementById(
-
-"quantidadeVenda"
-
-).value
-
+    "addProductSale"
 );
 
 
 
-
-
-
-const valor = Number(
+const saleCart =
 
 document.getElementById(
-
-"valorVenda"
-
-).value
-
+    "saleCart"
 );
 
 
 
-
-
-
-const desconto = Number(
+const saleTotal =
 
 document.getElementById(
-
-"descontoVenda"
-
-).value
-
-) || 0;
+    "saleTotal"
+);
 
 
 
-
-
-
-
-const total =
-
-(quantidade * valor) - desconto;
-
-
-
-
-
-
-
-
-
-const venda = {
-
-
-
-
-numero:
+const finishSale =
 
 document.getElementById(
-
-"numeroVenda"
-
-).value,
-
-
-
-
-
-cliente:
-
-document.getElementById(
-
-"clienteVenda"
-
-).value,
-
-
-
-
-
-produto:
-
-document.getElementById(
-
-"produtoVenda"
-
-).value,
-
-
-
-
-
-quantidade:
-
-quantidade,
-
-
-
-
-
-valor:
-
-valor,
-
-
-
-
-
-desconto:
-
-desconto,
-
-
-
-
-
-total:
-
-total,
-
-
-
-
-
-pagamento:
-
-document.getElementById(
-
-"pagamentoVenda"
-
-).value,
-
-
-
-
-
-status:
-
-document.getElementById(
-
-"statusVenda"
-
-).value,
-
-
-
-
-
-data:
-
-new Date().toLocaleDateString("pt-BR")
-
-
-
-
-
-};
-
-
-
-
-
-
-
-
-if(vendaEditando !== null){
-
-
-
-vendas[vendaEditando]=venda;
-
-
-
-}else{
-
-
-
-vendas.push(venda);
-
-
-
-}
-
-
-
-
-
-
-
-
-localStorage.setItem(
-
-"empire_vendas",
-
-JSON.stringify(vendas)
-
+    "finishSale"
 );
 
 
@@ -554,62 +492,74 @@ JSON.stringify(vendas)
 
 
 
-fechar();
 
+// ================================================
+// ADICIONAR PRODUTO
+// ================================================
 
 
-renderizarVendas();
+if(addProductSale){
 
 
 
-atualizarCards();
+    addProductSale.addEventListener(
+    "click",
+    ()=>{
 
 
 
-alert(
+        const produtoId =
 
-"Venda registrada com sucesso."
+        document.getElementById(
+            "saleProduct"
+        ).value;
 
-);
 
 
 
-}
+        const quantidade =
 
+        Number(
 
+        document.getElementById(
+            "saleQuantity"
+        ).value
 
-);
+        );
 
 
 
-}
 
 
+        if(!produtoId){
 
 
+            alert(
+            "Selecione um produto."
+            );
 
 
+            return;
 
 
+        }
 
-// ===============================================
-// RENDERIZAR TABELA
-// ===============================================
 
 
 
-function renderizarVendas(){
 
 
 
-if(!lista)return;
 
+        const produto =
 
+        produtos.find(p=>{
 
 
+            return p.id == produtoId;
 
-lista.innerHTML="";
 
+        });
 
 
 
@@ -617,232 +567,64 @@ lista.innerHTML="";
 
 
 
-if(vendas.length===0){
+        if(!produto) return;
 
 
 
-lista.innerHTML=`
 
-<tr>
 
-<td colspan="8">
 
-Nenhuma venda registrada.
 
-</td>
 
-</tr>
 
-`;
+        const item = {
 
 
 
-return;
+            id: produto.id,
 
 
 
-}
+            nome:
+            produto.nome,
 
 
 
+            quantidade:
 
 
 
+            quantidade,
 
 
 
-vendas.forEach((venda,index)=>{
+            valor:
 
+            Number(produto.valor)
 
 
 
+        };
 
 
-let classeStatus="";
 
 
 
 
 
+        carrinhoVenda.push(item);
 
-if(venda.status==="Pago"){
 
 
 
-classeStatus="status-pago";
 
+        atualizarCarrinho();
 
 
-}
 
 
 
-
-
-
-
-if(venda.status==="Pendente"){
-
-
-
-classeStatus="status-pendente";
-
-
-
-}
-
-
-
-
-
-
-
-if(venda.status==="Cancelado"){
-
-
-
-classeStatus="status-cancelado";
-
-
-
-}
-
-
-
-
-
-
-
-
-lista.innerHTML += `
-
-
-
-<tr>
-
-
-
-<td>
-
-${venda.numero}
-
-</td>
-
-
-
-
-
-<td>
-
-${venda.cliente}
-
-</td>
-
-
-
-
-
-<td>
-
-${venda.produto}
-
-</td>
-
-
-
-
-
-<td>
-
-${venda.quantidade}
-
-</td>
-
-
-
-
-
-<td>
-
-R$ ${venda.total.toFixed(2)}
-
-</td>
-
-
-
-
-
-<td>
-
-${venda.pagamento}
-
-</td>
-
-
-
-
-
-<td>
-
-
-<span class="${classeStatus}">
-
-${venda.status}
-
-</span>
-
-
-</td>
-
-
-
-
-
-
-
-<td>
-
-
-
-<button onclick="editarVenda(${index})">
-
-✎
-
-</button>
-
-
-
-
-
-<button onclick="excluirVenda(${index})">
-
-×
-
-</button>
-
-
-
-
-
-
-</td>
-
-
-
-
-
-
-</tr>
-
-
-
-`;
-
-
-
-
-
-});
+    });
 
 
 
@@ -856,196 +638,161 @@ ${venda.status}
 
 
 
-// ===============================================
-// EDITAR VENDA
-// ===============================================
+// ================================================
+// ATUALIZAR CARRINHO
+// ================================================
 
 
+function atualizarCarrinho(){
 
-window.editarVenda=function(index){
 
 
+    if(!saleCart) return;
 
-const venda=
 
-vendas[index];
 
 
 
+    saleCart.innerHTML = "";
 
 
 
-vendaEditando=index;
 
 
+    let total = 0;
 
 
 
 
 
-document.getElementById(
 
-"numeroVenda"
 
-).value=
 
-venda.numero;
+    carrinhoVenda.forEach((item,index)=>{
 
 
 
 
 
+        const subtotal =
 
-document.getElementById(
+        item.quantidade *
+        item.valor;
 
-"clienteVenda"
 
-).value=
 
-venda.cliente;
 
 
+        total += subtotal;
 
 
 
 
-document.getElementById(
 
-"produtoVenda"
 
-).value=
 
-venda.produto;
 
 
+        const linha =
 
+        document.createElement("tr");
 
 
 
-document.getElementById(
 
-"quantidadeVenda"
 
-).value=
+        linha.innerHTML = `
 
-venda.quantidade;
 
 
+        <td>
 
+        ${item.nome}
 
+        </td>
 
 
-document.getElementById(
 
-"valorVenda"
+        <td>
 
-).value=
+        ${item.quantidade}
 
-venda.valor;
+        </td>
 
 
 
+        <td>
 
+        R$ ${subtotal
+        .toFixed(2)
+        .replace(".",",")}
 
+        </td>
 
-document.getElementById(
 
-"descontoVenda"
 
-).value=
+        <td>
 
-venda.desconto;
 
+        <button
 
+        onclick="removerProdutoVenda(${index})">
 
 
+        <i class="fa-solid fa-trash"></i>
 
 
-document.getElementById(
+        </button>
 
-"pagamentoVenda"
 
-).value=
 
-venda.pagamento;
+        </td>
 
 
 
+        `;
 
 
 
-document.getElementById(
 
-"statusVenda"
 
-).value=
 
-venda.status;
 
 
+        saleCart.appendChild(linha);
 
 
 
 
 
-abrirModal();
+    });
 
 
 
-};
 
 
 
 
+    if(saleTotal){
 
 
 
+        saleTotal.textContent =
 
+        "R$ "
+        +
+        total
+        .toFixed(2)
+        .replace(".",",");
 
-// ===============================================
-// EXCLUIR VENDA
-// ===============================================
 
 
+    }
 
-window.excluirVenda=function(index){
 
 
 
-if(confirm(
 
-"Deseja excluir esta venda?"
-
-)){
-
-
-
-vendas.splice(index,1);
-
-
-
-
-
-
-localStorage.setItem(
-
-"empire_vendas",
-
-JSON.stringify(vendas)
-
-);
-
-
-
-
-
-
-
-renderizarVendas();
-
-
-
-atualizarCards();
 
 
 
@@ -1053,215 +800,440 @@ atualizarCards();
 
 
 
-};
-  /* ======================================================
-   CARDS + BUSCA + FILTROS + FINAL
+
+
+
+
+
+
+// ================================================
+// REMOVER PRODUTO
+// ================================================
+
+
+function removerProdutoVenda(index){
+
+
+
+    carrinhoVenda.splice(
+        index,
+        1
+    );
+
+
+
+    atualizarCarrinho();
+
+
+
+}
+
+
+
+
+
+window.removerProdutoVenda =
+removerProdutoVenda;
+
+
+
+
+
+
+
+
+
+// ================================================
+// FINALIZAR VENDA
+// ================================================
+
+
+if(finishSale){
+
+
+
+    finishSale.addEventListener(
+    "click",
+    ()=>{
+
+
+
+
+
+        const clienteId =
+
+        document.getElementById(
+            "saleClient"
+        ).value;
+
+
+
+
+
+
+
+
+        if(!clienteId){
+
+
+
+            alert(
+            "Selecione um cliente."
+            );
+
+
+            return;
+
+
+
+        }
+
+
+
+
+
+
+
+        if(carrinhoVenda.length === 0){
+
+
+
+            alert(
+            "Adicione produtos."
+            );
+
+
+            return;
+
+
+
+        }
+
+
+
+
+
+
+
+
+        const cliente =
+
+        clientes.find(c=>{
+
+
+            return c.id == clienteId;
+
+
+        });
+
+
+
+
+
+
+
+
+
+        const total =
+
+        carrinhoVenda.reduce(
+        (soma,item)=>{
+
+
+            return soma +
+
+            (
+
+            item.valor *
+            item.quantidade
+
+            );
+
+
+
+        },0);
+
+
+
+
+
+
+
+
+
+        const novaVenda = {
+
+
+
+            id:
+
+            Date.now(),
+
+
+
+            cliente:
+
+            cliente
+            ?
+
+            cliente.nome
+
+            :
+
+            "Cliente",
+
+
+
+
+            produtos:
+
+            carrinhoVenda,
+
+
+
+            total:
+
+            total,
+
+
+
+            data:
+
+            new Date()
+            .toLocaleString("pt-BR"),
+
+
+
+            status:
+
+            "Finalizada"
+
+
+
+        };
+
+
+
+
+
+
+
+
+        vendas.push(
+            novaVenda
+        );
+
+
+
+
+
+
+
+
+        localStorage.setItem(
+
+            "empireVendas",
+
+            JSON.stringify(vendas)
+
+        );
+
+
+
+
+
+
+
+
+
+        carrinhoVenda = [];
+
+
+
+        atualizarCarrinho();
+
+
+
+        atualizarResumo();
+
+
+
+        carregarTabelaVendas();
+
+
+
+
+
+
+
+
+        alert(
+
+        "Venda realizada com sucesso."
+
+        );
+
+
+
+
+
+    });
+
+
+
+}
+/* ================================================
+   HISTÓRICO, BUSCA E MODAL
    PARTE 3/3
-====================================================== */
+================================================ */
 
 
 
 
 
 
-// ===============================================
-// ATUALIZAR CARDS
-// ===============================================
+// ================================================
+// CARREGAR TABELA DE VENDAS
+// ================================================
 
 
+function carregarTabelaVendas(){
 
-function atualizarCards(){
 
 
+    const tabela =
 
+    document.getElementById(
+        "salesTableBody"
+    );
 
 
-const totalVendas =
 
-document.getElementById(
+    if(!tabela) return;
 
-"totalVendas"
 
-);
 
 
 
+    tabela.innerHTML = "";
 
 
-const faturamento =
 
-document.getElementById(
 
-"faturamento"
 
-);
 
 
+    vendas.forEach(venda=>{
 
 
 
-const produtos =
 
-document.getElementById(
 
-"produtosVendidos"
+        const linha =
 
-);
+        document.createElement("tr");
 
 
 
 
 
-const pendentes =
 
-document.getElementById(
 
-"vendasPendentes"
 
-);
+        linha.innerHTML = `
 
 
 
+        <td>
 
+        #${venda.id}
 
+        </td>
 
 
-let total=0;
 
-let valor=0;
 
-let itens=0;
+        <td>
 
-let aguardando=0;
+        ${venda.cliente}
 
+        </td>
 
 
 
 
+        <td>
 
+        ${venda.data}
 
+        </td>
 
-vendas.forEach((venda)=>{
 
 
 
+        <td>
 
+        R$ ${venda.total
+        .toFixed(2)
+        .replace(".",",")}
 
-total++;
+        </td>
 
 
 
 
+        <td>
 
-valor += venda.total;
 
+        <span class="sale-status">
 
+        ${venda.status}
 
+        </span>
 
 
+        </td>
 
-itens += Number(
 
-venda.quantidade
 
-);
 
+        <td>
 
 
 
+        <button
 
+        class="view-sale"
 
+        onclick="abrirDetalhesVenda(${venda.id})">
 
-if(venda.status==="Pendente"){
 
+        <i class="fa-solid fa-eye"></i>
 
 
-aguardando++;
+        </button>
 
 
 
-}
 
+        </td>
 
 
 
+        `;
 
-});
 
 
 
 
 
+        tabela.appendChild(linha);
 
 
-if(totalVendas){
 
 
 
-totalVendas.innerHTML=
-
-total;
-
-
-
-}
-
-
-
-
-
-
-
-if(faturamento){
-
-
-
-faturamento.innerHTML=
-
-"R$ " +
-
-valor.toFixed(2);
-
-
-
-}
-
-
-
-
-
-
-
-if(produtos){
-
-
-
-produtos.innerHTML=
-
-itens;
-
-
-
-}
-
-
-
-
-
-
-
-if(pendentes){
-
-
-
-pendentes.innerHTML=
-
-aguardando;
-
-
-
-}
-
+    });
 
 
 
@@ -1278,43 +1250,37 @@ aguardando;
 
 
 
-// ===============================================
+// ================================================
 // BUSCAR VENDA
-// ===============================================
+// ================================================
 
 
-
-const busca =
+const searchSale =
 
 document.getElementById(
-
-"buscarVenda"
-
+    "searchSale"
 );
 
 
 
 
 
-
-
-if(busca){
+if(searchSale){
 
 
 
-busca.addEventListener(
-
-"input",
-
-()=>{
+    searchSale.addEventListener(
+    "input",
+    ()=>{
 
 
 
 
 
-const texto=
+        const termo =
 
-busca.value.toLowerCase();
+        searchSale.value
+        .toLowerCase();
 
 
 
@@ -1322,56 +1288,65 @@ busca.value.toLowerCase();
 
 
 
-document.querySelectorAll(
+        const linhas =
 
-"#listaVendas tr"
-
-)
-
-.forEach((linha)=>{
-
-
-
-
-
-linha.style.display=
-
-
-
-linha.innerText
-
-.toLowerCase()
-
-.includes(texto)
-
-
-
-?
-
-""
-
-:
-
-"none";
+        document.querySelectorAll(
+            "#salesTableBody tr"
+        );
 
 
 
 
 
 
-});
+
+        linhas.forEach(linha=>{
 
 
+
+
+
+            if(
+
+            linha.textContent
+            .toLowerCase()
+            .includes(termo)
+
+            ){
+
+
+
+                linha.style.display =
+                "";
+
+
+
+            }else{
+
+
+                linha.style.display =
+                "none";
+
+
+
+            }
+
+
+
+
+
+        });
+
+
+
+
+
+    });
 
 
 
 }
 
-);
-
-
-
-}
 
 
 
@@ -1380,19 +1355,23 @@ linha.innerText
 
 
 
-
-// ===============================================
-// FILTRO STATUS
-// ===============================================
-
+// ================================================
+// MODAL DETALHES
+// ================================================
 
 
-const filtro =
+const saleModal =
 
 document.getElementById(
+    "saleModal"
+);
 
-"filtroVenda"
 
+
+const closeSaleModal =
+
+document.getElementById(
+    "closeSaleModal"
 );
 
 
@@ -1401,24 +1380,20 @@ document.getElementById(
 
 
 
-if(filtro){
+
+function abrirDetalhesVenda(id){
 
 
 
-filtro.addEventListener(
+    const venda =
 
-"change",
-
-()=>{
+    vendas.find(v=>{
 
 
+        return v.id === id;
 
 
-
-const status=
-
-filtro.value;
-
+    });
 
 
 
@@ -1426,27 +1401,177 @@ filtro.value;
 
 
 
-document.querySelectorAll(
-
-"#listaVendas tr"
-
-)
-
-.forEach((linha)=>{
+    if(!venda) return;
 
 
 
 
 
-if(status===""){
 
 
 
-linha.style.display="";
+    const detalhes =
+
+    document.getElementById(
+        "saleDetails"
+    );
 
 
 
-return;
+
+
+
+
+    if(detalhes){
+
+
+
+        detalhes.innerHTML = `
+
+
+
+        <p>
+
+        <strong>
+        Cliente:
+        </strong>
+
+        ${venda.cliente}
+
+        </p>
+
+
+
+        <p>
+
+        <strong>
+        Data:
+        </strong>
+
+        ${venda.data}
+
+        </p>
+
+
+
+        <p>
+
+        <strong>
+        Total:
+        </strong>
+
+        R$ ${venda.total
+        .toFixed(2)
+        .replace(".",",")}
+
+        </p>
+
+
+
+        <h4>
+        Produtos
+        </h4>
+
+
+
+
+        <ul>
+
+
+        ${
+        venda.produtos.map(produto=>{
+
+
+        return `
+
+        <li>
+
+        ${produto.nome}
+
+        -
+        ${produto.quantidade}
+        unidade(s)
+
+        </li>
+
+
+        `;
+
+
+        }).join("")
+
+        }
+
+
+
+        </ul>
+
+
+
+        `;
+
+
+
+    }
+
+
+
+
+
+
+
+    if(saleModal){
+
+
+
+        saleModal.classList.add(
+            "active"
+        );
+
+
+
+    }
+
+
+
+
+
+}
+
+
+
+
+
+
+window.abrirDetalhesVenda =
+abrirDetalhesVenda;
+
+
+
+
+
+
+
+
+
+// FECHAR MODAL
+
+
+if(closeSaleModal){
+
+
+
+    closeSaleModal.addEventListener(
+    "click",
+    ()=>{
+
+
+        saleModal.classList.remove(
+            "active"
+        );
+
+
+    });
 
 
 
@@ -1458,30 +1583,35 @@ return;
 
 
 
-linha.style.display=
+
+
+// FECHAR CLICANDO FORA
+
+
+if(saleModal){
 
 
 
-linha.innerText.includes(status)
+    saleModal.addEventListener(
+    "click",
+    (evento)=>{
+
+
+        if(evento.target === saleModal){
 
 
 
-?
-
-""
-
-:
-
-"none";
+            saleModal.classList.remove(
+                "active"
+            );
 
 
 
+        }
 
 
 
-});
-
-
+    });
 
 
 
@@ -1489,7 +1619,34 @@ linha.innerText.includes(status)
 
 
 
-);
+
+
+
+
+
+
+// ================================================
+// EXPORTAR DADOS FUTURO
+// ================================================
+
+
+function exportarVendas(){
+
+
+
+    const arquivo =
+
+    JSON.stringify(
+        vendas,
+        null,
+        2
+    );
+
+
+
+    console.log(
+        arquivo
+    );
 
 
 
@@ -1499,98 +1656,5 @@ linha.innerText.includes(status)
 
 
 
-
-
-
-
-// ===============================================
-// SAIR SISTEMA
-// ===============================================
-
-
-
-window.sairSistema=function(){
-
-
-
-
-
-localStorage.removeItem(
-
-"empire_logado"
-
-);
-
-
-
-
-
-
-localStorage.removeItem(
-
-"empire_usuario"
-
-);
-
-
-
-
-
-
-window.location.href=
-
-"../../index.html";
-
-
-
-
-
-};
-
-
-
-
-
-
-
-
-
-// ===============================================
-// INICIAR MÓDULO
-// ===============================================
-
-
-
-renderizarVendas();
-
-
-
-atualizarCards();
-
-
-
-
-
-
-
-console.log(`
-
-=================================
-
-👑 EMPIRE ERP
-
-Módulo Vendas carregado.
-
-Sistema operacional.
-
-=================================
-
-`);
-
-
-
-
-
-
-
-});
+window.exportarVendas =
+exportarVendas;
