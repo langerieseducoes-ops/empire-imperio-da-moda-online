@@ -7,24 +7,46 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+<meta name="theme-color" content="#050505">
+
+<meta name="description" content="EMPIRE | Império da Moda Online - Vendas">
+
 
 <title>EMPIRE | Império da Moda Online</title>
 
 
-<link rel="icon" type="image/png" href="../../assets/img/favicon.png">
+<link rel="icon" href="../../assets/img/favicon.png">
 
 
 
 <!-- FONTES -->
 
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
 
 
-<!-- ICONES -->
+
+
+<!-- ÍCONES -->
 
 <link rel="stylesheet"
+
 href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+
+
+
+
+<!-- CHART JS -->
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
 
 
 
@@ -36,46 +58,59 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
 </head>
 
 
+
+
+
 <body>
 
 
 
 
 
-<!-- =====================================
-     LOADER
-===================================== -->
+<!-- ==================================================
+LOADER PREMIUM
+================================================== -->
 
 
-<div class="sales-loader" id="salesLoader">
+<div class="loader" id="loader">
 
 
-    <div class="sales-loader-content">
+
+<div class="loader-content">
 
 
-        <div class="sales-logo">
-            EMPIRE
-        </div>
+
+<div class="loader-logo">
+
+EMPIRE
+
+</div>
 
 
-        <div class="sales-subtitle">
-            Império da Moda Online
-        </div>
 
 
-        <div class="sales-loading">
-            Carregando vendas...
-        </div>
+<div class="loader-subtitle">
+
+Império da Moda Online
+
+</div>
 
 
-        <div class="sales-progress">
-
-            <span></span>
-
-        </div>
 
 
-    </div>
+
+<div class="loader-line">
+
+
+<span></span>
+
+
+</div>
+
+
+
+
+</div>
 
 
 </div>
@@ -86,86 +121,208 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
 
 
 
-<!-- =====================================
-     SISTEMA
-===================================== -->
 
 
-<div class="sales-system">
+<!-- ==================================================
+FUNDO ANIMADO
+================================================== -->
+
+
+<div class="background-animation">
 
 
 
+<div class="glow glow-1"></div>
 
 
-<!-- =====================================
-     MENU LATERAL
-===================================== -->
+<div class="glow glow-2"></div>
 
 
-<aside class="sales-sidebar">
+<div class="glow glow-3"></div>
 
 
-    <div class="sidebar-brand">
+
+<div id="particles"></div>
 
 
-        <img src="../../assets/img/logo.png"
-        alt="EMPIRE">
 
-
-        <h1>
-            EMPIRE
-        </h1>
-
-
-        <p>
-            Império da Moda Online
-        </p>
-
-
-    </div>
+</div>
 
 
 
 
 
 
-<nav class="sidebar-menu">
+
+
+
+<!-- ==================================================
+CONTAINER ERP
+================================================== -->
+
+
+<div class="erp-container">
+
+
+
+
+
+
+
+
+
+<!-- ==================================================
+SIDEBAR
+================================================== -->
+
+
+<aside class="sidebar" id="sidebar">
+
+
+
+
+
+<div class="brand">
+
+
+
+<img src="../../assets/img/logo.png"
+
+alt="Logo Empire">
+
+
+
+
+
+<div class="brand-text">
+
+
+
+<h2>
+
+EMPIRE
+
+</h2>
+
+
+
+
+<span>
+
+Império da Moda Online
+
+</span>
+
+
+
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+
+
+
+<div class="profile-card">
+
+
+
+<img src="../../assets/img/avatar.png"
+
+alt="Usuário">
+
+
+
+
+
+<div>
+
+
+
+<strong id="userName">
+
+Administrador
+
+</strong>
+
+
+
+
+<p>
+
+
+<span class="status-dot"></span>
+
+
+Online
+
+
+</p>
+
+
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+
+
+
+<nav class="navigation">
+
+
+
 
 
 <a href="dashboard.html">
 
+
 <i class="fa-solid fa-house"></i>
 
+
 <span>
+
 Tela Inicial
+
 </span>
+
 
 </a>
 
 
 
-<a href="usuarios.html">
-
-<i class="fa-solid fa-users"></i>
-
-<span>
-Usuários
-</span>
-
-</a>
 
 
 
 
 <a href="produtos.html">
 
+
 <i class="fa-solid fa-box"></i>
 
+
 <span>
+
 Produtos
+
 </span>
 
+
 </a>
+
+
 
 
 
@@ -173,13 +330,20 @@ Produtos
 
 <a href="clientes.html">
 
-<i class="fa-solid fa-user-group"></i>
+
+<i class="fa-solid fa-users"></i>
+
 
 <span>
+
 Clientes
+
 </span>
 
+
 </a>
+
+
 
 
 
@@ -187,13 +351,20 @@ Clientes
 
 <a href="vendas.html" class="active">
 
+
 <i class="fa-solid fa-cart-shopping"></i>
 
+
 <span>
+
 Vendas
+
 </span>
 
+
 </a>
+
+
 
 
 
@@ -201,13 +372,105 @@ Vendas
 
 <a href="financeiro.html">
 
-<i class="fa-solid fa-coins"></i>
+
+<i class="fa-solid fa-wallet"></i>
+
 
 <span>
+
 Financeiro
+
 </span>
 
+
 </a>
+
+
+
+
+
+
+
+<a href="compras.html">
+
+
+<i class="fa-solid fa-bag-shopping"></i>
+
+
+<span>
+
+Compras
+
+</span>
+
+
+</a>
+
+
+
+
+
+
+
+<a href="fornecedores.html">
+
+
+<i class="fa-solid fa-truck"></i>
+
+
+<span>
+
+Fornecedores
+
+</span>
+
+
+</a>
+
+
+
+
+
+
+
+<a href="relatorios.html">
+
+
+<i class="fa-solid fa-chart-line"></i>
+
+
+<span>
+
+Relatórios
+
+</span>
+
+
+</a>
+
+
+
+
+
+
+
+<a href="configuracoes.html">
+
+
+<i class="fa-solid fa-gear"></i>
+
+
+<span>
+
+Configurações
+
+</span>
+
+
+</a>
+
+
+
 
 
 
@@ -218,69 +481,185 @@ Financeiro
 
 
 
+
+
+<div class="sidebar-footer">
+
+
+<p>
+
+EMPIRE ERP
+
+</p>
+
+
+<small>
+
+Sistema de Gestão
+
+</small>
+
+
+</div>
+
+
+
+
+
 </aside>
-<!-- =====================================
-     CONTEÚDO PRINCIPAL
-===================================== -->
+<!-- ==================================================
+ÁREA CENTRAL
+================================================== -->
 
 
-<main class="sales-content">
-
-
-
-
-
-<!-- HEADER -->
-
-<header class="sales-header">
-
-
-    <div>
-
-
-        <h2>
-            Vendas
-        </h2>
-
-
-        <p>
-            Controle de pedidos, clientes e faturamento
-        </p>
-
-
-    </div>
+<main class="content">
 
 
 
 
 
-    <div class="sales-actions">
+
+<!-- ==================================================
+TOPBAR
+================================================== -->
 
 
-        <button class="notification-button">
-
-            <i class="fa-solid fa-bell"></i>
-
-        </button>
-
-
-
-
-        <button class="new-sale-button"
-        id="openSale">
-
-
-            <i class="fa-solid fa-plus"></i>
-
-
-            Nova Venda
-
-
-        </button>
+<header class="topbar">
 
 
 
-    </div>
+
+
+<div class="page-title">
+
+
+<h1>
+
+Vendas
+
+</h1>
+
+
+
+
+<p id="dateToday">
+
+Carregando...
+
+</p>
+
+
+
+</div>
+
+
+
+
+
+
+
+<div class="global-search">
+
+
+<i class="fa-solid fa-search"></i>
+
+
+
+<input
+
+type="search"
+
+id="searchSystem"
+
+placeholder="Pesquisar no sistema...">
+
+
+
+</div>
+
+
+
+
+
+
+
+<div class="top-actions">
+
+
+
+
+
+
+<button class="icon-button" id="notificationButton">
+
+
+<i class="fa-solid fa-bell"></i>
+
+
+<span id="notificationBadge">
+
+0
+
+</span>
+
+
+
+</button>
+
+
+
+
+
+
+
+<button class="icon-button" id="emailButton">
+
+
+<i class="fa-solid fa-envelope"></i>
+
+
+<span id="emailBadge">
+
+0
+
+</span>
+
+
+
+</button>
+
+
+
+
+
+
+
+<div class="time-box">
+
+
+<i class="fa-solid fa-clock"></i>
+
+
+
+<strong id="systemClock">
+
+00:00:00
+
+</strong>
+
+
+
+</div>
+
+
+
+
+
+
+
+</div>
+
+
 
 
 
@@ -293,43 +672,26 @@ Financeiro
 
 
 
-<!-- =====================================
-     CARDS RESUMO
-===================================== -->
+
+<!-- ==================================================
+INDICADORES DE VENDAS
+================================================== -->
 
 
-<section class="sales-cards">
-
-
-
-
-
-
-<div class="sales-card">
-
-
-    <div class="card-icon">
-
-        <i class="fa-solid fa-cart-shopping"></i>
-
-    </div>
+<section class="metrics-grid">
 
 
 
-    <div>
-
-        <span>
-            Vendas Hoje
-        </span>
 
 
-        <strong id="salesToday">
-            0
-        </strong>
+
+<div class="metric-card">
 
 
-    </div>
+<div class="metric-icon">
 
+
+<i class="fa-solid fa-cart-shopping"></i>
 
 
 </div>
@@ -337,68 +699,37 @@ Financeiro
 
 
 
+<div class="metric-info">
+
+
+<span>
+
+Vendas
+
+</span>
 
 
 
-<div class="sales-card">
+
+<h2 id="totalSales">
+
+0
+
+</h2>
 
 
-    <div class="card-icon">
-
-        <i class="fa-solid fa-money-bill-wave"></i>
-
-    </div>
 
 
+<small>
 
-    <div>
+Pedidos realizados
 
-        <span>
-            Faturamento
-        </span>
+</small>
 
-
-        <strong id="salesRevenue">
-            R$ 0,00
-        </strong>
-
-
-    </div>
 
 
 
 </div>
-
-
-
-
-
-
-
-<div class="sales-card">
-
-
-    <div class="card-icon">
-
-        <i class="fa-solid fa-clock"></i>
-
-    </div>
-
-
-
-    <div>
-
-        <span>
-            Pendentes
-        </span>
-
-
-        <strong id="salesPending">
-            0
-        </strong>
-
-
-    </div>
 
 
 
@@ -411,30 +742,358 @@ Financeiro
 
 
 
-<div class="sales-card">
+
+<div class="metric-card">
 
 
-    <div class="card-icon">
-
-        <i class="fa-solid fa-check-circle"></i>
-
-    </div>
+<div class="metric-icon">
 
 
-
-    <div>
-
-        <span>
-            Finalizadas
-        </span>
+<i class="fa-solid fa-money-bill-trend-up"></i>
 
 
-        <strong id="salesFinished">
-            0
-        </strong>
+</div>
 
 
-    </div>
+
+
+<div class="metric-info">
+
+
+<span>
+
+Faturamento
+
+</span>
+
+
+
+
+<h2 id="totalRevenue">
+
+R$ 0,00
+
+</h2>
+
+
+
+
+<small>
+
+Resultado atual
+
+</small>
+
+
+
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<div class="metric-card">
+
+
+<div class="metric-icon">
+
+
+<i class="fa-solid fa-box-open"></i>
+
+
+</div>
+
+
+
+
+<div class="metric-info">
+
+
+<span>
+
+Produtos vendidos
+
+</span>
+
+
+
+
+<h2 id="totalProductsSold">
+
+0
+
+</h2>
+
+
+
+
+<small>
+
+Itens comercializados
+
+</small>
+
+
+
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<div class="metric-card">
+
+
+<div class="metric-icon">
+
+
+<i class="fa-solid fa-users"></i>
+
+
+</div>
+
+
+
+
+<div class="metric-info">
+
+
+<span>
+
+Clientes
+
+</span>
+
+
+
+
+<h2 id="totalSalesClients">
+
+0
+
+</h2>
+
+
+
+
+<small>
+
+Compradores ativos
+
+</small>
+
+
+
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+
+
+
+</section>
+
+
+
+
+
+
+
+
+
+<!-- ==================================================
+ÁREA DE GRÁFICOS
+================================================== -->
+
+
+<section class="charts-area">
+
+
+
+
+
+
+
+<div class="dashboard-card large">
+
+
+
+
+
+<div class="card-header">
+
+
+
+<div>
+
+
+<label>
+
+VENDAS
+
+</label>
+
+
+
+
+<h3>
+
+Desempenho comercial
+
+</h3>
+
+
+
+</div>
+
+
+
+
+
+
+<select id="salesFilter">
+
+
+<option>
+
+Últimos 7 dias
+
+</option>
+
+
+<option>
+
+Últimos 30 dias
+
+</option>
+
+
+<option>
+
+Este ano
+
+</option>
+
+
+
+</select>
+
+
+
+
+
+</div>
+
+
+
+
+
+
+
+<div class="chart-box">
+
+
+<canvas id="salesChart"></canvas>
+
+
+</div>
+
+
+
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<div class="dashboard-card">
+
+
+
+
+
+
+<div class="card-header">
+
+
+
+<div>
+
+
+<label>
+
+PRODUTOS
+
+</label>
+
+
+
+
+<h3>
+
+Mais vendidos
+
+</h3>
+
+
+
+</div>
+
+
+
+
+</div>
+
+
+
+
+
+
+
+<div class="chart-box">
+
+
+<canvas id="productsChart"></canvas>
+
+
+</div>
+
+
+
+
 
 
 
@@ -452,29 +1111,48 @@ Financeiro
 
 
 
+<!-- ==================================================
+NOVA VENDA
+================================================== -->
+
+
+<section class="information-grid">
 
 
 
-<!-- =====================================
-     NOVA VENDA
-===================================== -->
 
 
-<section class="sale-register">
+<div class="dashboard-card">
 
 
 
-<div class="section-title">
+
+
+<div class="card-header">
+
+
+<div>
+
+
+<label>
+
+VENDA
+
+</label>
+
 
 
 <h3>
-    Registrar Venda
+
+Registrar nova venda
+
 </h3>
 
 
-<p>
-    Adicione cliente e produtos
-</p>
+
+</div>
+
+
 
 
 </div>
@@ -485,35 +1163,30 @@ Financeiro
 
 
 
-<div class="sale-grid">
+<div class="sale-form">
 
 
 
 
 
-<!-- CLIENTE -->
-
-
-<div class="sale-box">
+<div class="input-group">
 
 
 <label>
+
 Cliente
+
 </label>
 
-
-
-<div class="select-box">
-
-
-<i class="fa-solid fa-user"></i>
 
 
 <select id="saleClient">
 
 
-<option value="">
+<option>
+
 Selecionar cliente
+
 </option>
 
 
@@ -524,39 +1197,29 @@ Selecionar cliente
 </div>
 
 
-</div>
 
 
 
 
 
-
-
-
-
-<!-- PRODUTO -->
-
-
-<div class="sale-box">
+<div class="input-group">
 
 
 <label>
+
 Produto
+
 </label>
 
-
-
-<div class="select-box">
-
-
-<i class="fa-solid fa-box"></i>
 
 
 <select id="saleProduct">
 
 
-<option value="">
+<option>
+
 Selecionar produto
+
 </option>
 
 
@@ -567,24 +1230,21 @@ Selecionar produto
 </div>
 
 
-</div>
 
 
 
 
 
 
-
-
-<!-- QUANTIDADE -->
-
-
-<div class="sale-box">
+<div class="input-group">
 
 
 <label>
+
 Quantidade
+
 </label>
+
 
 
 <input
@@ -593,38 +1253,7 @@ type="number"
 
 id="saleQuantity"
 
-value="1"
-
-min="1">
-
-
-</div>
-
-
-
-
-
-
-
-
-<div class="sale-box button-box">
-
-
-<button id="addProductSale">
-
-
-<i class="fa-solid fa-plus"></i>
-
-
-Adicionar
-
-
-</button>
-
-
-</div>
-
-
+value="1">
 
 
 
@@ -636,99 +1265,10 @@ Adicionar
 
 
 
+<button class="primary-button" id="finishSale">
 
 
-<!-- CARRINHO -->
-
-
-<div class="sale-cart">
-
-
-
-<h4>
-
-Produtos da Venda
-
-</h4>
-
-
-
-<table>
-
-
-<thead>
-
-
-<tr>
-
-
-<th>
-Produto
-</th>
-
-
-<th>
-Quantidade
-</th>
-
-
-<th>
-Valor
-</th>
-
-
-<th>
-Ação
-</th>
-
-
-</tr>
-
-
-</thead>
-
-
-
-<tbody id="saleCart">
-
-
-</tbody>
-
-
-
-
-</table>
-
-
-
-
-
-
-
-<div class="sale-total">
-
-
-<span>
-Total:
-</span>
-
-
-<strong id="saleTotal">
-
-R$ 0,00
-
-</strong>
-
-
-
-</div>
-
-
-
-
-
-<button class="finish-sale"
-id="finishSale">
+<i class="fa-solid fa-check"></i>
 
 
 Finalizar Venda
@@ -739,33 +1279,69 @@ Finalizar Venda
 
 
 
+
 </div>
 
 
 
-</section>
-<!-- =====================================
-     HISTÓRICO DE VENDAS
-===================================== -->
-
-
-<section class="sales-history">
 
 
 
-<header class="history-header">
+
+</div>
+
+
+
+
+
+
+
+
+
+<!-- ==================================================
+ÚLTIMAS VENDAS
+================================================== -->
+
+
+<div class="dashboard-card">
+
+
+
+
+
+<div class="card-header">
 
 
 <div>
 
+
+<label>
+
+HISTÓRICO
+
+</label>
+
+
+
 <h3>
-Histórico de Vendas
+
+Últimas vendas
+
 </h3>
 
 
-<p>
-Acompanhe todos os pedidos realizados
-</p>
+
+</div>
+
+
+
+<a href="relatorios.html">
+
+Ver tudo
+
+</a>
+
+
 
 
 </div>
@@ -774,25 +1350,20 @@ Acompanhe todos os pedidos realizados
 
 
 
-<div class="history-filter">
 
 
-<input
-
-type="search"
-
-id="searchSale"
-
-placeholder="Pesquisar venda...">
+<div class="sales-list" id="salesList">
 
 
-<button>
 
-<i class="fa-solid fa-filter"></i>
+<div class="empty">
 
-Filtrar
 
-</button>
+Nenhuma venda registrada
+
+
+</div>
+
 
 
 
@@ -800,83 +1371,11 @@ Filtrar
 
 
 
-</header>
-
-
-
-
-
-
-
-<div class="sales-table-container">
-
-
-
-<table class="sales-table">
-
-
-<thead>
-
-
-<tr>
-
-
-<th>
-Código
-</th>
-
-
-<th>
-Cliente
-</th>
-
-
-<th>
-Data
-</th>
-
-
-<th>
-Valor
-</th>
-
-
-<th>
-Status
-</th>
-
-
-<th>
-Ações
-</th>
-
-
-</tr>
-
-
-</thead>
-
-
-
-
-
-<tbody id="salesTableBody">
-
-
-<!-- JS INSERE VENDAS -->
-
-
-</tbody>
-
-
-
-
-</table>
-
 
 
 
 </div>
+
 
 
 
@@ -892,54 +1391,198 @@ Ações
 
 
 
-<!-- =====================================
-     MODAL DETALHES VENDA
-===================================== -->
+<!-- ==================================================
+MONITORAMENTO
+================================================== -->
 
 
-<div class="sale-modal" id="saleModal">
-
-
-
-<div class="modal-content">
-
-
-
-<button class="close-modal"
-id="closeSaleModal">
-
-
-<i class="fa-solid fa-xmark"></i>
-
-
-</button>
+<section class="monitor-grid">
 
 
 
 
+
+<div class="monitor-card">
+
+
+<i class="fa-solid fa-cart-shopping"></i>
+
+
+<div>
+
+
+<span>
+
+Vendas online
+
+</span>
+
+
+
+<strong id="onlineSales">
+
+0
+
+</strong>
+
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<div class="monitor-card">
+
+
+<i class="fa-solid fa-user-clock"></i>
+
+
+<div>
+
+
+<span>
+
+Sessão
+
+</span>
+
+
+
+<strong id="sessionTimer">
+
+00:00:00
+
+</strong>
+
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<div class="monitor-card">
+
+
+<i class="fa-solid fa-users"></i>
+
+
+<div>
+
+
+<span>
+
+Clientes ativos
+
+</span>
+
+
+
+<strong id="activeClients">
+
+0
+
+</strong>
+
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<div class="monitor-card">
+
+
+<i class="fa-solid fa-database"></i>
+
+
+<div>
+
+
+<span>
+
+Banco local
+
+</span>
+
+
+
+<strong>
+
+IndexedDB
+
+</strong>
+
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+</section>
+
+
+
+
+
+
+
+
+
+<!-- ==================================================
+ACESSO RÁPIDO
+================================================== -->
+
+
+<section class="dashboard-card quick-access">
+
+
+
+
+
+<div class="card-header">
 
 
 <h3>
-Detalhes da Venda
+
+Acesso rápido
+
 </h3>
 
 
 
-
-
-<div id="saleDetails">
-
-
-</div>
-
-
-
-
-
-</div>
-
-
-
 </div>
 
 
@@ -947,33 +1590,179 @@ Detalhes da Venda
 
 
 
+<div class="quick-buttons">
 
 
 
-<!-- =====================================
-     FOOTER
-===================================== -->
 
 
-<footer class="sales-footer">
+<a href="produtos.html">
 
 
-<strong>
-EMPIRE
-</strong>
-
-
-<p>
-Império da Moda Online
-</p>
+<i class="fa-solid fa-box"></i>
 
 
 <span>
-Gestão • Vendas • Controle
+
+Produtos
+
 </span>
 
 
+</a>
+
+
+
+
+
+
+
+<a href="clientes.html">
+
+
+<i class="fa-solid fa-users"></i>
+
+
+<span>
+
+Clientes
+
+</span>
+
+
+</a>
+
+
+
+
+
+
+
+<a href="financeiro.html">
+
+
+<i class="fa-solid fa-chart-line"></i>
+
+
+<span>
+
+Financeiro
+
+</span>
+
+
+</a>
+
+
+
+
+
+
+
+<a href="relatorios.html">
+
+
+<i class="fa-solid fa-file-lines"></i>
+
+
+<span>
+
+Relatórios
+
+</span>
+
+
+</a>
+
+
+
+
+
+
+
+</div>
+
+
+
+
+
+
+
+</section>
+
+
+
+
+
+
+
+
+
+<!-- ==================================================
+RODAPÉ
+================================================== -->
+
+
+<footer class="footer">
+
+
+
+
+
+<div>
+
+
+<strong>
+
+EMPIRE ERP
+
+</strong>
+
+
+
+<span>
+
+Império da Moda Online
+
+</span>
+
+
+
+</div>
+
+
+
+
+
+
+
+<div>
+
+
+<span>
+
+Última atualização:
+
+</span>
+
+
+
+<strong id="lastUpdate">
+
+Aguardando
+
+</strong>
+
+
+
+</div>
+
+
+
+
+
 </footer>
+
 
 
 
@@ -987,6 +1776,8 @@ Gestão • Vendas • Controle
 
 
 
+
+
 </div>
 
 
@@ -996,10 +1787,74 @@ Gestão • Vendas • Controle
 
 
 
-<!-- JAVASCRIPT -->
+
+<!-- ==================================================
+SCRIPTS
+================================================== -->
+
+
+<script src="../../assets/js/database.js"></script>
+
+
+<script src="../../assets/js/components.js"></script>
 
 
 <script src="../../assets/js/vendas.js"></script>
+
+
+
+
+
+
+
+
+<!-- SERVICE WORKER -->
+
+
+<script>
+
+
+if("serviceWorker" in navigator){
+
+
+window.addEventListener("load",()=>{
+
+
+navigator.serviceWorker.register("../../service-worker.js")
+
+.then(()=>{
+
+
+console.log(
+"EMPIRE ERP PWA ativo"
+);
+
+
+})
+
+
+.catch(error=>{
+
+
+console.error(
+"Erro PWA:",
+error
+);
+
+
+});
+
+
+});
+
+
+}
+
+
+</script>
+
+
+
 
 
 
