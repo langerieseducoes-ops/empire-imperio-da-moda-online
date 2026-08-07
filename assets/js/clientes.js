@@ -452,3 +452,242 @@ function updateNotes(){
 ========================================================== */
 
 renderClients();
+/* ==========================================================
+   PESQUISA
+========================================================== */
+
+function filterClients(){
+
+    const text = (
+        searchInput.value ||
+        globalSearch.value
+    ).toLowerCase();
+
+    const status = statusFilter.value;
+
+    const filtered = clients.filter(client=>{
+
+        const matchesText =
+
+            client.nome.toLowerCase().includes(text) ||
+
+            client.telefone.toLowerCase().includes(text) ||
+
+            (client.email || "")
+            .toLowerCase()
+            .includes(text);
+
+        const matchesStatus =
+
+            status === "" ||
+
+            client.status === status;
+
+        return matchesText && matchesStatus;
+
+    });
+
+    renderClients(filtered);
+
+}
+
+searchInput.addEventListener(
+    "input",
+    filterClients
+);
+
+globalSearch.addEventListener(
+    "input",
+    filterClients
+);
+
+statusFilter.addEventListener(
+    "change",
+    filterClients
+);
+
+/* ==========================================================
+   GRÁFICO
+========================================================== */
+
+let clientsChart = null;
+
+function createChart(){
+
+    const canvas =
+    document.getElementById("clientsChart");
+
+    if(!canvas){
+
+        return;
+
+    }
+
+    const ctx = canvas.getContext("2d");
+
+    const ativos =
+    clients.filter(
+
+        c=>c.status==="ativo"
+
+    ).length;
+
+    const inativos =
+    clients.filter(
+
+        c=>c.status==="inativo"
+
+    ).length;
+
+    if(clientsChart){
+
+        clientsChart.destroy();
+
+    }
+
+    clientsChart =
+    new Chart(ctx,{
+
+        type:"bar",
+
+        data:{
+
+            labels:[
+                "Ativos",
+                "Inativos"
+            ],
+
+            datasets:[{
+
+                label:"Clientes",
+
+                data:[
+                    ativos,
+                    inativos
+                ],
+
+                backgroundColor:[
+                    "#d4af37",
+                    "#666666"
+                ],
+
+                borderRadius:10
+
+            }]
+
+        },
+
+        options:{
+
+            responsive:true,
+
+            maintainAspectRatio:false,
+
+            plugins:{
+
+                legend:{
+
+                    labels:{
+
+                        color:"#ffffff"
+
+                    }
+
+                }
+
+            },
+
+            scales:{
+
+                y:{
+
+                    beginAtZero:true,
+
+                    ticks:{
+                        color:"#ffffff"
+                    },
+
+                    grid:{
+                        color:"rgba(255,255,255,.08)"
+                    }
+
+                },
+
+                x:{
+
+                    ticks:{
+                        color:"#ffffff"
+                    },
+
+                    grid:{
+                        color:"rgba(255,255,255,.05)"
+                    }
+
+                }
+
+            }
+
+        }
+
+    });
+
+}
+
+/* ==========================================================
+   NOTIFICAÇÕES
+========================================================== */
+
+const notificationButton =
+document.getElementById("notificationButton");
+
+const notificationBadge =
+document.getElementById("notificationBadge");
+
+function updateNotifications(){
+
+    notificationBadge.textContent =
+    clients.length;
+
+}
+
+notificationButton.addEventListener("click",()=>{
+
+    alert(
+
+`EMPIRE ERP
+
+Clientes cadastrados: ${clients.length}
+
+Ativos: ${
+clients.filter(c=>c.status==="ativo").length
+}
+
+Inativos: ${
+clients.filter(c=>c.status==="inativo").length
+}`
+
+    );
+
+});
+
+/* ==========================================================
+   ATUALIZAÇÕES
+========================================================== */
+
+const originalRender = renderClients;
+
+renderClients = function(lista = clients){
+
+    originalRender(lista);
+
+    createChart();
+
+    updateNotifications();
+
+};
+
+/* ==========================================================
+   PRIMEIRA EXECUÇÃO
+========================================================== */
+
+renderClients();
