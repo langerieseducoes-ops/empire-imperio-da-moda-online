@@ -1,93 +1,76 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 
-
 <head>
 
+    <meta charset="UTF-8">
 
-<meta charset="UTF-8">
-
-
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 
-<title>EMPIRE | Império da Moda Online</title>
+    <title>EMPIRE | Império da Moda Online</title>
 
 
-
-<link rel="icon" href="assets/img/favicon.png">
-
-
-
-<link rel="stylesheet" href="assets/css/login.css">
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="../../assets/img/favicon.png">
 
 
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
+    <!-- Font Awesome -->
+    <link 
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="../../assets/css/login.css">
 
 
 </head>
 
 
-
-
 <body>
 
 
+<!-- =========================================
+     LOADER SISTEMA
+========================================= -->
 
 
-<!-- =================================================
-     LOADER INICIAL
-================================================= -->
+<div class="empire-loader" id="empireLoader">
 
 
-<div id="loader">
+    <div class="loader-content">
 
 
-
-<div class="loader-content">
-
-
-
-<div class="loader-logo">
-
-EMPIRE
-
-</div>
+        <div class="loader-logo">
+            EMPIRE
+        </div>
 
 
+        <div class="loader-subtitle">
+            Império da Moda Online
+        </div>
 
 
-<div class="loader-subtitle">
-
-Império da Moda Online
-
-</div>
+        <div class="loader-text" id="loaderText">
+            Iniciando sistema...
+        </div>
 
 
+        <div class="loader-progress">
 
 
-<div class="loader-line">
+            <span></span>
 
 
-<div class="loader-progress"></div>
+        </div>
 
 
-</div>
-
-
-
-
-<p>
-
-Carregando sistema...
-
-</p>
-
-
-
-</div>
+    </div>
 
 
 </div>
@@ -96,82 +79,461 @@ Carregando sistema...
 
 
 
-<!-- =================================================
-     LOGIN
-================================================= -->
-
+<!-- =========================================
+     LOGIN SYSTEM
+========================================= -->
 
 
 <div class="login-page">
 
 
 
+    <!-- BACKGROUND -->
+
+    <div class="login-background"></div>
 
 
-<div class="background-overlay"></div>
-
-
-
-
-
-
-<div class="login-container">
+    <div class="login-overlay"></div>
 
 
 
 
 
-<div class="login-card">
+    <!-- CONTAINER PRINCIPAL -->
+
+
+    <main class="login-main">
+
+
+
+        <!-- =================================
+             IDENTIDADE EMPRESA
+        ================================= -->
+
+
+        <section class="login-company">
+
+
+
+            <div class="company-box">
+
+
+
+                <img 
+                src="../../assets/img/logo.png"
+                alt="EMPIRE"
+                class="company-logo">
+
+
+
+                <h1>
+                    EMPIRE
+                </h1>
+
+
+                <h2>
+                    Império da Moda Online
+                </h2>
+
+
+
+                <p>
+                    Sistema de gestão empresarial
+                    para controle, vendas e administração.
+                </p>
 
 
 
 
 
-<div class="brand">
+                <div class="system-indicator">
+
+
+                    <span class="online-dot"></span>
+
+
+                    <span>
+                        Sistema Online
+                    </span>
+
+
+
+                </div>
 
 
 
 
 
-<img
-
-src="assets/img/logo.png"
-
-alt="EMPIRE"
-
-class="logo"
+            </div>
 
 
 
->
+        </section>
+                <!-- =================================
+             CARD DE LOGIN
+        ================================= -->
+
+
+        <section class="login-panel">
 
 
 
-
-<h1>
-
-EMPIRE
-
-</h1>
-
-
-
-
-<h2>
-
-Império da Moda Online
-
-</h2>
+            <div class="login-card">
 
 
 
 
 
-<span>
+                <header class="login-header">
 
-ERP V4 PREMIUM FULL ULTRA 4K
 
-</span>
+                    <h3>
+                        Acesso ao Sistema
+                    </h3>
+
+
+                    <p>
+                        Informe seus dados para entrar
+                    </p>
+
+
+
+                </header>
+
+
+
+
+
+
+
+                <!-- FORMULÁRIO -->
+
+
+                <form id="loginForm">
+
+
+
+
+
+
+                    <!-- USUÁRIO -->
+
+
+                    <div class="input-group">
+
+
+                        <label for="loginUser">
+
+                            Usuário ou E-mail
+
+                        </label>
+
+
+
+                        <div class="input-field">
+
+
+                            <i class="fa-solid fa-user"></i>
+
+
+
+                            <input
+
+                            type="text"
+
+                            id="loginUser"
+
+                            name="usuario"
+
+                            placeholder="Digite seu usuário"
+
+                            autocomplete="username">
+
+
+
+                        </div>
+
+
+
+                    </div>
+
+
+
+
+
+
+
+
+                    <!-- SENHA -->
+
+
+                    <div class="input-group">
+
+
+                        <label for="loginPassword">
+
+                            Senha
+
+                        </label>
+
+
+
+                        <div class="input-field">
+
+
+                            <i class="fa-solid fa-lock"></i>
+
+
+
+
+                            <input
+
+                            type="password"
+
+                            id="loginPassword"
+
+                            name="senha"
+
+                            placeholder="Digite sua senha"
+
+                            autocomplete="current-password">
+
+
+
+
+
+                            <button
+
+                            type="button"
+
+                            id="showPassword"
+
+                            class="password-button">
+
+
+                                <i class="fa-solid fa-eye"></i>
+
+
+                            </button>
+
+
+
+
+                        </div>
+
+
+
+                    </div>
+
+
+
+
+
+
+
+
+
+                    <!-- OPÇÕES -->
+
+
+                    <div class="login-options">
+
+
+
+                        <label class="remember">
+
+
+                            <input
+
+                            type="checkbox"
+
+                            id="rememberUser">
+
+
+
+                            <span>
+                                Lembrar acesso
+                            </span>
+
+
+
+                        </label>
+
+
+
+
+
+                        <a href="alterar-senha.html">
+
+
+                            Recuperar senha
+
+
+                        </a>
+
+
+
+                    </div>
+
+
+
+
+
+
+
+
+
+                    <!-- ALERTA -->
+
+
+                    <div
+
+                    id="loginMessage"
+
+                    class="login-message">
+
+
+                    </div>
+
+
+
+
+
+
+
+
+
+                    <!-- BOTÃO ENTRAR -->
+
+
+                    <button
+
+                    type="submit"
+
+                    class="login-submit">
+
+
+
+                        <span>
+                            ENTRAR
+                        </span>
+
+
+
+                        <i class="fa-solid fa-right-to-bracket"></i>
+
+
+
+                    </button>
+
+
+
+
+
+
+
+                </form>
+
+
+
+
+
+
+
+
+
+                <!-- INFORMAÇÕES -->
+
+
+                <div class="login-security">
+
+
+
+                    <div>
+
+
+                        <i class="fa-solid fa-shield-halved"></i>
+
+
+                        <span>
+                            Ambiente seguro
+                        </span>
+
+
+                    </div>
+
+
+
+
+                    <div>
+
+
+                        <i class="fa-solid fa-clock"></i>
+
+
+                        <span>
+                            Controle de acesso
+                        </span>
+
+
+                    </div>
+
+
+
+
+                </div>
+
+
+
+
+
+
+
+
+
+                <!-- FOOTER -->
+
+
+                <footer class="login-footer">
+
+
+
+                    <strong>
+                        EMPIRE
+                    </strong>
+
+
+
+                    <p>
+                        Império da Moda Online
+                    </p>
+
+
+
+                    <small>
+                        Gestão • Segurança • Controle
+                    </small>
+
+
+
+                </footer>
+
+
+
+
+
+            </div>
+
+
+
+        </section>
+
+
+
+
+
+
+    </main>
 
 
 
@@ -184,236 +546,16 @@ ERP V4 PREMIUM FULL ULTRA 4K
 
 
 
-<div class="divider"></div>
 
+<!-- =========================================
+     JAVASCRIPT
+========================================= -->
 
 
-
-
-
-
-<form id="loginForm">
-
-
-
-
-
-<div class="input-box">
-
-
-
-<label>
-
-Usuário
-
-</label>
-
-
-
-
-<input
-
-type="text"
-
-id="usuario"
-
-placeholder="Digite seu usuário"
-
-
-
->
-
-
-
-</div>
-
-
-
-
-
-
-
-
-<div class="input-box">
-
-
-
-<label>
-
-Senha
-
-</label>
-
-
-
-
-<input
-
-type="password"
-
-id="senha"
-
-placeholder="Digite sua senha"
-
-
-
->
-
-
-
-</div>
-
-
-
-
-
-
-
-<div class="login-options">
-
-
-
-
-
-<label>
-
-
-<input
-
-type="checkbox"
-
-id="mostrarSenha"
-
-
-
->
-
-
-Mostrar senha
-
-
-
-</label>
-
-
-
-
-
-
-<a href="pages/html/recuperar-senha.html">
-
-
-Esqueci minha senha
-
-
-</a>
-
-
-
-
-
-</div>
-
-
-
-
-
-
-
-<button
-
-type="submit"
-
-id="btnEntrar"
-
->
-
-ENTRAR
-
-</button>
-
-
-
-
-
-
-
-
-<div id="mensagemLogin"></div>
-
-
-
-
-
-
-
-</form>
-
-
-
-
-
-
-
-
-<div class="system-info">
-
-
-<p>
-
-EMPIRE
-
-</p>
-
-
-
-<span>
-
-ERP V4 PREMIUM FULL ULTRA 4K
-
-</span>
-
-
-
-</div>
-
-
-
-
-
-
-
-</div>
-
-
-
-
-
-
-
-
-</div>
-
-
-
-
-
-</div>
-
-
-
-
-
-
-
-
-<script src="assets/js/login.js"></script>
-
-
+<script src="../../assets/js/login.js"></script>
 
 
 
 </body>
-
 
 </html>
