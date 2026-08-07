@@ -7,127 +7,196 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<meta name="theme-color" content="#050505">
 
-<meta name="description" content="EMPIRE ERP - Recuperação de Senha">
+<title>
+EMPIRE ERP | Recuperar Senha
+</title>
 
-<title>EMPIRE ERP | Recuperação de Senha</title>
 
-<link rel="icon" href="assets/img/favicon.png">
+<link rel="icon" href="../../assets/img/favicon.png">
 
-<!-- Fontes -->
+
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;800;900&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-<!-- Ícones -->
+
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+
+
 <link rel="stylesheet"
+
 href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
-<!-- CSS -->
+
+
 <link rel="stylesheet"
-href="assets/css/recuperar-senha.css">
+
+href="../../assets/css/recuperar-senha.css">
+
+
 
 </head>
 
+
+
 <body>
+
+
+
+<!-- FUNDO -->
+
+<div class="background">
+
+
+<div class="light light1"></div>
+
+<div class="light light2"></div>
+
+<div class="light light3"></div>
+
+
+</div>
+
+
+
+
+
 
 <!-- LOADER -->
 
 <div class="loader" id="loader">
 
-<div class="loader-content">
 
-<div class="loader-logo">
+<div class="loader-box">
 
+
+<h1>
 EMPIRE
+</h1>
+
+
+<span>
+Recuperação de Senha
+</span>
+
+
+
+<div class="loader-line">
+
+<div></div>
 
 </div>
 
-<div class="loader-subtitle">
-
-Império da Moda Online
 
 </div>
 
-<div class="loader-bar">
-
-<span></span>
 
 </div>
 
-</div>
 
-</div>
 
-<!-- FUNDO -->
 
-<div class="background-animation">
 
-<div class="glow glow-1"></div>
 
-<div class="glow glow-2"></div>
 
-<div class="glow glow-3"></div>
 
-<div id="particles"></div>
-
-</div>
-
-<!-- CONTAINER -->
 
 <main class="recovery-container">
 
-<div class="recovery-card">
 
-<div class="brand">
 
-<h1>EMPIRE</h1>
+<section class="recovery-card">
 
-<span>Império da Moda Online</span>
+
+
+
+
+
+
+<div class="logo-area">
+
+
+<img src="../../assets/img/logo.png"
+
+alt="EMPIRE">
+
+
+<h1>
+EMPIRE
+</h1>
+
+
+<p>
+Império da Moda Online
+</p>
+
 
 </div>
 
+
+
+
+
+
+
 <h2>
-
-Recuperação de Senha
-
+Recuperar Senha
 </h2>
 
-<p>
 
-Informe seu usuário para iniciar a recuperação.
+
+<p class="description">
+
+Verifique sua identidade e permissão.
 
 </p>
 
-<form id="recoveryForm">
-  <!-- ================================================
-USUÁRIO
-================================================ -->
 
-<div class="input-group">
+
+
+
+
+
+
+<div class="input-box">
+
 
 <i class="fa-solid fa-user"></i>
 
+
 <input
+
+id="usuarioRecuperacao"
+
 type="text"
-id="recoveryUser"
-placeholder="Usuário"
-autocomplete="username"
-required>
+
+placeholder="Digite seu usuário">
+
 
 </div>
 
+
+
+
+
+
+
 <button
-type="button"
-class="primary-button"
-id="searchUserButton">
+
+id="buscarUsuario"
+
+class="gold-button">
+
 
 <i class="fa-solid fa-magnifying-glass"></i>
 
-<span>Localizar Usuário</span>
+
+Verificar Usuário
+
 
 </button>
 
@@ -135,98 +204,139 @@ id="searchUserButton">
 
 
 
-<!-- ================================================
-INFORMAÇÕES DO USUÁRIO
-================================================ -->
-
-<div
-class="user-information hidden"
-id="userInformation">
-
-<div class="info-row">
-
-<strong>Usuário:</strong>
-
-<span id="infoUser">-</span>
-
-</div>
-
-<div class="info-row">
-
-<strong>Cargo:</strong>
-
-<span id="infoRole">-</span>
-
-</div>
-
-<div class="info-row">
-
-<strong>Status:</strong>
-
-<span id="infoStatus">Aguardando</span>
-
-</div>
-
-</div>
 
 
+<div id="usuarioInfo"
+
+class="user-info hidden">
 
 
-
-
-<!-- ================================================
-AUTORIZAÇÃO ADMINISTRADOR
-================================================ -->
-
-<div
-class="authorization-box hidden"
-id="authorizationBox">
 
 <h3>
+Dados do Usuário
+</h3>
+
+
+
+<p>
+Nome:
+<strong id="nomeUsuario"></strong>
+</p>
+
+
+<p>
+Cargo:
+<strong id="cargoUsuario"></strong>
+</p>
+
+
+<p>
+Permissão:
+<strong id="statusUsuario"></strong>
+</p>
+
+
+
+</div>
+<!-- AUTORIZAÇÃO ADMINISTRADOR -->
+
+<div id="adminAuthorization" class="authorization-box hidden">
+
+
+<h3>
+
+<i class="fa-solid fa-shield-halved"></i>
 
 Autorização do Administrador
 
 </h3>
 
-<div class="input-group">
+
+
+<p>
+
+Este usuário precisa da liberação de um administrador.
+
+</p>
+
+
+
+
+
+<div class="input-box">
+
 
 <i class="fa-solid fa-user-shield"></i>
 
+
 <input
+
+id="adminUsuario"
+
 type="text"
-id="adminUser"
-placeholder="Usuário Administrador">
+
+placeholder="Usuário administrador">
+
 
 </div>
 
-<div class="input-group">
+
+
+
+
+<div class="input-box">
+
 
 <i class="fa-solid fa-lock"></i>
 
+
 <input
+
+id="adminSenha"
+
 type="password"
-id="adminPassword"
-placeholder="Senha do Administrador">
+
+placeholder="Senha administrador">
+
+
 
 <button
+
 type="button"
-class="show-password"
-id="toggleAdminPassword">
+
+id="mostrarAdminSenha">
+
 
 <i class="fa-solid fa-eye"></i>
 
+
 </button>
 
+
+
 </div>
+
+
+
+
+
 
 <button
-type="button"
-class="gold-button"
-id="authorizeButton">
 
-Autorizar
+id="autorizarAdmin"
+
+class="gold-button">
+
+
+<i class="fa-solid fa-check"></i>
+
+
+Autorizar Alteração
+
 
 </button>
+
+
 
 </div>
 
@@ -236,80 +346,108 @@ Autorizar
 
 
 
-<!-- ================================================
-ALTERAÇÃO DE SENHA
-================================================ -->
 
-<div
-class="password-box hidden"
-id="passwordBox">
 
-<div class="input-group">
+<!-- ALTERAÇÃO DE SENHA -->
+
+
+<div id="alterarSenhaBox" class="password-box hidden">
+
+
+
+<h3>
 
 <i class="fa-solid fa-key"></i>
 
-<input
-type="password"
-id="newPassword"
-placeholder="Nova senha">
+Nova Senha
 
-<button
-type="button"
-class="show-password"
-id="toggleNewPassword">
+</h3>
 
-<i class="fa-solid fa-eye"></i>
 
-</button>
 
-</div>
 
-<div class="password-strength">
 
-<div
-class="strength-bar"
-id="strengthBar">
+<div class="input-box">
 
-</div>
-
-</div>
-
-<small
-id="strengthText">
-
-Força da senha
-
-</small>
-
-<div class="input-group">
 
 <i class="fa-solid fa-lock"></i>
 
+
 <input
+
+id="novaSenha"
+
 type="password"
-id="confirmPassword"
-placeholder="Confirmar senha">
+
+placeholder="Nova senha">
+
 
 </div>
 
+
+
+
+
+
+
+<div class="input-box">
+
+
+<i class="fa-solid fa-lock"></i>
+
+
+<input
+
+id="confirmarSenha"
+
+type="password"
+
+placeholder="Confirmar nova senha">
+
+
+</div>
+
+
+
+
+
+
+
+<div class="strength">
+
+
+<div id="strengthBar"></div>
+
+
+</div>
+
+
+<p id="strengthText">
+
+</p>
+
+
+
+
+
+
+
 <button
-type="submit"
-class="success-button">
+
+id="salvarSenha"
+
+class="gold-button">
+
+
+<i class="fa-solid fa-save"></i>
+
 
 Salvar Nova Senha
 
+
 </button>
 
-</div>
 
-
-
-
-
-
-<div
-class="message-box"
-id="messageBox">
 
 </div>
 
@@ -318,28 +456,50 @@ id="messageBox">
 
 
 
-<a
-href="index.html"
+
+
+<div id="mensagem"></div>
+
+
+
+
+
+
+
+
+
+<a href="../../index.html"
+
 class="back-login">
+
 
 <i class="fa-solid fa-arrow-left"></i>
 
-Voltar para o Login
+
+Voltar para Login
+
 
 </a>
-</form>
 
-</div>
+
+
+
+
+</section>
+
 
 </main>
 
-<!-- ================================================
-RODAPÉ
-================================================ -->
 
-<footer class="login-footer">
 
-<div>
+
+
+
+
+
+
+<footer>
+
 
 <strong>
 
@@ -347,13 +507,12 @@ EMPIRE ERP
 
 </strong>
 
-</div>
 
-<div>
+<br>
 
-Império da Moda Online
 
-</div>
+Recuperação segura de acesso
+
 
 </footer>
 
@@ -362,86 +521,14 @@ Império da Moda Online
 
 
 
-<!-- ================================================
-JAVASCRIPT
-================================================ -->
-
-<script src="assets/js/login.js"></script>
-
-<script src="assets/js/recuperar-senha.js"></script>
 
 
 
+<script src="../../assets/js/recuperar-senha.js"></script>
 
 
-
-<!-- ================================================
-PARTÍCULAS
-================================================ -->
-
-<script>
-
-const particles = document.getElementById("particles");
-
-if(particles){
-
-for(let i=0;i<35;i++){
-
-const particle=document.createElement("span");
-
-particle.className="particle";
-
-particle.style.left=Math.random()*100+"%";
-
-particle.style.animationDelay=Math.random()*8+"s";
-
-particle.style.animationDuration=(5+Math.random()*8)+"s";
-
-particles.appendChild(particle);
-
-}
-
-}
-
-</script>
-
-
-
-
-
-
-<!-- ================================================
-SERVICE WORKER
-================================================ -->
-
-<script>
-
-if("serviceWorker" in navigator){
-
-window.addEventListener("load",()=>{
-
-navigator.serviceWorker
-
-.register("service-worker.js")
-
-.then(()=>{
-
-console.log("EMPIRE ERP PWA ativo");
-
-})
-
-.catch(error=>{
-
-console.error(error);
-
-});
-
-});
-
-}
-
-</script>
 
 </body>
+
 
 </html>
