@@ -1,52 +1,60 @@
 /*
 ====================================================
  EMPIRE | Império da Moda Online
- LOGIN CSS
+ LOGIN CSS V2
  PARTE 1/3
 ====================================================
 */
 
 
 /* ================================================
-   RESET GLOBAL
+   RESET
 ================================================ */
 
 
-* {
+*{
 
-    margin: 0;
+    margin:0;
 
-    padding: 0;
+    padding:0;
 
-    box-sizing: border-box;
-
-}
-
-
-html {
-
-    scroll-behavior: smooth;
+    box-sizing:border-box;
 
 }
 
 
-body {
+
+html{
+
+    scroll-behavior:smooth;
+
+}
 
 
-    width: 100%;
 
-    min-height: 100vh;
+body{
 
-    font-family: "Poppins", sans-serif;
 
-    background: #050505;
+    min-height:100vh;
 
-    color: #ffffff;
 
-    overflow-x: hidden;
+    background:#050505;
+
+
+    color:#fff;
+
+
+    font-family:"Poppins",sans-serif;
+
+
+    overflow-x:hidden;
+
 
 
 }
+
+
+
 
 
 
@@ -57,39 +65,33 @@ body {
 ================================================ */
 
 
-:root {
+:root{
 
 
-    --black:
-    #050505;
+    --black:#050505;
 
 
-    --dark:
-    #0b0b0b;
+    --dark:#0b0b0b;
 
 
-    --graphite:
-    #161616;
+    --graphite:#161616;
 
 
-    --gold:
-    #d4af37;
+
+    --gold:#d4af37;
 
 
-    --gold-light:
-    #f8e48c;
+    --gold-light:#f8e48c;
 
 
-    --gold-dark:
-    #8f6b12;
+    --gold-dark:#8f6b12;
 
 
-    --white:
-    #ffffff;
+
+    --white:#ffffff;
 
 
-    --text:
-    #d8d8d8;
+    --text:#d8d8d8;
 
 
 
@@ -105,271 +107,9 @@ body {
 
 
 
-    --shadow-gold:
+    --shadow:
 
     0 0 40px rgba(212,175,55,.25);
-
-
-
-}
-
-
-
-
-
-/* ================================================
-   LOADER PREMIUM
-================================================ */
-
-
-.empire-loader {
-
-
-    position: fixed;
-
-    inset: 0;
-
-    z-index: 9999;
-
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: center;
-
-
-    background:
-
-
-    radial-gradient(
-
-        circle,
-
-        #191919 0%,
-
-        #050505 65%
-
-    );
-
-
-    transition:
-
-    opacity .8s ease,
-
-    visibility .8s ease;
-
-
-}
-
-
-
-.empire-loader.hide {
-
-
-    opacity: 0;
-
-    visibility: hidden;
-
-
-}
-
-
-
-
-.loader-content {
-
-
-    width: 330px;
-
-    text-align: center;
-
-
-}
-
-
-
-
-
-.loader-logo {
-
-
-    font-family:
-
-    "Cinzel",
-    serif;
-
-
-    font-size:
-
-    60px;
-
-
-    font-weight:
-
-    900;
-
-
-    letter-spacing:
-
-    12px;
-
-
-    color:
-
-    var(--gold);
-
-
-
-    text-shadow:
-
-
-    0 0 10px rgba(212,175,55,.7),
-
-    0 0 35px rgba(212,175,55,.35);
-
-
-
-    animation:
-
-    empireGlow 2.5s infinite;
-
-
-
-}
-
-
-
-
-
-.loader-subtitle {
-
-
-    margin-top:
-
-    10px;
-
-
-    font-size:
-
-    14px;
-
-
-    letter-spacing:
-
-    4px;
-
-
-    color:
-
-    var(--text);
-
-
-}
-
-
-
-
-.loader-text {
-
-
-    margin-top:
-
-    25px;
-
-
-    font-size:
-
-    13px;
-
-
-    color:
-
-    #aaa;
-
-
-}
-
-
-
-
-
-.loader-progress {
-
-
-    width:
-
-    100%;
-
-
-    height:
-
-    5px;
-
-
-    margin-top:
-
-    25px;
-
-
-    background:
-
-    rgba(255,255,255,.1);
-
-
-    overflow:
-
-    hidden;
-
-
-    border-radius:
-
-    20px;
-
-
-}
-
-
-
-
-.loader-progress span {
-
-
-    display:
-
-    block;
-
-
-    width:
-
-    40%;
-
-
-    height:
-
-    100%;
-
-
-    background:
-
-
-    linear-gradient(
-
-        90deg,
-
-        transparent,
-
-        var(--gold),
-
-        transparent
-
-    );
-
-
-
-    animation:
-
-    loading 1.8s infinite;
 
 
 
@@ -388,99 +128,31 @@ body {
 ================================================ */
 
 
-.login-page {
+.login-page{
 
 
-    position:
-
-    relative;
+    min-height:100vh;
 
 
-    width:
-
-    100%;
-
-
-    min-height:
-
-    100vh;
+    position:relative;
 
 
 
-    display:
-
-    flex;
+    display:flex;
 
 
-    align-items:
-
-    center;
+    align-items:center;
 
 
-    justify-content:
-
-    center;
+    justify-content:center;
 
 
 
-    overflow:
-
-    hidden;
-
-
-}
+    padding:40px;
 
 
 
-
-
-
-
-/* FUNDO */
-
-
-.login-background {
-
-
-    position:
-
-    absolute;
-
-
-    inset:
-
-    0;
-
-
-
-    background-image:
-
-
-    url("../../assets/img/fundo-login.jpg");
-
-
-
-    background-size:
-
-    cover;
-
-
-
-    background-position:
-
-    center;
-
-
-
-    filter:
-
-    brightness(.45);
-
-
-
-    transform:
-
-    scale(1.05);
+    overflow:hidden;
 
 
 
@@ -491,20 +163,306 @@ body {
 
 
 
-/* CAMADA ESCURA */
 
 
-.login-overlay {
+
+/* ================================================
+   FUNDO
+================================================ */
 
 
-    position:
-
-    absolute;
+.login-background,
 
 
-    inset:
+.login-overlay{
 
-    0;
+
+    position:absolute;
+
+
+    inset:0;
+
+
+
+}
+
+
+
+.login-background{
+
+
+    background:
+
+
+    radial-gradient(
+
+    circle at top,
+
+    rgba(212,175,55,.18),
+
+    transparent 40%
+
+    ),
+
+
+    radial-gradient(
+
+    circle at bottom,
+
+    rgba(212,175,55,.08),
+
+    transparent 45%
+
+    ),
+
+
+    linear-gradient(
+
+    135deg,
+
+    #050505,
+
+    #111,
+
+    #050505
+
+    );
+
+
+
+}
+
+
+
+
+
+
+.login-overlay{
+
+
+    background:
+
+
+    linear-gradient(
+
+    90deg,
+
+    rgba(0,0,0,.8),
+
+    rgba(0,0,0,.45)
+
+    );
+
+
+
+}
+
+
+
+
+
+
+
+
+/* ================================================
+   LOADER
+================================================ */
+
+
+.login-loader{
+
+
+    position:fixed;
+
+
+    inset:0;
+
+
+    z-index:9999;
+
+
+
+    display:flex;
+
+
+    align-items:center;
+
+
+    justify-content:center;
+
+
+
+    background:
+
+
+    radial-gradient(
+
+    circle,
+
+    #171717,
+
+    #050505
+
+    );
+
+
+
+    transition:.8s;
+
+
+
+}
+
+
+
+
+
+.login-loader.hide{
+
+
+    opacity:0;
+
+
+    visibility:hidden;
+
+
+
+}
+
+
+
+
+
+
+.loader-box{
+
+
+    width:330px;
+
+
+    text-align:center;
+
+
+
+}
+
+
+
+
+
+
+.loader-logo{
+
+
+    font-family:"Cinzel",serif;
+
+
+    font-size:60px;
+
+
+    font-weight:900;
+
+
+
+    letter-spacing:12px;
+
+
+
+    color:var(--gold);
+
+
+
+    text-shadow:
+
+
+    0 0 30px rgba(212,175,55,.7);
+
+
+
+}
+
+
+
+
+
+
+
+.loader-subtitle{
+
+
+    margin-top:12px;
+
+
+    color:var(--gold-light);
+
+
+    letter-spacing:3px;
+
+
+    font-size:14px;
+
+
+
+}
+
+
+
+
+.loader-status{
+
+
+    margin-top:25px;
+
+
+    color:#aaa;
+
+
+    font-size:13px;
+
+
+
+}
+
+
+
+
+
+
+.loader-progress{
+
+
+    margin-top:25px;
+
+
+    height:4px;
+
+
+    background:#222;
+
+
+    border-radius:20px;
+
+
+    overflow:hidden;
+
+
+
+}
+
+
+
+
+
+.loader-progress span{
+
+
+    display:block;
+
+
+    height:100%;
+
+
+    width:35%;
 
 
 
@@ -513,254 +471,148 @@ body {
 
     linear-gradient(
 
-        135deg,
+    90deg,
 
-        rgba(5,5,5,.95),
+    transparent,
 
-        rgba(10,10,10,.75)
+    var(--gold),
 
-    );
-
-
-
-}
-
-
-
-
-
-
-
-/* BRILHO DECORATIVO */
-
-
-.login-page::before {
-
-
-    content:"";
-
-
-    position:
-
-    absolute;
-
-
-    width:
-
-    600px;
-
-
-    height:
-
-    600px;
-
-
-
-    background:
-
-    radial-gradient(
-
-        circle,
-
-        rgba(212,175,55,.15),
-
-        transparent 70%
+    transparent
 
     );
 
-
-
-    top:
-
-    -200px;
-
-
-    left:
-
-    -200px;
-
-
-
-}
-
-
-
-.login-page::after {
-
-
-    content:"";
-
-
-    position:
-
-    absolute;
-
-
-    width:
-
-    500px;
-
-
-    height:
-
-    500px;
-
-
-
-    background:
-
-    radial-gradient(
-
-        circle,
-
-        rgba(212,175,55,.12),
-
-        transparent 70%
-
-    );
-
-
-
-    bottom:
-
-    -200px;
-
-
-    right:
-
-    -200px;
-
-
-
-}
-
-
-
-
-
-
-/* CONTAINER PRINCIPAL */
-
-
-.login-main {
-
-
-    position:
-
-    relative;
-
-
-    z-index:
-
-    2;
-
-
-
-    width:
-
-    100%;
-
-
-    max-width:
-
-    1200px;
-
-
-
-    display:
-
-    flex;
-
-
-
-    align-items:
-
-    center;
-
-
-
-    justify-content:
-
-    center;
-
-
-
-    gap:
-
-    80px;
-
-
-
-    padding:
-
-    40px;
-
-
-}
-/* ================================================
-   ÁREA DA MARCA EMPIRE
-================================================ */
-
-
-.login-company {
-
-
-    width:
-
-    420px;
-
-
-}
-
-
-
-.company-box {
-
-
-    text-align:
-
-    center;
 
 
     animation:
 
-    fadeUp .8s ease;
+    loginLoading 2s infinite;
+
 
 
 }
 
 
 
-.company-logo {
 
 
-    width:
-
-    150px;
 
 
-    height:
-
-    150px;
 
 
-    object-fit:
+/* ================================================
+   CONTAINER
+================================================ */
 
-    contain;
+
+.login-container{
+
+
+    position:relative;
+
+
+    z-index:2;
+
+
+
+    width:1200px;
+
+
+    max-width:100%;
+
+
+
+    display:grid;
+
+
+    grid-template-columns:
+
+    1fr 450px;
+
+
+
+    gap:80px;
+
+
+
+    align-items:center;
+
+
+
+}
+
+
+
+
+
+
+
+
+
+/* ================================================
+   MARCA
+================================================ */
+
+
+.login-brand{
+
+
+    animation:
+
+    loginFade 1s ease;
+
+
+
+}
+
+
+
+
+
+.login-logo{
+
+
+    width:130px;
+
+
+    height:130px;
+
+
+    object-fit:contain;
+
 
 
     filter:
 
     drop-shadow(
 
-        0 0 25px rgba(212,175,55,.5)
+    0 0 25px rgba(212,175,55,.5)
 
     );
 
 
-    margin-bottom:
 
-    20px;
+}
+
+
+
+.login-brand h1{
+
+
+    margin-top:25px;
+
+
+    font-family:"Cinzel",serif;
+
+
+    font-size:70px;
+
+
+
+    letter-spacing:15px;
+
+
+
+    color:var(--gold);
 
 
 
@@ -768,35 +620,20 @@ body {
 
 
 
-.login-company h1 {
+.login-brand h2{
 
 
-    font-family:
-
-    "Cinzel",
-    serif;
+    margin-top:10px;
 
 
-    font-size:
-
-    65px;
-
-
-    letter-spacing:
-
-    12px;
-
-
-    color:
-
-    var(--gold);
+    color:var(--gold-light);
 
 
 
-    text-shadow:
+    font-size:18px;
 
 
-    0 0 20px rgba(212,175,55,.5);
+    letter-spacing:4px;
 
 
 
@@ -804,59 +641,48 @@ body {
 
 
 
-.login-company h2 {
+.login-brand p{
 
 
-    margin-top:
-
-    15px;
+    margin-top:25px;
 
 
-    font-size:
-
-    18px;
+    max-width:450px;
 
 
-    font-weight:
-
-    400;
+    color:#aaa;
 
 
-    letter-spacing:
+    line-height:1.8;
 
-    4px;
-
-
-    color:
-
-    var(--gold-light);
 
 
 }
+/* ================================================
+   STATUS SISTEMA
+================================================ */
+
+
+.login-status{
+
+
+    margin-top:30px;
+
+
+    display:flex;
+
+
+    align-items:center;
+
+
+    gap:10px;
 
 
 
-.login-company p {
+    color:#aaa;
 
 
-    margin-top:
-
-    25px;
-
-
-    line-height:
-
-    1.7;
-
-
-    color:
-
-    var(--text);
-
-
-    font-size:
-
-    14px;
+    font-size:14px;
 
 
 
@@ -864,98 +690,19 @@ body {
 
 
 
+.login-status i{
 
 
-
-/* STATUS SISTEMA */
-
-
-.system-indicator {
+    color:#22c55e;
 
 
-    margin-top:
-
-    35px;
-
-
-    display:
-
-    inline-flex;
-
-
-    align-items:
-
-    center;
-
-
-    gap:
-
-    12px;
-
-
-    padding:
-
-    12px 25px;
-
-
-    border:
-
-    1px solid var(--border);
-
-
-    border-radius:
-
-    50px;
-
-
-    background:
-
-    rgba(255,255,255,.04);
-
-
-    backdrop-filter:
-
-    blur(10px);
+    font-size:10px;
 
 
 
 }
 
 
-
-.online-dot {
-
-
-    width:
-
-    10px;
-
-
-    height:
-
-    10px;
-
-
-    border-radius:
-
-    50%;
-
-
-
-    background:
-
-    #22c55e;
-
-
-
-    box-shadow:
-
-
-    0 0 15px #22c55e;
-
-
-
-}
 
 
 
@@ -964,28 +711,101 @@ body {
 
 
 /* ================================================
-   PAINEL LOGIN
+   INFORMAÇÕES MARCA
 ================================================ */
 
 
-.login-panel {
+.brand-info{
 
 
-    width:
+    margin-top:35px;
 
-    430px;
+
+
+    display:flex;
+
+
+    gap:20px;
+
+
+
+    flex-wrap:wrap;
+
 
 
 }
 
 
 
-.login-card {
+
+.brand-info div{
 
 
-    padding:
+    display:flex;
 
-    45px;
+
+    align-items:center;
+
+
+    gap:10px;
+
+
+
+    padding:12px 18px;
+
+
+
+    border-radius:12px;
+
+
+
+    background:
+
+    rgba(255,255,255,.05);
+
+
+
+    border:
+
+    1px solid rgba(212,175,55,.2);
+
+
+
+    color:#ccc;
+
+
+
+    font-size:13px;
+
+
+
+}
+
+
+
+
+.brand-info i{
+
+
+    color:var(--gold);
+
+
+
+}
+
+
+
+
+
+
+
+
+/* ================================================
+   CARD LOGIN
+================================================ */
+
+
+.login-card{
 
 
     background:
@@ -998,13 +818,7 @@ body {
     border:
 
 
-    1px solid rgba(212,175,55,.25);
-
-
-
-    border-radius:
-
-    25px;
+    1px solid var(--border);
 
 
 
@@ -1014,97 +828,31 @@ body {
 
 
 
+    border-radius:30px;
+
+
+
+    padding:45px;
+
+
+
     box-shadow:
 
 
-    0 25px 80px rgba(0,0,0,.7),
-
-
-    var(--shadow-gold);
+    0 25px 80px rgba(0,0,0,.6);
 
 
 
     animation:
 
 
-    fadeUp .8s ease;
+    loginFade 1s ease;
 
 
 
 }
 
 
-
-
-
-
-
-/* HEADER */
-
-
-.login-header {
-
-
-    text-align:
-
-    center;
-
-
-    margin-bottom:
-
-    35px;
-
-
-
-}
-
-
-
-.login-header h3 {
-
-
-    font-family:
-
-    "Cinzel",
-    serif;
-
-
-    font-size:
-
-    28px;
-
-
-
-    color:
-
-    var(--gold);
-
-
-
-}
-
-
-
-.login-header p {
-
-
-    margin-top:
-
-    10px;
-
-
-    font-size:
-
-    14px;
-
-
-    color:
-
-    var(--text);
-
-
-
-}
 
 
 
@@ -1113,44 +861,17 @@ body {
 
 
 /* ================================================
-   INPUTS
+   HEADER LOGIN
 ================================================ */
 
 
-.input-group {
+.login-header{
 
 
-    margin-bottom:
-
-    25px;
+    text-align:center;
 
 
-
-}
-
-
-
-.input-group label {
-
-
-    display:
-
-    block;
-
-
-    margin-bottom:
-
-    10px;
-
-
-    font-size:
-
-    13px;
-
-
-    color:
-
-    var(--gold-light);
+    margin-bottom:35px;
 
 
 
@@ -1158,22 +879,16 @@ body {
 
 
 
-.input-field {
+.login-header h3{
 
 
-    position:
-
-    relative;
+    font-family:"Cinzel",serif;
 
 
-    display:
-
-    flex;
+    font-size:28px;
 
 
-    align-items:
-
-    center;
+    color:var(--gold);
 
 
 
@@ -1181,22 +896,16 @@ body {
 
 
 
-.input-field i {
+.login-header p{
 
 
-    position:
-
-    absolute;
+    margin-top:10px;
 
 
-    left:
-
-    18px;
+    color:#aaa;
 
 
-    color:
-
-    var(--gold);
+    font-size:14px;
 
 
 
@@ -1204,27 +913,115 @@ body {
 
 
 
-.input-field input {
 
 
-    width:
-
-    100%;
 
 
-    height:
-
-    55px;
 
 
-    padding:
+/* ================================================
+   FORMULÁRIO
+================================================ */
 
-    0 50px;
+
+.login-form{
 
 
-    border-radius:
+    width:100%;
 
-    15px;
+
+
+}
+
+
+
+
+.input-group{
+
+
+    margin-bottom:25px;
+
+
+
+}
+
+
+
+.input-group label{
+
+
+    display:block;
+
+
+    margin-bottom:10px;
+
+
+    color:var(--gold-light);
+
+
+    font-size:13px;
+
+
+
+}
+
+
+
+
+
+
+
+.input-box{
+
+
+    position:relative;
+
+
+    display:flex;
+
+
+    align-items:center;
+
+
+
+}
+
+
+
+.input-box i{
+
+
+    position:absolute;
+
+
+    left:18px;
+
+
+    color:var(--gold);
+
+
+
+}
+
+
+
+
+
+.input-box input{
+
+
+    width:100%;
+
+
+    height:55px;
+
+
+
+    padding:0 50px;
+
+
+
+    background:#080808;
 
 
 
@@ -1234,26 +1031,18 @@ body {
 
 
 
-    background:
-
-    rgba(0,0,0,.45);
+    border-radius:15px;
 
 
 
-    color:
-
-    white;
+    color:white;
 
 
-    outline:
-
-    none;
+    outline:none;
 
 
 
-    transition:
-
-    .3s;
+    transition:.3s;
 
 
 
@@ -1261,12 +1050,12 @@ body {
 
 
 
-.input-field input:focus {
 
 
-    border-color:
+.input-box input:focus{
 
-    var(--gold);
+
+    border-color:var(--gold);
 
 
 
@@ -1285,47 +1074,41 @@ body {
 
 
 
-.password-button {
 
 
-    position:
-
-    absolute;
-
-
-    right:
-
-    15px;
+/* ================================================
+   BOTÃO MOSTRAR SENHA
+================================================ */
 
 
-    background:
-
-    none;
+.show-password{
 
 
-    border:
-
-    none;
+    position:absolute;
 
 
-    color:
-
-    var(--gold);
+    right:15px;
 
 
 
-    cursor:
-
-    pointer;
+    background:none;
 
 
-    font-size:
+    border:none;
 
-    16px;
+
+    color:var(--gold);
+
+
+    cursor:pointer;
+
+
+    font-size:16px;
 
 
 
 }
+
 
 
 
@@ -1335,36 +1118,27 @@ body {
 
 
 /* ================================================
-   OPÇÕES LOGIN
+   OPÇÕES
 ================================================ */
 
 
-.login-options {
+.login-options{
 
 
-    display:
-
-    flex;
+    display:flex;
 
 
-    justify-content:
-
-    space-between;
+    justify-content:space-between;
 
 
-    align-items:
-
-    center;
+    align-items:center;
 
 
-    font-size:
 
-    13px;
+    margin-bottom:25px;
 
 
-    margin-bottom:
-
-    25px;
+    font-size:13px;
 
 
 
@@ -1372,17 +1146,33 @@ body {
 
 
 
-.login-options a {
 
 
-    color:
-
-    var(--gold-light);
+.remember{
 
 
-    text-decoration:
+    display:flex;
 
-    none;
+
+    align-items:center;
+
+
+    gap:8px;
+
+
+
+    color:#aaa;
+
+
+
+}
+
+
+
+.remember input{
+
+
+    accent-color:var(--gold);
 
 
 
@@ -1390,88 +1180,130 @@ body {
 
 
 
-.remember {
+
+.login-options a{
 
 
-    display:
-
-    flex;
+    color:var(--gold-light);
 
 
-    gap:
-
-    8px;
-
-
-    align-items:
-
-    center;
-
-
-    color:
-
-    var(--text);
+    text-decoration:none;
 
 
 
 }
+
+
+
+
+
+.login-options a:hover{
+
+
+    color:var(--gold);
+
+
+
+}
+
+
+
+
+
+
+
+
+
+/* ================================================
+   MENSAGEM
+================================================ */
+
+
+.login-message{
+
+
+    min-height:25px;
+
+
+    text-align:center;
+
+
+    margin-bottom:15px;
+
+
+    font-size:13px;
+
+
+
+}
+
+
+
+.login-message.success{
+
+
+    color:#22c55e;
+
+
+
+}
+
+
+
+.login-message.error{
+
+
+    color:#ef4444;
+
+
+
+}
+
+
+
+
+
+
+
+
+
 /* ================================================
    BOTÃO LOGIN
 ================================================ */
 
 
-.login-submit {
+.login-button{
 
 
-    width:
-
-    100%;
+    width:100%;
 
 
-    height:
-
-    58px;
-
-
-    border:
-
-    none;
+    height:58px;
 
 
 
-    border-radius:
-
-    15px;
+    border:none;
 
 
-
-    cursor:
-
-    pointer;
+    border-radius:15px;
 
 
 
-    display:
-
-    flex;
+    cursor:pointer;
 
 
 
-    align-items:
-
-    center;
+    display:flex;
 
 
+    align-items:center;
 
-    justify-content:
 
-    center;
+    justify-content:center;
 
 
 
-    gap:
-
-    15px;
+    gap:15px;
 
 
 
@@ -1480,52 +1312,29 @@ body {
 
     linear-gradient(
 
-        135deg,
+    135deg,
 
-        var(--gold-light),
+    var(--gold-light),
 
-        var(--gold),
+    var(--gold),
 
-        var(--gold-dark)
+    var(--gold-dark)
 
     );
 
 
 
-    color:
-
-    #050505;
+    color:#050505;
 
 
+    font-weight:800;
 
-    font-weight:
 
-    800;
+    letter-spacing:2px;
 
 
 
-    letter-spacing:
-
-    2px;
-
-
-
-    font-size:
-
-    15px;
-
-
-
-    transition:
-
-    .4s;
-
-
-
-    box-shadow:
-
-
-    0 10px 35px rgba(212,175,55,.35);
+    transition:.4s;
 
 
 
@@ -1533,145 +1342,57 @@ body {
 
 
 
-.login-submit:hover {
+
+.login-button:hover{
 
 
     transform:
 
-    translateY(-3px);
+    translateY(-4px);
+
 
 
     box-shadow:
 
 
-    0 15px 45px rgba(212,175,55,.55);
+    0 15px 40px rgba(212,175,55,.5);
 
 
 
 }
-
-
-
-.login-submit i {
-
-
-    font-size:
-
-    18px;
-
-
-
-}
-
-
-
-
-
-
-
-
-/* ================================================
-   MENSAGEM LOGIN
-================================================ */
-
-
-.login-message {
-
-
-    min-height:
-
-    25px;
-
-
-    margin-bottom:
-
-    15px;
-
-
-    text-align:
-
-    center;
-
-
-    font-size:
-
-    13px;
-
-
-}
-
-
-
-.login-message.success {
-
-
-    color:
-
-    #22c55e;
-
-
-}
-
-
-
-.login-message.error {
-
-
-    color:
-
-    #ef4444;
-
-
-}
-
-
-
-
-
-
-
 /* ================================================
    SEGURANÇA
 ================================================ */
 
 
-.login-security {
+.login-security{
 
 
-    margin-top:
-
-    30px;
+    margin-top:30px;
 
 
-    padding-top:
+    padding-top:25px;
 
-    25px;
 
 
     border-top:
+
 
     1px solid rgba(255,255,255,.1);
 
 
 
-    display:
-
-    flex;
+    display:flex;
 
 
-    justify-content:
-
-    center;
+    justify-content:center;
 
 
-    gap:
-
-    25px;
+    gap:20px;
 
 
-    flex-wrap:
 
-    wrap;
+    flex-wrap:wrap;
 
 
 
@@ -1679,32 +1400,24 @@ body {
 
 
 
-.login-security div {
+
+.login-security div{
 
 
-    display:
-
-    flex;
+    display:flex;
 
 
-    align-items:
-
-    center;
+    align-items:center;
 
 
-    gap:
-
-    8px;
+    gap:8px;
 
 
-    font-size:
 
-    12px;
+    color:#999;
 
 
-    color:
-
-    #aaa;
+    font-size:12px;
 
 
 
@@ -1712,16 +1425,16 @@ body {
 
 
 
-.login-security i {
+
+.login-security i{
 
 
-    color:
-
-    var(--gold);
+    color:var(--gold);
 
 
 
 }
+
 
 
 
@@ -1731,21 +1444,17 @@ body {
 
 
 /* ================================================
-   FOOTER LOGIN
+   FOOTER
 ================================================ */
 
 
-.login-footer {
+.login-footer{
 
 
-    margin-top:
-
-    35px;
+    margin-top:30px;
 
 
-    text-align:
-
-    center;
+    text-align:center;
 
 
 
@@ -1753,49 +1462,23 @@ body {
 
 
 
-.login-footer strong {
+.login-footer strong{
 
 
-    font-family:
-
-    "Cinzel",
-    serif;
+    display:block;
 
 
+    font-family:"Cinzel",serif;
 
-    color:
 
-    var(--gold);
+    color:var(--gold);
 
 
 
-    letter-spacing:
-
-    4px;
+    letter-spacing:5px;
 
 
-
-}
-
-
-
-.login-footer p {
-
-
-    color:
-
-    var(--gold-light);
-
-
-
-    font-size:
-
-    13px;
-
-
-    margin-top:
-
-    5px;
+    font-size:20px;
 
 
 
@@ -1803,12 +1486,40 @@ body {
 
 
 
-.login-footer small {
 
 
-    color:
+.login-footer p{
 
-    #777;
+
+    margin-top:5px;
+
+
+    color:var(--gold-light);
+
+
+    font-size:13px;
+
+
+
+}
+
+
+
+
+
+.login-footer span{
+
+
+    display:block;
+
+
+    margin-top:8px;
+
+
+    color:#777;
+
+
+    font-size:12px;
 
 
 
@@ -1827,85 +1538,44 @@ body {
 ================================================ */
 
 
-@keyframes empireGlow {
+@keyframes loginLoading{
 
 
-    0% {
+    0%{
 
 
-        opacity:
-
-        .7;
-
-
-    }
-
-
-    50% {
-
-
-        opacity:
-
-        1;
+        transform:translateX(-120%);
 
 
     }
 
 
-    100% {
+
+    100%{
 
 
-        opacity:
-
-        .7;
+        transform:translateX(300%);
 
 
     }
+
 
 
 }
 
 
 
-@keyframes loading {
-
-
-    0% {
-
-
-        transform:
-
-        translateX(-120%);
-
-
-    }
 
 
 
-    100% {
+
+@keyframes loginFade{
 
 
-        transform:
-
-        translateX(300%);
+    from{
 
 
-    }
-
-
-}
-
-
-
-@keyframes fadeUp {
-
-
-    from {
-
-
-        opacity:
-
-        0;
+        opacity:0;
 
 
         transform:
@@ -1913,16 +1583,15 @@ body {
         translateY(30px);
 
 
+
     }
 
 
 
-    to {
+    to{
 
 
-        opacity:
-
-        1;
+        opacity:1;
 
 
         transform:
@@ -1930,7 +1599,354 @@ body {
         translateY(0);
 
 
+
     }
+
+
+
+}
+
+
+
+
+
+
+
+
+
+@keyframes goldPulse{
+
+
+    0%{
+
+
+        opacity:.7;
+
+
+    }
+
+
+
+    50%{
+
+
+        opacity:1;
+
+
+    }
+
+
+
+    100%{
+
+
+        opacity:.7;
+
+
+    }
+
+
+
+}
+
+
+
+
+
+
+
+
+
+/* ================================================
+   RESPONSIVIDADE NOTEBOOK / TABLET
+================================================ */
+
+
+@media(max-width:1100px){
+
+
+
+    .login-container{
+
+
+        grid-template-columns:
+
+        1fr;
+
+
+
+        gap:40px;
+
+
+
+        max-width:500px;
+
+
+
+    }
+
+
+
+
+
+    .login-brand{
+
+
+        text-align:center;
+
+
+
+    }
+
+
+
+
+
+    .login-brand p{
+
+
+        margin-left:auto;
+
+
+        margin-right:auto;
+
+
+
+    }
+
+
+
+
+
+    .brand-info{
+
+
+        justify-content:center;
+
+
+
+    }
+
+
+
+}
+
+
+
+
+
+
+
+
+
+/* ================================================
+   TABLET
+================================================ */
+
+
+@media(max-width:700px){
+
+
+
+    .login-page{
+
+
+        padding:25px;
+
+
+
+    }
+
+
+
+
+    .login-brand h1{
+
+
+        font-size:45px;
+
+
+
+        letter-spacing:8px;
+
+
+
+    }
+
+
+
+
+    .login-brand h2{
+
+
+        font-size:14px;
+
+
+
+    }
+
+
+
+
+    .login-card{
+
+
+        padding:30px 25px;
+
+
+
+        border-radius:22px;
+
+
+
+    }
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+/* ================================================
+   MOBILE
+================================================ */
+
+
+@media(max-width:450px){
+
+
+
+    .login-page{
+
+
+        padding:15px;
+
+
+
+    }
+
+
+
+
+    .login-logo{
+
+
+        width:90px;
+
+
+        height:90px;
+
+
+
+    }
+
+
+
+
+
+    .login-brand h1{
+
+
+        font-size:35px;
+
+
+
+        letter-spacing:5px;
+
+
+
+    }
+
+
+
+
+    .brand-info{
+
+
+        flex-direction:column;
+
+
+
+    }
+
+
+
+
+
+    .login-card{
+
+
+        padding:25px 18px;
+
+
+
+    }
+
+
+
+
+
+    .login-header h3{
+
+
+        font-size:22px;
+
+
+
+    }
+
+
+
+
+
+    .login-options{
+
+
+        flex-direction:column;
+
+
+        gap:15px;
+
+
+
+    }
+
+
+
+
+
+    .login-security{
+
+
+        flex-direction:column;
+
+
+        align-items:center;
+
+
+
+    }
+
+
+
+
+    .login-button{
+
+
+        height:52px;
+
+
+
+    }
+
+
 
 
 }
@@ -1943,110 +1959,14 @@ body {
 
 
 /* ================================================
-   RESPONSIVIDADE
+   FINAL AJUSTES
 ================================================ */
 
 
+button{
 
-@media(max-width:1100px){
 
-
-    .login-main {
-
-
-        gap:
-
-        40px;
-
-
-
-    }
-
-
-
-    .login-company {
-
-
-        width:
-
-        350px;
-
-
-
-    }
-
-
-}
-
-
-
-
-
-
-@media(max-width:850px){
-
-
-
-    .login-main {
-
-
-        flex-direction:
-
-        column;
-
-
-
-        padding:
-
-        25px;
-
-
-
-    }
-
-
-
-    .login-company {
-
-
-        width:
-
-        100%;
-
-
-
-    }
-
-
-
-    .login-company h1 {
-
-
-        font-size:
-
-        45px;
-
-
-
-    }
-
-
-
-    .login-panel {
-
-
-        width:
-
-        100%;
-
-
-        max-width:
-
-        430px;
-
-
-
-    }
+    font-family:"Poppins",sans-serif;
 
 
 
@@ -2054,108 +1974,13 @@ body {
 
 
 
+::selection{
 
 
+    background:var(--gold);
 
 
-@media(max-width:480px){
-
-
-
-    .login-card {
-
-
-        padding:
-
-        30px 20px;
-
-
-
-        border-radius:
-
-        20px;
-
-
-
-    }
-
-
-
-
-    .company-logo {
-
-
-        width:
-
-        100px;
-
-
-    }
-
-
-
-    .login-company h1 {
-
-
-        font-size:
-
-        35px;
-
-
-
-        letter-spacing:
-
-        7px;
-
-
-
-    }
-
-
-
-
-    .login-header h3 {
-
-
-        font-size:
-
-        22px;
-
-
-
-    }
-
-
-
-
-    .login-options {
-
-
-        flex-direction:
-
-        column;
-
-
-        gap:
-
-        15px;
-
-
-
-    }
-
-
-
-    .login-submit {
-
-
-        height:
-
-        52px;
-
-
-
-    }
+    color:#050505;
 
 
 
