@@ -7,12 +7,16 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+
 <meta name="theme-color" content="#050505">
 
-<meta name="description" content="EMPIRE | Império da Moda Online">
+
+<meta name="description" content="EMPIRE ERP - Império da Moda Online">
 
 
-<title>EMPIRE | Império da Moda Online</title>
+
+<title>EMPIRE ERP | Login</title>
+
 
 
 
@@ -29,7 +33,9 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
 
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
 
 
 
@@ -45,9 +51,12 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
 
 
 
+
 <!-- CSS LOGIN -->
 
-<link rel="stylesheet" href="assets/css/login.css">
+<link rel="stylesheet"
+
+href="assets/css/login.css">
 
 
 
@@ -64,15 +73,12 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
 
 
 
-
-
-
-<!-- ==================================================
+<!-- ================================================
 LOADER PREMIUM
-================================================== -->
+================================================ -->
 
 
-<div class="loader" id="loader">
+<div class="login-loader" id="loginLoader">
 
 
 
@@ -99,19 +105,10 @@ Império da Moda Online
 
 
 
-
-<div class="loader-line">
-
+<div class="loader-progress">
 
 <span></span>
 
-
-</div>
-
-
-
-
-
 </div>
 
 
@@ -119,6 +116,7 @@ Império da Moda Online
 </div>
 
 
+</div>
 
 
 
@@ -126,26 +124,30 @@ Império da Moda Online
 
 
 
-<!-- ==================================================
+<!-- ================================================
 FUNDO ANIMADO
-================================================== -->
-
-
-<div class="background-animation">
+================================================ -->
 
 
 
-<div class="glow glow-1"></div>
-
-
-<div class="glow glow-2"></div>
-
-
-<div class="glow glow-3"></div>
+<div class="login-background">
 
 
 
-<div id="particles"></div>
+<div class="gold-light light-one"></div>
+
+
+<div class="gold-light light-two"></div>
+
+
+<div class="gold-light light-three"></div>
+
+
+
+
+
+<div class="particles" id="particles"></div>
+
 
 
 
@@ -155,13 +157,9 @@ FUNDO ANIMADO
 
 
 
-
-
-
-
-<!-- ==================================================
-LOGIN
-================================================== -->
+<!-- ================================================
+LOGIN CONTAINER
+================================================ -->
 
 
 <main class="login-container">
@@ -170,27 +168,19 @@ LOGIN
 
 
 
-<section class="login-card">
+
+<div class="login-card">
 
 
 
 
 
+
+
+<!-- LOGO -->
 
 
 <div class="login-brand">
-
-
-
-
-
-<img src="assets/img/logo.png"
-
-alt="Logo Empire">
-
-
-
-
 
 
 <h1>
@@ -198,10 +188,6 @@ alt="Logo Empire">
 EMPIRE
 
 </h1>
-
-
-
-
 
 
 <span>
@@ -212,21 +198,18 @@ Império da Moda Online
 
 
 
-
-
-
 </div>
 
 
 
 
 
-<!-- ==================================================
-FORMULÁRIO LOGIN
-================================================== -->
 
 
-<form id="loginForm" class="login-form">
+<!-- FORMULÁRIO -->
+
+
+<form id="loginForm">
 
 
 
@@ -237,23 +220,7 @@ FORMULÁRIO LOGIN
 <div class="input-group">
 
 
-
-<label>
-
-Usuário
-
-</label>
-
-
-
-
-
-<div class="input-box">
-
-
-
 <i class="fa-solid fa-user"></i>
-
 
 
 
@@ -263,16 +230,11 @@ type="text"
 
 id="username"
 
-placeholder="Digite seu usuário"
+placeholder="Usuário"
 
 autocomplete="username"
 
 required>
-
-
-
-</div>
-
 
 
 </div>
@@ -287,24 +249,7 @@ required>
 <div class="input-group">
 
 
-
-<label>
-
-Senha
-
-</label>
-
-
-
-
-
-<div class="input-box">
-
-
-
 <i class="fa-solid fa-lock"></i>
-
-
 
 
 
@@ -314,7 +259,7 @@ type="password"
 
 id="password"
 
-placeholder="Digite sua senha"
+placeholder="Senha"
 
 autocomplete="current-password"
 
@@ -322,33 +267,22 @@ required>
 
 
 
-
-
-
 <button
 
 type="button"
 
-id="showPassword"
+class="show-password"
 
-class="password-toggle">
-
+id="showPassword">
 
 
 <i class="fa-solid fa-eye"></i>
-
 
 
 </button>
 
 
 
-
-
-</div>
-
-
-
 </div>
 
 
@@ -358,54 +292,13 @@ class="password-toggle">
 
 
 
-
-<div class="login-options">
-
+<!-- MENSAGEM -->
 
 
 
+<div class="login-message"
 
-<label class="remember">
-
-
-
-<input
-
-type="checkbox"
-
-id="rememberUser">
-
-
-
-<span>
-
-Lembrar usuário
-
-</span>
-
-
-
-</label>
-
-
-
-
-
-
-
-
-
-<a href="pages/html/recuperar-senha.html">
-
-
-Esqueci minha senha
-
-</a>
-
-
-
-
-
+id="loginMessage">
 
 
 </div>
@@ -422,41 +315,24 @@ Esqueci minha senha
 
 type="submit"
 
-class="login-button"
-
-id="loginButton">
+class="login-button">
 
 
 
+<span>
+
+ENTRAR
+
+</span>
 
 
-<i class="fa-solid fa-right-to-bracket"></i>
 
-
-
-
-Entrar
-
-
+<i class="fa-solid fa-arrow-right"></i>
 
 
 
 </button>
 
-
-
-
-
-
-
-
-<div id="loginMessage" class="login-message">
-
-
-
-
-
-</div>
 
 
 
@@ -471,7 +347,31 @@ Entrar
 
 
 
-</section>
+
+<!-- RECUPERAÇÃO -->
+
+
+
+<a href="recuperar-senha.html"
+
+class="forgot-password">
+
+
+<i class="fa-solid fa-key"></i>
+
+
+Esqueci minha senha
+
+
+</a>
+
+
+
+
+
+
+
+</div>
 
 
 
@@ -486,9 +386,42 @@ Entrar
 
 
 
-<!-- ==================================================
+<!-- ================================================
+RODAPÉ
+================================================ -->
+
+
+<footer class="login-footer">
+
+
+<strong>
+
+EMPIRE ERP
+
+</strong>
+
+
+<span>
+
+Sistema de Gestão | Império da Moda Online
+
+</span>
+
+
+
+</footer>
+
+
+
+
+
+
+
+
+
+<!-- ================================================
 SCRIPTS
-================================================== -->
+================================================ -->
 
 
 <script src="assets/js/login.js"></script>
@@ -500,9 +433,96 @@ SCRIPTS
 
 
 
-<!-- ==================================================
-PWA SERVICE WORKER
-================================================== -->
+<!-- ================================================
+PARTÍCULAS ANIMADAS
+================================================ -->
+
+
+<script>
+
+
+const particles = document.getElementById(
+
+"particles"
+
+);
+
+
+
+
+
+if(particles){
+
+
+
+for(let i = 0; i < 35; i++){
+
+
+
+const particle = document.createElement(
+
+"span"
+
+);
+
+
+
+
+particle.className = "particle";
+
+
+
+particle.style.left =
+
+Math.random()*100 + "%";
+
+
+
+particle.style.animationDelay =
+
+Math.random()*10 + "s";
+
+
+
+particle.style.animationDuration =
+
+(5 + Math.random()*10) + "s";
+
+
+
+
+
+particles.appendChild(
+
+particle
+
+);
+
+
+
+}
+
+
+
+}
+
+
+
+
+
+</script>
+
+
+
+
+
+
+
+
+
+<!-- ================================================
+PWA
+================================================ -->
 
 
 <script>
@@ -511,11 +531,13 @@ PWA SERVICE WORKER
 if("serviceWorker" in navigator){
 
 
+
 window.addEventListener(
 
 "load",
 
 ()=>{
+
 
 
 navigator.serviceWorker.register(
@@ -536,7 +558,6 @@ console.log(
 
 
 })
-
 
 .catch(error=>{
 
@@ -560,6 +581,7 @@ error
 
 
 );
+
 
 
 
