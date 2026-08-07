@@ -7,21 +7,27 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+
 <title>EMPIRE ERP | Login</title>
 
 
 <link rel="icon" href="assets/img/favicon.png">
 
 
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
+
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
 
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
 
+
 <link rel="stylesheet"
+
 href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
 
 
 <link rel="stylesheet" href="assets/css/login.css">
@@ -42,19 +48,12 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
 <div class="loader-box">
 
 
-<h1>
-
-EMPIRE
-
-</h1>
+<h1>EMPIRE</h1>
 
 
 <span>
-
 Império da Moda Online
-
 </span>
-
 
 
 <div class="loader-line">
@@ -68,6 +67,8 @@ Império da Moda Online
 
 
 </div>
+
+
 
 
 
@@ -118,25 +119,22 @@ Império da Moda Online
 
 
 <img src="assets/img/logo.png"
-alt="Logo Empire">
+alt="EMPIRE">
 
 
 <h1>
-
 EMPIRE
-
 </h1>
 
 
 <p>
-
 Império da Moda Online
-
 </p>
 
 
-
 </div>
+
+
 
 
 
@@ -158,17 +156,18 @@ Império da Moda Online
 
 <input
 
-type="text"
-
 id="usuario"
 
+type="text"
+
 placeholder="Usuário"
+
+autocomplete="username"
 
 required>
 
 
 </div>
-
 
 
 
@@ -184,13 +183,16 @@ required>
 
 <input
 
-type="password"
-
 id="senha"
+
+type="password"
 
 placeholder="Senha"
 
+autocomplete="current-password"
+
 required>
+
 
 
 
@@ -217,9 +219,8 @@ id="mostrarSenha">
 
 
 
-<div id="mensagem">
+<div id="mensagem"></div>
 
-</div>
 
 
 
@@ -229,9 +230,9 @@ id="mostrarSenha">
 
 <button
 
-class="btn-login"
+type="submit"
 
-type="submit">
+class="btn-login">
 
 
 <span>
@@ -242,7 +243,6 @@ ENTRAR
 
 
 <i class="fa-solid fa-arrow-right"></i>
-
 
 
 </button>
@@ -260,7 +260,9 @@ ENTRAR
 
 
 
-<a href="recuperar-senha.html"
+
+
+<a href="pages/html/recuperar-senha.html"
 
 class="forgot">
 
@@ -281,7 +283,9 @@ Esqueci minha senha
 </section>
 
 
+
 </main>
+
 
 
 
@@ -293,19 +297,19 @@ Esqueci minha senha
 <footer>
 
 
-<strong>
-
-EMPIRE ERP
-
-</strong>
+<strong>EMPIRE ERP</strong>
 
 
 <br>
+
 
 Sistema de Gestão
 
 
 </footer>
+
+
+
 
 
 
@@ -319,36 +323,38 @@ Sistema de Gestão
 
 
 
-
 <script>
 
 
 const particles = document.getElementById("particles");
 
 
-for(let i=0;i<40;i++){
+for(let i = 0; i < 40; i++){
 
 
-let p=document.createElement("span");
+const p = document.createElement("span");
 
 
 p.className="particle";
 
 
-p.style.left=Math.random()*100+"%";
+p.style.left =
+Math.random()*100+"%";
 
 
-p.style.animationDelay=Math.random()*8+"s";
+p.style.animationDelay =
+Math.random()*8+"s";
 
 
-p.style.animationDuration=(5+Math.random()*10)+"s";
+p.style.animationDuration =
+(5 + Math.random()*10)+"s";
+
 
 
 particles.appendChild(p);
 
 
 }
-
 
 
 
@@ -359,5 +365,6 @@ particles.appendChild(p);
 
 
 </body>
+
 
 </html>
