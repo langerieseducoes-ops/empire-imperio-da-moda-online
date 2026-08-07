@@ -2,14 +2,20 @@
 /*
 ====================================================
  EMPIRE ERP
- RECUPERAÇÃO DE SENHA JS
- Controle de permissões
+ RECUPERAÇÃO DE SENHA
+ Controle de permissão
 ====================================================
 */
 
 
+let usuarioAtual = null;
+
+
+
 document.addEventListener(
+
 "DOMContentLoaded",
+
 ()=>{
 
 
@@ -17,6 +23,8 @@ iniciarRecuperacao();
 
 
 });
+
+
 
 
 
@@ -32,23 +40,88 @@ function iniciarRecuperacao(){
 
 
 
-ativarLoader();
+criarEventos();
+
+
+iniciarLoader();
 
 
 
-const buscar = document.getElementById(
-"searchUserButton"
+}
+
+
+
+
+
+
+
+
+
+// ================================================
+// EVENTOS
+// ================================================
+
+
+function criarEventos(){
+
+
+
+const buscar =
+
+document.getElementById(
+"buscarUsuario"
 );
+
+
 
 
 
 if(buscar){
 
 
+
 buscar.addEventListener(
+
 "click",
-localizarUsuario
+
+buscarUsuario
+
+
+
 );
+
+}
+
+
+
+
+
+
+
+const autorizar =
+
+document.getElementById(
+"autorizarAdmin"
+);
+
+
+
+
+
+if(autorizar){
+
+
+
+autorizar.addEventListener(
+
+"click",
+
+autorizarAdministrador
+
+
+
+);
+
 
 
 }
@@ -58,33 +131,34 @@ localizarUsuario
 
 
 
-const form = document.getElementById(
-"recoveryForm"
+
+const salvar =
+
+document.getElementById(
+"salvarSenha"
 );
 
 
 
-if(form){
 
 
-form.addEventListener(
-"submit",
-salvarNovaSenha
+if(salvar){
+
+
+
+salvar.addEventListener(
+
+"click",
+
+salvarSenha
+
+
+
 );
+
 
 
 }
-
-
-
-
-
-
-ativarMostrarSenha();
-
-
-
-ativarForcaSenha();
 
 
 
@@ -99,74 +173,69 @@ ativarForcaSenha();
 
 
 // ================================================
-// LOADER
+// BUSCAR USUÁRIO
 // ================================================
 
 
-function ativarLoader(){
+function buscarUsuario(){
 
 
 
-const loader = document.getElementById(
-"loader"
+const campo =
+
+document.getElementById(
+
+"usuarioRecuperacao"
+
 );
 
 
 
-if(!loader)
-return;
 
 
 
-
-setTimeout(()=>{
-
-
-loader.classList.add(
-"hide"
-);
-
-
-
-},1200);
-
-
-
-}
-
-
-
-
-
-
-
-
-
-// ================================================
-// LOCALIZAR USUÁRIO
-// ================================================
-
-
-function localizarUsuario(){
-
-
-
-const campo = document.getElementById(
-"recoveryUser"
-);
-
-
-
-const usuarioDigitado =
+const nomeDigitado =
 
 campo.value.trim();
 
 
 
-const usuarios = JSON.parse(
+
+
+
+if(!nomeDigitado){
+
+
+
+mostrarMensagem(
+
+"Digite o usuário."
+
+);
+
+
+
+return;
+
+
+
+}
+
+
+
+
+
+
+
+
+const usuarios =
+
+JSON.parse(
 
 localStorage.getItem(
+
 "empire_usuarios"
+
 )
 
 ) || [];
@@ -176,15 +245,24 @@ localStorage.getItem(
 
 
 
-const usuarioEncontrado = usuarios.find(
 
-u =>
+usuarioAtual =
+
+usuarios.find(
+
+(u)=>
+
+
+u.usuario &&
+
 
 u.usuario.toLowerCase()
 
 ===
 
-usuarioDigitado.toLowerCase()
+nomeDigitado.toLowerCase()
+
+
 
 );
 
@@ -193,21 +271,24 @@ usuarioDigitado.toLowerCase()
 
 
 
-if(!usuarioEncontrado){
+
+
+if(!usuarioAtual){
+
 
 
 mostrarMensagem(
 
-"Usuário não encontrado.",
-
-"erro"
+"Usuário não encontrado."
 
 );
+
 
 
 return;
 
 
+
 }
 
 
@@ -215,57 +296,54 @@ return;
 
 
 
-mostrarInformacoes(
 
-usuarioEncontrado
+mostrarDadosUsuario();
+
+
+
+}
+
+
+// ================================================
+// MOSTRAR DADOS DO USUÁRIO
+// ================================================
+
+
+function mostrarDadosUsuario(){
+
+
+
+const box =
+
+document.getElementById(
+
+"usuarioInfo"
 
 );
 
 
 
-}
 
 
+box.classList.remove(
 
-
-
-
-// ================================================
-// MOSTRAR INFORMAÇÕES
-// ================================================
-
-
-function mostrarInformacoes(usuario){
-
-
-
-document.getElementById(
-"userInformation"
-)
-.classList.remove(
 "hidden"
+
 );
 
 
 
 
-document.getElementById(
-"infoUser"
-)
-.textContent =
-
-usuario.usuario;
-
-
-
 
 
 document.getElementById(
-"infoRole"
-)
-.textContent =
 
-usuario.cargo;
+"nomeUsuario"
+
+).textContent =
+
+usuarioAtual.nome;
+
 
 
 
@@ -273,34 +351,68 @@ usuario.cargo;
 
 
 document.getElementById(
-"infoStatus"
-)
-.textContent =
 
-usuario.permissaoSenha
+"cargoUsuario"
 
-?
+).textContent =
 
-"Autorizado"
-
-:
-
-"Aguardando autorização";
+usuarioAtual.cargo;
 
 
 
 
 
 
-if(usuario.permissaoSenha){
+
+const status =
+
+document.getElementById(
+
+"statusUsuario"
+
+);
 
 
 
-liberarSenha();
+
+
+
+if(usuarioAtual.cargo === "Administrador"){
+
+
+
+status.textContent =
+
+"Alteração liberada";
+
+
+
+status.style.color="#00d27a";
+
+
+
+
+
+liberarAlteracao();
+
+
 
 
 
 }else{
+
+
+
+status.textContent =
+
+"Aguardando autorização do Administrador";
+
+
+
+status.style.color="#ffcc00";
+
+
+
 
 
 
@@ -315,97 +427,88 @@ mostrarAutorizacao();
 }
 
 
+
+
+
+
+
+
+
 // ================================================
-// MOSTRAR AUTORIZAÇÃO ADMINISTRADOR
+// LIBERAR ALTERAÇÃO
+// ================================================
+
+
+function liberarAlteracao(){
+
+
+
+const box =
+
+document.getElementById(
+
+"alterarSenhaBox"
+
+);
+
+
+
+
+
+if(box){
+
+
+
+box.classList.remove(
+
+"hidden"
+
+);
+
+
+
+}
+
+
+
+}
+
+
+
+
+
+
+
+
+
+// ================================================
+// MOSTRAR AUTORIZAÇÃO ADMIN
 // ================================================
 
 
 function mostrarAutorizacao(){
 
 
-const box = document.getElementById(
-"authorizationBox"
-);
 
-
-
-if(box){
-
-box.classList.remove(
-"hidden"
-);
-
-}
-
-
-
-}
-
-
-
-
-
-// ================================================
-// LIBERAR ALTERAÇÃO DE SENHA
-// ================================================
-
-
-function liberarSenha(){
-
-
-
-const box = document.getElementById(
-"passwordBox"
-);
-
-
-
-if(box){
-
-box.classList.remove(
-"hidden"
-);
-
-}
-
-
-
-}
-
-
-
-
-
-
-
-// ================================================
-// BOTÃO AUTORIZAR ADMIN
-// ================================================
-
-
-const authorizeButton =
+const box =
 
 document.getElementById(
-"authorizeButton"
+
+"adminAuthorization"
+
 );
 
 
 
-if(authorizeButton){
+
+
+if(box){
 
 
 
-authorizeButton.addEventListener(
+box.classList.remove(
 
-"click",
-
-()=>{
-
-
-validarAdministrador();
-
-
-}
+"hidden"
 
 );
 
@@ -415,25 +518,34 @@ validarAdministrador();
 
 
 
+}
+
+
+
+
 
 
 
 
 
 // ================================================
-// VALIDAR ADMINISTRADOR
+// VALIDAR ADMIN
 // ================================================
 
 
-function validarAdministrador(){
+function autorizarAdministrador(){
 
 
 
 const adminUsuario =
 
 document.getElementById(
-"adminUser"
+
+"adminUsuario"
+
 ).value.trim();
+
+
 
 
 
@@ -441,7 +553,9 @@ document.getElementById(
 const adminSenha =
 
 document.getElementById(
-"adminPassword"
+
+"adminSenha"
+
 ).value;
 
 
@@ -449,10 +563,16 @@ document.getElementById(
 
 
 
-const usuarios = JSON.parse(
+
+
+const usuarios =
+
+JSON.parse(
 
 localStorage.getItem(
+
 "empire_usuarios"
+
 )
 
 ) || [];
@@ -462,30 +582,36 @@ localStorage.getItem(
 
 
 
-const administrador = usuarios.find(
 
-usuario =>
+const admin =
+
+usuarios.find(
+
+(u)=>
 
 
-usuario.usuario.toLowerCase()
+u.usuario &&
+
+
+u.usuario.toLowerCase()
 
 ===
 
 adminUsuario.toLowerCase()
 
 
-&&
-
-
-usuario.senha === adminSenha
-
 
 &&
 
 
-usuario.cargo ===
+u.senha === adminSenha
 
-"Administrador"
+
+
+&&
+
+
+u.cargo === "Administrador"
 
 
 
@@ -497,15 +623,14 @@ usuario.cargo ===
 
 
 
-if(!administrador){
+
+if(!admin){
 
 
 
 mostrarMensagem(
 
-"Autorização negada. Administrador inválido.",
-
-"erro"
+"Administrador inválido."
 
 );
 
@@ -523,34 +648,11 @@ return;
 
 
 
-liberarSenha();
-
-
-
-
-const status = document.getElementById(
-"infoStatus"
-);
-
-
-
-if(status){
-
-
-
-status.textContent =
-
-"Autorizado pelo Administrador";
-
-
-
-}
-
-
-
 mostrarMensagem(
 
-"Permissão liberada para alteração de senha.",
+"Autorização concedida."
+
+,
 
 "sucesso"
 
@@ -558,12 +660,16 @@ mostrarMensagem(
 
 
 
+
+
+
+liberarAlteracao();
+
+
+
+
+
 }
-
-
-
-
-
 
 
 // ================================================
@@ -571,21 +677,26 @@ mostrarMensagem(
 // ================================================
 
 
-function salvarNovaSenha(e){
+function salvarSenha(){
 
 
 
-e.preventDefault();
+if(!usuarioAtual){
 
 
+mostrarMensagem(
+
+"Selecione um usuário primeiro."
+
+);
 
 
+return;
 
-const usuario =
 
-document.getElementById(
-"recoveryUser"
-).value.trim();
+}
+
+
 
 
 
@@ -594,17 +705,23 @@ document.getElementById(
 const novaSenha =
 
 document.getElementById(
-"newPassword"
+
+"novaSenha"
+
 ).value;
 
 
 
 
 
-const confirmar =
+
+
+const confirmarSenha =
 
 document.getElementById(
-"confirmPassword"
+
+"confirmarSenha"
+
 ).value;
 
 
@@ -613,15 +730,14 @@ document.getElementById(
 
 
 
-if(!novaSenha || !confirmar){
+
+if(novaSenha.length < 6){
 
 
 
 mostrarMensagem(
 
-"Preencha todos os campos.",
-
-"erro"
+"A senha deve ter no mínimo 6 caracteres."
 
 );
 
@@ -639,15 +755,13 @@ return;
 
 
 
-if(novaSenha !== confirmar){
+if(novaSenha !== confirmarSenha){
 
 
 
 mostrarMensagem(
 
-"As senhas não são iguais.",
-
-"erro"
+"As senhas não conferem."
 
 );
 
@@ -665,10 +779,15 @@ return;
 
 
 
-const usuarios = JSON.parse(
+
+let usuarios =
+
+JSON.parse(
 
 localStorage.getItem(
+
 "empire_usuarios"
+
 )
 
 ) || [];
@@ -678,39 +797,18 @@ localStorage.getItem(
 
 
 
-const indice = usuarios.findIndex(
 
-u =>
+usuarios = usuarios.map(
 
-u.usuario.toLowerCase()
-
-===
-
-usuario.toLowerCase()
-
-);
+(u)=>{
 
 
 
+if(u.id === usuarioAtual.id){
 
 
 
-
-if(indice === -1){
-
-
-
-mostrarMensagem(
-
-"Usuário não encontrado.",
-
-"erro"
-
-);
-
-
-
-return;
+u.senha = novaSenha;
 
 
 
@@ -718,11 +816,14 @@ return;
 
 
 
+return u;
 
 
 
+}
 
-usuarios[indice].senha = novaSenha;
+);
+
 
 
 
@@ -746,7 +847,9 @@ JSON.stringify(usuarios)
 
 mostrarMensagem(
 
-"Senha alterada com sucesso!",
+"Senha alterada com sucesso!"
+
+,
 
 "sucesso"
 
@@ -761,122 +864,16 @@ mostrarMensagem(
 setTimeout(()=>{
 
 
-window.location.href="index.html";
+
+window.location.href=
+
+"../../index.html";
+
 
 
 },2000);
 
 
-
-
-}
-
-
-// ================================================
-// MOSTRAR / OCULTAR SENHAS
-// ================================================
-
-
-function ativarMostrarSenha(){
-
-
-
-const botoes = [
-
-{
-
-botao:"toggleAdminPassword",
-
-campo:"adminPassword"
-
-},
-
-{
-
-botao:"toggleNewPassword",
-
-campo:"newPassword"
-
-}
-
-];
-
-
-
-
-
-botoes.forEach(item=>{
-
-
-
-const btn = document.getElementById(
-item.botao
-);
-
-
-
-const input = document.getElementById(
-item.campo
-);
-
-
-
-
-
-if(btn && input){
-
-
-
-btn.addEventListener(
-"click",
-
-()=>{
-
-
-
-if(input.type === "password"){
-
-
-
-input.type="text";
-
-
-
-btn.innerHTML =
-
-'<i class="fa-solid fa-eye-slash"></i>';
-
-
-
-}else{
-
-
-
-input.type="password";
-
-
-
-btn.innerHTML =
-
-'<i class="fa-solid fa-eye"></i>';
-
-
-
-}
-
-
-
-}
-
-);
-
-
-
-}
-
-
-
-});
 
 
 
@@ -895,135 +892,153 @@ btn.innerHTML =
 // ================================================
 
 
-function ativarForcaSenha(){
+const campoSenha =
 
+document.getElementById(
 
+"novaSenha"
 
-const senha = document.getElementById(
-"newPassword"
-);
-
-
-
-const barra = document.getElementById(
-"strengthBar"
-);
-
-
-
-const texto = document.getElementById(
-"strengthText"
 );
 
 
 
 
 
-if(!senha || !barra || !texto)
-return;
+
+
+if(campoSenha){
 
 
 
+campoSenha.addEventListener(
 
-
-
-
-senha.addEventListener(
 "input",
 
 ()=>{
 
 
 
-let valor = senha.value;
+const senha =
 
-
-
-let nivel = 0;
-
-
-
-
-
-
-if(valor.length >= 6)
-
-nivel++;
-
-
-
-if(/[A-Z]/.test(valor))
-
-nivel++;
-
-
-
-if(/[0-9]/.test(valor))
-
-nivel++;
-
-
-
-if(/[^A-Za-z0-9]/.test(valor))
-
-nivel++;
+campoSenha.value;
 
 
 
 
 
 
-if(nivel <= 1){
+const barra =
+
+document.getElementById(
+
+"strengthBar"
+
+);
 
 
 
-barra.style.width="25%";
 
-barra.style.background="#ff4d4f";
 
-texto.textContent="Senha fraca";
+const texto =
+
+document.getElementById(
+
+"strengthText"
+
+);
+
+
+
+
+
+
+
+let forca = 0;
+
+
+
+
+
+if(senha.length >= 6)
+
+forca +=25;
+
+
+
+
+
+if(/[A-Z]/.test(senha))
+
+forca +=25;
+
+
+
+
+
+if(/[0-9]/.test(senha))
+
+forca +=25;
+
+
+
+
+
+if(/[^A-Za-z0-9]/.test(senha))
+
+forca +=25;
+
+
+
+
+
+
+
+
+barra.style.width =
+
+forca+"%";
+
+
+
+
+
+
+
+if(forca <=25){
+
+
+
+texto.textContent=
+
+"Senha fraca";
 
 
 
 }
 
-else if(nivel === 2){
+
+
+else if(forca <=75){
 
 
 
-barra.style.width="50%";
+texto.textContent=
 
-barra.style.background="#d4af37";
-
-texto.textContent="Senha média";
-
-
-
-}
-
-else if(nivel === 3){
-
-
-
-barra.style.width="75%";
-
-barra.style.background="#f8e48c";
-
-texto.textContent="Senha boa";
+"Senha média";
 
 
 
 }
+
+
 
 else{
 
 
 
-barra.style.width="100%";
+texto.textContent=
 
-barra.style.background="#00d27a";
-
-texto.textContent="Senha forte";
+"Senha forte";
 
 
 
@@ -1031,13 +1046,15 @@ texto.textContent="Senha forte";
 
 
 
+
+
+});
+
+
+
 }
 
-);
 
-
-
-}
 
 
 
@@ -1046,73 +1063,136 @@ texto.textContent="Senha forte";
 
 
 // ================================================
-// MENSAGENS
+// MOSTRAR SENHA ADMIN
+// ================================================
+
+
+const mostrarAdmin =
+
+document.getElementById(
+
+"mostrarAdminSenha"
+
+);
+
+
+
+
+
+if(mostrarAdmin){
+
+
+
+mostrarAdmin.addEventListener(
+
+"click",
+
+()=>{
+
+
+
+const campo =
+
+document.getElementById(
+
+"adminSenha"
+
+);
+
+
+
+
+
+
+campo.type =
+
+campo.type==="password"
+
+?
+
+"text"
+
+:
+
+"password";
+
+
+
+
+
+});
+
+
+
+}
+
+
+
+
+
+
+
+
+
+// ================================================
+// MENSAGEM
 // ================================================
 
 
 function mostrarMensagem(
 
-mensagem,
+texto,
 
-tipo
+tipo="erro"
 
 ){
 
 
 
-const box = document.getElementById(
-"messageBox"
+const msg =
+
+document.getElementById(
+
+"mensagem"
+
 );
 
 
 
 
 
-if(!box)
+if(!msg)
+
 return;
 
 
 
 
 
-box.textContent = mensagem;
 
-
-
-box.className =
-
-"message-box";
+msg.textContent = texto;
 
 
 
 
 
+msg.className =
 
-if(tipo === "sucesso"){
+tipo==="sucesso"
 
+?
 
+"msg-success"
 
-box.classList.add(
-"message-success"
-);
+:
 
-
-
-}else{
-
-
-
-box.classList.add(
-"message-error"
-);
+"msg-error";
 
 
 
 }
 
 
-
-}
 
 
 
@@ -1121,24 +1201,58 @@ box.classList.add(
 
 
 // ================================================
-// PROTEÇÃO CONTRA PÁGINA SEM SESSÃO
+// LOADER
 // ================================================
 
 
-window.addEventListener(
-
-"beforeunload",
-
-()=>{
+function iniciarLoader(){
 
 
-console.log(
 
-"EMPIRE Recuperação de senha encerrada"
+const loader =
+
+document.getElementById(
+
+"loader"
 
 );
+
+
+
+
+
+if(!loader)
+
+return;
+
+
+
+
+
+
+
+setTimeout(()=>{
+
+
+
+loader.style.opacity="0";
+
+
+
+setTimeout(()=>{
+
+
+
+loader.style.display="none";
+
+
+
+},700);
+
+
+
+},1800);
+
 
 
 }
-
-);
