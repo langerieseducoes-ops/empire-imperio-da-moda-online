@@ -6,22 +6,32 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+
 <title>EMPIRE | Tela Inicial</title>
+
 
 <link rel="icon" href="../../assets/img/favicon.png">
 
-<!-- Fontes Premium -->
+
+<!-- FONTES PREMIUM -->
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
+
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
 
-<!-- Ícones -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<!-- ICONES -->
+
+<link 
+rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+>
 
 
-<!-- CSS Dashboard -->
+<!-- DASHBOARD CSS -->
+
 <link rel="stylesheet" href="../../assets/css/dashboard.css">
 
 
@@ -31,23 +41,32 @@
 <body>
 
 
-<!-- LOADER PREMIUM -->
+
+<!-- LOADER -->
 
 <div class="empire-loader" id="empireLoader">
 
-    <div class="loader-logo">
-        EMPIRE
-    </div>
 
-    <div class="loader-subtitle">
-        Império da Moda Online
-    </div>
+<div class="loader-logo">
+EMPIRE
+</div>
 
-    <div class="loader-bar">
-        <span></span>
-    </div>
+
+<div class="loader-subtitle">
+Império da Moda Online
+</div>
+
+
+<div class="loader-progress">
+
+<span></span>
 
 </div>
+
+
+</div>
+
+
 
 
 
@@ -58,17 +77,22 @@
 
 
 
+
+
 <!-- SIDEBAR -->
 
 <aside class="sidebar">
 
 
+
 <div class="sidebar-brand">
 
 
-<img src="../../assets/img/logo.png" 
+<img 
+src="../../assets/img/logo.png"
 alt="EMPIRE"
-class="logo-empresa">
+class="logo-empresa"
+>
 
 
 <h1>
@@ -86,7 +110,9 @@ Império da Moda Online
 
 
 
+
 <nav class="sidebar-menu">
+
 
 
 <a href="dashboard.html" class="ativo">
@@ -101,15 +127,17 @@ Tela Inicial
 
 
 
+
 <a href="usuarios.html">
 
-<i class="fa-solid fa-users"></i>
+<i class="fa-solid fa-user-shield"></i>
 
 <span>
 Usuários
 </span>
 
 </a>
+
 
 
 
@@ -125,15 +153,17 @@ Produtos
 
 
 
+
 <a href="clientes.html">
 
-<i class="fa-solid fa-user-group"></i>
+<i class="fa-solid fa-users"></i>
 
 <span>
 Clientes
 </span>
 
 </a>
+
 
 
 
@@ -149,6 +179,7 @@ Vendas
 
 
 
+
 <a href="financeiro.html">
 
 <i class="fa-solid fa-coins"></i>
@@ -161,6 +192,7 @@ Financeiro
 
 
 
+
 <a href="relatorios.html">
 
 <i class="fa-solid fa-chart-line"></i>
@@ -170,6 +202,7 @@ Relatórios
 </span>
 
 </a>
+
 
 
 
@@ -189,14 +222,19 @@ Configurações
 
 
 
+
+
+
 <div class="sidebar-footer">
 
 
 <button id="logout">
 
+
 <i class="fa-solid fa-right-from-bracket"></i>
 
 Sair
+
 
 </button>
 
@@ -212,8 +250,9 @@ Sair
 
 
 
-<!-- CONTEÚDO PRINCIPAL -->
 
+
+<!-- CONTEÚDO -->
 
 <main class="dashboard-main">
 
@@ -221,13 +260,16 @@ Sair
 
 
 
-<!-- TOPO -->
+
+<!-- HEADER -->
 
 
 <header class="dashboard-header">
 
 
-<div>
+
+<div class="welcome-area">
+
 
 <h2>
 Tela Inicial
@@ -235,8 +277,9 @@ Tela Inicial
 
 
 <p>
-Controle completo do Império da Moda Online
+Gestão completa do Império da Moda Online
 </p>
+
 
 
 </div>
@@ -244,18 +287,34 @@ Controle completo do Império da Moda Online
 
 
 
+
+
 <div class="header-actions">
+
+
+
+<div class="system-clock" id="systemClock">
+
+
+</div>
+
+
+
 
 
 <button class="notification-btn">
 
+
 <i class="fa-solid fa-bell"></i>
 
-<span>
-3
+
+<span id="notificationCount">
+0
 </span>
 
+
 </button>
+
 
 
 
@@ -263,17 +322,23 @@ Controle completo do Império da Moda Online
 <div class="user-profile">
 
 
-<img src="../../assets/img/logo.png">
+
+<img 
+src="../../assets/img/logo.png"
+alt="Perfil"
+>
 
 
 <div>
 
-<strong>
+
+<strong id="userName">
 Administrador
 </strong>
 
+
 <small>
-Online
+🟢 Online
 </small>
 
 
@@ -284,7 +349,9 @@ Online
 
 
 
+
 </div>
+
 
 
 </header>
@@ -295,18 +362,22 @@ Online
 
 
 
-<!-- BANNER PRINCIPAL -->
+
+<!-- BANNER -->
 
 
 <section class="dashboard-banner">
 
 
+
 <div class="banner-overlay">
+
 
 
 <h1>
 EMPIRE
 </h1>
+
 
 
 <p>
@@ -315,13 +386,16 @@ Império da Moda Online
 
 
 
-<button>
-Explorar Sistema
+<button id="enterSystem">
+
+Entrar no Sistema
+
 </button>
 
 
 
 </div>
+
 
 
 </section>
@@ -332,9 +406,13 @@ Explorar Sistema
 
 
 
-<!-- CARDS -->
+
+<!-- INDICADORES -->
+
 
 <section class="dashboard-cards">
+
+
 
 
 
@@ -346,9 +424,11 @@ Explorar Sistema
 
 <div>
 
-<h3>
+
+<span>
 Produtos
-</h3>
+</span>
+
 
 <strong id="totalProdutos">
 0
@@ -364,6 +444,7 @@ Produtos
 
 
 
+
 <div class="dashboard-card">
 
 
@@ -372,9 +453,10 @@ Produtos
 
 <div>
 
-<h3>
+
+<span>
 Clientes
-</h3>
+</span>
 
 
 <strong id="totalClientes">
@@ -395,14 +477,15 @@ Clientes
 <div class="dashboard-card">
 
 
-<i class="fa-solid fa-money-bill-trend-up"></i>
+<i class="fa-solid fa-cart-shopping"></i>
 
 
 <div>
 
-<h3>
+
+<span>
 Vendas
-</h3>
+</span>
 
 
 <strong id="totalVendas">
@@ -419,6 +502,7 @@ Vendas
 
 
 
+
 <div class="dashboard-card">
 
 
@@ -427,9 +511,10 @@ Vendas
 
 <div>
 
-<h3>
-Financeiro
-</h3>
+
+<span>
+Saldo
+</span>
 
 
 <strong id="saldoFinanceiro">
@@ -444,6 +529,8 @@ R$ 0,00
 
 
 
+
+
 </section>
 
 
@@ -452,7 +539,9 @@ R$ 0,00
 
 
 
-<!-- ÁREA DE GRÁFICOS -->
+
+
+<!-- GRAFICOS -->
 
 
 <section class="dashboard-charts">
@@ -462,13 +551,13 @@ R$ 0,00
 <div class="chart-box">
 
 
-<div class="chart-title">
+<header>
 
 <h3>
 Vendas Mensais
 </h3>
 
-</div>
+</header>
 
 
 <canvas id="salesChart"></canvas>
@@ -480,16 +569,19 @@ Vendas Mensais
 
 
 
+
+
 <div class="chart-box">
 
 
-<div class="chart-title">
+<header>
 
 <h3>
-Produtos Mais Vendidos
+Produtos Cadastrados
 </h3>
 
-</div>
+
+</header>
 
 
 <canvas id="productsChart"></canvas>
@@ -499,9 +591,65 @@ Produtos Mais Vendidos
 
 
 
-
 </section>
 
+
+
+
+
+
+
+
+<!-- STATUS -->
+
+<section class="system-status">
+
+
+
+<div>
+
+
+<i class="fa-solid fa-database"></i>
+
+
+<span>
+Banco Local ERP
+</span>
+
+
+<strong id="databaseStatus">
+Ativo
+</strong>
+
+
+</div>
+
+
+
+
+
+
+<div>
+
+
+<i class="fa-solid fa-wifi"></i>
+
+
+<span>
+Conexão
+</span>
+
+
+<strong id="connectionStatus">
+Online
+</strong>
+
+
+</div>
+
+
+
+</section>
 
 
 
@@ -519,14 +667,18 @@ Produtos Mais Vendidos
 
 
 
-<!-- JS -->
+<!-- CHART.JS -->
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+
+
+
+<!-- EMPIRE JS -->
 
 <script src="../../js/dashboard.js"></script>
 
 
-</body>
 
+</body>
 
 </html>
