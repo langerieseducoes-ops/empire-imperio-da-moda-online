@@ -1,51 +1,18 @@
 /*
-==========================================================
- EMPIRE
-
- Império da Moda Online
-
- ERP V4 PREMIUM FULL ULTRA 4K
-
+====================================================
+ EMPIRE | Império da Moda Online
  RECUPERAR SENHA CSS
-
  PARTE 1/3
-
-==========================================================
+====================================================
 */
 
 
-
-@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800&display=swap');
-
-
-
-
-
-:root{
-
-
---black:#050505;
-
---dark:#0b0b0b;
-
---gold:#d4af37;
-
---gold-light:#f8e48c;
-
---white:#ffffff;
-
-
-}
-
-
-
-
-
-
+/* ================================================
+RESET
+================================================ */
 
 
 *{
-
 
 margin:0;
 
@@ -53,11 +20,7 @@ padding:0;
 
 box-sizing:border-box;
 
-
 }
-
-
-
 
 
 
@@ -66,22 +29,120 @@ box-sizing:border-box;
 body{
 
 
-width:100%;
+min-height:100vh;
 
 
-height:100vh;
-
-
-
-font-family:'Poppins',sans-serif;
-
+font-family:"Poppins",sans-serif;
 
 
 background:#050505;
 
 
-
 color:white;
+
+
+overflow:hidden;
+
+
+
+}
+
+
+
+
+
+
+
+
+
+/* ================================================
+VARIÁVEIS
+================================================ */
+
+
+:root{
+
+
+--black:#050505;
+
+
+--dark:#0b0b0b;
+
+
+--graphite:#161616;
+
+
+--gold:#d4af37;
+
+
+--gold-light:#f8e48c;
+
+
+--gold-dark:#8f6b12;
+
+
+--white:#ffffff;
+
+
+--text:#d8d8d8;
+
+
+
+}
+
+
+
+
+
+
+
+
+
+/* ================================================
+FUNDO ANIMADO
+================================================ */
+
+
+.background-animation{
+
+
+position:fixed;
+
+
+inset:0;
+
+
+z-index:-1;
+
+
+
+background:
+
+
+
+radial-gradient(
+
+circle at top,
+
+rgba(212,175,55,.18),
+
+transparent 40%
+
+),
+
+
+
+linear-gradient(
+
+135deg,
+
+#050505,
+
+#161616,
+
+#050505
+
+);
 
 
 
@@ -98,14 +159,134 @@ overflow:hidden;
 
 
 
-.recover-page{
+.glow{
 
 
-width:100%;
+position:absolute;
 
 
-height:100vh;
+border-radius:50%;
 
+
+filter:blur(110px);
+
+
+opacity:.35;
+
+
+animation:
+
+floatGlow 12s infinite alternate;
+
+
+
+}
+
+
+
+
+
+
+
+.glow-1{
+
+
+width:450px;
+
+
+height:450px;
+
+
+background:#d4af37;
+
+
+top:-150px;
+
+
+left:-150px;
+
+
+
+}
+
+
+
+
+
+
+
+.glow-2{
+
+
+width:350px;
+
+
+height:350px;
+
+
+background:#8f6b12;
+
+
+right:-100px;
+
+
+top:40%;
+
+
+
+}
+
+
+
+
+
+
+
+
+.glow-3{
+
+
+width:300px;
+
+
+height:300px;
+
+
+background:#d4af37;
+
+
+bottom:-100px;
+
+
+left:40%;
+
+
+
+}
+
+
+
+
+
+
+
+
+
+/* ================================================
+LOADER
+================================================ */
+
+
+.loader{
+
+
+position:fixed;
+
+
+inset:0;
+
+
+z-index:9999;
 
 
 display:flex;
@@ -118,198 +299,90 @@ align-items:center;
 
 
 
-position:relative;
-
-
-
-}
-
-
-
-
-
-
-
-
-.background-overlay{
-
-
-position:absolute;
-
-
-inset:0;
-
-
-
 background:
 
 
-linear-gradient(
+radial-gradient(
 
-90deg,
+circle,
 
-rgba(0,0,0,.95),
+#171717,
 
-rgba(0,0,0,.6),
-
-rgba(0,0,0,.95)
-
-),
-
-
-
-url("../img/fundo-login.jpg");
-
-
-
-background-size:cover;
-
-
-
-background-position:center;
-
-
-
-}
-
-
-
-
-
-
-
-
-.recover-card{
-
-
-position:relative;
-
-
-z-index:2;
-
-
-
-width:430px;
-
-
-
-padding:50px;
-
-
-
-background:
-
-
-rgba(255,255,255,.06);
-
-
-
-border:
-
-
-1px solid rgba(212,175,55,.35);
-
-
-
-border-radius:35px;
-
-
-
-backdrop-filter:
-
-
-blur(25px);
-
-
-
-box-shadow:
-
-
-0 40px 100px rgba(0,0,0,.8);
-
-
-
-animation:
-
-
-entrada .8s ease;
-
-
-
-}
-
-
-
-
-
-
-
-
-.brand{
-
-
-text-align:center;
-
-
-}
-
-
-
-.logo{
-
-
-width:110px;
-
-
-height:110px;
-
-
-
-object-fit:contain;
-
-
-
-filter:
-
-
-drop-shadow(
-
-0 0 20px rgba(212,175,55,.5)
+#050505
 
 );
 
 
 
+transition:.8s;
+
+
+
 }
-/* ======================================================
-   CONTEÚDO RECUPERAÇÃO
-   PARTE 2/3
-====================================================== */
 
 
 
 
 
 
-.brand h1{
+
+.loader.hide{
 
 
-font-family:'Cinzel',serif;
+opacity:0;
 
 
-font-size:50px;
+visibility:hidden;
 
 
 
-letter-spacing:8px;
+}
 
+
+
+
+
+
+
+
+.loader-content{
+
+
+text-align:center;
+
+
+
+}
+
+
+
+
+
+
+
+.loader-logo{
+
+
+font-family:"Cinzel",serif;
+
+
+font-size:70px;
+
+
+font-weight:900;
+
+
+letter-spacing:15px;
 
 
 color:var(--gold);
 
 
 
-margin-top:15px;
+text-shadow:
+
+
+0 0 40px rgba(212,175,55,.8);
 
 
 
@@ -319,25 +392,21 @@ margin-top:15px;
 
 
 
-.brand h2{
 
 
-font-family:'Cinzel',serif;
+.loader-subtitle{
 
 
-font-size:17px;
-
+margin-top:15px;
 
 
 color:var(--gold-light);
 
 
-
-margin-top:8px;
-
+letter-spacing:5px;
 
 
-letter-spacing:2px;
+font-size:14px;
 
 
 
@@ -347,45 +416,50 @@ letter-spacing:2px;
 
 
 
-.brand span{
+
+
+
+.loader-line{
+
+
+width:280px;
+
+
+height:4px;
+
+
+margin:30px auto;
+
+
+background:#222;
+
+
+border-radius:20px;
+
+
+overflow:hidden;
+
+
+
+}
+
+
+
+
+
+
+
+
+.loader-line span{
 
 
 display:block;
 
 
-margin-top:12px;
+height:100%;
 
 
-
-font-size:11px;
-
-
-
-letter-spacing:3px;
-
-
-
-color:#999;
-
-
-
-}
-
-
-
-
-
-
-
-
-.divider{
-
-
-height:1px;
-
-
-margin:35px 0;
-
+width:40%;
 
 
 background:
@@ -405,6 +479,37 @@ transparent
 
 
 
+animation:
+
+loading 2s infinite;
+
+
+
+}
+/* ================================================
+CONTAINER RECUPERAÇÃO
+================================================ */
+
+
+.recover-container{
+
+
+min-height:100vh;
+
+
+display:flex;
+
+
+align-items:center;
+
+
+justify-content:center;
+
+
+padding:20px;
+
+
+
 }
 
 
@@ -414,30 +519,195 @@ transparent
 
 
 
-.recover-card h3{
+
+/* ================================================
+CARD
+================================================ */
+
+
+.recover-card{
+
+
+width:450px;
+
+
+padding:45px;
+
+
+
+background:
+
+
+rgba(255,255,255,.05);
+
+
+
+border:
+
+
+1px solid rgba(212,175,55,.35);
+
+
+
+border-radius:30px;
+
+
+
+backdrop-filter:
+
+
+blur(25px);
+
+
+
+box-shadow:
+
+
+0 30px 80px rgba(0,0,0,.7),
+
+
+0 0 40px rgba(212,175,55,.15);
+
+
+
+animation:
+
+
+cardEnter 1s ease;
+
+
+
+}
+
+
+
+
+
+
+
+
+
+/* ================================================
+MARCA
+================================================ */
+
+
+.recover-brand{
 
 
 text-align:center;
 
 
-
-font-family:'Cinzel',serif;
-
+margin-bottom:35px;
 
 
-font-size:26px;
 
+}
+
+
+
+
+
+
+
+.recover-brand img{
+
+
+width:90px;
+
+
+height:90px;
+
+
+object-fit:contain;
+
+
+
+filter:
+
+
+drop-shadow(
+
+0 0 20px rgba(212,175,55,.5)
+
+);
+
+
+
+}
+
+
+
+
+
+
+
+
+.recover-brand h1{
+
+
+font-family:"Cinzel",serif;
+
+
+font-size:42px;
+
+
+letter-spacing:8px;
+
+
+margin-top:15px;
+
+
+color:var(--gold);
+
+
+
+}
+
+
+
+
+
+
+
+.recover-brand span{
+
+
+font-size:14px;
 
 
 letter-spacing:3px;
-
 
 
 color:var(--gold-light);
 
 
 
-margin-bottom:15px;
+}
+
+
+
+
+
+
+
+
+
+/* ================================================
+FORMULÁRIO
+================================================ */
+
+
+.recover-form{
+
+
+display:flex;
+
+
+flex-direction:column;
+
+
+gap:20px;
 
 
 
@@ -450,26 +720,19 @@ margin-bottom:15px;
 
 
 
-.description{
+.input-group label{
 
 
-text-align:center;
+display:block;
 
 
-
-font-size:14px;
-
+margin-bottom:8px;
 
 
-color:#aaa;
+font-size:13px;
 
 
-
-line-height:1.6;
-
-
-
-margin-bottom:30px;
+color:var(--gold-light);
 
 
 
@@ -485,51 +748,30 @@ margin-bottom:30px;
 .input-box{
 
 
-margin-bottom:25px;
-
-
-
-}
-
-
-
-
-.input-box label{
-
-
-display:block;
-
-
-
-font-size:13px;
-
-
-
-color:var(--gold-light);
-
-
-
-margin-bottom:8px;
-
-
-
-}
-
-
-
-
-.input-box input{
-
-
-width:100%;
-
-
-
 height:55px;
 
 
+display:flex;
 
-padding:0 20px;
+
+align-items:center;
+
+
+gap:12px;
+
+
+
+background:
+
+
+rgba(0,0,0,.45);
+
+
+
+border:
+
+
+1px solid rgba(212,175,55,.25);
 
 
 
@@ -537,223 +779,7 @@ border-radius:15px;
 
 
 
-background:
-
-
-rgba(0,0,0,.6);
-
-
-
-border:
-
-
-1px solid rgba(212,175,55,.3);
-
-
-
-color:white;
-
-
-
-font-size:15px;
-
-
-
-outline:none;
-
-
-
-}
-
-
-
-.input-box input:focus{
-
-
-border-color:var(--gold);
-
-
-
-box-shadow:
-
-
-0 0 20px rgba(212,175,55,.35);
-
-
-
-}
-
-
-
-
-
-
-
-
-#btnRecuperar{
-
-
-width:100%;
-
-
-
-height:58px;
-
-
-
-border:none;
-
-
-
-border-radius:18px;
-
-
-
-cursor:pointer;
-
-
-
-font-weight:800;
-
-
-
-letter-spacing:3px;
-
-
-
-background:
-
-
-linear-gradient(
-
-135deg,
-
-#8f6b12,
-
-#f8e48c,
-
-#d4af37
-
-);
-
-
-
-color:#111;
-
-
-
-transition:.4s;
-
-
-
-}
-
-
-
-#btnRecuperar:hover{
-
-
-transform:
-
-
-translateY(-4px);
-
-
-
-box-shadow:
-
-
-0 20px 40px rgba(212,175,55,.4);
-
-
-
-}
-/* ======================================================
-   FINAL RECUPERAÇÃO
-   PARTE 3/3
-====================================================== */
-
-
-
-
-
-
-#mensagemRecuperacao{
-
-
-text-align:center;
-
-
-
-margin-top:20px;
-
-
-
-min-height:20px;
-
-
-
-font-size:14px;
-
-
-
-}
-
-
-
-
-.sucesso{
-
-
-color:#6dff91;
-
-
-
-}
-
-
-
-
-.erro{
-
-
-color:#ff7070;
-
-
-
-}
-
-
-
-
-
-
-
-
-.voltar{
-
-
-display:block;
-
-
-
-text-align:center;
-
-
-
-margin-top:30px;
-
-
-
-text-decoration:none;
-
-
-
-color:var(--gold-light);
-
-
-
-font-size:14px;
+padding:0 18px;
 
 
 
@@ -765,57 +791,223 @@ transition:.3s;
 
 
 
-.voltar:hover{
+
+
+
+
+.input-box:focus-within{
+
+
+border-color:var(--gold);
+
+
+
+box-shadow:
+
+
+0 0 20px rgba(212,175,55,.2);
+
+
+
+}
+
+
+
+
+
+
+
+
+.input-box i{
 
 
 color:var(--gold);
-
-
-
-transform:
-
-
-translateX(-5px);
-
-
-
-}
-
-
-
-
-
-
-
-
-.system-info{
-
-
-text-align:center;
-
-
-
-margin-top:35px;
-
-
-
-}
-
-
-
-.system-info p{
-
-
-font-family:'Cinzel',serif;
-
 
 
 font-size:18px;
 
 
 
-letter-spacing:5px;
+}
 
+
+
+
+
+
+
+
+.input-box input,
+
+
+.input-box select{
+
+
+width:100%;
+
+
+height:100%;
+
+
+background:none;
+
+
+border:none;
+
+
+outline:none;
+
+
+color:white;
+
+
+font-size:15px;
+
+
+
+}
+
+
+
+
+
+.input-box select option{
+
+
+background:#111;
+
+
+color:white;
+
+
+
+}
+
+
+
+
+
+
+
+
+
+/* ================================================
+BOTÃO
+================================================ */
+
+
+.recover-button{
+
+
+height:58px;
+
+
+border:none;
+
+
+border-radius:18px;
+
+
+
+background:
+
+
+linear-gradient(
+
+135deg,
+
+var(--gold-light),
+
+var(--gold),
+
+var(--gold-dark)
+
+);
+
+
+
+color:#050505;
+
+
+font-weight:800;
+
+
+font-size:15px;
+
+
+letter-spacing:3px;
+
+
+cursor:pointer;
+
+
+
+display:flex;
+
+
+align-items:center;
+
+
+justify-content:center;
+
+
+gap:12px;
+
+
+
+transition:.4s;
+
+
+
+}
+
+
+
+
+
+
+
+.recover-button:hover{
+
+
+transform:
+
+translateY(-5px);
+
+
+
+box-shadow:
+
+
+0 20px 40px rgba(212,175,55,.35);
+
+
+
+}
+
+
+
+
+
+
+
+
+
+/* ================================================
+MENSAGEM
+================================================ */
+
+
+.recover-message{
+
+
+min-height:20px;
+
+
+text-align:center;
+
+
+font-size:13px;
 
 
 color:var(--gold);
@@ -827,26 +1019,85 @@ color:var(--gold);
 
 
 
-.system-info span{
-
-
-display:block;
 
 
 
-margin-top:8px;
+
+/* ================================================
+VOLTAR LOGIN
+================================================ */
+
+
+.back-login{
+
+
+display:flex;
+
+
+justify-content:center;
+
+
+align-items:center;
+
+
+gap:10px;
 
 
 
-font-size:11px;
+margin-top:10px;
+
+
+text-decoration:none;
+
+
+color:var(--gold-light);
 
 
 
-letter-spacing:3px;
+transition:.3s;
 
 
 
-color:#888;
+}
+
+
+
+
+.back-login:hover{
+
+
+color:white;
+
+
+
+}
+/* ================================================
+ANIMAÇÕES
+================================================ */
+
+
+@keyframes loading{
+
+
+from{
+
+
+transform:translateX(-150%);
+
+
+
+}
+
+
+
+to{
+
+
+transform:translateX(350%);
+
+
+
+}
 
 
 
@@ -859,16 +1110,41 @@ color:#888;
 
 
 
-/* ======================================================
-   ANIMAÇÕES
-====================================================== */
+@keyframes floatGlow{
+
+
+from{
+
+
+transform:translate(0,0);
+
+
+
+}
+
+
+
+to{
+
+
+transform:translate(80px,50px);
+
+
+
+}
+
+
+
+}
 
 
 
 
 
 
-@keyframes entrada{
+
+
+@keyframes cardEnter{
 
 
 from{
@@ -879,8 +1155,9 @@ opacity:0;
 
 transform:
 
+translateY(40px)
 
-translateY(40px);
+scale(.95);
 
 
 
@@ -896,12 +1173,9 @@ opacity:1;
 
 transform:
 
+translateY(0)
 
-translateY(0);
-
-
-
-}
+scale(1);
 
 
 
@@ -909,43 +1183,82 @@ translateY(0);
 
 
 
+}
 
 
 
 
 
-/* ======================================================
-   RESPONSIVO
-====================================================== */
 
 
 
 
+/* ================================================
+PARTÍCULAS
+================================================ */
+
+
+#particles{
+
+
+position:absolute;
+
+
+inset:0;
+
+
+
+}
+
+
+
+
+
+
+
+
+/* ================================================
+RESPONSIVIDADE
+================================================ */
 
 
 @media(max-width:600px){
 
 
 
+body{
+
+
+overflow:auto;
+
+
+
+}
+
+
+
+
+.recover-container{
+
+
+padding:15px;
+
+
+
+}
+
+
+
+
+
+
 .recover-card{
 
 
-width:90vw;
+width:100%;
 
 
-
-padding:35px 25px;
-
-
-
-}
-
-
-
-.brand h1{
-
-
-font-size:38px;
+padding:30px 22px;
 
 
 
@@ -953,4 +1266,120 @@ font-size:38px;
 
 
 
+
+
+.recover-brand h1{
+
+
+font-size:32px;
+
+
+letter-spacing:5px;
+
+
+
 }
+
+
+
+
+
+.recover-brand img{
+
+
+width:70px;
+
+
+height:70px;
+
+
+
+}
+
+
+
+
+
+
+
+.loader-logo{
+
+
+font-size:50px;
+
+
+letter-spacing:10px;
+
+
+
+}
+
+
+
+
+
+.loader-subtitle{
+
+
+font-size:12px;
+
+
+
+}
+
+
+
+}
+
+
+
+
+
+
+
+
+
+@media(max-height:700px){
+
+
+
+.recover-card{
+
+
+padding:25px;
+
+
+
+}
+
+
+
+
+
+.recover-brand{
+
+
+margin-bottom:20px;
+
+
+
+}
+
+
+
+}
+
+
+
+
+
+
+
+
+
+/* ================================================
+FINAL
+
+EMPIRE | Império da Moda Online
+
+================================================ */
