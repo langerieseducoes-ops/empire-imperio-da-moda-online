@@ -1,37 +1,22 @@
-
-/* =====================================================
-EMPIRE ERP
-DASHBOARD JS
-VERSÃO PREMIUM
-===================================================== */
+/* ======================================================
+   DADOS INICIAIS DO ERP
+   SEM VALORES FIXOS
+====================================================== */
 
 
-"use strict";
+const empireData = {
 
+    produtos: 0,
 
+    clientes: 0,
 
+    vendas: 0,
 
+    custoProdutos: 0,
 
-/* =====================================================
-CONFIGURAÇÃO
-===================================================== */
+    precoProdutos: 0,
 
-
-const EmpireDashboard = {
-
-
-    sessionStart: new Date(),
-
-
-    databaseName:"EmpireERP",
-
-
-    databaseVersion:1,
-
-
-    db:null
-
-
+    financeiro: 0
 
 };
 
@@ -39,956 +24,73 @@ const EmpireDashboard = {
 
 
 
+// ===============================
+// ATUALIZAR CARDS
+// ===============================
 
 
-/* =====================================================
-INICIALIZAÇÃO
-===================================================== */
+function atualizarDashboard(){
 
 
-document.addEventListener(
-"DOMContentLoaded",
-()=>{
 
+    const produtos =
+    document.getElementById("totalProdutos");
 
-    EmpireDashboard.init();
 
+    const clientes =
+    document.getElementById("totalClientes");
 
-});
 
+    const vendas =
+    document.getElementById("totalVendas");
 
 
+    const financeiro =
+    document.getElementById("saldoFinanceiro");
 
 
 
 
-EmpireDashboard.init = async function(){
 
+    if(produtos){
 
-
-    this.startLoader();
-
-
-    this.startClock();
-
-
-    this.updateDate();
-
-
-    this.startSessionTimer();
-
-
-    this.initializeDatabase();
-
-
-    this.initializeCards();
-
-
-    this.createParticles();
-
-
-
-};
-
-
-
-
-
-
-
-
-
-/* =====================================================
-LOADER
-===================================================== */
-
-
-EmpireDashboard.startLoader=function(){
-
-
-const loader=document.getElementById(
-"loader"
-);
-
-
-
-if(!loader)return;
-
-
-
-setTimeout(()=>{
-
-
-loader.classList.add(
-"hide"
-);
-
-
-
-},1800);
-
-
-
-};
-
-
-
-
-
-
-
-
-/* =====================================================
-DATA ATUAL
-===================================================== */
-
-
-EmpireDashboard.updateDate=function(){
-
-
-
-const element=document.getElementById(
-"dateToday"
-);
-
-
-
-if(!element)return;
-
-
-
-const now=new Date();
-
-
-
-const options={
-
-
-weekday:"long",
-
-
-year:"numeric",
-
-
-month:"long",
-
-
-day:"numeric"
-
-
-
-};
-
-
-
-element.textContent=
-
-now.toLocaleDateString(
-"pt-BR",
-options
-);
-
-
-
-};
-
-
-
-
-
-
-
-
-
-/* =====================================================
-RELÓGIO
-===================================================== */
-
-
-EmpireDashboard.startClock=function(){
-
-
-
-const clock=document.getElementById(
-"systemClock"
-);
-
-
-
-if(!clock)return;
-
-
-
-function update(){
-
-
-const now=new Date();
-
-
-
-clock.textContent=
-
-now.toLocaleTimeString(
-"pt-BR"
-);
-
-
-
-}
-
-
-
-update();
-
-
-
-setInterval(
-update,
-1000
-);
-
-
-
-};
-
-
-
-
-
-
-
-
-
-/* =====================================================
-TEMPO DE SESSÃO
-===================================================== */
-
-
-EmpireDashboard.startSessionTimer=function(){
-
-
-
-const timer=document.getElementById(
-"sessionTimer"
-);
-
-
-
-if(!timer)return;
-
-
-
-setInterval(()=>{
-
-
-
-const now=new Date();
-
-
-
-const diff=
-
-now -
-EmpireDashboard.sessionStart;
-
-
-
-const hours=Math.floor(
-diff / 3600000
-);
-
-
-
-const minutes=Math.floor(
-(diff % 3600000)/60000
-);
-
-
-
-const seconds=Math.floor(
-(diff % 60000)/1000
-);
-
-
-
-
-timer.textContent=
-
-`${String(hours).padStart(2,"0")}:
-${String(minutes).padStart(2,"0")}:
-${String(seconds).padStart(2,"0")}`;
-
-
-
-},1000);
-
-
-
-};
-
-
-
-
-
-
-
-
-
-/* =====================================================
-BANCO LOCAL INDEXEDDB
-===================================================== */
-
-
-EmpireDashboard.initializeDatabase=function(){
-
-
-
-const request=
-
-indexedDB.open(
-
-this.databaseName,
-
-this.databaseVersion
-
-);
-
-
-
-
-
-request.onupgradeneeded=function(event){
-
-
-
-const db=
-
-event.target.result;
-
-
-
-
-
-if(!db.objectStoreNames.contains("produtos")){
-
-
-db.createObjectStore(
-"produtos",
-{
-keyPath:"id",
-autoIncrement:true
-}
-);
-
-
-}
-
-
-
-
-if(!db.objectStoreNames.contains("clientes")){
-
-
-db.createObjectStore(
-"clientes",
-{
-keyPath:"id",
-autoIncrement:true
-}
-);
-
-
-}
-
-
-
-
-
-if(!db.objectStoreNames.contains("vendas")){
-
-
-db.createObjectStore(
-"vendas",
-{
-keyPath:"id",
-autoIncrement:true
-}
-);
-
-
-}
-
-
-
-
-if(!db.objectStoreNames.contains("notificacoes")){
-
-
-db.createObjectStore(
-"notificacoes",
-{
-keyPath:"id",
-autoIncrement:true
-}
-);
-
-
-}
-
-
-
-
-
-if(!db.objectStoreNames.contains("emails")){
-
-
-db.createObjectStore(
-"emails",
-{
-keyPath:"id",
-autoIncrement:true
-}
-);
-
-
-}
-
-
-
-
-
-};
-
-
-
-
-
-
-request.onsuccess=function(event){
-
-
-EmpireDashboard.db=
-
-event.target.result;
-
-
-
-console.log(
-
-"Banco EMPIRE conectado"
-
-);
-
-
-
-};
-
-
-
-request.onerror=function(){
-
-
-console.error(
-
-"Erro no banco local"
-
-);
-
-
-
-};
-
-
-
-};
-
-
-
-
-
-
-
-/* =====================================================
-CARDS CLICÁVEIS
-===================================================== */
-
-
-EmpireDashboard.initializeCards=function(){
-
-
-
-const cards=
-
-document.querySelectorAll(
-"[data-page]"
-);
-
-
-
-
-
-cards.forEach(card=>{
-
-
-
-card.addEventListener(
-"click",
-()=>{
-
-
-const page=
-
-card.dataset.page;
-
-
-
-if(page){
-
-
-window.location.href=
-
-page;
-
-
-
-}
-
-
-
-}
-
-
-
-);
-
-
-
-});
-
-
-
-};
-
-
-/* =====================================================
-CARREGAR DADOS DO DASHBOARD
-===================================================== */
-
-
-EmpireDashboard.loadDashboardData = async function(){
-
-
-    if(!this.db){
-
-        return;
+        produtos.innerText =
+        empireData.produtos;
 
     }
 
 
 
-    const produtos = await this.getData(
-        "produtos"
-    );
 
+    if(clientes){
 
-    const clientes = await this.getData(
-        "clientes"
-    );
+        clientes.innerText =
+        empireData.clientes;
 
+    }
 
-    const vendas = await this.getData(
-        "vendas"
-    );
 
 
-    const notificacoes = await this.getData(
-        "notificacoes"
-    );
 
+    if(vendas){
 
-    const emails = await this.getData(
-        "emails"
-    );
+        vendas.innerText =
+        empireData.vendas;
 
+    }
 
 
 
 
-    this.updateMetrics({
+    if(financeiro){
 
-        produtos,
+        financeiro.innerText =
+        "R$ " +
+        empireData.financeiro.toFixed(2)
+        .replace(".",",");
 
-        clientes,
+    }
 
-        vendas
-
-    });
-
-
-
-    this.updateNotifications(
-        notificacoes
-    );
-
-
-    this.updateEmails(
-        emails
-    );
-
-
-    this.createCharts(
-        vendas
-    );
-
-
-
-};
-
-
-
-
-
-
-
-
-
-/* =====================================================
-BUSCAR DADOS INDEXEDDB
-===================================================== */
-
-
-EmpireDashboard.getData=function(storeName){
-
-
-return new Promise((resolve,reject)=>{
-
-
-const transaction =
-
-this.db.transaction(
-storeName,
-"readonly"
-);
-
-
-
-const store =
-
-transaction.objectStore(
-storeName
-);
-
-
-
-const request =
-
-store.getAll();
-
-
-
-
-
-request.onsuccess=function(){
-
-
-resolve(
-request.result || []
-);
-
-
-
-};
-
-
-
-request.onerror=function(){
-
-
-reject([]);
-
-};
-
-
-
-});
-
-
-
-};
-
-
-
-
-
-
-
-
-
-/* =====================================================
-ATUALIZAR INDICADORES
-===================================================== */
-
-
-EmpireDashboard.updateMetrics=function(data){
-
-
-
-const totalProducts =
-
-document.getElementById(
-"totalProducts"
-);
-
-
-
-const totalClients =
-
-document.getElementById(
-"totalClients"
-);
-
-
-
-const totalSales =
-
-document.getElementById(
-"totalSales"
-);
-
-
-
-const totalRevenue =
-
-document.getElementById(
-"totalRevenue"
-);
-
-
-
-
-
-if(totalProducts){
-
-    this.animateNumber(
-        totalProducts,
-        data.produtos.length
-    );
-
-}
-
-
-
-
-if(totalClients){
-
-    this.animateNumber(
-        totalClients,
-        data.clientes.length
-    );
-
-}
-
-
-
-
-
-if(totalSales){
-
-    this.animateNumber(
-        totalSales,
-        data.vendas.length
-    );
-
-}
-
-
-
-
-
-
-
-let faturamento = 0;
-
-
-
-data.vendas.forEach(venda=>{
-
-
-faturamento +=
-
-Number(
-venda.valor || 0
-);
-
-
-
-});
-
-
-
-
-
-if(totalRevenue){
-
-
-
-totalRevenue.textContent =
-
-faturamento.toLocaleString(
-"pt-BR",
-{
-
-style:"currency",
-
-currency:"BRL"
-
-}
-
-);
-
-
-
-}
-
-
-
-};
-
-
-
-
-
-
-
-
-
-/* =====================================================
-ANIMAÇÃO DOS NÚMEROS
-===================================================== */
-
-
-EmpireDashboard.animateNumber=function(
-element,
-value
-){
-
-
-
-let start=0;
-
-
-
-const duration=800;
-
-
-
-const increment=
-
-value /
-(duration / 16);
-
-
-
-
-
-const counter=setInterval(()=>{
-
-
-
-start += increment;
-
-
-
-if(start>=value){
-
-
-start=value;
-
-
-clearInterval(counter);
-
-
-}
-
-
-
-element.textContent=
-
-Math.floor(start);
-
-
-
-},16);
-
-
-
-};
-
-
-
-
-
-
-
-
-
-/* =====================================================
-NOTIFICAÇÕES
-===================================================== */
-
-
-EmpireDashboard.updateNotifications=function(
-items
-){
-
-
-
-const box=
-
-document.getElementById(
-"notificationList"
-);
-
-
-
-const badge=
-
-document.getElementById(
-"notificationBadge"
-);
-
-
-
-
-if(badge){
-
-badge.textContent=
-
-items.length;
-
-}
-
-
-
-
-if(!box)return;
-
-
-
-if(items.length===0){
-
-
-box.innerHTML=
-
-`
-<div class="empty">
-
-Nenhuma notificação
-
-</div>
-`;
-
-return;
 
 
 }
@@ -997,239 +99,27 @@ return;
 
 
 
-box.innerHTML="";
+// iniciar sistema vazio
 
+atualizarDashboard();
+/* ======================================================
+   GRÁFICOS DO DASHBOARD
+   EMPIRE ERP - DADOS REAIS
+====================================================== */
 
 
 
+// ===============================
+// GRÁFICO DE VENDAS
+// ===============================
 
-items.slice(0,5)
-.forEach(item=>{
 
+const salesCanvas =
+document.getElementById("salesChart");
 
 
-box.innerHTML +=
 
-`
-<div class="timeline-item">
-
-
-<div class="timeline-icon">
-
-<i class="fa-solid fa-bell"></i>
-
-</div>
-
-
-<div>
-
-<strong>
-
-${item.titulo || "Notificação"}
-
-</strong>
-
-
-<p>
-
-${item.mensagem || ""}
-
-</p>
-
-
-</div>
-
-
-</div>
-
-`;
-
-
-
-});
-
-
-
-};
-
-
-
-
-
-
-
-
-
-/* =====================================================
-EMAILS
-===================================================== */
-
-
-EmpireDashboard.updateEmails=function(
-items
-){
-
-
-
-const box=
-
-document.getElementById(
-"emailList"
-);
-
-
-
-const badge=
-
-document.getElementById(
-"emailBadge"
-);
-
-
-
-
-
-if(badge){
-
-badge.textContent=
-
-items.length;
-
-}
-
-
-
-
-
-if(!box)return;
-
-
-
-
-
-if(items.length===0){
-
-
-box.innerHTML=
-
-`
-<div class="empty">
-
-Nenhum email pendente
-
-</div>
-`;
-
-return;
-
-
-}
-
-
-
-
-box.innerHTML="";
-
-
-
-
-
-items.slice(0,5)
-.forEach(email=>{
-
-
-
-box.innerHTML +=
-
-
-`
-<div class="timeline-item">
-
-
-<div class="timeline-icon">
-
-<i class="fa-solid fa-envelope"></i>
-
-</div>
-
-
-<div>
-
-
-<strong>
-
-${email.assunto || "Email"}
-
-</strong>
-
-
-<p>
-
-${email.remetente || ""}
-
-</p>
-
-
-</div>
-
-
-</div>
-
-`;
-
-
-
-});
-
-
-
-};
-
-
-
-
-
-
-
-
-
-/* =====================================================
-GRÁFICOS
-===================================================== */
-
-
-EmpireDashboard.createCharts=function(
-vendas
-){
-
-
-
-if(typeof Chart==="undefined"){
-
-return;
-
-}
-
-
-
-
-
-const salesCanvas=
-
-document.getElementById(
-"salesChart"
-);
-
-
-
-const financeCanvas=
-
-document.getElementById(
-"financeChart"
-);
-
-
-
+let salesChart;
 
 
 
@@ -1237,9 +127,12 @@ if(salesCanvas){
 
 
 
-new Chart(
+salesChart = new Chart(
+
 salesCanvas,
+
 {
+
 
 type:"line",
 
@@ -1249,50 +142,47 @@ data:{
 
 labels:[
 
-"Seg",
+"Jan",
+"Fev",
+"Mar",
+"Abr",
+"Mai",
+"Jun",
+"Jul"
 
-"Ter",
+],
 
-"Qua",
 
-"Qui",
+datasets:[{
 
-"Sex",
 
-"Sáb",
+label:"Vendas",
 
-"Dom"
+data:[
+
+0,
+0,
+0,
+0,
+0,
+0,
+0
 
 ],
 
 
 
-datasets:[{
-
-label:"Vendas",
-
-data:this.generateChartData(
-vendas
-),
-
-
-borderColor:"#d4af37",
-
-
-backgroundColor:
-"rgba(212,175,55,.15)",
-
-
-fill:true,
+borderWidth:3,
 
 
 tension:.4
 
 
+
 }]
 
-
 },
+
 
 
 options:{
@@ -1301,7 +191,32 @@ options:{
 responsive:true,
 
 
-maintainAspectRatio:false
+plugins:{
+
+
+legend:{
+
+
+display:true
+
+
+}
+
+
+
+},
+
+
+
+scales:{
+
+
+
+y:{
+
+
+beginAtZero:true
+
 
 
 }
@@ -1309,6 +224,14 @@ maintainAspectRatio:false
 
 
 }
+
+
+}
+
+
+}
+
+
 
 );
 
@@ -1321,13 +244,36 @@ maintainAspectRatio:false
 
 
 
-if(financeCanvas){
+
+
+// ===============================
+// GRÁFICO PRODUTOS
+// ===============================
 
 
 
-new Chart(
+const productsCanvas =
 
-financeCanvas,
+document.getElementById(
+"productsChart"
+);
+
+
+
+
+let productsChart;
+
+
+
+
+if(productsCanvas){
+
+
+
+productsChart = new Chart(
+
+productsCanvas,
+
 
 {
 
@@ -1335,37 +281,29 @@ financeCanvas,
 type:"doughnut",
 
 
+
 data:{
 
 
 labels:[
 
-"Entrada",
-
-"Saída"
+"Sem produtos cadastrados"
 
 ],
+
 
 
 datasets:[{
 
 
-data:[70,30],
-
-
-backgroundColor:[
-
-"#d4af37",
-
-"#333"
-
-]
+data:[1]
 
 
 }]
 
-
 },
+
+
 
 
 options:{
@@ -1374,10 +312,24 @@ options:{
 responsive:true,
 
 
-maintainAspectRatio:false
+plugins:{
+
+
+legend:{
+
+
+position:"bottom"
 
 
 }
+
+
+
+}
+
+
+}
+
 
 
 }
@@ -1392,74 +344,108 @@ maintainAspectRatio:false
 
 
 
-};
 
 
 
 
 
-
-EmpireDashboard.generateChartData=function(
-items
-){
-
-
-
-let values=[0,0,0,0,0,0,0];
+// ===============================
+// ATUALIZAR GRÁFICOS
+// FUTURO BANCO ERP
+// ===============================
 
 
 
-items.forEach(item=>{
+function atualizarGraficos(){
 
 
-const day=
 
-new Date(
-item.data || Date.now()
+if(salesChart){
+
+
+salesChart.data.datasets[0].data = [
+
+0,
+0,
+0,
+0,
+0,
+0,
+0
+
+];
+
+
+salesChart.update();
+
+
+}
+
+
+
+
+
+if(productsChart){
+
+
+productsChart.data.datasets[0].data=[1];
+
+
+productsChart.update();
+
+
+}
+
+
+
+}
+
+
+
+atualizarGraficos();
+/* ======================================================
+   SISTEMA DE DADOS LOCAL
+   EMPIRE ERP
+====================================================== */
+
+
+
+// ===============================
+// BANCO LOCAL DO ERP
+// ===============================
+
+
+let empireDatabase = JSON.parse(
+
+localStorage.getItem("empireERP")
+
 )
-.getDay();
+
+|| {
 
 
-
-values[day]=
-
-values[day]+
-
-Number(
-item.valor || 0
-);
+produtos:[],
 
 
-
-});
-
+clientes:[],
 
 
-return values;
+vendas:[],
 
 
-
-};
-
-
-/* =====================================================
-CARREGAMENTO AUTOMÁTICO
-===================================================== */
+financeiro:{
 
 
-EmpireDashboard.autoLoad = function(){
+saldo:0,
 
 
-
-setTimeout(()=>{
-
-
-this.loadDashboardData();
+custos:0
 
 
+},
 
-},2000);
 
+notificacoes:[]
 
 
 };
@@ -1470,265 +456,137 @@ this.loadDashboardData();
 
 
 
+// ===============================
+// SALVAR BANCO
+// ===============================
 
 
-/* =====================================================
-PESQUISA GLOBAL
-===================================================== */
+function salvarEmpire(){
 
 
-EmpireDashboard.initializeSearch=function(){
+localStorage.setItem(
 
+"empireERP",
 
+JSON.stringify(empireDatabase)
 
-const search =
-
-document.getElementById(
-"searchSystem"
 );
-
-
-
-
-
-if(!search)return;
-
-
-
-
-
-search.addEventListener(
-"keyup",
-(event)=>{
-
-
-
-const value =
-
-event.target.value
-.toLowerCase();
-
-
-
-
-const links =
-
-document.querySelectorAll(
-".navigation a"
-);
-
-
-
-
-
-links.forEach(link=>{
-
-
-
-const text =
-
-link.textContent
-.toLowerCase();
-
-
-
-
-if(
-text.includes(value)
-){
-
-
-link.style.display="flex";
-
-
-}else{
-
-
-link.style.display="none";
 
 
 }
 
 
 
-});
 
 
 
 
-});
+// ===============================
+// ATUALIZAR DASHBOARD PELOS DADOS
+// ===============================
+
+
+function carregarDadosERP(){
 
 
 
-};
-
-
-
-
-
-
-
-
-
-/* =====================================================
-PARTÍCULAS DE FUNDO
-===================================================== */
-
-
-EmpireDashboard.createParticles=function(){
-
-
-
-const container =
+const produtos =
 
 document.getElementById(
-"particles"
+"totalProdutos"
+);
+
+
+
+const clientes =
+
+document.getElementById(
+"totalClientes"
+);
+
+
+
+
+const vendas =
+
+document.getElementById(
+"totalVendas"
+);
+
+
+
+
+const financeiro =
+
+document.getElementById(
+"saldoFinanceiro"
 );
 
 
 
 
 
-if(!container)return;
+
+if(produtos){
 
 
+produtos.innerText =
 
-
-
-for(
-let i=0;
-i<35;
-i++
-){
-
-
-
-const particle =
-
-document.createElement(
-"span"
-);
-
-
-
-
-
-particle.className=
-
-"particle";
-
-
-
-
-
-particle.style.left=
-
-Math.random()*100+"%";
-
-
-
-
-
-particle.style.animationDuration=
-
-(
-5+
-Math.random()*10
-)
-+"s";
-
-
-
-
-
-particle.style.animationDelay=
-
-Math.random()*5+"s";
-
-
-
-
-
-container.appendChild(
-particle
-);
-
+empireDatabase.produtos.length;
 
 
 }
 
 
 
-};
 
 
+if(clientes){
 
 
+clientes.innerText =
 
-
-
-
-
-/* =====================================================
-STATUS DA INTERNET
-===================================================== */
-
-
-EmpireDashboard.connectionStatus=function(){
-
-
-
-const status =
-
-document.getElementById(
-"connectionStatus"
-);
-
-
-
-
-
-function update(){
-
-
-
-if(!status)return;
-
-
-
-
-
-if(navigator.onLine){
-
-
-
-status.textContent=
-
-"Online";
-
-
-
-status.style.color=
-
-"#00d98b";
-
-
-
-}else{
-
-
-
-status.textContent=
-
-"Offline";
-
-
-status.style.color=
-
-"#ff5252";
+empireDatabase.clientes.length;
 
 
 }
+
+
+
+
+
+if(vendas){
+
+
+vendas.innerText =
+
+empireDatabase.vendas.length;
+
+
+}
+
+
+
+
+
+if(financeiro){
+
+
+financeiro.innerText =
+
+
+"R$ " +
+
+empireDatabase.financeiro.saldo
+
+.toFixed(2)
+
+.replace(".",",");
+
+
+
+}
+
 
 
 
@@ -1738,25 +596,7 @@ status.style.color=
 
 
 
-update();
-
-
-
-window.addEventListener(
-"online",
-update
-);
-
-
-
-window.addEventListener(
-"offline",
-update
-);
-
-
-
-};
+carregarDadosERP();
 
 
 
@@ -1765,90 +605,42 @@ update
 
 
 
-
-/* =====================================================
-ÚLTIMA ATUALIZAÇÃO
-===================================================== */
-
-
-EmpireDashboard.updateLastSync=function(){
+// ===============================
+// NOTIFICAÇÕES
+// ===============================
 
 
 
-const element=
-
-document.getElementById(
-"lastUpdate"
-);
+function criarNotificacao(texto){
 
 
 
-if(!element)return;
+const nova = {
 
 
+mensagem:texto,
 
 
+data:new Date()
 
-setInterval(()=>{
-
-
-
-element.textContent=
-
-new Date()
-.toLocaleTimeString(
+.toLocaleString(
 "pt-BR"
-);
-
-
-
-},1000);
-
+)
 
 
 };
 
 
 
+empireDatabase.notificacoes.push(nova);
 
 
 
+salvarEmpire();
 
 
 
-/* =====================================================
-EVENTOS DOS BOTÕES
-===================================================== */
-
-
-EmpireDashboard.initializeEvents=function(){
-
-
-
-const notificationButton =
-
-document.getElementById(
-"notificationButton"
-);
-
-
-
-
-if(notificationButton){
-
-
-
-notificationButton.onclick=function(){
-
-
-
-window.location.href=
-
-"notificacoes.html";
-
-
-
-};
+mostrarNotificacoes();
 
 
 
@@ -1859,31 +651,27 @@ window.location.href=
 
 
 
-const emailButton =
 
-document.getElementById(
-"emailButton"
+function mostrarNotificacoes(){
+
+
+
+const contador =
+
+document.querySelector(
+
+".notification-btn span"
+
 );
 
 
 
+if(contador){
 
 
-if(emailButton){
+contador.innerText =
 
-
-
-emailButton.onclick=function(){
-
-
-
-window.location.href=
-
-"emails.html";
-
-
-
-};
+empireDatabase.notificacoes.length;
 
 
 
@@ -1891,7 +679,15 @@ window.location.href=
 
 
 
-};
+
+}
+
+
+
+
+
+
+mostrarNotificacoes();
 
 
 
@@ -1900,97 +696,512 @@ window.location.href=
 
 
 
-
-/* =====================================================
-ERROS GLOBAIS
-===================================================== */
-
-
-window.addEventListener(
-"error",
-(error)=>{
-
-
-console.error(
-
-"EMPIRE ERP ERROR:",
-
-error.message
-
-);
+// ===============================
+// STATUS ONLINE
+// ===============================
 
 
 
-});
+function atualizarStatusSistema(){
 
 
 
+const online =
 
+navigator.onLine;
 
-
-
-
-
-/* =====================================================
-INICIAR FUNÇÕES EXTRAS
-===================================================== */
-
-
-document.addEventListener(
-"DOMContentLoaded",
-()=>{
-
-
-setTimeout(()=>{
-
-
-EmpireDashboard.autoLoad();
-
-
-EmpireDashboard.initializeSearch();
-
-
-EmpireDashboard.connectionStatus();
-
-
-EmpireDashboard.updateLastSync();
-
-
-EmpireDashboard.initializeEvents();
-
-
-
-},500);
-
-
-
-});
-
-
-
-
-
-
-
-
-
-/* =====================================================
-FINAL
-===================================================== */
 
 
 console.log(
 
-`
-=================================
+online
 
-EMPIRE ERP
+?
 
-Dashboard carregado
+"🟢 Sistema Online"
 
-Sistema pronto
+:
 
-=================================
-`
+"🔴 Sistema Offline"
+
+);
+
+
+
+}
+
+
+
+window.addEventListener(
+
+"online",
+
+atualizarStatusSistema
+
+);
+
+
+
+window.addEventListener(
+
+"offline",
+
+atualizarStatusSistema
+
+);
+
+
+
+atualizarStatusSistema();
+/* ======================================================
+   SESSÃO DO USUÁRIO
+   EMPIRE ERP
+====================================================== */
+
+
+
+// ===============================
+// VERIFICAR LOGIN
+// ===============================
+
+
+function verificarSessao(){
+
+
+
+const usuario =
+
+localStorage.getItem(
+"empireUsuario"
+);
+
+
+
+
+if(!usuario){
+
+
+console.log(
+
+"Usuário não autenticado"
+
+);
+
+
+
+// futuramente redireciona para login
+
+return;
+
+
+}
+
+
+
+const nomeUsuario =
+
+document.querySelector(
+
+".user-profile strong"
+
+);
+
+
+
+
+if(nomeUsuario){
+
+
+nomeUsuario.innerText = usuario;
+
+
+}
+
+
+
+}
+
+
+
+verificarSessao();
+
+
+
+
+
+
+
+// ===============================
+// LOGOUT
+// ===============================
+
+
+const botaoLogout =
+
+document.getElementById(
+"logout"
+);
+
+
+
+
+
+if(botaoLogout){
+
+
+
+botaoLogout.addEventListener(
+
+"click",
+
+()=>{
+
+
+
+const confirmar =
+
+confirm(
+
+"Deseja realmente sair do EMPIRE ERP?"
+
+);
+
+
+
+
+
+if(confirmar){
+
+
+
+localStorage.removeItem(
+
+"empireUsuario"
+
+);
+
+
+
+
+
+window.location.href =
+
+"login.html";
+
+
+
+}
+
+
+
+}
+
+
+
+);
+
+
+
+}
+
+
+
+
+
+
+
+
+// ===============================
+// DATA DE ACESSO
+// ===============================
+
+
+
+function registrarAcesso(){
+
+
+
+const acesso = {
+
+
+entrada:
+
+new Date()
+
+.toLocaleString(
+"pt-BR"
+)
+
+
+
+};
+
+
+
+
+
+localStorage.setItem(
+
+"ultimoAcesso",
+
+JSON.stringify(acesso)
+
+);
+
+
+
+}
+
+
+
+registrarAcesso();
+
+
+
+
+
+
+
+
+// ===============================
+// EFEITO DE ENTRADA
+// ===============================
+
+
+document.addEventListener(
+
+"DOMContentLoaded",
+
+()=>{
+
+
+
+const elementos =
+
+document.querySelectorAll(
+
+".dashboard-card, .chart-box"
+
+);
+
+
+
+
+
+elementos.forEach(
+
+(elemento,index)=>{
+
+
+
+elemento.style.animationDelay =
+
+(index * 0.15)
+
++
+
+"s";
+
+
+
+}
+
+
+
+);
+
+
+
+});
+/* ======================================================
+   API GLOBAL DO EMPIRE ERP
+   COMUNICAÇÃO ENTRE MÓDULOS
+====================================================== */
+
+
+
+window.EmpireERP = {
+
+
+
+
+
+// ===============================
+// ADICIONAR PRODUTO
+// ===============================
+
+
+adicionarProduto(produto){
+
+
+empireDatabase.produtos.push(produto);
+
+
+salvarEmpire();
+
+
+carregarDadosERP();
+
+
+
+},
+
+
+
+
+
+
+// ===============================
+// ADICIONAR CLIENTE
+// ===============================
+
+
+adicionarCliente(cliente){
+
+
+
+empireDatabase.clientes.push(cliente);
+
+
+
+salvarEmpire();
+
+
+
+carregarDadosERP();
+
+
+
+},
+
+
+
+
+
+
+
+// ===============================
+// REGISTRAR VENDA
+// ===============================
+
+
+registrarVenda(venda){
+
+
+
+empireDatabase.vendas.push(venda);
+
+
+
+
+
+if(venda.valor){
+
+
+empireDatabase.financeiro.saldo +=
+
+Number(venda.valor);
+
+
+
+}
+
+
+
+
+salvarEmpire();
+
+
+
+carregarDadosERP();
+
+
+
+},
+
+
+
+
+
+
+
+// ===============================
+// LANÇAR CUSTO
+// ===============================
+
+
+registrarCusto(valor){
+
+
+
+empireDatabase.financeiro.custos +=
+
+Number(valor);
+
+
+
+
+
+empireDatabase.financeiro.saldo -=
+
+Number(valor);
+
+
+
+
+
+salvarEmpire();
+
+
+
+carregarDadosERP();
+
+
+
+},
+
+
+
+
+
+
+
+// ===============================
+// CONSULTAR DADOS
+// ===============================
+
+
+dados(){
+
+
+return empireDatabase;
+
+
+}
+
+
+
+
+
+
+};
+
+
+
+
+
+
+
+
+console.log(
+
+"👑 EMPIRE ERP iniciado com sucesso"
+
+);
+
+
+console.log(
+
+"Império da Moda Online"
 
 );
