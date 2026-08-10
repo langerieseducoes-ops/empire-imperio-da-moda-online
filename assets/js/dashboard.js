@@ -1,1231 +1,913 @@
-/* ============================================================
-   EMPIRE ERP — DASHBOARD JS
-   Sistema de Tela Inicial
-   ============================================================ */
-
 "use strict";
 
-document.addEventListener("DOMContentLoaded", () => {
+/* ============================================================
+   EMPIRE ERP — DASHBOARD
+   PARTE 1/2
+   ============================================================ */
 
-    /* ========================================================
-       CONFIGURAÇÃO
-       ======================================================== */
+(function () {
 
-    const EMPIRE = {
-        storage: {
-            user: "empire_usuario",
-            theme: "empire_theme",
-            notifications: "empire_notifications"
-        },
-
-        selectors: {
-            sidebar: ".dashboard-sidebar",
-            overlay: ".dashboard-sidebar-overlay",
-            notificationButton: ".dashboard-notification-button",
-            notificationDropdown: ".notifications-dropdown",
-            userButton: ".dashboard-header-user",
-            userDropdown: ".user-dropdown",
-            scrollTop: ".dashboard-scroll-top",
-            offline: ".dashboard-offline-banner",
-            toastContainer: ".empire-toast-container"
-        }
+    const state = {
+        initialized: false,
+        loaderFinished: false,
+        chart: null,
+        mobileMenuOpen: false,
+        notificationOpen: false
     };
 
 
-    /* ========================================================
+    /* =========================================================
+       ELEMENTOS
+       ========================================================= */
+
+    const elements = {};
+
+
+    function cacheElements() {
+
+        elements.loader = document.getElementById("dashboardLoader");
+        elements.loaderProgress = document.getElementById("loaderProgress");
+        elements.loaderStatus = document.getElementById("loaderStatus");
+
+        elements.dashboardApp = document.getElementById("dashboardApp");
+
+        elements.sidebar = document.getElementById("sidebar");
+        elements.sidebarToggle = document.getElementById("sidebarToggle");
+        elements.mobileMenuButton = document.getElementById("mobileMenuButton");
+        elements.sidebarOverlay = document.getElementById("sidebarOverlay");
+
+        elements.logoutButton = document.getElementById("logoutButton");
+
+        elements.notificationButton =
+            document.getElementById("notificationButton");
+
+        elements.notificationPanel =
+            document.getElementById("notificationPanel");
+
+        elements.closeNotification =
+            document.getElementById("closeNotification");
+
+        elements.notificationList =
+            document.getElementById("notificationList");
+
+        elements.notificationCount =
+            document.getElementById("notificationCount");
+
+        elements.salesValue =
+            document.getElementById("salesValue");
+
+        elements.salesVariation =
+            document.getElementById("salesVariation");
+
+        elements.productsCount =
+            document.getElementById("productsCount");
+
+        elements.clientsCount =
+            document.getElementById("clientsCount");
+
+        elements.ordersCount =
+            document.getElementById("ordersCount");
+
+        elements.userName =
+            document.getElementById("userName");
+
+        elements.userRole =
+            document.getElementById("userRole");
+
+        elements.userAvatar =
+            document.getElementById("userAvatar");
+
+        elements.salesChart =
+            document.getElementById("salesChart");
+
+        elements.chartEmpty =
+            document.getElementById("chartEmpty");
+
+        elements.salesPeriod =
+            document.getElementById("salesPeriod");
+
+        elements.activityList =
+            document.getElementById("activityList");
+
+        elements.refreshActivity =
+            document.getElementById("refreshActivity");
+
+        elements.connectionStatus =
+            document.getElementById("connectionStatus");
+
+        elements.sessionStatus =
+            document.getElementById("sessionStatus");
+
+    }
+
+
+    /* =========================================================
        UTILITÁRIOS
-       ======================================================== */
+       ========================================================= */
 
-    const $ = (selector, parent = document) =>
-        parent.querySelector(selector);
+    function setLoaderProgress(value, status) {
 
-    const $$ = (selector, parent = document) =>
-        [...parent.querySelectorAll(selector)];
+        if (elements.loaderProgress) {
+            elements.loaderProgress.style.width =
+                `${Math.max(0, Math.min(100, value))}%`;
+        }
 
-    const exists = selector =>
-        !!$(selector);
+        if (elements.loaderStatus && status) {
+            elements.loaderStatus.textContent = status;
+        }
 
-    const escapeHTML = value =>
-        String(value ?? "")
-            .replace(/&/g, "&amp;")
-            .replace(/</g, "&lt;")
-            .replace(/>/g, "&gt;")
-            .replace(/"/g, "&quot;")
-            .replace(/'/g, "&#039;");
+    }
 
 
-    /* ========================================================
+    function wait(milliseconds) {
+
+        return new Promise(function (resolve) {
+            window.setTimeout(resolve, milliseconds);
+        });
+
+    }
+
+
+    /* =========================================================
+       LOADER
+       ========================================================= */
+
+    async function finishLoader() {
+
+        if (state.loaderFinished) {
+            return;
+        }
+
+        state.loaderFinished = true;
+
+        setLoaderProgress(100, "Sistema pronto");
+
+        await wait(180);
+
+        if (elements.dashboardApp) {
+            elements.dashboardApp.classList.add("loaded");
+            elements.dashboardApp.setAttribute(
+                "aria-hidden",
+                "false"
+            );
+        }
+
+        if (elements.loader) {
+            elements.loader.classList.add("hidden");
+            elements.loader.setAttribute(
+                "aria-hidden",
+                "true"
+            );
+        }
+
+        document.body.classList.add("dashboard-ready");
+
+    }
+
+
+    async function initializeLoader() {
+
+        if (!elements.loader) {
+            if (elements.dashboardApp) {
+                elements.dashboardApp.classList.add("loaded");
+                elements.dashboardApp.setAttribute(
+                    "aria-hidden",
+                    "false"
+                );
+            }
+
+            state.loaderFinished = true;
+
+            return;
+        }
+
+        setLoaderProgress(15, "Carregando ambiente");
+
+        await wait(120);
+
+        setLoaderProgress(35, "Preparando painel");
+
+        await wait(120);
+
+        setLoaderProgress(55, "Verificando módulos");
+
+        await wait(120);
+
+        setLoaderProgress(75, "Configurando interface");
+
+        await wait(120);
+
+        setLoaderProgress(90, "Finalizando");
+
+        await wait(120);
+
+        await finishLoader();
+
+    }
+
+
+    /* =========================================================
        USUÁRIO
-       ======================================================== */
+       ========================================================= */
 
-    function getUser() {
+    function loadUserData() {
 
-        const defaultUser = {
-            nome: "Administrador",
-            usuario: "admin",
-            cargo: "Administrador",
-            perfil: "admin"
-        };
+        let user = null;
 
         try {
 
-            const saved =
-                localStorage.getItem(EMPIRE.storage.user);
+            const savedUser =
+                localStorage.getItem("empireUser");
 
-            if (!saved) return defaultUser;
-
-            const user = JSON.parse(saved);
-
-            return {
-                ...defaultUser,
-                ...user
-            };
+            if (savedUser) {
+                user = JSON.parse(savedUser);
+            }
 
         } catch (error) {
 
             console.warn(
-                "EMPIRE: não foi possível carregar usuário.",
+                "EMPIRE: não foi possível ler empireUser.",
                 error
             );
 
-            return defaultUser;
         }
-    }
 
 
-    function renderUser() {
+        if (!user || typeof user !== "object") {
 
-        const user = getUser();
+            user = {
+                name: "Administrador",
+                role: "Administrador"
+            };
 
-        const names = [
-            ".header-user-name",
-            "[data-user-name]"
-        ];
-
-        names.forEach(selector => {
-
-            $$(selector).forEach(element => {
-
-                element.textContent =
-                    user.nome || user.usuario;
-
-            });
-
-        });
+        }
 
 
-        $$("[data-user-role]").forEach(element => {
+        const name =
+            typeof user.name === "string" && user.name.trim()
+                ? user.name.trim()
+                : "Administrador";
 
-            element.textContent =
-                user.cargo || user.perfil || "Usuário";
+        const role =
+            typeof user.role === "string" && user.role.trim()
+                ? user.role.trim()
+                : "Administrador";
 
-        });
 
+        if (elements.userName) {
+            elements.userName.textContent = name;
+        }
 
-        $$("[data-user-username]").forEach(element => {
+        if (elements.userRole) {
+            elements.userRole.textContent = role;
+        }
 
-            element.textContent =
-                user.usuario || "";
-
-        });
+        if (elements.userAvatar) {
+            elements.userAvatar.textContent =
+                name.charAt(0).toUpperCase();
+        }
 
     }
 
 
-    /* ========================================================
-       SIDEBAR MOBILE
-       ======================================================== */
+    /* =========================================================
+       DADOS DO DASHBOARD
+       ========================================================= */
 
-    function setupSidebar() {
+    function loadDashboardData() {
 
-        const sidebar =
-            $(EMPIRE.selectors.sidebar);
-
-        const overlay =
-            $(EMPIRE.selectors.overlay);
-
-        const menuButtons = $$(
-            ".mobile-menu-button, [data-menu-toggle]"
-        );
-
-        if (!sidebar) return;
+        const defaultData = {
+            sales: 0,
+            products: 0,
+            clients: 0,
+            orders: 0
+        };
 
 
-        function openSidebar() {
+        let data = defaultData;
 
-            sidebar.classList.add("is-open");
+        try {
 
-            overlay?.classList.add("is-visible");
+            const savedData =
+                localStorage.getItem("empireDashboardData");
 
-            document.body.classList.add(
-                "sidebar-open"
-            );
+            if (savedData) {
 
-        }
+                const parsed =
+                    JSON.parse(savedData);
 
-
-        function closeSidebar() {
-
-            sidebar.classList.remove("is-open");
-
-            overlay?.classList.remove("is-visible");
-
-            document.body.classList.remove(
-                "sidebar-open"
-            );
-
-        }
-
-
-        menuButtons.forEach(button => {
-
-            button.addEventListener("click", () => {
-
-                sidebar.classList.contains("is-open")
-                    ? closeSidebar()
-                    : openSidebar();
-
-            });
-
-        });
-
-
-        overlay?.addEventListener(
-            "click",
-            closeSidebar
-        );
-
-
-        $$(".dashboard-sidebar a").forEach(link => {
-
-            link.addEventListener("click", () => {
-
-                if (window.innerWidth <= 900) {
-                    closeSidebar();
+                if (
+                    parsed &&
+                    typeof parsed === "object"
+                ) {
+                    data = {
+                        ...defaultData,
+                        ...parsed
+                    };
                 }
 
-            });
-
-        });
-
-
-        window.addEventListener("resize", () => {
-
-            if (window.innerWidth > 900) {
-                closeSidebar();
             }
 
-        });
+        } catch (error) {
+
+            console.warn(
+                "EMPIRE: dados do dashboard inválidos.",
+                error
+            );
+
+        }
+
+
+        updateDashboardCards(data);
 
     }
 
 
-    /* ========================================================
-       DROPDOWN NOTIFICAÇÕES
-       ======================================================== */
+    function updateDashboardCards(data) {
 
-    function setupNotifications() {
+        if (elements.salesValue) {
 
-        const button =
-            $(EMPIRE.selectors.notificationButton);
+            const sales =
+                Number(data.sales) || 0;
 
-        const dropdown =
-            $(EMPIRE.selectors.notificationDropdown);
+            elements.salesValue.textContent =
+                formatCurrency(sales);
 
-        if (!button || !dropdown) return;
+        }
 
 
-        button.addEventListener("click", event => {
+        if (elements.productsCount) {
 
-            event.stopPropagation();
+            elements.productsCount.textContent =
+                formatNumber(data.products);
 
-            closeUserDropdown();
-
-            dropdown.classList.toggle("is-open");
-
-        });
+        }
 
 
-        dropdown.addEventListener(
-            "click",
-            event => event.stopPropagation()
+        if (elements.clientsCount) {
+
+            elements.clientsCount.textContent =
+                formatNumber(data.clients);
+
+        }
+
+
+        if (elements.ordersCount) {
+
+            elements.ordersCount.textContent =
+                formatNumber(data.orders);
+
+        }
+
+
+        if (elements.salesVariation) {
+
+            elements.salesVariation.textContent =
+                Number(data.sales) > 0
+                    ? "Movimentação registrada"
+                    : "Nenhuma venda registrada";
+
+        }
+
+    }
+
+
+    function formatCurrency(value) {
+
+        return new Intl.NumberFormat(
+            "pt-BR",
+            {
+                style: "currency",
+                currency: "BRL"
+            }
+        ).format(Number(value) || 0);
+
+    }
+
+
+    function formatNumber(value) {
+
+        return new Intl.NumberFormat(
+            "pt-BR"
+        ).format(Number(value) || 0);
+
+    }
+
+
+    /* =========================================================
+       STATUS DE CONEXÃO
+       ========================================================= */
+
+    function updateConnectionStatus() {
+
+        if (!elements.connectionStatus) {
+            return;
+        }
+
+        if (navigator.onLine) {
+
+            elements.connectionStatus.textContent =
+                "Online";
+
+        } else {
+
+            elements.connectionStatus.textContent =
+                "Offline";
+
+        }
+
+    }
+
+
+    function updateSessionStatus() {
+
+        if (!elements.sessionStatus) {
+            return;
+        }
+
+        elements.sessionStatus.textContent =
+            "Ativa";
+
+    }
+
+
+    /* =========================================================
+       MENU MOBILE
+       ========================================================= */
+
+    function openMobileMenu() {
+
+        if (!elements.sidebar) {
+            return;
+        }
+
+        state.mobileMenuOpen = true;
+
+        elements.sidebar.classList.add("mobile-open");
+
+        if (elements.sidebarOverlay) {
+            elements.sidebarOverlay.classList.add("visible");
+            elements.sidebarOverlay.setAttribute(
+                "aria-hidden",
+                "false"
+            );
+        }
+
+        if (elements.mobileMenuButton) {
+            elements.mobileMenuButton.setAttribute(
+                "aria-expanded",
+                "true"
+            );
+        }
+
+        if (elements.sidebarToggle) {
+            elements.sidebarToggle.setAttribute(
+                "aria-expanded",
+                "true"
+            );
+        }
+
+    }
+
+
+    function closeMobileMenu() {
+
+        if (!elements.sidebar) {
+            return;
+        }
+
+        state.mobileMenuOpen = false;
+
+        elements.sidebar.classList.remove("mobile-open");
+
+        if (elements.sidebarOverlay) {
+            elements.sidebarOverlay.classList.remove("visible");
+            elements.sidebarOverlay.setAttribute(
+                "aria-hidden",
+                "true"
+            );
+        }
+
+        if (elements.mobileMenuButton) {
+            elements.mobileMenuButton.setAttribute(
+                "aria-expanded",
+                "false"
+            );
+        }
+
+        if (elements.sidebarToggle) {
+            elements.sidebarToggle.setAttribute(
+                "aria-expanded",
+                "false"
+            );
+        }
+
+    }
+
+
+    function toggleMobileMenu() {
+
+        if (state.mobileMenuOpen) {
+            closeMobileMenu();
+        } else {
+            openMobileMenu();
+        }
+
+    }
+
+
+    /* =========================================================
+       NOTIFICAÇÕES
+       ========================================================= */
+
+    function openNotifications() {
+
+        if (!elements.notificationPanel) {
+            return;
+        }
+
+        state.notificationOpen = true;
+
+        elements.notificationPanel.classList.add("open");
+
+        elements.notificationPanel.setAttribute(
+            "aria-hidden",
+            "false"
         );
-
-
-        document.addEventListener("click", () => {
-
-            dropdown.classList.remove("is-open");
-
-        });
-
-
-        const markAll =
-            dropdown.querySelector(
-                "[data-mark-notifications]"
-            );
-
-        markAll?.addEventListener("click", () => {
-
-            $$(".notification-item.unread")
-                .forEach(item => {
-
-                    item.classList.remove("unread");
-
-                });
-
-            updateNotificationBadge();
-
-            showToast(
-                "Notificações",
-                "Todas as notificações foram marcadas como lidas.",
-                "success"
-            );
-
-        });
-
-
-        $$(".notification-item").forEach(item => {
-
-            item.addEventListener("click", () => {
-
-                item.classList.remove("unread");
-
-                updateNotificationBadge();
-
-            });
-
-        });
-
-        updateNotificationBadge();
-
-    }
-
-
-    function updateNotificationBadge() {
-
-        const unread =
-            $$(".notification-item.unread").length;
-
-        const badge =
-            $(".notification-badge");
-
-        if (!badge) return;
-
-        badge.textContent =
-            unread > 99 ? "99+" : unread;
-
-        badge.style.display =
-            unread ? "flex" : "none";
-
-    }
-
-
-    /* ========================================================
-       DROPDOWN DO USUÁRIO
-       ======================================================== */
-
-    function setupUserDropdown() {
-
-        const button =
-            $(EMPIRE.selectors.userButton);
-
-        const dropdown =
-            $(EMPIRE.selectors.userDropdown);
-
-        if (!button || !dropdown) return;
-
-
-        button.addEventListener("click", event => {
-
-            event.stopPropagation();
-
-            closeNotifications();
-
-            dropdown.classList.toggle("is-open");
-
-            button.classList.toggle(
-                "is-open",
-                dropdown.classList.contains("is-open")
-            );
-
-        });
-
-
-        dropdown.addEventListener(
-            "click",
-            event => event.stopPropagation()
-        );
-
-
-        document.addEventListener("click", () => {
-
-            closeUserDropdown();
-
-        });
-
-    }
-
-
-    function closeUserDropdown() {
-
-        const dropdown =
-            $(EMPIRE.selectors.userDropdown);
-
-        const button =
-            $(EMPIRE.selectors.userButton);
-
-        dropdown?.classList.remove("is-open");
-
-        button?.classList.remove("is-open");
 
     }
 
 
     function closeNotifications() {
 
-        $(EMPIRE.selectors.notificationDropdown)
-            ?.classList.remove("is-open");
-
-    }
-
-
-    /* ========================================================
-       RELÓGIO
-       ======================================================== */
-
-    function setupClock() {
-
-        const elements =
-            $$("[data-empire-clock]");
-
-        if (!elements.length) return;
-
-
-        function update() {
-
-            const now = new Date();
-
-            const time =
-                now.toLocaleTimeString(
-                    "pt-BR",
-                    {
-                        hour: "2-digit",
-                        minute: "2-digit"
-                    }
-                );
-
-            const date =
-                now.toLocaleDateString(
-                    "pt-BR",
-                    {
-                        day: "2-digit",
-                        month: "2-digit",
-                        year: "numeric"
-                    }
-                );
-
-
-            elements.forEach(element => {
-
-                element.textContent =
-                    `${date} • ${time}`;
-
-            });
-
-        }
-
-
-        update();
-
-        setInterval(update, 1000);
-
-    }
-
-
-    /* ========================================================
-       DATA DE SAUDAÇÃO
-       ======================================================== */
-
-    function setupGreeting() {
-
-        const greeting =
-            $("[data-greeting]");
-
-        if (!greeting) return;
-
-        const hour =
-            new Date().getHours();
-
-        let text = "Boa noite";
-
-        if (hour >= 5 && hour < 12) {
-            text = "Bom dia";
-        } else if (hour >= 12 && hour < 18) {
-            text = "Boa tarde";
-        }
-
-        greeting.textContent = text;
-
-    }
-
-
-    /* ========================================================
-       OFFLINE / ONLINE
-       ======================================================== */
-
-    function setupConnection() {
-
-        const banner =
-            $(EMPIRE.selectors.offline);
-
-        const status =
-            $("[data-connection-status]");
-
-        function update() {
-
-            const online =
-                navigator.onLine;
-
-            if (!online) {
-
-                banner?.classList.add("is-visible");
-
-                if (status) {
-                    status.textContent = "Offline";
-                    status.dataset.status = "offline";
-                }
-
-            } else {
-
-                banner?.classList.remove("is-visible");
-
-                if (status) {
-                    status.textContent = "Online";
-                    status.dataset.status = "online";
-                }
-
-            }
-
-        }
-
-
-        window.addEventListener(
-            "online",
-            () => {
-
-                update();
-
-                showToast(
-                    "Conexão restaurada",
-                    "O sistema voltou a ficar online.",
-                    "success"
-                );
-
-            }
-        );
-
-
-        window.addEventListener(
-            "offline",
-            () => {
-
-                update();
-
-                showToast(
-                    "Modo offline",
-                    "A conexão com a internet foi perdida.",
-                    "error"
-                );
-
-            }
-        );
-
-
-        update();
-
-    }
-
-
-    /* ========================================================
-       SCROLL TOPO
-       ======================================================== */
-
-    function setupScrollTop() {
-
-        const button =
-            $(EMPIRE.selectors.scrollTop);
-
-        if (!button) return;
-
-
-        window.addEventListener(
-            "scroll",
-            () => {
-
-                button.classList.toggle(
-                    "is-visible",
-                    window.scrollY > 400
-                );
-
-            },
-            { passive: true }
-        );
-
-
-        button.addEventListener(
-            "click",
-            () => {
-
-                window.scrollTo({
-                    top: 0,
-                    behavior: "smooth"
-                });
-
-            }
-        );
-
-    }
-
-
-    /* ========================================================
-       ANIMAÇÕES DE ENTRADA
-       ======================================================== */
-
-    function setupReveal() {
-
-        const elements = $$(
-            ".metric-card, " +
-            ".dashboard-panel, " +
-            ".quick-action, " +
-            ".dashboard-dragon-section"
-        );
-
-        if (!elements.length) return;
-
-
-        if (!("IntersectionObserver" in window)) {
-
-            elements.forEach(
-                element =>
-                    element.classList.add("is-visible")
-            );
-
+        if (!elements.notificationPanel) {
             return;
-
         }
 
+        state.notificationOpen = false;
 
-        const observer =
-            new IntersectionObserver(
-                entries => {
+        elements.notificationPanel.classList.remove("open");
 
-                    entries.forEach(entry => {
-
-                        if (!entry.isIntersecting) return;
-
-                        entry.target.classList.add(
-                            "is-visible"
-                        );
-
-                        observer.unobserve(
-                            entry.target
-                        );
-
-                    });
-
-                },
-                {
-                    threshold: 0.08
-                }
-            );
-
-
-        elements.forEach(element => {
-
-            element.classList.add(
-                "dashboard-reveal"
-            );
-
-            observer.observe(element);
-
-        });
-
-    }
-
-
-    /* ========================================================
-       EFEITO PREMIUM DRAGON BALL
-       ======================================================== */
-
-    function setupDragonEffect() {
-
-        const section =
-            $(".dashboard-dragon-section");
-
-        if (!section) return;
-
-
-        section.addEventListener(
-            "mousemove",
-            event => {
-
-                if (window.innerWidth < 800) return;
-
-                const rect =
-                    section.getBoundingClientRect();
-
-                const x =
-                    (event.clientX - rect.left)
-                    / rect.width;
-
-                const y =
-                    (event.clientY - rect.top)
-                    / rect.height;
-
-                const image =
-                    $(".dragon-ball-image", section);
-
-                if (!image) return;
-
-                const moveX =
-                    (x - 0.5) * -10;
-
-                const moveY =
-                    (y - 0.5) * -5;
-
-                image.style.transform =
-                    `scale(1.05)
-                     translate3d(${moveX}px,
-                     ${moveY}px,0)`;
-
-            }
-        );
-
-
-        section.addEventListener(
-            "mouseleave",
-            () => {
-
-                const image =
-                    $(".dragon-ball-image", section);
-
-                if (!image) return;
-
-                image.style.transform = "";
-
-            }
+        elements.notificationPanel.setAttribute(
+            "aria-hidden",
+            "true"
         );
 
     }
 
 
-    /* ========================================================
-       CONTADORES
-       ======================================================== */
+    function toggleNotifications() {
 
-    function animateCounter(element) {
-
-        const target =
-            parseFloat(
-                element.dataset.value ||
-                element.textContent
-                    .replace(/[^\d.-]/g, "")
-            );
-
-        if (!Number.isFinite(target)) return;
-
-        const duration = 900;
-
-        const start = performance.now();
-
-        function frame(time) {
-
-            const progress =
-                Math.min(
-                    (time - start) / duration,
-                    1
-                );
-
-            const eased =
-                1 - Math.pow(1 - progress, 3);
-
-            const value =
-                target * eased;
-
-            element.textContent =
-                Number.isInteger(target)
-                    ? Math.round(value).toLocaleString("pt-BR")
-                    : value.toLocaleString(
-                        "pt-BR",
-                        {
-                            minimumFractionDigits: 2,
-                            maximumFractionDigits: 2
-                        }
-                    );
-
-            if (progress < 1) {
-                requestAnimationFrame(frame);
-            }
-
+        if (state.notificationOpen) {
+            closeNotifications();
+        } else {
+            openNotifications();
         }
 
-        requestAnimationFrame(frame);
-
     }
 
 
-    function setupCounters() {
+    function clearNotificationCount() {
 
-        $$("[data-counter]").forEach(
-            animateCounter
-        );
-
-    }
-
-
-    /* ========================================================
-       FILTRO DE PERÍODO
-       ======================================================== */
-
-    function setupPeriodFilters() {
-
-        $$("[data-period]").forEach(select => {
-
-            select.addEventListener(
-                "change",
-                () => {
-
-                    const value =
-                        select.value;
-
-                    document.dispatchEvent(
-                        new CustomEvent(
-                            "empire:periodChange",
-                            {
-                                detail: { value }
-                            }
-                        )
-                    );
-
-                    showToast(
-                        "Período atualizado",
-                        `Dados exibidos para: ${value}.`,
-                        "success"
-                    );
-
-                }
-            );
-
-        });
-
-    }
-
-
-    /* ========================================================
-       ATALHOS
-       ======================================================== */
-
-    function setupQuickActions() {
-
-        $$(".quick-action").forEach(action => {
-
-            action.addEventListener(
-                "click",
-                event => {
-
-                    const href =
-                        action.getAttribute("href");
-
-                    if (!href || href === "#") {
-
-                        event.preventDefault();
-
-                        const title =
-                            action.querySelector("strong")
-                                ?.textContent ||
-                            "Módulo";
-
-                        showToast(
-                            title,
-                            "Módulo preparado para integração.",
-                            "success"
-                        );
-
-                    }
-
-                }
-            );
-
-        });
-
-    }
-
-
-    /* ========================================================
-       LOGOUT
-       ======================================================== */
-
-    function setupLogout() {
-
-        $$(
-            "[data-logout], " +
-            ".user-dropdown-item.logout"
-        ).forEach(button => {
-
-            button.addEventListener(
-                "click",
-                event => {
-
-                    event.preventDefault();
-
-                    openLogoutModal();
-
-                }
-            );
-
-        });
-
-    }
-
-
-    function openLogoutModal() {
-
-        const existing =
-            $("#empireLogoutModal");
-
-        if (existing) {
-
-            existing.classList.add("is-open");
-
+        if (!elements.notificationCount) {
             return;
-
         }
 
+        elements.notificationCount.textContent = "0";
 
-        const modal =
-            document.createElement("div");
-
-        modal.id =
-            "empireLogoutModal";
-
-        modal.className =
-            "empire-modal-overlay is-open";
-
-        modal.innerHTML = `
-            <div class="empire-modal"
-                 role="dialog"
-                 aria-modal="true">
-
-                <button
-                    class="empire-modal-close"
-                    data-modal-close
-                    aria-label="Fechar">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
-
-                <div class="empire-modal-icon">
-                    <i class="fa-solid fa-right-from-bracket"></i>
-                </div>
-
-                <h3>Encerrar sessão?</h3>
-
-                <p>
-                    Deseja realmente sair do EMPIRE ERP?
-                    Sua sessão atual será encerrada.
-                </p>
-
-                <div class="empire-modal-actions">
-
-                    <button
-                        class="empire-modal-button"
-                        data-modal-close>
-                        Cancelar
-                    </button>
-
-                    <button
-                        class="empire-modal-button confirm"
-                        data-confirm-logout>
-                        Sair
-                    </button>
-
-                </div>
-
-            </div>
-        `;
-
-
-        document.body.appendChild(modal);
-
-
-        modal.addEventListener(
-            "click",
-            event => {
-
-                if (
-                    event.target === modal ||
-                    event.target.closest(
-                        "[data-modal-close]"
-                    )
-                ) {
-
-                    closeLogoutModal();
-
-                }
-
-            }
-        );
-
-
-        modal.querySelector(
-            "[data-confirm-logout]"
-        ).addEventListener(
-            "click",
-            logout
+        elements.notificationCount.classList.remove(
+            "visible"
         );
 
     }
 
 
-    function closeLogoutModal() {
+    function loadNotifications() {
 
-        const modal =
-            $("#empireLogoutModal");
+        if (!elements.notificationList) {
+            return;
+        }
 
-        if (!modal) return;
-
-        modal.classList.remove("is-open");
-
-        setTimeout(
-            () => modal.remove(),
-            250
-        );
-
-    }
-
-
-    function logout() {
+        let notifications = [];
 
         try {
 
-            localStorage.removeItem(
-                EMPIRE.storage.user
-            );
+            const saved =
+                localStorage.getItem(
+                    "empireNotifications"
+                );
+
+            if (saved) {
+                const parsed = JSON.parse(saved);
+
+                if (Array.isArray(parsed)) {
+                    notifications = parsed;
+                }
+            }
 
         } catch (error) {
 
             console.warn(
-                "EMPIRE: erro ao limpar sessão.",
+                "EMPIRE: notificações inválidas.",
                 error
             );
 
         }
 
 
-        showToast(
-            "Sessão encerrada",
-            "Redirecionando para o login...",
-            "success"
-        );
+        if (!notifications.length) {
+
+            elements.notificationList.innerHTML = `
+                <div class="notification-empty">
+                    <strong>Nenhuma notificação</strong>
+                    <span>Você não possui novas notificações.</span>
+                </div>
+            `;
+
+            clearNotificationCount();
+
+            return;
+        }
 
 
-        setTimeout(() => {
+        elements.notificationList.innerHTML =
+            notifications.map(function (item) {
 
-            const loginPaths = [
-                "index.html",
-                "../index.html",
-                "../../index.html"
-            ];
+                const title =
+                    escapeHTML(item.title || "Notificação");
 
-            const path =
-                loginPaths.find(
-                    item => true
-                );
+                const message =
+                    escapeHTML(item.message || "");
 
-            window.location.href = path;
+                const time =
+                    escapeHTML(item.time || "Agora");
 
-        }, 700);
+                return `
+                    <div class="notification-item">
+                        <div class="notification-item-icon">
+                            EM
+                        </div>
+
+                        <div class="notification-item-content">
+                            <strong>${title}</strong>
+                            <span>${message}</span>
+                            <time>${time}</time>
+                        </div>
+                    </div>
+                `;
+
+            }).join("");
+
+
+        if (elements.notificationCount) {
+
+            elements.notificationCount.textContent =
+                String(notifications.length);
+
+            elements.notificationCount.classList.add(
+                "visible"
+            );
+
+        }
 
     }
 
 
-    /* ========================================================
-       TOAST
-       ======================================================== */
+    /* =========================================================
+       PROTEÇÃO CONTRA HTML INJETADO
+       ========================================================= */
 
-    function showToast(
-        title,
-        message,
-        type = "success"
-    ) {
+    function escapeHTML(value) {
 
-        let container =
-            $(EMPIRE.selectors.toastContainer);
+        return String(value)
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
 
-        if (!container) {
+    }
 
-            container =
-                document.createElement("div");
 
-            container.className =
-                "empire-toast-container";
+    /* =========================================================
+       ATIVIDADES
+       ========================================================= */
 
-            document.body.appendChild(container);
+    function loadActivities() {
+
+        if (!elements.activityList) {
+            return;
+        }
+
+        let activities = [];
+
+        try {
+
+            const saved =
+                localStorage.getItem(
+                    "empireActivities"
+                );
+
+            if (saved) {
+
+                const parsed =
+                    JSON.parse(saved);
+
+                if (Array.isArray(parsed)) {
+                    activities = parsed;
+                }
+
+            }
+
+        } catch (error) {
+
+            console.warn(
+                "EMPIRE: atividades inválidas.",
+                error
+            );
 
         }
 
 
-        const toast =
-            document.createElement("div");
+        if (!activities.length) {
 
-        toast.className =
-            `empire-toast ${type}`;
+            elements.activityList.innerHTML = `
+                <div class="activity-empty">
+                    <div class="activity-empty-icon">
+                        EMPIRE
+                    </div>
 
-        const icon =
-            type === "error"
-                ? "fa-circle-exclamation"
-                : "fa-circle-check";
+                    <strong>
+                        Nenhuma atividade recente
+                    </strong>
 
+                    <span>
+                        As atividades do sistema aparecerão aqui.
+                    </span>
+                </div>
+            `;
 
-        toast.innerHTML = `
-            <div class="empire-toast-icon">
-                <i class="fa-solid ${icon}"></i>
-            </div>
-
-            <div class="empire-toast-content">
-                <strong>${escapeHTML(title)}</strong>
-                <span>${escapeHTML(message)}</span>
-            </div>
-
-            <button
-                class="empire-toast-close"
-                aria-label="Fechar">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
-        `;
+            return;
+        }
 
 
-        container.appendChild(toast);
+        elements.activityList.innerHTML =
+            activities.slice(0, 20).map(function (item) {
 
+                const title =
+                    escapeHTML(
+                        item.title || "Atividade"
+                    );
 
-        const close =
-            () => {
+                const description =
+                    escapeHTML(
+                        item.description || ""
+                    );
 
-                toast.classList.add("removing");
+                const time =
+                    escapeHTML(
+                        item.time || "Agora"
+                    );
 
-                setTimeout(
-                    () => toast.remove(),
-                    300
-                );
+                return `
+                    <div class="activity-item">
 
-            };
+                        <div class="activity-icon">
+                            EM
+                        </div>
 
+                        <div class="activity-content">
 
-        toast.querySelector(
-            ".empire-toast-close"
-        ).addEventListener(
-            "click",
-            close
-        );
+                            <strong>
+                                ${title}
+                            </strong>
 
+                            <span>
+                                ${description}
+                            </span>
 
-        setTimeout(close, 4500);
+                            <time>
+                                ${time}
+                            </time>
+
+                        </div>
+
+                    </div>
+                `;
+
+            }).join("");
 
     }
 
 
-    /* ========================================================
-       TECLADO
-       ======================================================== */
+    /* =========================================================
+       EVENTOS
+       ========================================================= */
 
-    function setupKeyboard() {
+    function bindEvents() {
+
+        if (elements.mobileMenuButton) {
+
+            elements.mobileMenuButton.addEventListener(
+                "click",
+                toggleMobileMenu
+            );
+
+        }
+
+
+        if (elements.sidebarToggle) {
+
+            elements.sidebarToggle.addEventListener(
+                "click",
+                toggleMobileMenu
+            );
+
+        }
+
+
+        if (elements.sidebarOverlay) {
+
+            elements.sidebarOverlay.addEventListener(
+                "click",
+                closeMobileMenu
+            );
+
+        }
+
+
+        if (elements.notificationButton) {
+
+            elements.notificationButton.addEventListener(
+                "click",
+                toggleNotifications
+            );
+
+        }
+
+
+        if (elements.closeNotification) {
+
+            elements.closeNotification.addEventListener(
+                "click",
+                closeNotifications
+            );
+
+        }
+
+
+        if (elements.refreshActivity) {
+
+            elements.refreshActivity.addEventListener(
+                "click",
+                function () {
+
+                    loadActivities();
+
+                }
+            );
+
+        }
+
+
+        window.addEventListener(
+            "online",
+            updateConnectionStatus
+        );
+
+
+        window.addEventListener(
+            "offline",
+            updateConnectionStatus
+        );
+
 
         document.addEventListener(
             "keydown",
-            event => {
+            function (event) {
 
                 if (event.key === "Escape") {
 
                     closeNotifications();
-
-                    closeUserDropdown();
-
-                    closeLogoutModal();
+                    closeMobileMenu();
 
                 }
 
             }
         );
 
-    }
 
+        document.querySelectorAll(
+            ".navigation-item"
+        ).forEach(function (item) {
 
-    /* ========================================================
-       LINKS ATIVOS
-       ======================================================== */
+            item.addEventListener(
+                "click",
+                function () {
 
-    function setupActiveMenu() {
-
-        const current =
-            location.pathname
-                .split("/")
-                .pop()
-                .toLowerCase();
-
-        $$(".dashboard-sidebar a").forEach(link => {
-
-            const href =
-                link.getAttribute("href");
-
-            if (!href) return;
-
-            const file =
-                href
-                    .split("/")
-                    .pop()
-                    .split("?")[0]
-                    .toLowerCase();
-
-            if (
-                file &&
-                file === current
-            ) {
-
-                link.classList.add("active");
-
-            }
-
-        });
-
-    }
-
-
-    /* ========================================================
-       PERSISTÊNCIA DO PERÍODO
-       ======================================================== */
-
-    function setupPeriodStorage() {
-
-        $$("[data-period]").forEach(select => {
-
-            const key =
-                `empire_period_${select.id || "dashboard"}`;
-
-            const saved =
-                localStorage.getItem(key);
-
-            if (saved) {
-                select.value = saved;
-            }
-
-
-            select.addEventListener(
-                "change",
-                () => {
-
-                    localStorage.setItem(
-                        key,
-                        select.value
-                    );
+                    if (window.innerWidth <= 760) {
+                        closeMobileMenu();
+                    }
 
                 }
             );
@@ -1233,125 +915,497 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
     }
+/* ============================================================
+   GRÁFICO DE VENDAS
+   ============================================================ */
 
+function getChartData(period) {
 
-    /* ========================================================
-       PERFORMANCE
-       ======================================================== */
+    const data = {
+        "7": {
+            labels: [
+                "Seg",
+                "Ter",
+                "Qua",
+                "Qui",
+                "Sex",
+                "Sáb",
+                "Dom"
+            ],
+            values: [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+            ]
+        },
 
-    function optimizeImages() {
+        "30": {
+            labels: [
+                "01",
+                "05",
+                "10",
+                "15",
+                "20",
+                "25",
+                "30"
+            ],
+            values: [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+            ]
+        },
 
-        $$("img").forEach(image => {
-
-            if (!image.hasAttribute("loading")) {
-
-                image.setAttribute(
-                    "loading",
-                    "lazy"
-                );
-
-            }
-
-            image.addEventListener(
-                "error",
-                () => {
-
-                    image.classList.add(
-                        "image-error"
-                    );
-
-                }
-            );
-
-        });
-
-    }
-
-
-    /* ========================================================
-       INICIALIZAÇÃO
-       ======================================================== */
-
-    function init() {
-
-        renderUser();
-
-        setupSidebar();
-
-        setupNotifications();
-
-        setupUserDropdown();
-
-        setupClock();
-
-        setupGreeting();
-
-        setupConnection();
-
-        setupScrollTop();
-
-        setupReveal();
-
-        setupDragonEffect();
-
-        setupCounters();
-
-        setupPeriodFilters();
-
-        setupQuickActions();
-
-        setupLogout();
-
-        setupKeyboard();
-
-        setupActiveMenu();
-
-        setupPeriodStorage();
-
-        optimizeImages();
-
-
-        document.documentElement.classList.add(
-            "empire-dashboard-ready"
-        );
-
-
-        console.log(
-            "%c👑 EMPIRE ERP",
-            "color:#d4af37;font-weight:bold;font-size:16px"
-        );
-
-        console.log(
-            "%cTela Inicial carregada com sucesso.",
-            "color:#aaa"
-        );
-
-    }
-
-
-    /* ========================================================
-       EXECUTAR
-       ======================================================== */
-
-    init();
-
-
-    /* ========================================================
-       API GLOBAL
-       ======================================================== */
-
-    window.EMPIRE_DASHBOARD = {
-
-        toast: showToast,
-
-        user: getUser,
-
-        logout,
-
-        openLogoutModal,
-
-        closeLogoutModal
-
+        "90": {
+            labels: [
+                "Mês 1",
+                "Mês 2",
+                "Mês 3"
+            ],
+            values: [
+                0,
+                0,
+                0
+            ]
+        }
     };
 
-});
+    return data[String(period)] || data["7"];
+}
+
+
+/* ============================================================
+   CRIAÇÃO DO GRÁFICO
+   ============================================================ */
+
+function createSalesChart() {
+
+    if (!elements.salesChart) {
+        return;
+    }
+
+    if (typeof window.Chart === "undefined") {
+
+        if (elements.chartEmpty) {
+            elements.chartEmpty.classList.remove("hidden");
+        }
+
+        return;
+    }
+
+    const period =
+        elements.salesPeriod
+            ? elements.salesPeriod.value || "7"
+            : "7";
+
+    const chartData =
+        getChartData(period);
+
+
+    if (state.chart) {
+
+        state.chart.destroy();
+        state.chart = null;
+
+    }
+
+
+    const context =
+        elements.salesChart.getContext("2d");
+
+
+    if (!context) {
+        return;
+    }
+
+
+    state.chart = new Chart(
+        context,
+        {
+            type: "line",
+
+            data: {
+                labels: chartData.labels,
+
+                datasets: [
+                    {
+                        label: "Vendas",
+
+                        data: chartData.values,
+
+                        borderColor:
+                            "#d4af37",
+
+                        backgroundColor:
+                            "rgba(212,175,55,0.08)",
+
+                        borderWidth: 2,
+
+                        pointRadius: 3,
+
+                        pointHoverRadius: 5,
+
+                        pointBackgroundColor:
+                            "#d4af37",
+
+                        pointBorderColor:
+                            "#050505",
+
+                        pointBorderWidth: 2,
+
+                        tension: 0.35,
+
+                        fill: true
+                    }
+                ]
+            },
+
+            options: {
+                responsive: true,
+
+                maintainAspectRatio: false,
+
+                animation: {
+                    duration: 500
+                },
+
+                plugins: {
+
+                    legend: {
+                        display: false
+                    },
+
+                    tooltip: {
+                        backgroundColor:
+                            "#111111",
+
+                        borderColor:
+                            "rgba(212,175,55,0.25)",
+
+                        borderWidth: 1,
+
+                        titleColor:
+                            "#d4af37",
+
+                        bodyColor:
+                            "#bbbbbb",
+
+                        padding: 10
+                    }
+                },
+
+                scales: {
+
+                    x: {
+                        grid: {
+                            color:
+                                "rgba(255,255,255,0.035)"
+                        },
+
+                        ticks: {
+                            color: "#5e5e5e",
+
+                            font: {
+                                family:
+                                    "Poppins",
+
+                                size: 8
+                            }
+                        }
+                    },
+
+                    y: {
+                        beginAtZero: true,
+
+                        grid: {
+                            color:
+                                "rgba(255,255,255,0.035)"
+                        },
+
+                        ticks: {
+                            color: "#5e5e5e",
+
+                            font: {
+                                family:
+                                    "Poppins",
+
+                                size: 8
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    );
+
+
+    if (elements.chartEmpty) {
+        elements.chartEmpty.classList.add("hidden");
+    }
+
+}
+
+
+/* ============================================================
+   ALTERAÇÃO DO PERÍODO DO GRÁFICO
+   ============================================================ */
+
+function changeChartPeriod() {
+
+    if (!elements.salesPeriod) {
+        return;
+    }
+
+    createSalesChart();
+
+}
+
+
+if (elements.salesPeriod) {
+
+    elements.salesPeriod.addEventListener(
+        "change",
+        changeChartPeriod
+    );
+
+}
+
+
+/* ============================================================
+   LOGOUT
+   ============================================================ */
+
+function logout() {
+
+    const confirmed =
+        window.confirm(
+            "Deseja realmente sair do EMPIRE?"
+        );
+
+    if (!confirmed) {
+        return;
+    }
+
+
+    try {
+
+        localStorage.removeItem("empireUser");
+
+        sessionStorage.removeItem("empireUser");
+
+    } catch (error) {
+
+        console.warn(
+            "EMPIRE: não foi possível limpar a sessão.",
+            error
+        );
+
+    }
+
+
+    window.location.href =
+        "login.html";
+
+}
+
+
+if (elements.logoutButton) {
+
+    elements.logoutButton.addEventListener(
+        "click",
+        logout
+    );
+
+}
+
+
+/* ============================================================
+   REDIMENSIONAMENTO
+   ============================================================ */
+
+function handleResize() {
+
+    if (window.innerWidth > 760) {
+
+        closeMobileMenu();
+
+    }
+
+
+    if (state.chart) {
+
+        state.chart.resize();
+
+    }
+
+}
+
+
+window.addEventListener(
+    "resize",
+    handleResize
+);
+
+
+/* ============================================================
+   INICIALIZAÇÃO DOS COMPONENTES
+   ============================================================ */
+
+function initializeDashboardComponents() {
+
+    loadUserData();
+
+    loadDashboardData();
+
+    loadNotifications();
+
+    loadActivities();
+
+    updateConnectionStatus();
+
+    updateSessionStatus();
+
+    createSalesChart();
+
+}
+
+
+/* ============================================================
+   INICIALIZAÇÃO PRINCIPAL
+   ============================================================ */
+
+async function initializeDashboard() {
+
+    if (state.initialized) {
+        return;
+    }
+
+    state.initialized = true;
+
+
+    cacheElements();
+
+    bindEvents();
+
+    initializeDashboardComponents();
+
+    await initializeLoader();
+
+}
+
+
+/* ============================================================
+   DOM READY
+   ============================================================ */
+
+if (document.readyState === "loading") {
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        initializeDashboard,
+        {
+            once: true
+        }
+    );
+
+} else {
+
+    initializeDashboard();
+
+}
+
+
+/* ============================================================
+   SEGURANÇA EXTRA DO LOADER
+   ============================================================ */
+
+window.addEventListener(
+    "load",
+    function () {
+
+        if (!state.loaderFinished) {
+            finishLoader();
+        }
+
+    },
+    {
+        once: true
+    }
+);
+
+
+/* ============================================================
+   ERRO GLOBAL CONTROLADO
+   ============================================================ */
+
+window.addEventListener(
+    "error",
+    function (event) {
+
+        console.warn(
+            "EMPIRE Dashboard:",
+            event.message || "Erro desconhecido"
+        );
+
+    }
+);
+
+
+/* ============================================================
+   API INTERNA DO DASHBOARD
+   ============================================================ */
+
+window.EMPIRE_DASHBOARD = {
+
+    refresh: function () {
+
+        loadDashboardData();
+
+        loadNotifications();
+
+        loadActivities();
+
+        createSalesChart();
+
+    },
+
+    openNotifications: function () {
+
+        openNotifications();
+
+    },
+
+    closeNotifications: function () {
+
+        closeNotifications();
+
+    },
+
+    openMenu: function () {
+
+        openMobileMenu();
+
+    },
+
+    closeMenu: function () {
+
+        closeMobileMenu();
+
+    }
+
+};
+
+
+/* ============================================================
+   FINAL
+   ============================================================ */
+
+})();
