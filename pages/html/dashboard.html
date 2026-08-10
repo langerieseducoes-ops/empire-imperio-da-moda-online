@@ -3,1464 +3,2232 @@
 
 <head>
 
-<meta charset="UTF-8">
+    <meta charset="UTF-8">
 
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
+    <meta
+        name="theme-color"
+        content="#050505"
+    >
 
-<title>
-EMPIRE ERP | Tela Inicial
-</title>
+    <meta
+        name="description"
+        content="EMPIRE ERP — Império da Moda Online"
+    >
 
+    <title>EMPIRE | Império da Moda Online</title>
 
+    <!-- =====================================================
+         FAVICON
+    ====================================================== -->
 
-<link rel="icon"
-href="../../assets/img/favicon.png">
-
-
-
-<link rel="preconnect"
-href="https://fonts.googleapis.com">
-
-
-<link rel="preconnect"
-href="https://fonts.gstatic.com"
-crossorigin>
-
-
-
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800&display=swap"
-rel="stylesheet">
-
-
-
-<link rel="stylesheet"
-href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link
+        rel="icon"
+        type="image/png"
+        href="../../assets/img/favicon.png"
+    >
 
 
+    <!-- =====================================================
+         FONTES
+    ====================================================== -->
 
-<link rel="stylesheet"
-href="../../assets/css/dashboard.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin
+    >
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
 
 
+    <!-- =====================================================
+         FONT AWESOME
+    ====================================================== -->
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    >
+
+
+    <!-- =====================================================
+         DASHBOARD CSS
+    ====================================================== -->
+
+    <link
+        rel="stylesheet"
+        href="../../assets/css/dashboard.css"
+    >
 
 </head>
-
 
 
 <body>
 
 
+    <!-- =====================================================
+         LOADER PREMIUM EMPIRE
+    ====================================================== -->
 
-<!-- LOADER PREMIUM -->
+    <div
+        id="dashboardLoader"
+        class="dashboard-loader"
+    >
 
+        <div class="dashboard-loader-background"></div>
 
-<div class="loader" id="dashboardLoader">
+        <div class="dashboard-loader-content">
 
+            <div class="dashboard-loader-logo">
 
-<div class="loader-content">
-
-
-<h1>
-EMPIRE
-</h1>
-
-
-
-<p>
-Império da Moda Online
-</p>
-
-
-
-<div class="loader-bar">
-
-<span></span>
-
-</div>
-
-
-
-</div>
-
-
-</div>
-
-
-
-
-
-
-
-
-
-<!-- FUNDO ANIMADO -->
-
-
-<div class="background-animation">
-
-
-<div class="gold-orb orb-one"></div>
-
-<div class="gold-orb orb-two"></div>
-
-<div class="gold-orb orb-three"></div>
-
-
-
-</div>
-
-
-
-
-
-
-
-
-<!-- CONTAINER PRINCIPAL -->
-
-
-<div class="erp-container">
-<!-- ==================================================
-     SIDEBAR
-================================================== -->
-
-<aside class="sidebar" id="sidebar">
-
-
-    <!-- MARCA -->
-
-    <div class="brand">
-
-        <div class="brand-logo">
-
-            <img
-                src="../../assets/img/logo.png"
-                alt="EMPIRE"
-            >
-
-        </div>
-
-
-        <div class="brand-info">
-
-            <h2>EMPIRE</h2>
-
-            <span>Império da Moda Online</span>
-
-        </div>
-
-    </div>
-
-
-
-
-    <!-- PERFIL -->
-
-    <div class="profile-card">
-
-
-        <div class="profile-avatar">
-
-            <i class="fa-solid fa-user"></i>
-
-        </div>
-
-
-        <div class="profile-info">
-
-            <strong id="usuarioNome">
-                Usuário
-            </strong>
-
-            <span id="usuarioCargo">
-                Cargo
-            </span>
-
-
-            <small>
-
-                <i class="fa-solid fa-circle"></i>
-
-                <span id="usuarioStatus">
-                    Online
+                <span class="loader-logo-main">
+                    EMPIRE
                 </span>
 
-            </small>
+                <span class="loader-logo-line"></span>
+
+                <span class="loader-logo-subtitle">
+                    IMPÉRIO DA MODA ONLINE
+                </span>
+
+            </div>
+
+
+            <div class="dashboard-loader-animation">
+
+                <div class="loader-ring ring-one"></div>
+
+                <div class="loader-ring ring-two"></div>
+
+                <div class="loader-core">
+                    E
+                </div>
+
+            </div>
+
+
+            <div class="dashboard-loader-progress">
+
+                <div
+                    id="dashboardLoaderProgress"
+                    class="dashboard-loader-progress-bar"
+                ></div>
+
+            </div>
+
+
+            <span class="dashboard-loader-status">
+                Inicializando EMPIRE ERP...
+            </span>
 
         </div>
-
 
     </div>
 
 
 
+    <!-- =====================================================
+         SISTEMA PRINCIPAL
+    ====================================================== -->
+
+    <div
+        id="dashboardApp"
+        class="dashboard-app"
+    >
 
 
-    <!-- NAVEGAÇÃO -->
+        <!-- =================================================
+             SIDEBAR
+        ================================================== -->
 
-    <nav class="navigation">
-
-
-        <!-- TELA INICIAL -->
-
-        <a
-            href="dashboard.html"
-            class="nav-link active"
-            data-permissao="dashboard"
+        <aside
+            id="dashboardSidebar"
+            class="dashboard-sidebar"
         >
 
-            <i class="fa-solid fa-house"></i>
 
-            <span>Tela Inicial</span>
+            <!-- BRAND -->
+            <div class="sidebar-brand">
+
+                <a
+                    href="dashboard.html"
+                    class="sidebar-brand-link"
+                    aria-label="EMPIRE Tela Inicial"
+                >
+
+                    <div class="sidebar-logo-wrapper">
+
+                        <img
+                            src="../../assets/img/logo.png"
+                            alt="EMPIRE"
+                            class="sidebar-logo"
+                            id="logoEmpresa"
+                        >
+
+                        <span class="sidebar-logo-glow"></span>
+
+                    </div>
+
+
+                    <div class="sidebar-brand-text">
+
+                        <strong>
+                            EMPIRE
+                        </strong>
+
+                        <span>
+                            Império da Moda Online
+                        </span>
+
+                    </div>
+
+                </a>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 PERFIL DO USUÁRIO
+            ================================================== -->
+
+            <div class="sidebar-user-card">
+
+                <div
+                    class="sidebar-user-avatar"
+                    id="userAvatar"
+                >
+                    E
+                </div>
+
+
+                <div class="sidebar-user-information">
+
+                    <strong
+                        id="usuarioNome"
+                    >
+                        Usuário
+                    </strong>
+
+                    <span
+                        id="usuarioCargo"
+                    >
+                        Carregando...
+                    </span>
+
+                    <small>
+
+                        <i
+                            class="fa-solid fa-circle"
+                            id="userOnlineDot"
+                        ></i>
+
+                        <span id="usuarioStatus">
+                            Online
+                        </span>
+
+                    </small>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 NAVEGAÇÃO
+            ================================================== -->
+
+            <nav
+                class="dashboard-navigation"
+                aria-label="Navegação principal"
+            >
+
+
+                <div class="navigation-section">
+
+                    <span class="navigation-section-title">
+                        PRINCIPAL
+                    </span>
+
+
+                    <!-- TELA INICIAL -->
+
+                    <a
+                        href="dashboard.html"
+                        class="navigation-link active"
+                        data-permissao="dashboard"
+                        aria-current="page"
+                    >
+
+                        <span class="navigation-icon">
+
+                            <i class="fa-solid fa-house"></i>
+
+                        </span>
+
+                        <span class="navigation-label">
+                            Tela Inicial
+                        </span>
+
+                    </a>
+
+
+                    <!-- PRODUTOS -->
+
+                    <a
+                        href="produtos.html"
+                        class="navigation-link"
+                        data-permissao="produtos"
+                    >
+
+                        <span class="navigation-icon">
+
+                            <i class="fa-solid fa-box-open"></i>
+
+                        </span>
+
+                        <span class="navigation-label">
+                            Produtos
+                        </span>
+
+                    </a>
+
+
+                    <!-- CLIENTES -->
+
+                    <a
+                        href="clientes.html"
+                        class="navigation-link"
+                        data-permissao="clientes"
+                    >
+
+                        <span class="navigation-icon">
+
+                            <i class="fa-solid fa-users"></i>
+
+                        </span>
+
+                        <span class="navigation-label">
+                            Clientes
+                        </span>
+
+                    </a>
+
+
+                    <!-- VENDAS -->
+
+                    <a
+                        href="vendas.html"
+                        class="navigation-link"
+                        data-permissao="vendas"
+                    >
+
+                        <span class="navigation-icon">
+
+                            <i class="fa-solid fa-cart-shopping"></i>
+
+                        </span>
+
+                        <span class="navigation-label">
+                            Vendas
+                        </span>
+
+                    </a>
+
+                </div>
+
+
+
+                <div class="navigation-section">
+
+                    <span class="navigation-section-title">
+                        OPERAÇÕES
+                    </span>
+
+
+                    <!-- COMPRAS -->
+
+                    <a
+                        href="compras.html"
+                        class="navigation-link"
+                        data-permissao="compras"
+                    >
+
+                        <span class="navigation-icon">
+
+                            <i class="fa-solid fa-bag-shopping"></i>
+
+                        </span>
+
+                        <span class="navigation-label">
+                            Compras
+                        </span>
+
+                    </a>
+
+
+                    <!-- FORNECEDORES -->
+
+                    <a
+                        href="fornecedores.html"
+                        class="navigation-link"
+                        data-permissao="fornecedores"
+                    >
+
+                        <span class="navigation-icon">
+
+                            <i class="fa-solid fa-truck"></i>
+
+                        </span>
+
+                        <span class="navigation-label">
+                            Fornecedores
+                        </span>
+
+                    </a>
+
+
+                    <!-- ESTOQUE -->
+
+                    <a
+                        href="produtos.html?view=estoque"
+                        class="navigation-link"
+                        data-permissao="estoque"
+                    >
+
+                        <span class="navigation-icon">
+
+                            <i class="fa-solid fa-warehouse"></i>
+
+                        </span>
+
+                        <span class="navigation-label">
+                            Estoque
+                        </span>
+
+                    </a>
+
+
+                    <!-- FINANCEIRO -->
+
+                    <a
+                        href="financeiro.html"
+                        class="navigation-link"
+                        data-permissao="financeiro"
+                    >
+
+                        <span class="navigation-icon">
+
+                            <i class="fa-solid fa-coins"></i>
+
+                        </span>
+
+                        <span class="navigation-label">
+                            Financeiro
+                        </span>
+
+                    </a>
+
+                </div>
+
+
+
+                <div class="navigation-section">
+
+                    <span class="navigation-section-title">
+                        GESTÃO
+                    </span>
+
+
+                    <!-- USUÁRIOS -->
+
+                    <a
+                        href="usuarios.html"
+                        class="navigation-link"
+                        data-permissao="usuarios"
+                    >
+
+                        <span class="navigation-icon">
+
+                            <i class="fa-solid fa-user-shield"></i>
+
+                        </span>
+
+                        <span class="navigation-label">
+                            Usuários
+                        </span>
+
+                    </a>
+
+
+                    <!-- RELATÓRIOS -->
+
+                    <a
+                        href="relatorios.html"
+                        class="navigation-link"
+                        data-permissao="relatorios"
+                    >
+
+                        <span class="navigation-icon">
+
+                            <i class="fa-solid fa-chart-pie"></i>
+
+                        </span>
+
+                        <span class="navigation-label">
+                            Relatórios
+                        </span>
+
+                    </a>
+
+
+                    <!-- MONITORAMENTO -->
+
+                    <a
+                        href="monitoramento.html"
+                        class="navigation-link"
+                        data-permissao="monitoramento"
+                    >
+
+                        <span class="navigation-icon">
+
+                            <i class="fa-solid fa-shield-halved"></i>
+
+                        </span>
+
+                        <span class="navigation-label">
+                            Monitoramento
+                        </span>
+
+                    </a>
+
+
+                    <!-- CONFIGURAÇÕES -->
+
+                    <a
+                        href="configuracoes.html"
+                        class="navigation-link"
+                        data-permissao="configuracoes"
+                    >
+
+                        <span class="navigation-icon">
+
+                            <i class="fa-solid fa-gear"></i>
+
+                        </span>
+
+                        <span class="navigation-label">
+                            Configurações
+                        </span>
+
+                    </a>
+
+                </div>
+
+            </nav>
+
+
+
+            <!-- =================================================
+                 RODAPÉ SIDEBAR
+            ================================================== -->
+
+            <div class="sidebar-footer">
+
+                <div class="sidebar-system-status">
+
+                    <span class="system-status-indicator"></span>
+
+                    <div>
+
+                        <strong>
+                            Sistema
+                        </strong>
+
+                        <span>
+                            EMPIRE ERP
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <button
+                    type="button"
+                    id="logoutButton"
+                    class="sidebar-logout-button"
+                    title="Sair do sistema"
+                >
+
+                    <i class="fa-solid fa-right-from-bracket"></i>
+
+                    <span>
+                        Sair
+                    </span>
+
+                </button>
+
+            </div>
+
+        </aside>
+
+
+
+        <!-- =================================================
+             ÁREA PRINCIPAL
+        ================================================== -->
+
+        <main class="dashboard-main">
+
+
+            <!-- =================================================
+                 HEADER SUPERIOR
+            ================================================== -->
+
+            <header class="dashboard-header">
+
+
+                <div class="dashboard-header-left">
+
+
+                    <button
+                        type="button"
+                        id="mobileMenuButton"
+                        class="mobile-menu-button"
+                        aria-label="Abrir menu"
+                        title="Menu"
+                    >
+
+                        <i class="fa-solid fa-bars"></i>
+
+                    </button>
+
+
+                    <div class="dashboard-page-heading">
+
+                        <span class="dashboard-eyebrow">
+                            EMPIRE ERP
+                        </span>
+
+                        <h1>
+                            Tela Inicial
+                        </h1>
+
+                        <p>
+                            Visão geral do Império da Moda Online.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="dashboard-header-right">
+
+
+                    <!-- DATA / HORA -->
+
+                    <div class="dashboard-date-time">
+
+                        <span
+                            id="currentDate"
+                            class="dashboard-current-date"
+                        >
+                            Carregando data...
+                        </span>
+
+                        <strong
+                            id="currentTime"
+                            class="dashboard-current-time"
+                        >
+                            --:--:--
+                        </strong>
+
+                    </div>
+
+
+                    <!-- STATUS -->
+
+                    <div
+                        class="dashboard-connection-status"
+                        id="connectionStatusBox"
+                    >
+
+                        <span
+                            class="status-indicator online"
+                            id="networkStatusIndicator"
+                        ></span>
+
+                        <span id="connectionStatus">
+                            Online
+                        </span>
+
+                    </div>
+
+
+                    <!-- NOTIFICAÇÕES -->
+
+                    <button
+                        type="button"
+                        id="notificationButton"
+                        class="dashboard-notification-button"
+                        aria-label="Notificações"
+                        title="Notificações"
+                    >
+
+                        <i class="fa-regular fa-bell"></i>
+
+                        <span
+                            id="notificationBadge"
+                            class="notification-badge"
+                        >
+                            0
+                        </span>
+
+                    </button>
+
+
+                    <!-- AVATAR -->
+
+                    <button
+                        type="button"
+                        id="headerUserButton"
+                        class="dashboard-header-user"
+                        aria-label="Perfil do usuário"
+                    >
+
+                        <span
+                            id="headerUserAvatar"
+                            class="header-user-avatar"
+                        >
+                            E
+                        </span>
+
+                        <span class="header-user-arrow">
+
+                            <i class="fa-solid fa-chevron-down"></i>
+
+                        </span>
+
+                    </button>
+
+                </div>
+
+            </header>
+
+
+
+            <!-- =================================================
+                 CONTEÚDO
+            ================================================== -->
+
+            <div class="dashboard-content">
+
+
+                <!-- =================================================
+                     BOAS-VINDAS
+                ================================================== -->
+
+                <section class="dashboard-welcome-card">
+
+                    <div class="welcome-card-content">
+
+                        <span class="welcome-card-label">
+                            BEM-VINDO AO EMPIRE
+                        </span>
+
+                        <h2>
+                            Olá,
+                            <span id="welcomeUserName">
+                                Usuário
+                            </span>.
+                        </h2>
+
+                        <p>
+                            Aqui está o resumo operacional
+                            do seu Império da Moda Online.
+                        </p>
+
+                    </div>
+
+
+                    <div class="welcome-card-decoration">
+
+                        <span class="decoration-ring ring-1"></span>
+
+                        <span class="decoration-ring ring-2"></span>
+
+                        <span class="decoration-ring ring-3"></span>
+
+                        <span class="decoration-crown">
+                            <i class="fa-solid fa-crown"></i>
+                        </span>
+
+                    </div>
+
+                </section>
+
+
+
+                <!-- =================================================
+                     INDICADORES
+                ================================================== -->
+
+                <section
+                    class="dashboard-metrics-grid"
+                    aria-label="Indicadores"
+                >
+
+
+                    <!-- VENDAS -->
+
+                    <article
+                        class="metric-card"
+                        data-counter-card="sales"
+                    >
+
+                        <div class="metric-card-top">
+
+                            <div class="metric-icon sales-icon">
+
+                                <i class="fa-solid fa-sack-dollar"></i>
+
+                            </div>
+
+                            <span class="metric-period">
+                                Este mês
+                            </span>
+
+                        </div>
+
+
+                        <div class="metric-card-body">
+
+                            <span class="metric-label">
+                                Vendas
+                            </span>
+
+                            <strong
+                                id="totalSales"
+                                class="metric-value"
+                            >
+                                R$ 0,00
+                            </strong>
+
+                        </div>
+
+
+                        <div class="metric-card-bottom">
+
+                            <span
+                                id="salesVariation"
+                                class="metric-variation positive"
+                            >
+                                +0%
+                            </span>
+
+                            <span>
+                                vs. mês anterior
+                            </span>
+
+                        </div>
+
+                    </article>
+
+
+                    <!-- PEDIDOS -->
+
+                    <article
+                        class="metric-card"
+                        data-counter-card="orders"
+                    >
+
+                        <div class="metric-card-top">
+
+                            <div class="metric-icon orders-icon">
+
+                                <i class="fa-solid fa-cart-shopping"></i>
+
+                            </div>
+
+                            <span class="metric-period">
+                                Este mês
+                            </span>
+
+                        </div>
+
+
+                        <div class="metric-card-body">
+
+                            <span class="metric-label">
+                                Pedidos
+                            </span>
+
+                            <strong
+                                id="totalOrders"
+                                class="metric-value"
+                            >
+                                0
+                            </strong>
+
+                        </div>
+
+
+                        <div class="metric-card-bottom">
+
+                            <span
+                                id="ordersVariation"
+                                class="metric-variation positive"
+                            >
+                                +0%
+                            </span>
+
+                            <span>
+                                vs. mês anterior
+                            </span>
+
+                        </div>
+
+                    </article>
+
+
+                    <!-- CLIENTES -->
+
+                    <article
+                        class="metric-card"
+                        data-counter-card="clients"
+                    >
+
+                        <div class="metric-card-top">
+
+                            <div class="metric-icon clients-icon">
+
+                                <i class="fa-solid fa-users"></i>
+
+                            </div>
+
+                            <span class="metric-period">
+                                Total
+                            </span>
+
+                        </div>
+
+
+                        <div class="metric-card-body">
+
+                            <span class="metric-label">
+                                Clientes
+                            </span>
+
+                            <strong
+                                id="totalClients"
+                                class="metric-value"
+                            >
+                                0
+                            </strong>
+
+                        </div>
+
+
+                        <div class="metric-card-bottom">
+
+                            <span
+                                id="clientsVariation"
+                                class="metric-variation positive"
+                            >
+                                +0%
+                            </span>
+
+                            <span>
+                                crescimento
+                            </span>
+
+                        </div>
+
+                    </article>
+
+
+                    <!-- PRODUTOS -->
+
+                    <article
+                        class="metric-card"
+                        data-counter-card="products"
+                    >
+
+                        <div class="metric-card-top">
+
+                            <div class="metric-icon products-icon">
+
+                                <i class="fa-solid fa-box-open"></i>
+
+                            </div>
+
+                            <span class="metric-period">
+                                Catálogo
+                            </span>
+
+                        </div>
+
+
+                        <div class="metric-card-body">
+
+                            <span class="metric-label">
+                                Produtos
+                            </span>
+
+                            <strong
+                                id="totalProducts"
+                                class="metric-value"
+                            >
+                                0
+                            </strong>
+
+                        </div>
+
+
+                        <div class="metric-card-bottom">
+
+                            <span
+                                id="productsVariation"
+                                class="metric-variation positive"
+                            >
+                                +0%
+                            </span>
+
+                            <span>
+                                crescimento
+                            </span>
+
+                        </div>
+
+                    </article>
+
+
+                </section>
+                <!-- =================================================
+                     ÁREA CENTRAL — GRÁFICOS
+                ================================================== -->
+
+                <section class="dashboard-main-grid">
+
+
+                    <!-- =================================================
+                         GRÁFICO DE VENDAS
+                    ================================================== -->
+
+                    <article class="dashboard-panel sales-panel">
+
+                        <div class="panel-header">
+
+                            <div class="panel-title">
+
+                                <span class="panel-icon">
+
+                                    <i class="fa-solid fa-chart-line"></i>
+
+                                </span>
+
+                                <div>
+
+                                    <h3>
+                                        Desempenho de Vendas
+                                    </h3>
+
+                                    <span>
+                                        Acompanhamento financeiro
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="panel-actions">
+
+                                <select
+                                    id="salesPeriod"
+                                    class="panel-period-select"
+                                    aria-label="Período do gráfico"
+                                >
+
+                                    <option value="7">
+                                        Últimos 7 dias
+                                    </option>
+
+                                    <option value="30">
+                                        Últimos 30 dias
+                                    </option>
+
+                                    <option value="90">
+                                        Últimos 90 dias
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="sales-summary">
+
+                            <div>
+
+                                <span>
+                                    Faturamento
+                                </span>
+
+                                <strong>
+                                    R$ 48.750,00
+                                </strong>
+
+                            </div>
+
+
+                            <div class="sales-summary-growth">
+
+                                <i class="fa-solid fa-arrow-trend-up"></i>
+
+                                <span>
+                                    +12,8%
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="sales-chart-wrapper">
+
+                            <canvas
+                                id="salesChart"
+                                aria-label="Gráfico de vendas"
+                            ></canvas>
+
+                        </div>
+
+                    </article>
+
+
+
+                    <!-- =================================================
+                         DISTRIBUIÇÃO DE PRODUTOS
+                    ================================================== -->
+
+                    <article class="dashboard-panel products-panel">
+
+                        <div class="panel-header">
+
+                            <div class="panel-title">
+
+                                <span class="panel-icon">
+
+                                    <i class="fa-solid fa-boxes-stacked"></i>
+
+                                </span>
+
+                                <div>
+
+                                    <h3>
+                                        Catálogo
+                                    </h3>
+
+                                    <span>
+                                        Distribuição por categoria
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="products-chart-wrapper">
+
+                            <canvas
+                                id="productsChart"
+                                aria-label="Distribuição dos produtos"
+                            ></canvas>
+
+                            <div class="products-chart-center">
+
+                                <strong>
+                                    642
+                                </strong>
+
+                                <span>
+                                    Produtos
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        <div
+                            id="productsLegend"
+                            class="products-chart-legend"
+                        >
+
+                            <div class="chart-legend-item">
+
+                                <span class="legend-dot legend-gold"></span>
+
+                                <span>
+                                    Moda
+                                </span>
+
+                                <strong>
+                                    42%
+                                </strong>
+
+                            </div>
+
+
+                            <div class="chart-legend-item">
+
+                                <span class="legend-dot legend-dark-gold"></span>
+
+                                <span>
+                                    Lingerie
+                                </span>
+
+                                <strong>
+                                    28%
+                                </strong>
+
+                            </div>
+
+
+                            <div class="chart-legend-item">
+
+                                <span class="legend-dot legend-light-gold"></span>
+
+                                <span>
+                                    Acessórios
+                                </span>
+
+                                <strong>
+                                    18%
+                                </strong>
+
+                            </div>
+
+
+                            <div class="chart-legend-item">
+
+                                <span class="legend-dot legend-gray"></span>
+
+                                <span>
+                                    Outros
+                                </span>
+
+                                <strong>
+                                    12%
+                                </strong>
+
+                            </div>
+
+                        </div>
+
+                    </article>
+
+                </section>
+
+
+
+                <!-- =================================================
+                     DRAGON BALL — ÁREA DE DESTAQUE
+                ================================================== -->
+
+                <section class="dashboard-dragon-section">
+
+                    <div class="dragon-background-glow"></div>
+
+                    <div class="dragon-content">
+
+                        <div class="dragon-text">
+
+                            <span class="dragon-eyebrow">
+                                EMPIRE • IMPÉRIO DA MODA ONLINE
+                            </span>
+
+                            <h2>
+                                Seu Império.
+                                <br>
+                                Sua Evolução.
+                            </h2>
+
+                            <p>
+                                Gestão, estratégia e crescimento
+                                em um único lugar.
+                            </p>
+
+                            <div class="dragon-decoration-line"></div>
+
+                        </div>
+
+
+                        <div class="dragon-image-container">
+
+                            <!--
+                                COLOQUE A IMAGEM ENVIADA
+                                PELO USUÁRIO EM:
+
+                                assets/img/dragon-ball.png
+
+                                Caso o nome do arquivo seja outro,
+                                alteraremos somente o src.
+                            -->
+
+                            <img
+                                src="../../assets/img/dragon-ball.png"
+                                alt="Dragon Ball"
+                                class="dragon-ball-image"
+                                id="dragonBallImage"
+                            >
+
+                            <div class="dragon-image-glow"></div>
+
+                            <div class="dragon-image-overlay"></div>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+
+                <!-- =================================================
+                     PAINÉIS OPERACIONAIS
+                ================================================== -->
+
+                <section class="dashboard-secondary-grid">
+
+
+                    <!-- =================================================
+                         ESTOQUE
+                    ================================================== -->
+
+                    <article class="dashboard-panel inventory-panel">
+
+                        <div class="panel-header">
+
+                            <div class="panel-title">
+
+                                <span class="panel-icon">
+
+                                    <i class="fa-solid fa-warehouse"></i>
+
+                                </span>
+
+                                <div>
+
+                                    <h3>
+                                        Situação do Estoque
+                                    </h3>
+
+                                    <span>
+                                        Visão geral
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+
+                            <a
+                                href="produtos.html?view=estoque"
+                                class="panel-link"
+                                data-permissao="estoque"
+                            >
+                                Ver estoque
+                                <i class="fa-solid fa-arrow-right"></i>
+                            </a>
+
+                        </div>
+
+
+                        <div class="inventory-content">
+
+
+                            <div class="inventory-main-number">
+
+                                <span>
+                                    Unidades em estoque
+                                </span>
+
+                                <strong>
+                                    3.842
+                                </strong>
+
+                                <small>
+                                    Atualizado recentemente
+                                </small>
+
+                            </div>
+
+
+                            <div class="inventory-status-list">
+
+
+                                <div class="inventory-status-item">
+
+                                    <div class="inventory-status-info">
+
+                                        <span class="inventory-status-dot normal"></span>
+
+                                        <span>
+                                            Estoque normal
+                                        </span>
+
+                                    </div>
+
+                                    <strong>
+                                        78%
+                                    </strong>
+
+                                </div>
+
+
+                                <div class="inventory-progress">
+
+                                    <span
+                                        style="width: 78%;"
+                                    ></span>
+
+                                </div>
+
+
+                                <div class="inventory-status-item">
+
+                                    <div class="inventory-status-info">
+
+                                        <span class="inventory-status-dot low"></span>
+
+                                        <span>
+                                            Estoque baixo
+                                        </span>
+
+                                    </div>
+
+                                    <strong>
+                                        16%
+                                    </strong>
+
+                                </div>
+
+
+                                <div class="inventory-progress">
+
+                                    <span
+                                        style="width: 16%;"
+                                    ></span>
+
+                                </div>
+
+
+                                <div class="inventory-status-item">
+
+                                    <div class="inventory-status-info">
+
+                                        <span class="inventory-status-dot empty"></span>
+
+                                        <span>
+                                            Sem estoque
+                                        </span>
+
+                                    </div>
+
+                                    <strong>
+                                        6%
+                                    </strong>
+
+                                </div>
+
+
+                                <div class="inventory-progress">
+
+                                    <span
+                                        style="width: 6%;"
+                                    ></span>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </article>
+
+
+
+                    <!-- =================================================
+                         ATIVIDADE RECENTE
+                    ================================================== -->
+
+                    <article class="dashboard-panel activity-panel">
+
+                        <div class="panel-header">
+
+                            <div class="panel-title">
+
+                                <span class="panel-icon">
+
+                                    <i class="fa-solid fa-clock-rotate-left"></i>
+
+                                </span>
+
+                                <div>
+
+                                    <h3>
+                                        Atividade Recente
+                                    </h3>
+
+                                    <span>
+                                        Últimas movimentações
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+
+                            <span
+                                id="lastActivity"
+                                class="last-activity"
+                            >
+                                Agora
+                            </span>
+
+                        </div>
+
+
+                        <div class="activity-list">
+
+
+                            <div class="activity-item">
+
+                                <div class="activity-icon sale">
+
+                                    <i class="fa-solid fa-cart-shopping"></i>
+
+                                </div>
+
+                                <div class="activity-information">
+
+                                    <strong>
+                                        Nova venda registrada
+                                    </strong>
+
+                                    <span>
+                                        Pedido #EMP-10482
+                                    </span>
+
+                                </div>
+
+                                <time>
+                                    5 min
+                                </time>
+
+                            </div>
+
+
+                            <div class="activity-item">
+
+                                <div class="activity-icon product">
+
+                                    <i class="fa-solid fa-box"></i>
+
+                                </div>
+
+                                <div class="activity-information">
+
+                                    <strong>
+                                        Produto atualizado
+                                    </strong>
+
+                                    <span>
+                                        Lingerie Premium
+                                    </span>
+
+                                </div>
+
+                                <time>
+                                    18 min
+                                </time>
+
+                            </div>
+
+
+                            <div class="activity-item">
+
+                                <div class="activity-icon client">
+
+                                    <i class="fa-solid fa-user-plus"></i>
+
+                                </div>
+
+                                <div class="activity-information">
+
+                                    <strong>
+                                        Novo cliente cadastrado
+                                    </strong>
+
+                                    <span>
+                                        Cadastro concluído
+                                    </span>
+
+                                </div>
+
+                                <time>
+                                    32 min
+                                </time>
+
+                            </div>
+
+
+                            <div class="activity-item">
+
+                                <div class="activity-icon stock">
+
+                                    <i class="fa-solid fa-truck-ramp-box"></i>
+
+                                </div>
+
+                                <div class="activity-information">
+
+                                    <strong>
+                                        Entrada de estoque
+                                    </strong>
+
+                                    <span>
+                                        120 unidades
+                                    </span>
+
+                                </div>
+
+                                <time>
+                                    1 h
+                                </time>
+
+                            </div>
+
+                        </div>
+
+                    </article>
+
+                </section>
+
+
+
+                <!-- =================================================
+                     ATALHOS RÁPIDOS
+                ================================================== -->
+
+                <section class="quick-actions-section">
+
+                    <div class="section-heading">
+
+                        <div>
+
+                            <span>
+                                ACESSO RÁPIDO
+                            </span>
+
+                            <h2>
+                                Operações
+                            </h2>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="quick-actions-grid">
+
+
+                        <a
+                            href="produtos.html"
+                            class="quick-action"
+                            data-dashboard-link="produtos"
+                        >
+
+                            <span class="quick-action-icon">
+
+                                <i class="fa-solid fa-box-open"></i>
+
+                            </span>
+
+                            <span class="quick-action-text">
+
+                                <strong>
+                                    Produtos
+                                </strong>
+
+                                <small>
+                                    Gerenciar catálogo
+                                </small>
+
+                            </span>
+
+                            <i class="fa-solid fa-arrow-right quick-action-arrow"></i>
+
+                        </a>
+
+
+                        <a
+                            href="clientes.html"
+                            class="quick-action"
+                            data-dashboard-link="clientes"
+                        >
+
+                            <span class="quick-action-icon">
+
+                                <i class="fa-solid fa-user-group"></i>
+
+                            </span>
+
+                            <span class="quick-action-text">
+
+                                <strong>
+                                    Clientes
+                                </strong>
+
+                                <small>
+                                    Gerenciar clientes
+                                </small>
+
+                            </span>
+
+                            <i class="fa-solid fa-arrow-right quick-action-arrow"></i>
+
+                        </a>
+
+
+                        <a
+                            href="vendas.html"
+                            class="quick-action"
+                            data-dashboard-link="vendas"
+                        >
+
+                            <span class="quick-action-icon">
+
+                                <i class="fa-solid fa-cart-shopping"></i>
+
+                            </span>
+
+                            <span class="quick-action-text">
+
+                                <strong>
+                                    Nova Venda
+                                </strong>
+
+                                <small>
+                                    Registrar pedido
+                                </small>
+
+                            </span>
+
+                            <i class="fa-solid fa-arrow-right quick-action-arrow"></i>
+
+                        </a>
+
+
+                        <a
+                            href="financeiro.html"
+                            class="quick-action"
+                            data-dashboard-link="financeiro"
+                        >
+
+                            <span class="quick-action-icon">
+
+                                <i class="fa-solid fa-chart-column"></i>
+
+                            </span>
+
+                            <span class="quick-action-text">
+
+                                <strong>
+                                    Financeiro
+                                </strong>
+
+                                <small>
+                                    Ver movimentações
+                                </small>
+
+                            </span>
+
+                            <i class="fa-solid fa-arrow-right quick-action-arrow"></i>
+
+                        </a>
+
+                    </div>
+
+                </section>
+                                <!-- =================================================
+                     RODAPÉ DO DASHBOARD
+                ================================================== -->
+
+                <footer class="dashboard-footer">
+
+                    <div class="dashboard-footer-brand">
+
+                        <span class="footer-crown">
+                            <i class="fa-solid fa-crown"></i>
+                        </span>
+
+                        <div>
+
+                            <strong>
+                                EMPIRE ERP
+                            </strong>
+
+                            <span>
+                                Império da Moda Online
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="dashboard-footer-info">
+
+                        <span>
+                            Sistema protegido
+                        </span>
+
+                        <span class="footer-separator">
+                            •
+                        </span>
+
+                        <span>
+                            Versão EMPIRE
+                        </span>
+
+                    </div>
+
+                </footer>
+
+            </div>
+
+        </main>
+
+    </div>
+
+
+
+    <!-- =====================================================
+         PAINEL DE NOTIFICAÇÕES
+    ====================================================== -->
+
+    <aside
+        id="notificationPanel"
+        class="notification-panel"
+        aria-label="Central de notificações"
+        aria-hidden="true"
+    >
+
+        <div class="notification-panel-header">
+
+            <div>
+
+                <span class="notification-panel-eyebrow">
+                    EMPIRE ERP
+                </span>
+
+                <h2>
+                    Notificações
+                </h2>
+
+            </div>
+
+
+            <button
+                type="button"
+                id="closeNotifications"
+                class="notification-close-button"
+                aria-label="Fechar notificações"
+                title="Fechar"
+            >
+
+                <i class="fa-solid fa-xmark"></i>
+
+            </button>
+
+        </div>
+
+
+        <div class="notification-panel-toolbar">
+
+            <span>
+                Central de atividades
+            </span>
+
+            <button
+                type="button"
+                id="markAllNotifications"
+            >
+                Marcar todas como lidas
+            </button>
+
+        </div>
+
+
+        <div
+            id="notificationsList"
+            class="notifications-list"
+        >
+
+            <!-- O JavaScript preencherá este espaço -->
+
+        </div>
+
+
+        <div class="notification-panel-footer">
+
+            <span>
+                EMPIRE • Império da Moda Online
+            </span>
+
+        </div>
+
+    </aside>
+
+
+
+    <!-- =====================================================
+         OVERLAY DO PAINEL DE NOTIFICAÇÕES
+    ====================================================== -->
+
+    <div
+        id="notificationOverlay"
+        class="notification-overlay"
+    ></div>
+
+
+
+    <!-- =====================================================
+         MENU / PERFIL DO USUÁRIO
+    ====================================================== -->
+
+    <div
+        id="userProfileMenu"
+        class="user-profile-menu"
+        aria-hidden="true"
+    >
+
+        <div class="profile-menu-header">
+
+            <div
+                id="profileMenuAvatar"
+                class="profile-menu-avatar"
+            >
+                E
+            </div>
+
+            <div>
+
+                <strong id="profileMenuName">
+                    Usuário
+                </strong>
+
+                <span id="profileMenuRole">
+                    Usuário
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <div class="profile-menu-divider"></div>
+
+
+        <a
+            href="alterar-senha.html"
+            class="profile-menu-item"
+        >
+
+            <i class="fa-solid fa-key"></i>
+
+            <span>
+                Alterar senha
+            </span>
 
         </a>
 
-
-
-
-        <!-- USUÁRIOS -->
-
-        <a
-            href="usuarios.html"
-            class="nav-link"
-            data-permissao="usuarios"
-        >
-
-            <i class="fa-solid fa-users"></i>
-
-            <span>Usuários</span>
-
-        </a>
-
-
-
-
-        <!-- PRODUTOS -->
-
-        <a
-            href="produtos.html"
-            class="nav-link"
-            data-permissao="produtos"
-        >
-
-            <i class="fa-solid fa-box-open"></i>
-
-            <span>Produtos</span>
-
-        </a>
-
-
-
-
-        <!-- CLIENTES -->
-
-        <a
-            href="clientes.html"
-            class="nav-link"
-            data-permissao="clientes"
-        >
-
-            <i class="fa-solid fa-user-group"></i>
-
-            <span>Clientes</span>
-
-        </a>
-
-
-
-
-        <!-- VENDAS -->
-
-        <a
-            href="vendas.html"
-            class="nav-link"
-            data-permissao="vendas"
-        >
-
-            <i class="fa-solid fa-cart-shopping"></i>
-
-            <span>Vendas</span>
-
-        </a>
-
-
-
-
-        <!-- COMPRAS -->
-
-        <a
-            href="compras.html"
-            class="nav-link"
-            data-permissao="compras"
-        >
-
-            <i class="fa-solid fa-truck-ramp-box"></i>
-
-            <span>Compras</span>
-
-        </a>
-
-
-
-
-        <!-- FINANCEIRO -->
-
-        <a
-            href="financeiro.html"
-            class="nav-link"
-            data-permissao="financeiro"
-        >
-
-            <i class="fa-solid fa-coins"></i>
-
-            <span>Financeiro</span>
-
-        </a>
-
-
-
-
-        <!-- RELATÓRIOS -->
-
-        <a
-            href="relatorios.html"
-            class="nav-link"
-            data-permissao="relatorios"
-        >
-
-            <i class="fa-solid fa-chart-column"></i>
-
-            <span>Relatórios</span>
-
-        </a>
-
-
-
-
-        <!-- MONITORAMENTO -->
-
-        <a
-            href="monitoramento.html"
-            class="nav-link"
-            data-permissao="monitoramento"
-        >
-
-            <i class="fa-solid fa-shield-halved"></i>
-
-            <span>Monitoramento</span>
-
-        </a>
-
-
-
-
-        <!-- CONFIGURAÇÕES -->
 
         <a
             href="configuracoes.html"
-            class="nav-link"
+            class="profile-menu-item"
             data-permissao="configuracoes"
         >
 
             <i class="fa-solid fa-gear"></i>
 
-            <span>Configurações</span>
+            <span>
+                Configurações
+            </span>
 
         </a>
 
 
-    </nav>
-
-
-
-
-
-    <!-- RODAPÉ SIDEBAR -->
-
-    <div class="sidebar-footer">
-
-
-        <div class="connection-status">
-
-            <span class="status-indicator"></span>
-
-            <span id="connectionText">
-                Sistema Online
-            </span>
-
-        </div>
+        <div class="profile-menu-divider"></div>
 
 
         <button
             type="button"
-            id="logoutButton"
-            class="logout-button"
+            id="profileLogoutButton"
+            class="profile-menu-logout"
         >
 
             <i class="fa-solid fa-right-from-bracket"></i>
 
-            <span>Sair</span>
+            <span>
+                Sair do sistema
+            </span>
 
         </button>
-
 
     </div>
 
 
-</aside>
-<!-- ==================================================
-     CONTEÚDO PRINCIPAL
-================================================== -->
 
-<main class="content" id="mainContent">
-
-
-    <!-- TOPBAR -->
-
-    <header class="topbar">
-
-
-        <div class="page-title">
-
-            <div class="title-icon">
-
-                <i class="fa-solid fa-crown"></i>
-
-            </div>
-
-
-            <div>
-
-                <span class="title-label">
-                    EMPIRE ERP
-                </span>
-
-                <h1>
-                    Tela Inicial
-                </h1>
-
-                <p>
-                    Visão geral da operação do Império da Moda Online
-                </p>
-
-            </div>
-
-        </div>
-
-
-
-
-
-        <div class="top-actions">
-
-
-            <!-- STATUS -->
-
-            <div class="online-badge">
-
-                <span class="status-indicator"></span>
-
-                <span>
-                    Online
-                </span>
-
-            </div>
-
-
-
-
-            <!-- NOTIFICAÇÕES -->
-
-            <button
-                type="button"
-                class="icon-button"
-                id="notificationButton"
-                title="Notificações"
-            >
-
-                <i class="fa-regular fa-bell"></i>
-
-                <span
-                    id="notificationBadge"
-                    class="notification-badge"
-                >
-                    0
-                </span>
-
-            </button>
-
-
-
-
-            <!-- RELÓGIO -->
-
-            <div class="time-box">
-
-
-                <i class="fa-regular fa-clock"></i>
-
-
-                <div>
-
-                    <strong id="currentTime">
-                        00:00:00
-                    </strong>
-
-                    <small id="currentDate">
-                        --/--/----
-                    </small>
-
-                </div>
-
-
-            </div>
-
-
-        </div>
-
-
-    </header>
-
-
-
-
-
-    <!-- ==================================================
-         BANNER PRINCIPAL
-    ================================================== -->
-
-    <section class="hero-banner" id="heroBanner">
-
-
-        <div class="hero-image"></div>
-
-
-        <div class="hero-overlay"></div>
-
-
-        <!-- partículas -->
-
-        <div class="hero-particles">
-
-            <span></span>
-            <span></span>
-            <span></span>
-            <span></span>
-            <span></span>
-            <span></span>
-            <span></span>
-            <span></span>
-
-        </div>
-
-
-
-        <div class="hero-content">
-
-
-            <div class="hero-crown">
-
-                <i class="fa-solid fa-crown"></i>
-
-            </div>
-
-
-
-            <span class="hero-label">
-                BEM-VINDO AO IMPÉRIO
-            </span>
-
-
-
-            <h2>
-                EMPIRE
-            </h2>
-
-
-
-            <p>
-                Império da Moda Online
-            </p>
-
-
-
-            <div class="hero-user">
-
-
-                <div class="hero-avatar">
-
-                    <i class="fa-solid fa-user"></i>
-
-                </div>
-
-
-                <div>
-
-                    <span>
-                        Usuário conectado
-                    </span>
-
-                    <strong id="heroUserName">
-                        Usuário
-                    </strong>
-
-                </div>
-
-
-            </div>
-
-
-        </div>
-
-
-
-        <!-- brilho decorativo -->
-
-        <div class="hero-glow"></div>
-
-
-    </section>
-
-
-
-
-
-    <!-- ==================================================
-         INDICADORES
-    ================================================== -->
-
-    <section class="metrics-grid">
-
-
-        <!-- VENDAS -->
-
-        <article
-            class="metric-card"
-            data-metric="vendas"
-        >
-
-            <div class="metric-icon">
-
-                <i class="fa-solid fa-cart-shopping"></i>
-
-            </div>
-
-
-            <div class="metric-content">
-
-                <span>
-                    Vendas
-                </span>
-
-                <strong id="metricVendas">
-                    R$ 0,00
-                </strong>
-
-                <small class="metric-positive">
-
-                    <i class="fa-solid fa-arrow-trend-up"></i>
-
-                    <span id="vendasVariation">
-                        0%
-                    </span>
-
-                </small>
-
-            </div>
-
-
-            <div class="metric-shine"></div>
-
-        </article>
-
-
-
-
-
-        <!-- CLIENTES -->
-
-        <article
-            class="metric-card"
-            data-metric="clientes"
-        >
-
-            <div class="metric-icon">
-
-                <i class="fa-solid fa-users"></i>
-
-            </div>
-
-
-            <div class="metric-content">
-
-                <span>
-                    Clientes
-                </span>
-
-                <strong id="metricClientes">
-                    0
-                </strong>
-
-                <small>
-
-                    <i class="fa-solid fa-user-plus"></i>
-
-                    <span id="clientesVariation">
-                        0 novos
-                    </span>
-
-                </small>
-
-            </div>
-
-
-            <div class="metric-shine"></div>
-
-        </article>
-
-
-
-
-
-        <!-- PRODUTOS -->
-
-        <article
-            class="metric-card"
-            data-metric="produtos"
-        >
-
-            <div class="metric-icon">
-
-                <i class="fa-solid fa-box-open"></i>
-
-            </div>
-
-
-            <div class="metric-content">
-
-                <span>
-                    Produtos
-                </span>
-
-                <strong id="metricProdutos">
-                    0
-                </strong>
-
-                <small>
-
-                    <i class="fa-solid fa-boxes-stacked"></i>
-
-                    <span id="produtosVariation">
-                        Estoque
-                    </span>
-
-                </small>
-
-            </div>
-
-
-            <div class="metric-shine"></div>
-
-        </article>
-
-
-
-
-
-        <!-- ESTOQUE -->
-
-        <article
-            class="metric-card"
-            data-metric="estoque"
-        >
-
-            <div class="metric-icon">
-
-                <i class="fa-solid fa-warehouse"></i>
-
-            </div>
-
-
-            <div class="metric-content">
-
-                <span>
-                    Estoque
-                </span>
-
-                <strong id="metricEstoque">
-                    0
-                </strong>
-
-                <small>
-
-                    <i class="fa-solid fa-chart-simple"></i>
-
-                    <span id="estoqueVariation">
-                        Itens disponíveis
-                    </span>
-
-                </small>
-
-            </div>
-
-
-            <div class="metric-shine"></div>
-
-        </article>
-
-
-    </section>
-    <!-- ==================================================
-     ÁREA DE GRÁFICOS
-================================================== -->
-
-<section class="charts-area">
-
-
-    <!-- GRÁFICO DE VENDAS -->
-
-    <article class="dashboard-card chart-card-large">
-
-
-        <div class="card-header">
-
-
-            <div class="card-title">
-
-                <span class="card-icon">
-
-                    <i class="fa-solid fa-chart-line"></i>
-
-                </span>
-
-
-                <div>
-
-                    <h3>
-                        Desempenho de Vendas
-                    </h3>
-
-                    <p>
-                        Acompanhamento das vendas
-                    </p>
-
-                </div>
-
-            </div>
-
-
-
-            <select
-                id="salesPeriod"
-                class="period-select"
-            >
-
-                <option value="7">
-                    Últimos 7 dias
-                </option>
-
-                <option value="30">
-                    Últimos 30 dias
-                </option>
-
-                <option value="90">
-                    Últimos 90 dias
-                </option>
-
-            </select>
-
-
-        </div>
-
-
-
-        <div class="chart-wrapper">
-
-            <canvas
-                id="salesChart"
-            ></canvas>
-
-        </div>
-
-
-    </article>
-
-
-
-
-
-    <!-- GRÁFICO DE CATEGORIAS -->
-
-    <article class="dashboard-card chart-card">
-
-
-        <div class="card-header">
-
-
-            <div class="card-title">
-
-                <span class="card-icon">
-
-                    <i class="fa-solid fa-chart-pie"></i>
-
-                </span>
-
-
-                <div>
-
-                    <h3>
-                        Produtos
-                    </h3>
-
-                    <p>
-                        Distribuição por categoria
-                    </p>
-
-                </div>
-
-            </div>
-
-
-        </div>
-
-
-
-        <div class="chart-wrapper pie-wrapper">
-
-            <canvas
-                id="productsChart"
-            ></canvas>
-
-        </div>
-
+    <!-- =====================================================
+         MODAL DE CONFIRMAÇÃO DE LOGOUT
+    ====================================================== -->
+
+    <div
+        id="logoutModal"
+        class="dashboard-modal"
+        aria-hidden="true"
+    >
 
         <div
-            class="chart-legend"
-            id="productsLegend"
+            class="dashboard-modal-overlay"
+            data-close-logout
         ></div>
 
 
-    </article>
+        <div
+            class="dashboard-modal-card"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="logoutModalTitle"
+        >
 
+            <div class="dashboard-modal-icon">
 
-</section>
-
-
-
-
-
-<!-- ==================================================
-     SEGUNDA ÁREA DE INFORMAÇÕES
-================================================== -->
-
-<section class="dashboard-grid">
-
-
-    <!-- MOVIMENTAÇÃO -->
-
-    <article class="dashboard-card movement-card">
-
-
-        <div class="card-header">
-
-
-            <div class="card-title">
-
-                <span class="card-icon">
-
-                    <i class="fa-solid fa-arrow-trend-up"></i>
-
-                </span>
-
-
-                <div>
-
-                    <h3>
-                        Movimentação
-                    </h3>
-
-                    <p>
-                        Entradas e saídas recentes
-                    </p>
-
-                </div>
+                <i class="fa-solid fa-right-from-bracket"></i>
 
             </div>
 
 
-            <span class="live-indicator">
+            <div class="dashboard-modal-content">
 
-                <span></span>
+                <span>
+                    EMPIRE ERP
+                </span>
 
-                Ao vivo
-
-            </span>
-
-
-        </div>
-
-
-
-        <div
-            class="movement-list"
-            id="movementList"
-        >
-
-
-            <div class="empty-state">
-
-                <i class="fa-solid fa-inbox"></i>
+                <h2 id="logoutModalTitle">
+                    Encerrar sessão?
+                </h2>
 
                 <p>
-                    Nenhuma movimentação registrada.
+                    Você será desconectado do sistema
+                    e precisará realizar o login novamente.
                 </p>
 
             </div>
 
 
-        </div>
+            <div class="dashboard-modal-actions">
+
+                <button
+                    type="button"
+                    id="cancelLogout"
+                    class="dashboard-modal-secondary"
+                >
+                    Cancelar
+                </button>
 
 
-    </article>
+                <button
+                    type="button"
+                    id="confirmLogout"
+                    class="dashboard-modal-danger"
+                >
 
+                    <i class="fa-solid fa-power-off"></i>
 
+                    Sair
 
-
-
-    <!-- ATIVIDADES -->
-
-    <article class="dashboard-card activity-card">
-
-
-        <div class="card-header">
-
-
-            <div class="card-title">
-
-                <span class="card-icon">
-
-                    <i class="fa-solid fa-clock-rotate-left"></i>
-
-                </span>
-
-
-                <div>
-
-                    <h3>
-                        Atividade do Sistema
-                    </h3>
-
-                    <p>
-                        Últimas ações
-                    </p>
-
-                </div>
-
-            </div>
-
-
-        </div>
-
-
-
-        <div
-            class="activity-list"
-            id="activityList"
-        >
-
-
-            <div class="activity-item">
-
-
-                <div class="activity-icon">
-
-                    <i class="fa-solid fa-right-to-bracket"></i>
-
-                </div>
-
-
-                <div class="activity-info">
-
-                    <strong>
-                        Sistema iniciado
-                    </strong>
-
-                    <span id="loginActivityTime">
-                        Agora
-                    </span>
-
-                </div>
-
-
-                <span class="activity-status success">
-                    OK
-                </span>
-
-
-            </div>
-
-
-        </div>
-
-
-    </article>
-
-
-</section>
-<!-- ==================================================
-     PAINEL INFERIOR
-================================================== -->
-
-<section class="dashboard-bottom-grid">
-
-
-    <!-- RESUMO DA SESSÃO -->
-
-    <article class="dashboard-card session-card">
-
-
-        <div class="card-header">
-
-            <div class="card-title">
-
-                <span class="card-icon">
-
-                    <i class="fa-solid fa-user-shield"></i>
-
-                </span>
-
-                <div>
-
-                    <h3>
-                        Sessão Atual
-                    </h3>
-
-                    <p>
-                        Informações do acesso
-                    </p>
-
-                </div>
+                </button>
 
             </div>
 
         </div>
-
-
-
-        <div class="session-info">
-
-
-            <div class="session-row">
-
-                <span>
-                    <i class="fa-solid fa-user"></i>
-                    Usuário
-                </span>
-
-                <strong id="sessionUser">
-                    —
-                </strong>
-
-            </div>
-
-
-
-            <div class="session-row">
-
-                <span>
-                    <i class="fa-solid fa-id-badge"></i>
-                    Cargo
-                </span>
-
-                <strong id="sessionRole">
-                    —
-                </strong>
-
-            </div>
-
-
-
-            <div class="session-row">
-
-                <span>
-                    <i class="fa-solid fa-right-to-bracket"></i>
-                    Entrada
-                </span>
-
-                <strong id="sessionEntry">
-                    —
-                </strong>
-
-            </div>
-
-
-
-            <div class="session-row">
-
-                <span>
-                    <i class="fa-solid fa-shield-halved"></i>
-                    Segurança
-                </span>
-
-                <strong class="security-active">
-
-                    <i class="fa-solid fa-circle-check"></i>
-
-                    Ativa
-
-                </strong>
-
-            </div>
-
-
-        </div>
-
-
-    </article>
-
-
-
-
-
-    <!-- ACESSOS RÁPIDOS -->
-
-    <article class="dashboard-card quick-card">
-
-
-        <div class="card-header">
-
-            <div class="card-title">
-
-                <span class="card-icon">
-
-                    <i class="fa-solid fa-bolt"></i>
-
-                </span>
-
-                <div>
-
-                    <h3>
-                        Acesso Rápido
-                    </h3>
-
-                    <p>
-                        Atalhos disponíveis
-                    </p>
-
-                </div>
-
-            </div>
-
-        </div>
-
-
-
-        <div class="quick-actions">
-
-
-            <a
-                href="vendas.html"
-                class="quick-action"
-                data-permissao="vendas"
-            >
-
-                <i class="fa-solid fa-cart-shopping"></i>
-
-                <span>
-                    Nova Venda
-                </span>
-
-            </a>
-
-
-
-            <a
-                href="produtos.html"
-                class="quick-action"
-                data-permissao="produtos"
-            >
-
-                <i class="fa-solid fa-box-open"></i>
-
-                <span>
-                    Produtos
-                </span>
-
-            </a>
-
-
-
-            <a
-                href="clientes.html"
-                class="quick-action"
-                data-permissao="clientes"
-            >
-
-                <i class="fa-solid fa-user-plus"></i>
-
-                <span>
-                    Clientes
-                </span>
-
-            </a>
-
-
-
-            <a
-                href="relatorios.html"
-                class="quick-action"
-                data-permissao="relatorios"
-            >
-
-                <i class="fa-solid fa-file-chart-column"></i>
-
-                <span>
-                    Relatórios
-                </span>
-
-            </a>
-
-
-        </div>
-
-
-    </article>
-
-
-</section>
-
-
-
-
-
-<!-- ==================================================
-     RODAPÉ
-================================================== -->
-
-<footer class="footer">
-
-
-    <div>
-
-        <strong>
-            EMPIRE ERP
-        </strong>
-
-        <span>
-            • Império da Moda Online
-        </span>
 
     </div>
 
 
-    <div>
 
-        <span>
-            Sistema protegido
+    <!-- =====================================================
+         TOASTS
+    ====================================================== -->
+
+    <div
+        id="dashboardToastContainer"
+        class="dashboard-toast-container"
+        aria-live="polite"
+        aria-atomic="true"
+    ></div>
+
+
+
+    <!-- =====================================================
+         ALERTA DE OFFLINE
+    ====================================================== -->
+
+    <div
+        id="offlineAlert"
+        class="offline-alert"
+        role="status"
+        aria-live="polite"
+    >
+
+        <span class="offline-alert-icon">
+
+            <i class="fa-solid fa-wifi"></i>
+
         </span>
 
-        <i class="fa-solid fa-shield-halved"></i>
-
-    </div>
-
-
-</footer>
-
-
-</main>
-
-
-
-
-
-<!-- ==================================================
-     PAINEL DE NOTIFICAÇÕES
-================================================== -->
-
-<div
-    class="notification-panel"
-    id="notificationPanel"
->
-
-
-    <div class="notification-header">
 
         <div>
 
+            <strong>
+                Você está offline
+            </strong>
+
             <span>
-                Central
+                Algumas funções podem ficar indisponíveis.
             </span>
 
-            <h3>
-                Notificações
-            </h3>
-
         </div>
-
-
-        <button
-            type="button"
-            id="closeNotifications"
-            class="close-button"
-        >
-
-            <i class="fa-solid fa-xmark"></i>
-
-        </button>
 
     </div>
 
 
 
-    <div
-        class="notification-list"
-        id="notificationList"
+    <!-- =====================================================
+         BOTÃO VOLTAR AO TOPO
+    ====================================================== -->
+
+    <button
+        type="button"
+        id="backToTop"
+        class="back-to-top"
+        aria-label="Voltar ao topo"
+        title="Voltar ao topo"
     >
 
-        <div class="empty-notification">
+        <i class="fa-solid fa-chevron-up"></i>
 
-            <i class="fa-regular fa-bell-slash"></i>
-
-            <p>
-                Nenhuma notificação nova.
-            </p>
-
-        </div>
-
-    </div>
-
-
-</div>
+    </button>
 
 
 
+    <!-- =====================================================
+         ACESSIBILIDADE
+    ====================================================== -->
 
-
-<!-- ==================================================
-     OVERLAY MOBILE
-================================================== -->
-
-<div
-    class="sidebar-overlay"
-    id="sidebarOverlay"
-></div>
-
-
+    <div
+        id="dashboardLiveRegion"
+        class="sr-only"
+        aria-live="polite"
+        aria-atomic="true"
+    ></div>
 
 
 
-<!-- ==================================================
-     SCRIPTS
-================================================== -->
+    <!-- =====================================================
+         CONFIGURAÇÕES DO DASHBOARD
+    ====================================================== -->
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+
+        /*
+         * Configuração básica utilizada pelo dashboard.js.
+         *
+         * A imagem deve estar em:
+         *
+         * assets/img/dragon-ball.png
+         *
+         * Se o arquivo possuir outro nome,
+         * alteraremos somente o caminho posteriormente.
+         */
+
+        window.EMPIRE_CONFIG = {
+
+            sistema:
+                "EMPIRE ERP",
+
+            empresa:
+                "Império da Moda Online",
+
+            modulo:
+                "Dashboard",
+
+            imagemDragonBall:
+                "../../assets/img/dragon-ball.png",
+
+            tema:
+                "premium-luxury",
+
+            idioma:
+                "pt-BR"
+
+        };
+
+    </script>
 
 
-<script src="../../assets/js/login.js"></script>
+
+    <!-- =====================================================
+         CHART.JS
+    ====================================================== -->
+
+    <script
+        src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"
+    ></script>
 
 
-<script src="../../assets/js/dashboard.js"></script>
+
+    <!-- =====================================================
+         DASHBOARD JAVASCRIPT
+    ====================================================== -->
+
+    <script
+        src="../../assets/js/dashboard.js"
+        defer
+    ></script>
 
 
 </body>
