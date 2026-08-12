@@ -2,1350 +2,1883 @@
 <html lang="pt-BR">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>EMPIRE | Império da Moda Online</title>
+<meta charset="UTF-8">
 
-    <meta
-        name="description"
-        content="EMPIRE ERP — Sistema de gestão do Império da Moda Online"
-    >
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <meta
-        name="theme-color"
-        content="#050505"
-    >
+<meta name="theme-color" content="#050505">
 
-    <link
-        rel="icon"
-        type="image/png"
-        href="../../assets/img/favicon.png"
-    >
+<meta name="description" content="EMPIRE ERP - Tela Inicial">
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<title>EMPIRE ERP | Tela Inicial</title>
 
-    <link
-        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet"
-    >
 
-    <link
-        rel="stylesheet"
-        href="../../assets/css/dashboard.css"
-    >
+<link rel="icon" href="../../assets/img/favicon.png">
+
+
+<!-- FONTES -->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+
+<!-- ÍCONES -->
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+
+<!-- CSS PRINCIPAL -->
+
+<link rel="stylesheet" href="../../assets/css/dashboard.css">
+
+
 </head>
+
+
 
 <body>
 
-    <!-- =========================================================
-         LOADER
-         ========================================================= -->
 
-    <div
-        id="dashboardLoader"
-        class="dashboard-loader"
-        aria-hidden="false"
-    >
 
-        <div class="loader-content">
+<!-- ==================================================
+LOADER PREMIUM
+================================================== -->
 
-            <div class="loader-logo">
-                EMPIRE
-            </div>
 
-            <div class="loader-subtitle">
-                Império da Moda Online
-            </div>
+<div class="loader" id="loader">
 
-            <div class="loader-progress">
-                <span id="loaderProgress"></span>
-            </div>
 
-            <div
-                id="loaderStatus"
-                class="loader-status"
-            >
-                Inicializando sistema
-            </div>
+<div class="loader-content">
 
-        </div>
 
-    </div>
+<div class="loader-logo">
 
+EMPIRE
 
-    <!-- =========================================================
-         APLICAÇÃO PRINCIPAL
-         ========================================================= -->
+</div>
 
-    <div
-        id="dashboardApp"
-        class="dashboard-app"
-        aria-hidden="true"
-    >
 
-        <!-- =====================================================
-             SIDEBAR
-             ===================================================== -->
+<div class="loader-subtitle">
 
-        <aside
-            id="sidebar"
-            class="sidebar"
-        >
+Império da Moda Online
 
-            <div class="sidebar-top">
+</div>
 
-                <div class="sidebar-brand">
 
-                    <a
-                        href="dashboard.html"
-                        class="sidebar-logo-link"
-                        aria-label="EMPIRE Tela Inicial"
-                    >
+<div class="loader-line">
 
-                        <img
-                            src="../../assets/img/logo.png"
-                            alt="EMPIRE"
-                            class="sidebar-logo"
-                        >
 
-                    </a>
+<span></span>
 
-                    <div class="sidebar-brand-text">
 
-                        <strong>
-                            EMPIRE
-                        </strong>
+</div>
 
-                        <span>
-                            Império da Moda Online
-                        </span>
 
-                    </div>
+</div>
 
-                </div>
 
-                <button
-                    type="button"
-                    id="sidebarToggle"
-                    class="sidebar-toggle"
-                    aria-label="Abrir ou fechar menu"
-                    aria-expanded="true"
-                >
+</div>
 
-                    <span></span>
-                    <span></span>
-                    <span></span>
 
-                </button>
 
-            </div>
 
 
-            <!-- =================================================
-                 MENU
-                 ================================================= -->
 
-            <nav
-                class="sidebar-navigation"
-                aria-label="Navegação principal"
-            >
 
-                <div class="navigation-title">
-                    PRINCIPAL
-                </div>
+<!-- ==================================================
+FUNDO ANIMADO
+================================================== -->
 
 
-                <a
-                    href="dashboard.html"
-                    class="navigation-item active"
-                    aria-current="page"
-                >
+<div class="background-animation">
 
-                    <span class="navigation-icon">
 
-                        <svg
-                            viewBox="0 0 24 24"
-                            aria-hidden="true"
-                        >
+<div class="glow glow-1"></div>
 
-                            <path d="M3 10.5 12 3l9 7.5"></path>
+<div class="glow glow-2"></div>
 
-                            <path d="M5 9.5V21h14V9.5"></path>
+<div class="glow glow-3"></div>
 
-                            <path d="M9 21v-7h6v7"></path>
 
-                        </svg>
+<div id="particles"></div>
 
-                    </span>
 
-                    <span class="navigation-label">
-                        Tela Inicial
-                    </span>
+</div>
 
-                </a>
 
 
-                <a
-                    href="vendas.html"
-                    class="navigation-item"
-                >
 
-                    <span class="navigation-icon">
 
-                        <svg
-                            viewBox="0 0 24 24"
-                            aria-hidden="true"
-                        >
 
-                            <path d="M6 2h12l1 4H5l1-4Z"></path>
 
-                            <path d="M5 6h14v15H5z"></path>
+<!-- ==================================================
+CONTAINER PRINCIPAL
+================================================== -->
 
-                            <path d="M9 10h6"></path>
 
-                            <path d="M9 14h6"></path>
+<div class="erp-container">
 
-                        </svg>
 
-                    </span>
 
-                    <span class="navigation-label">
-                        Vendas
-                    </span>
 
-                </a>
 
 
-                <a
-                    href="produtos.html"
-                    class="navigation-item"
-                >
 
-                    <span class="navigation-icon">
+<!-- ==================================================
+MENU LATERAL
+================================================== -->
 
-                        <svg
-                            viewBox="0 0 24 24"
-                            aria-hidden="true"
-                        >
 
-                            <path
-                                d="m12 3 8 4.5v9L12 21l-8-4.5v-9L12 3Z"
-                            ></path>
+<aside class="sidebar" id="sidebar">
 
-                            <path d="m4 7.5 8 4.5 8-4.5"></path>
 
-                            <path d="M12 12v9"></path>
 
-                        </svg>
+<div class="brand">
 
-                    </span>
 
-                    <span class="navigation-label">
-                        Produtos
-                    </span>
+<img src="../../assets/img/logo.png" alt="Logo Empire">
 
-                </a>
 
+<div class="brand-text">
 
-                <a
-                    href="clientes.html"
-                    class="navigation-item"
-                >
 
-                    <span class="navigation-icon">
+<h2>
 
-                        <svg
-                            viewBox="0 0 24 24"
-                            aria-hidden="true"
-                        >
+EMPIRE
 
-                            <circle
-                                cx="12"
-                                cy="8"
-                                r="4"
-                            ></circle>
+</h2>
 
-                            <path
-                                d="M4 21c.8-4.2 3.4-6 8-6s7.2 1.8 8 6"
-                            ></path>
 
-                        </svg>
+<span>
 
-                    </span>
+Império da Moda Online
 
-                    <span class="navigation-label">
-                        Clientes
-                    </span>
+</span>
 
-                </a>
 
+</div>
 
-                <a
-                    href="compras.html"
-                    class="navigation-item"
-                >
 
-                    <span class="navigation-icon">
+</div>
 
-                        <svg
-                            viewBox="0 0 24 24"
-                            aria-hidden="true"
-                        >
 
-                            <path d="M4 5h16"></path>
 
-                            <path d="M6 5v15h12V5"></path>
 
-                            <path d="M9 9h6"></path>
 
-                            <path d="M9 13h6"></path>
 
-                        </svg>
 
-                    </span>
 
-                    <span class="navigation-label">
-                        Compras
-                    </span>
+<div class="profile-card">
 
-                </a>
 
+<img src="../../assets/img/avatar.png" alt="Usuário">
 
-                <a
-                    href="fornecedores.html"
-                    class="navigation-item"
-                >
 
-                    <span class="navigation-icon">
+<div>
 
-                        <svg
-                            viewBox="0 0 24 24"
-                            aria-hidden="true"
-                        >
 
-                            <path d="M3 20h18"></path>
+<strong id="userName">
 
-                            <path d="M5 20V9l7-5 7 5v11"></path>
+Administrador
 
-                            <path d="M9 20v-5h6v5"></path>
+</strong>
 
-                        </svg>
 
-                    </span>
+<p>
 
-                    <span class="navigation-label">
-                        Fornecedores
-                    </span>
 
-                </a>
+<span class="status-dot"></span>
 
+Online
 
-                <a
-                    href="financeiro.html"
-                    class="navigation-item"
-                >
 
-                    <span class="navigation-icon">
+</p>
 
-                        <svg
-                            viewBox="0 0 24 24"
-                            aria-hidden="true"
-                        >
 
-                            <path d="M4 5h16v14H4z"></path>
+</div>
 
-                            <path d="M8 12h8"></path>
 
-                            <path d="M12 8v8"></path>
+</div>
 
-                        </svg>
 
-                    </span>
 
-                    <span class="navigation-label">
-                        Financeiro
-                    </span>
 
-                </a>
 
 
-                <a
-                    href="relatorios.html"
-                    class="navigation-item"
-                >
 
-                    <span class="navigation-icon">
+<nav class="navigation">
 
-                        <svg
-                            viewBox="0 0 24 24"
-                            aria-hidden="true"
-                        >
 
-                            <path d="M5 20V10"></path>
 
-                            <path d="M12 20V4"></path>
+<a href="dashboard.html" class="active">
 
-                            <path d="M19 20v-7"></path>
 
-                        </svg>
+<i class="fa-solid fa-house"></i>
 
-                    </span>
 
-                    <span class="navigation-label">
-                        Relatórios
-                    </span>
+<span>
 
-                </a>
+Tela Inicial
 
+</span>
 
-                <div class="navigation-separator"></div>
 
+</a>
 
-                <div class="navigation-title">
-                    ADMINISTRAÇÃO
-                </div>
 
 
-                <a
-                    href="usuarios.html"
-                    class="navigation-item"
-                >
 
-                    <span class="navigation-icon">
 
-                        <svg
-                            viewBox="0 0 24 24"
-                            aria-hidden="true"
-                        >
 
-                            <circle
-                                cx="9"
-                                cy="8"
-                                r="3"
-                            ></circle>
+<a href="produtos.html">
 
-                            <path
-                                d="M3 20c.6-3.5 2.6-5 6-5s5.4 1.5 6 5"
-                            ></path>
 
-                            <path
-                                d="M16 5a3 3 0 0 1 0 6"
-                            ></path>
+<i class="fa-solid fa-box"></i>
 
-                            <path
-                                d="M17 15c2.2.5 3.5 2 4 5"
-                            ></path>
 
-                        </svg>
+<span>
 
-                    </span>
+Produtos
 
-                    <span class="navigation-label">
-                        Usuários
-                    </span>
+</span>
 
-                </a>
 
+</a>
 
-                <a
-                    href="configuracoes.html"
-                    class="navigation-item"
-                >
 
-                    <span class="navigation-icon">
 
-                        <svg
-                            viewBox="0 0 24 24"
-                            aria-hidden="true"
-                        >
 
-                            <circle
-                                cx="12"
-                                cy="12"
-                                r="3"
-                            ></circle>
 
-                            <path
-                                d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1-1.4 1.4-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.5v.2h-2v-.2a1.7 1.7 0 0 0-1-1.5 1.7 1.7 0 0 0-1.9.3l-.1.1L9 17l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.5-1H7.7v-2h.2a1.7 1.7 0 0 0 1.5-1 1.7 1.7 0 0 0-.3-1.9L9 9l1.4-1.4.1.1a1.7 1.7 0 0 0 1.9.3 1.7 1.7 0 0 0 1-1.5v-.2h2v.2a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9-.3l.1-.1L20 9l-.1.1a1.7 1.7 0 0 0-.3 1.9 1.7 1.7 0 0 0 1.5 1h.2v2h-.2a1.7 1.7 0 0 0-1.7 1Z"
-                            ></path>
 
-                        </svg>
+<a href="clientes.html">
 
-                    </span>
 
-                    <span class="navigation-label">
-                        Configurações
-                    </span>
+<i class="fa-solid fa-users"></i>
 
-                </a>
 
-            </nav>
+<span>
 
+Clientes
 
-            <!-- =================================================
-                 RODAPÉ DA SIDEBAR
-                 ================================================= -->
+</span>
 
-            <div class="sidebar-footer">
 
-                <div class="sidebar-system-status">
+</a>
 
-                    <span class="system-status-dot"></span>
 
-                    <div>
 
-                        <strong>
-                            Sistema Online
-                        </strong>
 
-                        <small>
-                            EMPIRE ERP
-                        </small>
 
-                    </div>
 
-                </div>
+<a href="vendas.html">
 
 
-                <button
-                    type="button"
-                    id="logoutButton"
-                    class="logout-button"
-                >
+<i class="fa-solid fa-cart-shopping"></i>
 
-                    <svg
-                        viewBox="0 0 24 24"
-                        aria-hidden="true"
-                    >
 
-                        <path d="M10 17l5-5-5-5"></path>
+<span>
 
-                        <path d="M15 12H3"></path>
+Vendas
 
-                        <path d="M13 4h6v16h-6"></path>
+</span>
 
-                    </svg>
 
-                    <span>
-                        Sair
-                    </span>
+</a>
 
-                </button>
 
-            </div>
 
-        </aside>
 
 
-        <!-- =====================================================
-             CONTEÚDO PRINCIPAL
-             ===================================================== -->
 
-        <main class="dashboard-main">
+<a href="financeiro.html">
 
-            <header class="dashboard-header">
 
-                <div class="header-left">
+<i class="fa-solid fa-wallet"></i>
 
-                    <button
-                        type="button"
-                        id="mobileMenuButton"
-                        class="mobile-menu-button"
-                        aria-label="Abrir menu"
-                    >
 
-                        <span></span>
-                        <span></span>
-                        <span></span>
+<span>
 
-                    </button>
+Financeiro
 
+</span>
 
-                    <div class="page-heading">
 
-                        <span class="page-heading-label">
-                            EMPIRE ERP
-                        </span>
+</a>
 
-                        <h1>
-                            Tela Inicial
-                        </h1>
 
-                        <p>
-                            Visão geral do Império da Moda Online
-                        </p>
 
-                    </div>
 
-                </div>
 
 
-                <div class="header-right">
+<a href="compras.html">
 
-                    <div class="online-status">
 
-                        <span class="online-dot"></span>
+<i class="fa-solid fa-bag-shopping"></i>
 
-                        <span>
-                            Online
-                        </span>
 
-                    </div>
+<span>
 
+Compras
 
-                    <button
-                        type="button"
-                        id="notificationButton"
-                        class="notification-button"
-                        aria-label="Abrir notificações"
-                    >
+</span>
 
-                        <svg
-                            viewBox="0 0 24 24"
-                            aria-hidden="true"
-                        >
 
-                            <path
-                                d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"
-                            ></path>
+</a>
 
-                            <path d="M10 21h4"></path>
 
-                        </svg>
 
-                        <span
-                            id="notificationCount"
-                            class="notification-count"
-                        >
-                            0
-                        </span>
 
-                    </button>
 
 
-                    <div class="user-profile">
+<a href="fornecedores.html">
 
-                        <div
-                            id="userAvatar"
-                            class="user-avatar"
-                        >
-                            E
-                        </div>
 
-                        <div class="user-profile-text">
+<i class="fa-solid fa-truck"></i>
 
-                            <strong id="userName">
-                                Administrador
-                            </strong>
 
-                            <span id="userRole">
-                                Administrador
-                            </span>
+<span>
 
-                        </div>
+Fornecedores
 
-                    </div>
+</span>
 
-                </div>
 
-            </header>
+</a>
 
 
-            <section class="dashboard-content">
 
-                <!-- =================================================
-                     BANNER PRINCIPAL
-                     ================================================= -->
 
-                <section class="dashboard-banner">
 
-                    <img
-                        src="../../assets/img/dashboard-banner.jpg"
-                        alt="EMPIRE — Império da Moda Online"
-                        class="dashboard-banner-image"
-                    >
 
-                    <div class="dashboard-banner-overlay"></div>
+<a href="relatorios.html">
 
-                    <div class="dashboard-banner-content">
 
-                        <span class="banner-label">
-                            IMPÉRIO DA MODA ONLINE
-                        </span>
+<i class="fa-solid fa-chart-line"></i>
 
-                        <h2>
-                            Bem-vindo ao
-                            <strong>EMPIRE</strong>
-                        </h2>
 
-                        <p>
-                            Controle, acompanhe e administre
-                            seu negócio em um único lugar.
-                        </p>
+<span>
 
-                    </div>
+Relatórios
 
-                </section>
+</span>
 
 
-                <!-- =================================================
-                     CARDS DE RESUMO
-                     ================================================= -->
+</a>
 
-                <section class="summary-grid">
 
-                    <article class="summary-card">
 
-                        <div class="summary-card-top">
 
-                            <div class="summary-icon">
-                                R$
-                            </div>
 
-                            <span class="summary-badge">
-                                VENDAS
-                            </span>
 
-                        </div>
+<a href="notificacoes.html">
 
-                        <div class="summary-card-body">
 
-                            <span class="summary-label">
-                                Vendas do período
-                            </span>
+<i class="fa-solid fa-bell"></i>
 
-                            <strong
-                                id="salesValue"
-                                class="summary-value"
-                            >
-                                R$ 0,00
-                            </strong>
 
-                            <small
-                                id="salesVariation"
-                                class="summary-description"
-                            >
-                                Nenhum dado disponível
-                            </small>
+<span>
 
-                        </div>
+Notificações
 
-                    </article>
+</span>
 
 
-                    <article class="summary-card">
+</a>
 
-                        <div class="summary-card-top">
 
-                            <div class="summary-icon">
-                                P
-                            </div>
 
-                            <span class="summary-badge">
-                                ESTOQUE
-                            </span>
 
-                        </div>
 
-                        <div class="summary-card-body">
 
-                            <span class="summary-label">
-                                Produtos cadastrados
-                            </span>
+<a href="emails.html">
 
-                            <strong
-                                id="productsCount"
-                                class="summary-value"
-                            >
-                                0
-                            </strong>
 
-                            <small class="summary-description">
-                                Produtos no sistema
-                            </small>
+<i class="fa-solid fa-envelope"></i>
 
-                        </div>
 
-                    </article>
+<span>
 
+Emails
 
-                    <article class="summary-card">
+</span>
 
-                        <div class="summary-card-top">
 
-                            <div class="summary-icon">
-                                C
-                            </div>
+</a>
 
-                            <span class="summary-badge">
-                                CLIENTES
-                            </span>
 
-                        </div>
 
-                        <div class="summary-card-body">
 
-                            <span class="summary-label">
-                                Clientes cadastrados
-                            </span>
 
-                            <strong
-                                id="clientsCount"
-                                class="summary-value"
-                            >
-                                0
-                            </strong>
+<a href="configuracoes.html">
 
-                            <small class="summary-description">
-                                Clientes ativos
-                            </small>
 
-                        </div>
+<i class="fa-solid fa-gear"></i>
 
-                    </article>
 
+<span>
 
-                    <article class="summary-card">
+Configurações
 
-                        <div class="summary-card-top">
+</span>
 
-                            <div class="summary-icon">
-                                V
-                            </div>
 
-                            <span class="summary-badge">
-                                PEDIDOS
-                            </span>
+</a>
 
-                        </div>
 
-                        <div class="summary-card-body">
 
-                            <span class="summary-label">
-                                Pedidos realizados
-                            </span>
 
-                            <strong
-                                id="ordersCount"
-                                class="summary-value"
-                            >
-                                0
-                            </strong>
+</nav>
 
-                            <small class="summary-description">
-                                Pedidos registrados
-                            </small>
 
-                        </div>
 
-                    </article>
 
-                </section>
-                                <!-- =================================================
-                     PAINÉIS PRINCIPAIS
-                     ================================================= -->
 
-                <section class="dashboard-panels">
 
-                    <!-- =================================================
-                         GRÁFICO DE VENDAS
-                         ================================================= -->
 
-                    <article class="dashboard-panel sales-panel">
+<div class="sidebar-footer">
 
-                        <div class="panel-header">
 
-                            <div class="panel-heading">
+<p>
 
-                                <span class="panel-label">
-                                    DESEMPENHO
-                                </span>
+EMPIRE ERP
 
-                                <h2>
-                                    Resumo de Vendas
-                                </h2>
+</p>
 
-                            </div>
 
+<small>
 
-                            <div class="panel-actions">
+Sistema de Gestão
 
-                                <label
-                                    for="salesPeriod"
-                                    class="sr-only"
-                                >
-                                    Período das vendas
-                                </label>
+</small>
 
-                                <select
-                                    id="salesPeriod"
-                                    class="period-select"
-                                >
 
-                                    <option value="7">
-                                        Últimos 7 dias
-                                    </option>
+</div>
 
-                                    <option value="30">
-                                        Últimos 30 dias
-                                    </option>
 
-                                    <option value="90">
-                                        Últimos 90 dias
-                                    </option>
 
-                                </select>
 
-                            </div>
 
-                        </div>
 
+</aside>
 
-                        <div class="chart-wrapper">
 
-                            <canvas
-                                id="salesChart"
-                                aria-label="Gráfico de vendas"
-                            ></canvas>
 
-                            <div
-                                id="chartEmpty"
-                                class="chart-empty"
-                            >
 
-                                <div class="chart-empty-icon">
-                                    EMPIRE
-                                </div>
 
-                                <strong>
-                                    Nenhum dado disponível
-                                </strong>
 
-                                <span>
-                                    Os dados de vendas aparecerão aqui.
-                                </span>
 
-                            </div>
 
-                        </div>
 
-                    </article>
+<!-- ==================================================
+ÁREA CENTRAL
+================================================== -->
 
 
-                    <!-- =================================================
-                         ATIVIDADE RECENTE
-                         ================================================= -->
+<main class="content">
 
-                    <article class="dashboard-panel activity-panel">
 
-                        <div class="panel-header">
 
-                            <div class="panel-heading">
 
-                                <span class="panel-label">
-                                    SISTEMA
-                                </span>
 
-                                <h2>
-                                    Atividade Recente
-                                </h2>
 
-                            </div>
 
+<!-- ==================================================
+TOPBAR
+================================================== -->
 
-                            <button
-                                type="button"
-                                id="refreshActivity"
-                                class="panel-action-button"
-                            >
-                                Atualizar
-                            </button>
 
-                        </div>
+<header class="topbar">
 
 
-                        <div
-                            id="activityList"
-                            class="activity-list"
-                        >
 
-                            <div class="activity-empty">
+<div class="page-title">
 
-                                <div class="activity-empty-icon">
-                                    EMPIRE
-                                </div>
 
-                                <strong>
-                                    Nenhuma atividade recente
-                                </strong>
+<h1>
 
-                                <span>
-                                    As atividades do sistema aparecerão aqui.
-                                </span>
+Tela Inicial
 
-                            </div>
+</h1>
 
-                        </div>
 
-                    </article>
+<p id="dateToday">
 
-                </section>
+Carregando...
 
+</p>
 
-                <!-- =================================================
-                     ACESSO RÁPIDO
-                     ================================================= -->
 
-                <section class="quick-access-section">
+</div>
 
-                    <div class="section-heading">
 
-                        <div>
 
-                            <span class="section-label">
-                                ACESSO RÁPIDO
-                            </span>
 
-                            <h2>
-                                Módulos do Sistema
-                            </h2>
 
-                        </div>
 
-                    </div>
 
+<div class="global-search">
 
-                    <div class="quick-access-grid">
 
-                        <a
-                            href="vendas.html"
-                            class="quick-access-card"
-                        >
+<i class="fa-solid fa-search"></i>
 
-                            <div class="quick-access-icon">
-                                R$
-                            </div>
 
-                            <div class="quick-access-content">
+<input 
 
-                                <strong>
-                                    Vendas
-                                </strong>
+type="search"
 
-                                <span>
-                                    Gerenciar vendas e pedidos
-                                </span>
+id="searchSystem"
 
-                            </div>
+placeholder="Pesquisar no sistema...">
 
-                            <span class="quick-access-arrow">
-                                →
-                            </span>
 
-                        </a>
+</div>
 
 
-                        <a
-                            href="produtos.html"
-                            class="quick-access-card"
-                        >
 
-                            <div class="quick-access-icon">
-                                P
-                            </div>
 
-                            <div class="quick-access-content">
 
-                                <strong>
-                                    Produtos
-                                </strong>
 
-                                <span>
-                                    Catálogo e estoque
-                                </span>
 
-                            </div>
+<div class="top-actions">
 
-                            <span class="quick-access-arrow">
-                                →
-                            </span>
 
-                        </a>
 
+<button class="icon-button" id="notificationButton">
 
-                        <a
-                            href="clientes.html"
-                            class="quick-access-card"
-                        >
 
-                            <div class="quick-access-icon">
-                                C
-                            </div>
+<i class="fa-solid fa-bell"></i>
 
-                            <div class="quick-access-content">
 
-                                <strong>
-                                    Clientes
-                                </strong>
+<span id="notificationBadge">
 
-                                <span>
-                                    Cadastro e relacionamento
-                                </span>
+0
 
-                            </div>
+</span>
 
-                            <span class="quick-access-arrow">
-                                →
-                            </span>
 
-                        </a>
+</button>
 
 
-                        <a
-                            href="financeiro.html"
-                            class="quick-access-card"
-                        >
 
-                            <div class="quick-access-icon">
-                                F
-                            </div>
 
-                            <div class="quick-access-content">
 
-                                <strong>
-                                    Financeiro
-                                </strong>
+<button class="icon-button" id="emailButton">
 
-                                <span>
-                                    Controle financeiro
-                                </span>
 
-                            </div>
+<i class="fa-solid fa-envelope"></i>
 
-                            <span class="quick-access-arrow">
-                                →
-                            </span>
 
-                        </a>
+<span id="emailBadge">
 
-                    </div>
+0
 
-                </section>
+</span>
 
 
-                <!-- =================================================
-                     VISÃO DO SISTEMA
-                     ================================================= -->
+</button>
 
-                <section class="system-overview">
 
-                    <div class="system-overview-header">
 
-                        <span class="section-label">
-                            STATUS
-                        </span>
 
-                        <h2>
-                            Visão do Sistema
-                        </h2>
 
-                    </div>
+<div class="time-box">
 
 
-                    <div class="system-overview-grid">
+<i class="fa-solid fa-clock"></i>
 
-                        <div class="system-overview-item">
 
-                            <span class="overview-icon">
-                                ●
-                            </span>
+<strong id="systemClock">
 
-                            <div>
+00:00:00
 
-                                <strong>
-                                    Sistema
-                                </strong>
+</strong>
 
-                                <span>
-                                    Operacional
-                                </span>
 
-                            </div>
+</div>
 
-                        </div>
 
 
-                        <div class="system-overview-item">
 
-                            <span class="overview-icon">
-                                ●
-                            </span>
+</div>
 
-                            <div>
 
-                                <strong>
-                                    Conexão
-                                </strong>
 
-                                <span id="connectionStatus">
-                                    Verificando
-                                </span>
+</header>
 
-                            </div>
 
-                        </div>
+<!-- ==================================================
+INDICADORES PRINCIPAIS
+================================================== -->
 
 
-                        <div class="system-overview-item">
+<section class="metrics-grid">
 
-                            <span class="overview-icon">
-                                ●
-                            </span>
 
-                            <div>
 
-                                <strong>
-                                    Sessão
-                                </strong>
+<div class="metric-card" data-page="vendas.html">
 
-                                <span id="sessionStatus">
-                                    Ativa
-                                </span>
 
-                            </div>
+<div class="metric-icon">
 
-                        </div>
+<i class="fa-solid fa-cart-shopping"></i>
 
+</div>
 
-                        <div class="system-overview-item">
 
-                            <span class="overview-icon">
-                                ●
-                            </span>
+<div class="metric-info">
 
-                            <div>
 
-                                <strong>
-                                    Versão
-                                </strong>
+<span>
 
-                                <span>
-                                    EMPIRE ERP
-                                </span>
+Vendas
 
-                            </div>
+</span>
 
-                        </div>
 
-                    </div>
+<h2 id="totalSales">
 
-                </section>
+0
 
-            </section>
+</h2>
 
 
-            <!-- =================================================
-                 RODAPÉ
-                 ================================================= -->
+<small>
 
-            <footer class="dashboard-footer">
+Pedidos realizados
 
-                <span>
-                    EMPIRE © 2026
-                </span>
+</small>
 
-                <span>
-                    Império da Moda Online
-                </span>
 
-            </footer>
+</div>
 
-        </main>
 
-    </div>
+</div>
 
 
-    <!-- =========================================================
-         PAINEL DE NOTIFICAÇÕES
-         ========================================================= -->
 
-    <div
-        id="notificationPanel"
-        class="notification-panel"
-        aria-hidden="true"
-    >
 
-        <div class="notification-panel-header">
 
-            <div>
 
-                <span>
-                    CENTRAL
-                </span>
 
-                <h2>
-                    Notificações
-                </h2>
+<div class="metric-card" data-page="clientes.html">
 
-            </div>
 
+<div class="metric-icon">
 
-            <button
-                type="button"
-                id="closeNotification"
-                class="notification-close"
-                aria-label="Fechar notificações"
-            >
-                ×
-            </button>
+<i class="fa-solid fa-users"></i>
 
-        </div>
+</div>
 
 
-        <div
-            id="notificationList"
-            class="notification-list"
-        >
+<div class="metric-info">
 
-            <div class="notification-empty">
 
-                <strong>
-                    Nenhuma notificação
-                </strong>
+<span>
 
-                <span>
-                    Você não possui novas notificações.
-                </span>
+Clientes
 
-            </div>
+</span>
 
-        </div>
 
-    </div>
+<h2 id="totalClients">
 
+0
 
-    <!-- =========================================================
-         OVERLAY DO MENU MOBILE
-         ========================================================= -->
+</h2>
 
-    <div
-        id="sidebarOverlay"
-        class="sidebar-overlay"
-        aria-hidden="true"
-    ></div>
 
+<small>
 
-    <!-- =========================================================
-         JAVASCRIPT
-         ========================================================= -->
+Cadastros ativos
 
-    <script
-        src="../../assets/js/dashboard.js"
-        defer
-    ></script>
+</small>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+<div class="metric-card" data-page="produtos.html">
+
+
+<div class="metric-icon">
+
+<i class="fa-solid fa-box-open"></i>
+
+</div>
+
+
+<div class="metric-info">
+
+
+<span>
+
+Produtos
+
+</span>
+
+
+<h2 id="totalProducts">
+
+0
+
+</h2>
+
+
+<small>
+
+Itens cadastrados
+
+</small>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+<div class="metric-card" data-page="financeiro.html">
+
+
+<div class="metric-icon">
+
+<i class="fa-solid fa-money-bill-trend-up"></i>
+
+</div>
+
+
+<div class="metric-info">
+
+
+<span>
+
+Faturamento
+
+</span>
+
+
+<h2 id="totalRevenue">
+
+R$ 0
+
+</h2>
+
+
+<small>
+
+Resultado atual
+
+</small>
+
+
+</div>
+
+
+</div>
+
+
+
+
+</section>
+
+
+
+
+
+
+
+
+<!-- ==================================================
+ÁREA DE GRÁFICOS
+================================================== -->
+
+
+<section class="charts-area">
+
+
+
+
+
+
+<div class="dashboard-card large">
+
+
+
+<div class="card-header">
+
+
+<div>
+
+
+<label>
+
+VENDAS
+
+</label>
+
+
+<h3>
+
+Desempenho comercial
+
+</h3>
+
+
+</div>
+
+
+
+<select id="salesFilter">
+
+
+<option>
+
+Últimos 7 dias
+
+</option>
+
+
+<option>
+
+Últimos 30 dias
+
+</option>
+
+
+<option>
+
+Este ano
+
+</option>
+
+
+</select>
+
+
+
+</div>
+
+
+
+
+
+<div class="chart-box">
+
+
+<canvas id="salesChart"></canvas>
+
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+
+
+
+<div class="dashboard-card">
+
+
+
+<div class="card-header">
+
+
+<div>
+
+
+<label>
+
+FINANCEIRO
+
+</label>
+
+
+<h3>
+
+Fluxo
+
+</h3>
+
+
+</div>
+
+
+</div>
+
+
+
+
+<div class="chart-box">
+
+
+<canvas id="financeChart"></canvas>
+
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+
+
+</section>
+
+
+
+
+
+
+
+
+
+<!-- ==================================================
+SEGUNDA ÁREA DE INFORMAÇÕES
+================================================== -->
+
+
+<section class="information-grid">
+
+
+
+
+
+
+
+<!-- ESTOQUE -->
+
+<div class="dashboard-card">
+
+
+
+<div class="card-header">
+
+
+<h3>
+
+📦 Estoque
+
+</h3>
+
+
+<a href="produtos.html">
+
+Ver
+
+</a>
+
+
+</div>
+
+
+
+
+<div class="stock-list" id="stockList">
+
+
+<div class="empty">
+
+Nenhum alerta de estoque
+
+</div>
+
+
+</div>
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+<!-- NOTIFICAÇÕES -->
+
+
+<div class="dashboard-card">
+
+
+
+<div class="card-header">
+
+
+<h3>
+
+🔔 Notificações
+
+</h3>
+
+
+<a href="notificacoes.html">
+
+Todas
+
+</a>
+
+
+</div>
+
+
+
+
+
+<div class="notification-box" id="notificationList">
+
+
+<div class="empty">
+
+Nenhuma notificação
+
+</div>
+
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<!-- EMAILS -->
+
+
+<div class="dashboard-card">
+
+
+
+<div class="card-header">
+
+
+<h3>
+
+📧 Emails
+
+</h3>
+
+
+<a href="emails.html">
+
+Abrir
+
+</a>
+
+
+</div>
+
+
+
+
+
+<div class="email-box" id="emailList">
+
+
+<div class="empty">
+
+Nenhum email pendente
+
+</div>
+
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+
+
+</section>
+
+
+
+
+
+
+
+
+
+<!-- ==================================================
+AGENDA E TAREFAS
+================================================== -->
+
+
+<section class="bottom-grid">
+
+
+
+
+
+
+<div class="dashboard-card">
+
+
+<div class="card-header">
+
+
+<h3>
+
+📅 Agenda
+
+</h3>
+
+
+<a href="calendario.html">
+
+Abrir
+
+</a>
+
+
+</div>
+
+
+
+
+
+<div id="calendarEvents">
+
+
+<div class="empty">
+
+Nenhum compromisso
+
+</div>
+
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<div class="dashboard-card">
+
+
+<div class="card-header">
+
+
+<h3>
+
+✅ Tarefas
+
+</h3>
+
+
+<a href="tarefas.html">
+
+Abrir
+
+</a>
+
+
+</div>
+
+
+
+
+
+<div id="taskList">
+
+
+<div class="empty">
+
+Nenhuma tarefa pendente
+
+</div>
+
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+
+
+</section>
+
+
+<!-- ==================================================
+ATIVIDADES DO SISTEMA
+================================================== -->
+
+
+<section class="dashboard-card activity-section">
+
+
+
+<div class="card-header">
+
+
+<div>
+
+
+<label>
+
+HISTÓRICO
+
+</label>
+
+
+<h3>
+
+Últimas atividades
+
+</h3>
+
+
+</div>
+
+
+
+<a href="atividades.html">
+
+Ver tudo
+
+</a>
+
+
+
+</div>
+
+
+
+
+
+<div class="timeline" id="activityTimeline">
+
+
+
+<div class="timeline-item">
+
+
+<div class="timeline-icon">
+
+<i class="fa-solid fa-power-off"></i>
+
+</div>
+
+
+<div>
+
+
+<strong>
+
+Sistema iniciado
+
+</strong>
+
+
+<p>
+
+Aguardando informações do banco local.
+
+</p>
+
+
+<small>
+
+Agora
+
+</small>
+
+
+</div>
+
+
+</div>
+
+
+
+
+</div>
+
+
+
+</section>
+
+
+
+
+
+
+
+
+
+<!-- ==================================================
+MONITORAMENTO
+================================================== -->
+
+
+<section class="monitor-grid">
+
+
+
+
+
+<div class="monitor-card">
+
+
+<i class="fa-solid fa-wifi"></i>
+
+
+<div>
+
+
+<span>
+
+Conexão
+
+</span>
+
+
+<strong id="connectionStatus">
+
+Online
+
+</strong>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+<div class="monitor-card">
+
+
+<i class="fa-solid fa-user-clock"></i>
+
+
+<div>
+
+
+<span>
+
+Sessão
+
+</span>
+
+
+<strong id="sessionTimer">
+
+00:00:00
+
+</strong>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+<div class="monitor-card">
+
+
+<i class="fa-solid fa-users"></i>
+
+
+<div>
+
+
+<span>
+
+Usuários ativos
+
+</span>
+
+
+<strong id="activeUsers">
+
+1
+
+</strong>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+<div class="monitor-card">
+
+
+<i class="fa-solid fa-database"></i>
+
+
+<div>
+
+
+<span>
+
+Banco local
+
+</span>
+
+
+<strong>
+
+IndexedDB
+
+</strong>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+</section>
+
+
+
+
+
+
+
+
+
+<!-- ==================================================
+ACESSO RÁPIDO
+================================================== -->
+
+
+<section class="dashboard-card quick-access">
+
+
+
+<div class="card-header">
+
+
+<h3>
+
+Acesso rápido
+
+</h3>
+
+
+</div>
+
+
+
+
+
+<div class="quick-buttons">
+
+
+
+
+
+<a href="produtos.html">
+
+
+<i class="fa-solid fa-box"></i>
+
+
+<span>
+
+Produtos
+
+</span>
+
+
+</a>
+
+
+
+
+
+
+
+<a href="clientes.html">
+
+
+<i class="fa-solid fa-users"></i>
+
+
+<span>
+
+Clientes
+
+</span>
+
+
+</a>
+
+
+
+
+
+
+
+<a href="vendas.html">
+
+
+<i class="fa-solid fa-cart-shopping"></i>
+
+
+<span>
+
+Vendas
+
+</span>
+
+
+</a>
+
+
+
+
+
+
+
+<a href="financeiro.html">
+
+
+<i class="fa-solid fa-chart-line"></i>
+
+
+<span>
+
+Financeiro
+
+</span>
+
+
+</a>
+
+
+
+
+
+
+
+<a href="notificacoes.html">
+
+
+<i class="fa-solid fa-bell"></i>
+
+
+<span>
+
+Alertas
+
+</span>
+
+
+</a>
+
+
+
+
+
+
+
+<a href="emails.html">
+
+
+<i class="fa-solid fa-envelope"></i>
+
+
+<span>
+
+Emails
+
+</span>
+
+
+</a>
+
+
+
+
+
+
+
+<a href="mensagens.html">
+
+
+<i class="fa-solid fa-comments"></i>
+
+
+<span>
+
+Mensagens
+
+</span>
+
+
+</a>
+
+
+
+
+
+
+
+<a href="relatorios.html">
+
+
+<i class="fa-solid fa-file-lines"></i>
+
+
+<span>
+
+Relatórios
+
+</span>
+
+
+</a>
+
+
+
+
+
+
+</div>
+
+
+
+</section>
+
+
+
+
+
+
+
+
+
+<!-- ==================================================
+RODAPÉ
+================================================== -->
+
+
+<footer class="footer">
+
+
+
+<div>
+
+
+<strong>
+
+EMPIRE ERP
+
+</strong>
+
+
+<span>
+
+Império da Moda Online
+
+</span>
+
+
+</div>
+
+
+
+
+
+<div>
+
+
+<span>
+
+Última atualização:
+
+</span>
+
+
+<strong id="lastUpdate">
+
+Aguardando
+
+</strong>
+
+
+</div>
+
+
+
+
+</footer>
+
+
+
+
+
+
+
+
+</main>
+
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<!-- ==================================================
+SCRIPTS
+================================================== -->
+
+
+<script src="../../assets/js/database.js"></script>
+
+<script src="../../assets/js/components.js"></script>
+
+<script src="../../assets/js/dashboard.js"></script>
+
+
+
+
+
+
+
+
+<!-- ==================================================
+PWA SERVICE WORKER
+================================================== -->
+
+
+<script>
+
+
+if("serviceWorker" in navigator){
+
+
+window.addEventListener("load",()=>{
+
+
+navigator.serviceWorker.register("../../service-worker.js")
+
+.then(()=>{
+
+
+console.log(
+"EMPIRE ERP PWA ativo"
+);
+
+
+})
+
+
+.catch(error=>{
+
+
+console.error(
+"Erro PWA:",
+error
+);
+
+
+});
+
+
+});
+
+
+}
+
+
+
+</script>
+
+
+
+
+
+
 
 </body>
+
 
 </html>
