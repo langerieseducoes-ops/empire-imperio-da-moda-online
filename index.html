@@ -7,31 +7,45 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+<meta name="theme-color" content="#050505">
 
-<title>EMPIRE ERP | Login</title>
+<meta
+    name="description"
+    content="EMPIRE ERP - Império da Moda Online"
+>
 
+<title>EMPIRE | Império da Moda Online</title>
 
-<link rel="icon" href="assets/img/favicon.png">
+<link
+    rel="icon"
+    href="assets/img/favicon.png"
+>
 
+<link
+    rel="preconnect"
+    href="https://fonts.googleapis.com"
+>
 
+<link
+    rel="preconnect"
+    href="https://fonts.gstatic.com"
+    crossorigin
+>
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
+<link
+    href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet"
+>
 
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+>
 
-
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-
-
-
-<link rel="stylesheet"
-
-href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-
-
-
-<link rel="stylesheet" href="assets/css/login.css">
-
+<link
+    rel="stylesheet"
+    href="assets/css/login.css"
+>
 
 </head>
 
@@ -39,332 +53,241 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
 <body>
 
 
-
 <!-- LOADER -->
 
-<div class="loader" id="loader">
+<div
+    class="loader"
+    id="loader"
+>
 
+    <div class="loader-content">
 
-<div class="loader-box">
+        <div class="loader-logo">
+            EMPIRE
+        </div>
 
+        <div class="loader-subtitle">
+            Império da Moda Online
+        </div>
 
-<h1>EMPIRE</h1>
+        <div class="loader-line">
+            <span></span>
+        </div>
 
-
-<span>
-Império da Moda Online
-</span>
-
-
-<div class="loader-line">
-
-<div></div>
-
-</div>
-
-
-</div>
-
+    </div>
 
 </div>
 
 
+<!-- FUNDO -->
 
+<div class="login-background">
 
+    <div class="login-glow glow-one"></div>
 
-
-
-
-
-<!-- FUNDO ANIMADO -->
-
-
-<div class="background">
-
-
-<div class="light light1"></div>
-
-<div class="light light2"></div>
-
-<div class="light light3"></div>
-
-
-<div id="particles"></div>
-
+    <div class="login-glow glow-two"></div>
 
 </div>
-
-
-
-
-
-
-
 
 
 <!-- LOGIN -->
 
-
 <main class="login-container">
 
 
+    <!-- MARCA -->
 
-<section class="login-card">
+    <section class="login-brand">
 
+        <img
+            src="assets/img/logo.png"
+            alt="EMPIRE"
+            class="logo-empresa"
+        >
 
+        <h1>
+            EMPIRE
+        </h1>
 
+        <p>
+            Império da Moda Online
+        </p>
 
+    </section>
 
-<div class="logo-area">
 
+    <!-- CARD -->
 
-<img src="assets/img/logo.png"
-alt="EMPIRE">
+    <section class="login-card">
 
 
-<h1>
-EMPIRE
-</h1>
+        <div class="login-header">
 
+            <span>
+                ACESSO RESTRITO
+            </span>
 
-<p>
-Império da Moda Online
-</p>
+            <h2>
+                Entrar no Sistema
+            </h2>
 
+            <p>
+                Acesse o painel de gestão do EMPIRE ERP.
+            </p>
 
-</div>
+        </div>
 
 
+        <!-- FORMULÁRIO -->
 
+        <form id="loginForm">
 
 
+            <!-- USUÁRIO -->
 
+            <div class="form-group">
 
+                <label for="username">
+                    Usuário
+                </label>
 
+                <div class="input-box">
 
-<form id="loginForm">
+                    <i class="fa-solid fa-user"></i>
 
+                    <input
+                        type="text"
+                        id="username"
+                        name="username"
+                        placeholder="Digite seu usuário"
+                        autocomplete="username"
+                        required
+                    >
 
+                </div>
 
+            </div>
 
 
-<div class="input-box">
+            <!-- SENHA -->
 
+            <div class="form-group">
 
-<i class="fa-solid fa-user"></i>
+                <label for="password">
+                    Senha
+                </label>
 
+                <div class="input-box">
 
-<input
+                    <i class="fa-solid fa-lock"></i>
 
-id="usuario"
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        placeholder="Digite sua senha"
+                        autocomplete="current-password"
+                        required
+                    >
 
-type="text"
+                    <button
+                        type="button"
+                        id="togglePassword"
+                        class="password-button"
+                        aria-label="Mostrar senha"
+                    >
 
-placeholder="Usuário"
+                        <i class="fa-solid fa-eye"></i>
 
-autocomplete="username"
+                    </button>
 
-required>
+                </div>
 
+            </div>
 
-</div>
 
+            <!-- MENSAGEM -->
 
+            <div
+                class="login-message"
+                id="loginMessage"
+            ></div>
 
 
+            <!-- ENTRAR -->
 
+            <button
+                type="submit"
+                class="login-button"
+                id="loginButton"
+            >
 
+                <i class="fa-solid fa-right-to-bracket"></i>
 
-<div class="input-box">
+                Entrar no Sistema
 
+            </button>
 
-<i class="fa-solid fa-lock"></i>
 
+        </form>
 
-<input
 
-id="senha"
+        <!-- RECUPERAÇÃO -->
 
-type="password"
+        <div class="login-links">
 
-placeholder="Senha"
+            <a
+                href="pages/html/recuperar-senha.html"
+                target="_blank"
+                rel="noopener"
+            >
 
-autocomplete="current-password"
+                <i class="fa-solid fa-key"></i>
 
-required>
+                Esqueci minha senha
 
+            </a>
 
+        </div>
 
 
-<button
+        <!-- AVISO -->
 
-type="button"
+        <div class="login-security">
 
-id="mostrarSenha">
+            <i class="fa-solid fa-shield-halved"></i>
 
+            <span>
+                A redefinição de senha necessita de autorização do administrador.
+            </span>
 
-<i class="fa-solid fa-eye"></i>
+        </div>
 
 
-</button>
+    </section>
 
 
+    <!-- RODAPÉ -->
 
-</div>
+    <footer class="login-footer">
 
+        <strong>
+            EMPIRE ERP
+        </strong>
 
+        <span>
+            © 2026 Império da Moda Online
+        </span>
 
-
-
-
-
-
-<div id="mensagem"></div>
-
-
-
-
-
-
-
-
-<button
-
-type="submit"
-
-class="btn-login">
-
-
-<span>
-
-ENTRAR
-
-</span>
-
-
-<i class="fa-solid fa-arrow-right"></i>
-
-
-</button>
-
-
-
-
-
-
-</form>
-
-
-
-
-
-
-
-
-
-<a href="pages/html/recuperar-senha.html"
-
-class="forgot">
-
-
-<i class="fa-solid fa-key"></i>
-
-
-Esqueci minha senha
-
-
-</a>
-
-
-
-
-
-
-</section>
-
+    </footer>
 
 
 </main>
 
 
-
-
-
-
-
-
-
-<footer>
-
-
-<strong>EMPIRE ERP</strong>
-
-
-<br>
-
-
-Sistema de Gestão
-
-
-</footer>
-
-
-
-
-
-
-
-
-
-
 <script src="assets/js/login.js"></script>
 
 
-
-
-
-<script>
-
-
-const particles = document.getElementById("particles");
-
-
-for(let i = 0; i < 40; i++){
-
-
-const p = document.createElement("span");
-
-
-p.className="particle";
-
-
-p.style.left =
-Math.random()*100+"%";
-
-
-p.style.animationDelay =
-Math.random()*8+"s";
-
-
-p.style.animationDuration =
-(5 + Math.random()*10)+"s";
-
-
-
-particles.appendChild(p);
-
-
-}
-
-
-
-</script>
-
-
-
-
-
 </body>
-
 
 </html>
