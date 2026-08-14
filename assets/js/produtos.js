@@ -1,1678 +1,384 @@
-/* =========================================================
-   EMPIRE ERP V4 PREMIUM
-   PRODUTOS JS
-========================================================= */
+const STORAGE_KEY = "empire_produtos";
 
+const $ = id => document.getElementById(id);
 
-"use strict";
+let produtos = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
 
+const modal = $("productModal");
+const form = $("productForm");
+const table = $("productsTable");
+const search = $("productSearch");
+const category = $("categoryFilter");
 
+function salvar() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(produtos));
+}
 
-const Products = {
+function moeda(valor) {
+    return Number(valor || 0).toLocaleString("pt-BR", {
+        style: "currency",
+        currency: "BRL"
+    });
+}
 
+function atualizarMetricas() {
+    const categorias = new Set(produtos.map(p => p.categoria));
+    const estoque = produtos.reduce((total, p) => total + p.quantidade, 0);
+    const baixos = produtos.filter(p => p.quantidade <= p.minimo).length;
 
+    $("totalProducts").textContent = produtos.length;
+    $("totalStock").textContent = estoque;
+    $("totalCategories").textContent = categorias.size;
+    $("lowStock").textContent = baixos;
+}
 
-    products:[],
+function atualizarCategorias() {
+    const atual = category.value;
 
+    const categorias = [...new Set(
+        produtos.map(p => p.categoria)
+    )].sort();
 
-    chart:null,
+    category.innerHTML =
+        '<option value="">Todas categorias</option>';
 
+    categorias.forEach(nome => {
+        const option = document.createElement("option");
 
+        option.value = nome;
+        option.textContent = nome;
 
+        category.appendChild(option);
+    });
 
+    category.value = categorias.includes(atual) ? atual : "";
+}
 
-    init(){
-
-
-
-        this.loader();
-
-
-
-        this.events();
-
-
-
-        this.loadProducts();
-
-
-
-        this.startChart();
-
-
-
-    },
-
-
-
-
-
-
-
-
-
-    loader(){
-
-
-
-        const loader =
-
-        document.getElementById(
-
-            "productsLoader"
-
-        );
-
-
-
-        if(loader){
-
-
-
-            setTimeout(()=>{
-
-
-                loader.classList.add(
-
-                    "hide"
-
-                );
-
-
-
-            },1800);
-
-
-
-        }
-
-
-
-    },
-
-
-
-
-
-
-
-
-
-    events(){
-
-
-
-        const modal =
-
-        document.getElementById(
-
-            "productsModal"
-
-        );
-
-
-
-        const open =
-
-        document.getElementById(
-
-            "openProductModal"
-
-        );
-
-
-
-        const close =
-
-        document.getElementById(
-
-            "closeProductsModal"
-
-        );
-
-
-
-
-
-        if(open){
-
-
-            open.onclick=()=>{
-
-
-                modal.classList.add(
-
-                    "active"
-
-                );
-
-
-            };
-
-
-        }
-
-
-
-
-
-
-        if(close){
-
-
-
-            close.onclick=()=>{
-
-
-                modal.classList.remove(
-
-                    "active"
-
-                );
-
-
-
-            };
-
-
-
-        }
-
-
-
-
-
-
-
-
-        const form =
-
-        document.getElementById(
-
-            "productsForm"
-
-        );
-
-
-
-
-
-        if(form){
-
-
-
-            form.addEventListener(
-
-                "submit",
-
-                e=>{
-
-
-                    e.preventDefault();
-
-
-
-                    this.saveProduct();
-
-
-
-                }
-
-
-            );
-
-
-
-        }
-
-
-
-
-
-
-
-
-        const search =
-
-        document.getElementById(
-
-            "productsSearchInput"
-
-        );
-
-
-
-
-
-        if(search){
-
-
-
-            search.addEventListener(
-
-                "input",
-
-                ()=>{
-
-
-                    this.renderTable(
-
-                        search.value
-
-                    );
-
-
-                }
-
-
-            );
-
-
-
-        }
-
-
-
-
-
-
-
-        const category =
-
-        document.getElementById(
-
-            "productsCategoryFilter"
-
-        );
-
-
-
-
-
-        if(category){
-
-
-
-            category.onchange=()=>{
-
-
-                this.renderTable();
-
-
-
-            };
-
-
-        }
-
-
-
-
-
-
-
-        const status =
-
-        document.getElementById(
-
-            "productsStatusFilter"
-
-        );
-
-
-
-
-
-        if(status){
-
-
-
-            status.onchange=()=>{
-
-
-                this.renderTable();
-
-
-
-            };
-
-
-        }
-
-
-
-
-    },
-
-
-
-
-
-
-
-
-
-    saveProduct(){
-
-
-
-        const product={
-
-
-
-            name:
-
-            document.getElementById(
-
-                "productsNameInput"
-
-            ).value,
-
-
-
-
-            category:
-
-            document.getElementById(
-
-                "productsCategoryInput"
-
-            ).value,
-
-
-
-
-
-            price:
-
-            Number(
-
-                document.getElementById(
-
-                    "productsPriceInput"
-
-                ).value
-
-            ),
-
-
-
-
-
-            stock:
-
-            Number(
-
-                document.getElementById(
-
-                    "productsStockInput"
-
-                ).value
-
-            ),
-
-
-
-
-
-            code:
-
-            document.getElementById(
-
-                "productsCodeInput"
-
-            ).value,
-
-
-
-
-
-            brand:
-
-            document.getElementById(
-
-                "productsBrandInput"
-
-            ).value,
-
-
-
-
-
-            supplier:
-
-            document.getElementById(
-
-                "productsSupplierInput"
-
-            ).value,
-
-
-
-
-
-            status:
-
-            document.getElementById(
-
-                "productsStatusInput"
-
-            ).value,
-
-
-
-
-
-            description:
-
-            document.getElementById(
-
-                "productsDescriptionInput"
-
-            ).value,
-
-
-
-
-
-            created:
-
-            new Date()
-
-            .toLocaleString("pt-BR")
-
-
-
-        };
-
-
-
-
-
-
-        product.id =
-
-        Date.now();
-
-
-
-
-
-        this.products.push(
-
-            product
-
-        );
-
-
-
-
-
-        localStorage.setItem(
-
-            "empire_products",
-
-            JSON.stringify(
-
-                this.products
-
-            )
-
-        );
-
-
-
-
-
-        this.renderTable();
-
-
-
-        this.updateCards();
-
-
-
-        this.updateAlerts();
-
-
-
-
-
-        document
-
-        .getElementById(
-
-            "productsForm"
-
-        )
-
-        .reset();
-
-
-
-
-
-        document
-
-        .getElementById(
-
-            "productsModal"
-
-        )
-
-        .classList.remove(
-
-            "active"
-
-        );
-
-
-
-
-
-    },
-    loadProducts(){
-
-
-        const data =
-
-        localStorage.getItem(
-
-            "empire_products"
-
-        );
-
-
-
-        if(data){
-
-
-            this.products =
-
-            JSON.parse(data);
-
-
-        }
-
-
-
-        this.updateCards();
-
-
-        this.renderTable();
-
-
-        this.updateAlerts();
-
-
-
-    },
-
-
-
-
-
-
-
-
-
-    renderTable(search=""){
-
-
-
-        const tbody =
-
-        document.getElementById(
-
-            "productsTableBody"
-
-        );
-
-
-
-        if(!tbody) return;
-
-
-
-
-
-        const category =
-
-        document.getElementById(
-
-            "productsCategoryFilter"
-
-        )?.value;
-
-
-
-        const status =
-
-        document.getElementById(
-
-            "productsStatusFilter"
-
-        )?.value;
-
-
-
-
-
-
-
-        let list =
-
-        this.products.filter(product=>{
-
-
-
-            const text =
-
-            product.name
-
-            .toLowerCase()
-
-            .includes(
-
-                search.toLowerCase()
-
-            );
-
-
-
-
-            const categoryMatch =
-
-
-            !category ||
-
-            product.category === category;
-
-
-
-
-
-            const statusMatch =
-
-
-            !status ||
-
-            product.status === status;
-
-
-
-
-            return (
-
-                text &&
-
-                categoryMatch &&
-
-                statusMatch
-
-            );
-
-
-
-        });
-
-
-
-
-
-
-
-
-
-        if(!list.length){
-
-
-
-            tbody.innerHTML = `
-
-
-<tr>
-
-
-<td colspan="6">
-
-
-<div class="products-empty">
-
-
-<i class="fa-solid fa-box-open"></i>
-
-
-<p>
-
-Nenhum produto encontrado
-
-</p>
-
-
-</div>
-
-
-</td>
-
-
-</tr>
-
-
-`;
-
-
-
-            return;
-
-
-        }
-
-
-
-
-
-
-
-
-        tbody.innerHTML="";
-
-
-
-
-
-        list.forEach(product=>{
-
-
-
-            tbody.innerHTML += `
-
-
-<tr>
-
-
-<td>
-
-
-<strong>
-
-${product.name}
-
-</strong>
-
-
-<br>
-
-
-<small>
-
-${product.code || ""}
-
-</small>
-
-
-</td>
-
-
-
-
-
-<td>
-
-${product.category}
-
-</td>
-
-
-
-
-
-<td>
-
-R$ ${product.price
-
-.toFixed(2)
-
-.replace(".",",")}
-
-</td>
-
-
-
-
-
-<td>
-
-${product.stock}
-
-</td>
-
-
-
-
-
-<td>
-
-
-<span class="products-status ${product.status}">
-
-
-${product.status}
-
-
-</span>
-
-
-</td>
-
-
-
-
-
-<td>
-
-
-<button
-
-class="products-action-btn"
-
-onclick="Products.remove(${product.id})">
-
-
-<i class="fa-solid fa-trash"></i>
-
-
-</button>
-
-
-</td>
-
-
-
-
-</tr>
-
-
-`;
-
-
-
-        });
-
-
-
-
-    },
-
-
-
-
-
-
-
-
-
-    remove(id){
-
-
-
-        const product =
-
-        this.products.find(
-
-            item=>item.id===id
-
-        );
-
-
-
-
-
-        if(!product)
-
-            return;
-
-
-
-
-
-
-
-        const confirmDelete =
-
-        confirm(
-
-            "Excluir produto?"
-
-        );
-
-
-
-
-
-        if(!confirmDelete)
-
-            return;
-
-
-
-
-
-
-        this.products =
-
-        this.products.filter(
-
-            item=>item.id!==id
-
-        );
-
-
-
-
-
-
-        localStorage.setItem(
-
-            "empire_products",
-
-            JSON.stringify(
-
-                this.products
-
-            )
-
-        );
-
-
-
-
-
-
-
-        this.renderTable();
-
-
-
-        this.updateCards();
-
-
-
-        this.updateAlerts();
-
-
-
-    },
-
-
-
-
-
-
-
-
-
-    updateCards(){
-
-
-
-        const total =
-
-        this.products.length;
-
-
-
-
-
-        const stock =
-
-        this.products.reduce(
-
-            (sum,item)=>{
-
-
-                return sum +
-
-                Number(item.stock);
-
-
-            },
-
-            0
-
-        );
-
-
-
-
-
-        const low =
-
-        this.products.filter(
-
-            item=>
-
-            item.stock <= 5
-
-        ).length;
-
-
-
-
-
-
-
-        const totalElement =
-
-        document.getElementById(
-
-            "productsTotalCount"
-
-        );
-
-
-
-
-
-        const stockElement =
-
-        document.getElementById(
-
-            "productsStockCount"
-
-        );
-
-
-
-
-
-        const lowElement =
-
-        document.getElementById(
-
-            "productsLowCount"
-
-        );
-
-
-
-
-
-
-        if(totalElement)
-
-            totalElement.textContent=
-
-            total;
-
-
-
-
-
-        if(stockElement)
-
-            stockElement.textContent=
-
-            stock;
-
-
-
-
-
-        if(lowElement)
-
-            lowElement.textContent=
-
-            low;
-
-
-
-    },
-
-
-
-
-
-
-
-
-
-    updateAlerts(){
-
-
-
-        const box =
-
-        document.getElementById(
-
-            "productsAlertList"
-
-        );
-
-
-
-        if(!box)
-
-            return;
-
-
-
-
-
-
-
-        const lowProducts =
-
-        this.products.filter(
-
-            item=>
-
-            item.stock <= 5
-
-        );
-
-
-
-
-
-
-        if(!lowProducts.length){
-
-
-
-            box.innerHTML = `
-
-
-<div class="products-empty">
-
-
-<i class="fa-solid fa-circle-check"></i>
-
-
-<p>
-
-Estoque normal
-
-</p>
-
-
-</div>
-
-
-`;
-
-            return;
-
-
-        }
-
-
-
-
-
-
-        box.innerHTML="";
-
-
-
-
-
-        lowProducts.forEach(product=>{
-
-
-
-            box.innerHTML += `
-
-
-<div class="products-alert-item">
-
-
-<strong>
-
-${product.name}
-
-</strong>
-
-
-<span>
-
-Estoque: ${product.stock}
-
-</span>
-
-
-</div>
-
-
-`;
-
-
-
-        });
-
-
-
-    },
-     startChart(){
-
-
-
-        const canvas =
-
-        document.getElementById(
-
-            "productsStockChart"
-
-        );
-
-
-
-        if(!canvas)
-
-            return;
-
-
-
-
-
-
-        const labels =
-
-        this.products.map(
-
-            item=>item.name
-
-        );
-
-
-
-
-
-        const values =
-
-        this.products.map(
-
-            item=>item.stock
-
-        );
-
-
-
-
-
-
-
-        this.chart =
-
-        new Chart(
-
-            canvas,
-
-            {
-
-
-
-                type:"line",
-
-
-
-
-                data:{
-
-
-
-                    labels:
-
-
-
-                    labels.length
-
-                    ?
-
-                    labels
-
-                    :
-
-                    [
-
-                        "Sem dados"
-
-                    ],
-
-
-
-
-
-
-                    datasets:[{
-
-
-                        label:
-
-                        "Estoque",
-
-
-
-
-
-                        data:
-
-
-                        values.length
-
-                        ?
-
-                        values
-
-                        :
-
-                        [0],
-
-
-
-
-
-                        borderWidth:3,
-
-
-
-
-
-                        tension:.4
-
-
-
-                    }]
-
-
-
-                },
-
-
-
-
-
-
-
-                options:{
-
-
-
-                    responsive:true,
-
-
-
-                    plugins:{
-
-
-
-                        legend:{
-
-
-
-                            labels:{
-
-
-
-                                color:"#d4af37"
-
-
-
-                            }
-
-
-
-                        }
-
-
-
-                    },
-
-
-
-
-
-
-
-                    scales:{
-
-
-
-                        x:{
-
-
-
-                            ticks:{
-
-
-
-                                color:"#aaa"
-
-
-
-                            }
-
-
-
-                        },
-
-
-
-
-
-
-                        y:{
-
-
-
-                            ticks:{
-
-
-
-                                color:"#aaa"
-
-
-
-                            }
-
-
-
-                        }
-
-
-
-                    }
-
-
-
-                }
-
-
-
-
-
-            }
-
-
-
-        );
-
-
-
-    },
-
-
-
-
-
-
-
-
-
-    refreshChart(){
-
-
-
-        if(!this.chart)
-
-            return;
-
-
-
-
-
-        this.chart.data.labels =
-
-        this.products.map(
-
-            item=>item.name
-
-        );
-
-
-
-
-
-        this.chart.data.datasets[0].data =
-
-        this.products.map(
-
-            item=>item.stock
-
-        );
-
-
-
-
-
-        this.chart.update();
-
-
-
-    },
-
-
-
-
-
-
-
-
-
-    exportProducts(){
-
-
-
-        const data =
-
-        JSON.stringify(
-
-            this.products,
-
-            null,
-
-            2
-
-        );
-
-
-
-
-
-
-        const blob =
-
-        new Blob(
-
-            [data],
-
-            {
-
-                type:
-
-                "application/json"
-
-            }
-
-        );
-
-
-
-
-
-        const link =
-
-        document.createElement(
-
-            "a"
-
-        );
-
-
-
-
-
-        link.href =
-
-        URL.createObjectURL(
-
-            blob
-
-        );
-
-
-
-
-
-        link.download =
-
-        "empire-produtos.json";
-
-
-
-
-
-        link.click();
-
-
-
+function statusEstoque(produto) {
+    if (produto.quantidade === 0) {
+        return "stock-empty";
     }
 
-
-
-
-
-};
-
-
-
-
-
-
-
-
-
-document.addEventListener(
-
-    "DOMContentLoaded",
-
-    ()=>{
-
-
-        Products.init();
-
-
+    if (produto.quantidade <= produto.minimo) {
+        return "stock-low";
     }
 
+    return "stock-ok";
+}
 
+function renderizar() {
+    const termo = search.value.toLowerCase().trim();
+    const filtro = category.value;
+
+    const lista = produtos.filter(produto => {
+
+        const texto =
+            `${produto.nome} ${produto.modelo} ${produto.cor} ${produto.categoria}`
+            .toLowerCase();
+
+        const correspondeBusca = texto.includes(termo);
+
+        const correspondeCategoria =
+            !filtro || produto.categoria === filtro;
+
+        return correspondeBusca && correspondeCategoria;
+    });
+
+    table.innerHTML = "";
+
+    if (!lista.length) {
+        table.innerHTML = `
+            <tr>
+                <td colspan="8" class="empty">
+                    Nenhum produto encontrado.
+                </td>
+            </tr>
+        `;
+
+        atualizarGrafico();
+        return;
+    }
+
+    lista.forEach(produto => {
+
+        const tr = document.createElement("tr");
+
+        const estoqueClasse = statusEstoque(produto);
+
+        tr.innerHTML = `
+            <td>
+                <span class="product-name">
+                    ${escapar(produto.nome)}
+                </span>
+            </td>
+
+            <td>
+                ${escapar(produto.modelo)}
+            </td>
+
+            <td>
+                ${escapar(produto.cor)}
+            </td>
+
+            <td>
+                ${escapar(produto.categoria)}
+            </td>
+
+            <td>
+                <span class="price">
+                    ${moeda(produto.venda)}
+                </span>
+            </td>
+
+            <td>
+                <span class="price">
+                    ${moeda(produto.estoque)}
+                </span>
+            </td>
+
+            <td>
+                <span class="${estoqueClasse}">
+                    ${produto.quantidade}
+                </span>
+            </td>
+
+            <td>
+                <button
+                    class="action-button"
+                    title="Excluir produto"
+                    data-delete="${produto.id}">
+                    <i class="fa-solid fa-trash"></i>
+                </button>
+            </td>
+        `;
+
+        table.appendChild(tr);
+    });
+
+    atualizarGrafico();
+}
+
+function escapar(valor) {
+    return String(valor)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+}
+
+function atualizarGrafico() {
+    const box = $("categoryChart");
+
+    const dados = {};
+
+    produtos.forEach(produto => {
+        dados[produto.categoria] =
+            (dados[produto.categoria] || 0) + produto.quantidade;
+    });
+
+    const nomes = Object.keys(dados);
+
+    if (!nomes.length) {
+        box.innerHTML = `
+            <div class="empty">
+                Cadastre produtos para visualizar o gráfico.
+            </div>
+        `;
+        return;
+    }
+
+    const maior = Math.max(...Object.values(dados));
+
+    box.innerHTML = nomes.map(nome => {
+
+        const valor = dados[nome];
+
+        const largura =
+            maior ? Math.max((valor / maior) * 100, 4) : 0;
+
+        return `
+            <div class="chart-row">
+
+                <span class="chart-name">
+                    ${escapar(nome)}
+                </span>
+
+                <div class="chart-bar">
+                    <div
+                        class="chart-fill"
+                        style="width:${largura}%">
+                    </div>
+                </div>
+
+                <span class="chart-value">
+                    ${valor}
+                </span>
+
+            </div>
+        `;
+
+    }).join("");
+}
+
+function abrirModal() {
+    modal.classList.add("show");
+
+    setTimeout(() => {
+        $("productName").focus();
+    }, 100);
+}
+
+function fecharModal() {
+    modal.classList.remove("show");
+    form.reset();
+
+    $("minimumStock").value = 5;
+    $("formMessage").textContent = "";
+}
+
+function cadastrar(event) {
+    event.preventDefault();
+
+    const nome = $("productName").value.trim();
+    const modelo = $("productModel").value.trim();
+    const cor = $("productColor").value.trim();
+    const categoria = $("productCategory").value.trim();
+
+    const venda = Number($("salePrice").value);
+    const estoque = Number($("stockPrice").value);
+    const quantidade = Number($("productQuantity").value);
+    const minimo = Number($("minimumStock").value);
+
+    if (
+        !nome ||
+        !modelo ||
+        !cor ||
+        !categoria ||
+        venda < 0 ||
+        estoque < 0 ||
+        quantidade < 0 ||
+        minimo < 0
+    ) {
+        $("formMessage").textContent =
+            "Preencha corretamente todos os campos.";
+
+        return;
+    }
+
+    const produto = {
+        id: Date.now(),
+        nome,
+        modelo,
+        cor,
+        categoria,
+        venda,
+        estoque,
+        quantidade,
+        minimo,
+        criadoEm: new Date().toISOString()
+    };
+
+    produtos.push(produto);
+
+    salvar();
+    atualizarCategorias();
+    atualizarMetricas();
+    renderizar();
+
+    fecharModal();
+}
+
+function excluir(id) {
+    const produto = produtos.find(p => p.id === id);
+
+    if (!produto) return;
+
+    const confirmar = confirm(
+        `Excluir o produto "${produto.nome}"?`
+    );
+
+    if (!confirmar) return;
+
+    produtos = produtos.filter(p => p.id !== id);
+
+    salvar();
+    atualizarCategorias();
+    atualizarMetricas();
+    renderizar();
+}
+
+function iniciarRelogio() {
+    function atualizar() {
+        const agora = new Date();
+
+        $("clock").textContent =
+            agora.toLocaleTimeString("pt-BR");
+    }
+
+    atualizar();
+
+    setInterval(atualizar, 1000);
+}
+
+$("addProductButton").addEventListener(
+    "click",
+    abrirModal
 );
 
+$("closeModal").addEventListener(
+    "click",
+    fecharModal
+);
 
+$("cancelProduct").addEventListener(
+    "click",
+    fecharModal
+);
 
+form.addEventListener(
+    "submit",
+    cadastrar
+);
 
+search.addEventListener(
+    "input",
+    renderizar
+);
 
+category.addEventListener(
+    "change",
+    renderizar
+);
 
+table.addEventListener("click", event => {
 
+    const botao =
+        event.target.closest("[data-delete]");
 
+    if (!botao) return;
 
-window.Products = Products;
+    excluir(Number(botao.dataset.delete));
+});
+
+modal.addEventListener("click", event => {
+
+    if (event.target === modal) {
+        fecharModal();
+    }
+});
+
+document.addEventListener("keydown", event => {
+
+    if (
+        event.key === "Escape" &&
+        modal.classList.contains("show")
+    ) {
+        fecharModal();
+    }
+});
+
+atualizarCategorias();
+atualizarMetricas();
+renderizar();
+iniciarRelogio();
