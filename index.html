@@ -9,43 +9,25 @@
 
 <meta name="theme-color" content="#050505">
 
-<meta
-    name="description"
-    content="EMPIRE ERP - Império da Moda Online"
->
+<meta name="description" content="EMPIRE ERP - Império da Moda Online">
 
 <title>EMPIRE | Império da Moda Online</title>
 
-<link
-    rel="icon"
-    href="assets/img/favicon.png"
->
+<link rel="icon" href="assets/img/favicon.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
 <link
-    rel="preconnect"
-    href="https://fonts.googleapis.com"
->
+href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800&display=swap"
+rel="stylesheet">
 
 <link
-    rel="preconnect"
-    href="https://fonts.gstatic.com"
-    crossorigin
->
+rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
-<link
-    href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap"
-    rel="stylesheet"
->
-
-<link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
->
-
-<link
-    rel="stylesheet"
-    href="assets/css/login.css"
->
+<link rel="stylesheet" href="assets/css/login.css">
 
 </head>
 
@@ -55,19 +37,20 @@
 
 <!-- LOADER -->
 
-<div
-    class="loader"
-    id="loader"
->
+<div class="loader" id="loader">
 
     <div class="loader-content">
+
+        <div class="loader-crown">
+            ♛
+        </div>
 
         <div class="loader-logo">
             EMPIRE
         </div>
 
         <div class="loader-subtitle">
-            Império da Moda Online
+            IMPÉRIO DA MODA ONLINE
         </div>
 
         <div class="loader-line">
@@ -81,11 +64,13 @@
 
 <!-- FUNDO -->
 
-<div class="login-background">
+<div class="luxury-background">
 
-    <div class="login-glow glow-one"></div>
+    <div class="luxury-glow glow-one"></div>
 
-    <div class="login-glow glow-two"></div>
+    <div class="luxury-glow glow-two"></div>
+
+    <div class="luxury-glow glow-three"></div>
 
 </div>
 
@@ -99,18 +84,29 @@
 
     <section class="login-brand">
 
-        <img
+        <div class="brand-frame">
+
+            <span></span>
+
+            <img
             src="assets/img/logo.png"
             alt="EMPIRE"
-            class="logo-empresa"
-        >
+            class="logo-empresa">
+
+            <span></span>
+
+        </div>
+
+        <small>
+            EST. 2026
+        </small>
 
         <h1>
             EMPIRE
         </h1>
 
         <p>
-            Império da Moda Online
+            IMPÉRIO DA MODA ONLINE
         </p>
 
     </section>
@@ -120,22 +116,29 @@
 
     <section class="login-card">
 
+        <div class="card-shine"></div>
 
-        <div class="login-header">
+        <div class="card-corner corner-top"></div>
 
-            <span>
+        <div class="card-corner corner-bottom"></div>
+
+
+        <header class="login-header">
+
+            <span class="login-overline">
+                <i class="fa-solid fa-crown"></i>
                 ACESSO RESTRITO
             </span>
 
             <h2>
-                Entrar no Sistema
+                Bem-vindo
             </h2>
 
             <p>
-                Acesse o painel de gestão do EMPIRE ERP.
+                Entre no sistema de gestão EMPIRE ERP.
             </p>
 
-        </div>
+        </header>
 
 
         <!-- FORMULÁRIO -->
@@ -143,12 +146,10 @@
         <form id="loginForm">
 
 
-            <!-- USUÁRIO -->
-
             <div class="form-group">
 
                 <label for="username">
-                    Usuário
+                    USUÁRIO
                 </label>
 
                 <div class="input-box">
@@ -156,25 +157,22 @@
                     <i class="fa-solid fa-user"></i>
 
                     <input
-                        type="text"
-                        id="username"
-                        name="username"
-                        placeholder="Digite seu usuário"
-                        autocomplete="username"
-                        required
-                    >
+                    type="text"
+                    id="username"
+                    name="username"
+                    placeholder="Digite seu usuário"
+                    autocomplete="username"
+                    required>
 
                 </div>
 
             </div>
 
 
-            <!-- SENHA -->
-
             <div class="form-group">
 
                 <label for="password">
-                    Senha
+                    SENHA
                 </label>
 
                 <div class="input-box">
@@ -182,20 +180,18 @@
                     <i class="fa-solid fa-lock"></i>
 
                     <input
-                        type="password"
-                        id="password"
-                        name="password"
-                        placeholder="Digite sua senha"
-                        autocomplete="current-password"
-                        required
-                    >
+                    type="password"
+                    id="password"
+                    name="password"
+                    placeholder="Digite sua senha"
+                    autocomplete="current-password"
+                    required>
 
                     <button
-                        type="button"
-                        id="togglePassword"
-                        class="password-button"
-                        aria-label="Mostrar senha"
-                    >
+                    type="button"
+                    id="togglePassword"
+                    class="password-button"
+                    aria-label="Mostrar senha">
 
                         <i class="fa-solid fa-eye"></i>
 
@@ -206,25 +202,22 @@
             </div>
 
 
-            <!-- MENSAGEM -->
-
             <div
-                class="login-message"
-                id="loginMessage"
-            ></div>
+            id="loginMessage"
+            class="login-message">
+            </div>
 
-
-            <!-- ENTRAR -->
 
             <button
-                type="submit"
-                class="login-button"
-                id="loginButton"
-            >
+            type="submit"
+            id="loginButton"
+            class="login-button">
 
-                <i class="fa-solid fa-right-to-bracket"></i>
+                <span>
+                    ENTRAR NO SISTEMA
+                </span>
 
-                Entrar no Sistema
+                <i class="fa-solid fa-arrow-right"></i>
 
             </button>
 
@@ -234,32 +227,53 @@
 
         <!-- RECUPERAÇÃO -->
 
-        <div class="login-links">
+        <div class="recovery-section">
+
+            <div class="recovery-divider">
+
+                <span></span>
+
+                <small>
+                    SEGURANÇA
+                </small>
+
+                <span></span>
+
+            </div>
+
 
             <a
-                href="pages/html/recuperar-senha.html"
-                target="_blank"
-                rel="noopener"
-            >
+            href="pages/html/recuperar-senha.html"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="recovery-link">
 
-                <i class="fa-solid fa-key"></i>
+                <span class="recovery-icon">
+                    <i class="fa-solid fa-key"></i>
+                </span>
 
-                Esqueci minha senha
+                <span class="recovery-text">
+
+                    <strong>
+                        Esqueci minha senha
+                    </strong>
+
+                    <small>
+                        Solicitar redefinição
+                    </small>
+
+                </span>
+
+                <i class="fa-solid fa-chevron-right"></i>
 
             </a>
 
-        </div>
 
+            <p class="recovery-note">
 
-        <!-- AVISO -->
+                A redefinição exige autorização do administrador.
 
-        <div class="login-security">
-
-            <i class="fa-solid fa-shield-halved"></i>
-
-            <span>
-                A redefinição de senha necessita de autorização do administrador.
-            </span>
+            </p>
 
         </div>
 
@@ -267,16 +281,41 @@
     </section>
 
 
+    <!-- SEGURANÇA -->
+
+    <div class="security-status">
+
+        <i class="fa-solid fa-shield-halved"></i>
+
+        <span>
+            Sistema protegido
+        </span>
+
+        <i class="fa-solid fa-circle-check"></i>
+
+    </div>
+
+
     <!-- RODAPÉ -->
 
     <footer class="login-footer">
 
-        <strong>
-            EMPIRE ERP
-        </strong>
+        <div>
+
+            <strong>
+                EMPIRE ERP
+            </strong>
+
+            <span>
+                Império da Moda Online
+            </span>
+
+        </div>
+
+        <b></b>
 
         <span>
-            © 2026 Império da Moda Online
+            © 2026
         </span>
 
     </footer>
@@ -286,7 +325,6 @@
 
 
 <script src="assets/js/login.js"></script>
-
 
 </body>
 
