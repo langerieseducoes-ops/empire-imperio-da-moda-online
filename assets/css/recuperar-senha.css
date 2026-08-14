@@ -1,1690 +1,472 @@
-
-/*
-====================================================
- EMPIRE ERP
- RECUPERAÇÃO DE SENHA PREMIUM
-====================================================
-*/
-
+:root{
+    --black:#050505;
+    --dark:#090909;
+    --graphite:#141414;
+    --gold:#d4af37;
+    --gold-light:#f8e48c;
+    --gold-dark:#8f6b12;
+    --text:#d8d8d8;
+    --border:rgba(212,175,55,.25);
+    --shadow:0 30px 80px rgba(0,0,0,.7);
+}
 
 *{
-
-margin:0;
-
-padding:0;
-
-box-sizing:border-box;
-
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
 }
-
-
-
-:root{
-
-
---black:#050505;
-
---dark:#0b0b0b;
-
---graphite:#161616;
-
-
---gold:#d4af37;
-
---gold-light:#f8e48c;
-
---gold-dark:#8f6b12;
-
-
---white:#ffffff;
-
---border:
-
-rgba(212,175,55,.35);
-
-
-}
-
-
-
-
 
 body{
+    min-height:100vh;
+    background:
+    radial-gradient(
+        circle at top,
+        #242424,
+        #050505 70%
+    );
+    color:var(--text);
+    font-family:"Poppins",sans-serif;
+    overflow-x:hidden;
+}
 
-
-min-height:100vh;
-
-
-font-family:"Poppins",sans-serif;
-
-
-background:var(--black);
-
-
-color:white;
-
-
-overflow-x:hidden;
-
-
-
+a{
+    text-decoration:none;
 }
 
 
+/* ===========================
+FUNDO
+=========================== */
 
+.recovery-background{
+    position:fixed;
+    inset:0;
+    overflow:hidden;
+    z-index:0;
+}
 
+.recovery-glow{
+    position:absolute;
+    border-radius:50%;
+    filter:blur(100px);
+}
 
+.glow-one{
+    width:350px;
+    height:350px;
+    background:rgba(212,175,55,.10);
+    top:-100px;
+    left:-100px;
+}
 
-/* ================================================
-FUNDO ANIMADO
-================================================ */
+.glow-two{
+    width:350px;
+    height:350px;
+    background:rgba(212,175,55,.08);
+    bottom:-100px;
+    right:-100px;
+}
 
-
-.background{
-
-
-position:fixed;
-
-
-inset:0;
-
-
-z-index:-1;
-
-
-background:
-
-
-radial-gradient(
-
-circle at top,
-
-rgba(212,175,55,.25),
-
-transparent 45%
-
-),
-
-
-linear-gradient(
-
-135deg,
-
-#050505,
-
-#161616
-
-);
-
-
-
-overflow:hidden;
-
-
-
+.glow-three{
+    width:220px;
+    height:220px;
+    background:rgba(212,175,55,.05);
+    left:50%;
+    top:40%;
+    transform:translateX(-50%);
 }
 
 
-
-
-
-
-
-.light{
-
-
-position:absolute;
-
-
-border-radius:50%;
-
-
-filter:blur(120px);
-
-
-opacity:.35;
-
-
-animation:
-
-moveLight 12s infinite alternate;
-
-
-}
-
-
-
-
-
-.light1{
-
-
-width:450px;
-
-
-height:450px;
-
-
-background:var(--gold);
-
-
-top:-150px;
-
-
-left:-150px;
-
-
-
-}
-
-
-
-
-
-
-.light2{
-
-
-width:350px;
-
-
-height:350px;
-
-
-background:var(--gold-dark);
-
-
-right:-100px;
-
-
-top:40%;
-
-
-
-}
-
-
-
-
-
-
-.light3{
-
-
-width:300px;
-
-
-height:300px;
-
-
-background:var(--gold);
-
-
-bottom:-100px;
-
-
-left:40%;
-
-
-
-}
-
-
-
-
-
-
-
-
-/* ================================================
-LOADER
-================================================ */
-
-
-.loader{
-
-
-position:fixed;
-
-
-inset:0;
-
-
-z-index:9999;
-
-
-display:flex;
-
-
-align-items:center;
-
-
-justify-content:center;
-
-
-background:
-
-
-radial-gradient(
-
-circle,
-
-#181818,
-
-#050505
-
-);
-
-
-
-}
-
-
-
-
-.loader-box{
-
-
-text-align:center;
-
-
-}
-
-
-
-
-
-
-.loader-box h1{
-
-
-font-family:"Cinzel",serif;
-
-
-font-size:75px;
-
-
-letter-spacing:15px;
-
-
-color:var(--gold);
-
-
-text-shadow:
-
-
-0 0 35px rgba(212,175,55,.8);
-
-
-
-animation:
-
-pulseEmpire 2s infinite;
-
-
-}
-
-
-
-
-
-
-
-.loader-box span{
-
-
-display:block;
-
-
-margin-top:15px;
-
-
-font-size:13px;
-
-
-letter-spacing:5px;
-
-
-color:var(--gold-light);
-
-
-
-}
-
-
-
-
-
-
-.loader-line{
-
-
-width:280px;
-
-
-height:4px;
-
-
-background:#222;
-
-
-margin:30px auto;
-
-
-border-radius:20px;
-
-
-overflow:hidden;
-
-
-}
-
-
-
-
-
-.loader-line div{
-
-
-height:100%;
-
-
-width:40%;
-
-
-background:
-
-
-linear-gradient(
-
-90deg,
-
-transparent,
-
-var(--gold),
-
-transparent
-
-);
-
-
-
-animation:
-
-loading 2s infinite;
-
-
-}
-
-
-/* ================================================
+/* ===========================
 CONTAINER
-================================================ */
-
+=========================== */
 
 .recovery-container{
-
-
-min-height:100vh;
-
-
-display:flex;
-
-
-align-items:center;
-
-
-justify-content:center;
-
-
-padding:25px;
-
-
-
+    position:relative;
+    z-index:2;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    padding:40px 20px;
 }
 
 
+/* ===========================
+MARCA
+=========================== */
+
+.recovery-brand{
+    text-align:center;
+    margin-bottom:25px;
+}
+
+.brand-line{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:15px;
+}
+
+.brand-line span{
+    width:50px;
+    height:1px;
+    background:var(--gold);
+}
+
+.recovery-logo{
+    width:75px;
+    height:75px;
+    object-fit:contain;
+}
+
+.recovery-brand small{
+    color:var(--gold);
+    letter-spacing:3px;
+    font-size:9px;
+}
+
+.recovery-brand h1{
+    font-family:"Cinzel",serif;
+    color:var(--gold);
+    font-size:42px;
+    letter-spacing:5px;
+}
+
+.recovery-brand p{
+    color:var(--gold-light);
+    font-size:10px;
+    letter-spacing:3px;
+}
 
 
-
-
-
-
-/* ================================================
-CARD PREMIUM
-================================================ */
-
+/* ===========================
+CARD
+=========================== */
 
 .recovery-card{
+    position:relative;
+    width:100%;
+    max-width:520px;
+    padding:35px;
+    border-radius:25px;
+    border:1px solid var(--border);
+    background:
+    linear-gradient(
+        145deg,
+        rgba(255,255,255,.06),
+        rgba(255,255,255,.02)
+    );
+    backdrop-filter:blur(18px);
+    box-shadow:var(--shadow);
+    overflow:hidden;
+}
 
+.card-glow{
+    position:absolute;
+    top:-80px;
+    left:-100px;
+    width:250px;
+    height:250px;
+    background:rgba(212,175,55,.08);
+    border-radius:50%;
+    filter:blur(80px);
+}
 
-width:100%;
+.card-corner{
+    position:absolute;
+    width:30px;
+    height:30px;
+}
 
+.corner-top{
+    top:15px;
+    left:15px;
+    border-top:1px solid var(--gold);
+    border-left:1px solid var(--gold);
+}
 
-max-width:520px;
-
-
-padding:45px;
-
-
-
-background:
-
-
-rgba(255,255,255,.05);
-
-
-
-border:
-
-
-1px solid var(--border);
-
-
-
-border-radius:30px;
-
-
-
-backdrop-filter:
-
-blur(25px);
-
-
-
-box-shadow:
-
-
-0 30px 80px rgba(0,0,0,.7),
-
-
-0 0 50px rgba(212,175,55,.15);
-
-
-
-animation:
-
-cardShow .8s ease;
-
-
-
+.corner-bottom{
+    bottom:15px;
+    right:15px;
+    border-right:1px solid var(--gold);
+    border-bottom:1px solid var(--gold);
 }
 
 
+/* ===========================
+HEADER
+=========================== */
 
+.recovery-header{
+    text-align:center;
+    margin-bottom:25px;
+}
 
+.recovery-icon-main{
+    width:70px;
+    height:70px;
+    margin:auto;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:rgba(212,175,55,.08);
+    color:var(--gold);
+    font-size:26px;
+    margin-bottom:15px;
+}
 
+.recovery-label{
+    color:var(--gold);
+    font-size:10px;
+    letter-spacing:2px;
+}
 
+.recovery-header h2{
+    margin-top:10px;
+    font-family:"Cinzel";
+    color:white;
+    font-size:28px;
+}
 
-
-
-/* ================================================
-LOGO
-================================================ */
-
-
-
-.logo-area{
-
-
-text-align:center;
-
-
-margin-bottom:30px;
-
-
-
+.recovery-header p{
+    margin-top:8px;
+    color:#888;
+    font-size:13px;
 }
 
 
+/* ===========================
+ETAPAS
+=========================== */
 
-.logo-area img{
+.recovery-steps{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    margin-bottom:30px;
+}
 
+.step{
+    text-align:center;
+}
 
-width:85px;
+.step span{
+    width:35px;
+    height:35px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    margin:auto;
+    border-radius:50%;
+    background:#111;
+    border:1px solid var(--border);
+}
 
+.step.active span{
+    background:var(--gold);
+    color:black;
+    font-weight:700;
+}
 
-height:85px;
+.step small{
+    display:block;
+    margin-top:6px;
+    font-size:10px;
+}
 
-
-object-fit:contain;
-
-
-animation:
-
-logoFloat 4s infinite;
-
-
-
+.step-line{
+    width:40px;
+    height:1px;
+    background:var(--border);
+    margin:0 10px;
 }
 
 
+/* ===========================
+FORM
+=========================== */
 
-
-
-
-.logo-area h1{
-
-
-font-family:"Cinzel",serif;
-
-
-font-size:60px;
-
-
-letter-spacing:12px;
-
-
-
-background:
-
-
-linear-gradient(
-
-90deg,
-
-#8f6b12,
-
-#f8e48c,
-
-#ffffff,
-
-#d4af37
-
-);
-
-
-
-background-size:300%;
-
-
-
--webkit-background-clip:text;
-
-
--webkit-text-fill-color:transparent;
-
-
-
-animation:
-
-
-empireLight 5s linear infinite,
-
-
-empireFloat 4s infinite;
-
-
-
-filter:
-
-
-drop-shadow(
-
-0 0 25px rgba(212,175,55,.8)
-
-);
-
-
-
+.form-group{
+    margin-bottom:18px;
 }
 
-
-
-
-
-.logo-area p{
-
-
-margin-top:10px;
-
-
-color:var(--gold-light);
-
-
-font-size:12px;
-
-
-letter-spacing:4px;
-
-
-
+.form-group label{
+    display:block;
+    margin-bottom:8px;
+    color:var(--gold-light);
+    font-size:11px;
+    font-weight:600;
 }
-
-
-
-
-
-
-
-/* ================================================
-TEXTOS
-================================================ */
-
-
-.recovery-card h2{
-
-
-text-align:center;
-
-
-font-family:"Cinzel",serif;
-
-
-color:var(--gold);
-
-
-margin-bottom:10px;
-
-
-
-}
-
-
-
-
-.description{
-
-
-text-align:center;
-
-
-color:#aaa;
-
-
-font-size:14px;
-
-
-margin-bottom:25px;
-
-
-
-}
-
-
-
-
-
-
-
-
-/* ================================================
-INPUTS
-================================================ */
-
 
 .input-box{
-
-
-height:58px;
-
-
-display:flex;
-
-
-align-items:center;
-
-
-gap:15px;
-
-
-padding:0 18px;
-
-
-margin-bottom:18px;
-
-
-
-
-background:
-
-
-rgba(0,0,0,.35);
-
-
-
-border:
-
-
-1px solid rgba(212,175,55,.25);
-
-
-
-border-radius:18px;
-
-
-
-transition:.4s;
-
-
-
+    position:relative;
 }
-
-
-
-
-.input-box:focus-within{
-
-
-border-color:var(--gold);
-
-
-box-shadow:
-
-
-0 0 25px rgba(212,175,55,.25);
-
-
-
-transform:
-
-translateY(-3px);
-
-
-
-}
-
-
-
-
-
-
 
 .input-box i{
-
-
-color:var(--gold);
-
-
-font-size:18px;
-
-
+    position:absolute;
+    left:15px;
+    top:50%;
+    transform:translateY(-50%);
+    color:var(--gold);
 }
-
-
-
-
-
 
 .input-box input{
+    width:100%;
+    height:52px;
+    padding:0 15px 0 45px;
+    border-radius:12px;
+    border:1px solid var(--border);
+    background:#0d0d0d;
+    color:white;
+    outline:none;
+}
 
+.input-box input:focus{
+    border-color:var(--gold);
+}
 
-flex:1;
-
-
-background:none;
-
-
-border:none;
-
-
-outline:none;
-
-
-color:white;
-
-
-font-size:15px;
-
-
-
+.recovery-message{
+    min-height:20px;
+    text-align:center;
+    color:#ffb7b7;
+    font-size:12px;
 }
 
 
+/* ===========================
+BOTÃO
+=========================== */
 
+.recovery-button{
+    width:100%;
+    height:55px;
+    border:none;
+    border-radius:12px;
+    cursor:pointer;
+    font-weight:700;
+    color:black;
+    background:
+    linear-gradient(
+        135deg,
+        var(--gold-light),
+        var(--gold),
+        var(--gold-dark)
+    );
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:12px;
+    transition:.3s;
+}
 
-
-.input-box input::placeholder{
-
-
-color:#777;
-
-
-
+.recovery-button:hover{
+    transform:translateY(-2px);
 }
 
 
+/* ===========================
+AUTORIZAÇÃO
+=========================== */
 
+.authorization-box{
+    margin-top:25px;
+    display:flex;
+    gap:15px;
+    padding:15px;
+    border-radius:15px;
+    background:rgba(212,175,55,.05);
+    border:1px solid var(--border);
+}
 
+.authorization-icon{
+    color:var(--gold);
+    font-size:22px;
+}
 
+.authorization-box strong{
+    display:block;
+    color:var(--gold-light);
+}
 
-
-
-.input-box button{
-
-
-background:none;
-
-
-border:none;
-
-
-color:var(--gold);
-
-
-cursor:pointer;
-
-
-font-size:17px;
-
-
-
+.authorization-box p{
+    color:#888;
+    font-size:12px;
+    margin-top:4px;
 }
 
 
-
-
-
-
-
-
-
-/* ================================================
-BOTÕES
-================================================ */
-
-
-
-.gold-button{
-
-
-width:100%;
-
-
-height:55px;
-
-
-border-radius:16px;
-
-
-border:1px solid var(--gold);
-
-
-
-background:
-
-
-linear-gradient(
-
-135deg,
-
-var(--gold-light),
-
-var(--gold)
-
-);
-
-
-
-color:#050505;
-
-
-font-weight:800;
-
-
-cursor:pointer;
-
-
-
-display:flex;
-
-
-align-items:center;
-
-
-justify-content:center;
-
-
-gap:10px;
-
-
-
-transition:.3s;
-
-
-
-}
-
-
-
-
-
-.gold-button:hover{
-
-
-transform:
-
-translateY(-4px);
-
-
-
-box-shadow:
-
-
-0 15px 35px rgba(212,175,55,.35);
-
-
-
-}
-
-
-
-
-
-
-
-
-
-/* ================================================
-INFORMAÇÕES USUÁRIO
-================================================ */
-
-
-
-.user-info,
-
-
-.authorization-box,
-
-
-.password-box{
-
-
-margin-top:25px;
-
-
-padding:22px;
-
-
-border-radius:20px;
-
-
-
-background:
-
-
-rgba(0,0,0,.35);
-
-
-
-border:
-
-
-1px solid var(--border);
-
-
-
-}
-
-
-
-.user-info h3,
-
-
-.authorization-box h3,
-
-
-.password-box h3{
-
-
-color:var(--gold);
-
-
-text-align:center;
-
-
-margin-bottom:15px;
-
-
-
-}
-
-
-
-.user-info p{
-
-
-margin:10px 0;
-
-
-color:#ccc;
-
-
-
-}
-
-
-
-.user-info strong{
-
-
-color:var(--gold-light);
-
-
-
-}
-
-
-
-
-
-
-
-
-/* ================================================
-OCULTO
-================================================ */
-
-
-.hidden{
-
-
-display:none;
-
-
-}
-
-
-/* ================================================
-FORÇA DA SENHA
-================================================ */
-
-
-.strength{
-
-
-width:100%;
-
-
-height:8px;
-
-
-background:#222;
-
-
-border-radius:20px;
-
-
-overflow:hidden;
-
-
-margin-top:15px;
-
-
-
-}
-
-
-
-
-#strengthBar{
-
-
-height:100%;
-
-
-width:0;
-
-
-background:var(--gold);
-
-
-transition:.4s;
-
-
-
-}
-
-
-
-
-#strengthText{
-
-
-font-size:12px;
-
-
-color:#aaa;
-
-
-margin:10px 0;
-
-
-
-}
-
-
-
-
-
-
-
-
-
-/* ================================================
-MENSAGEM
-================================================ */
-
-
-#mensagem{
-
-
-min-height:25px;
-
-
-text-align:center;
-
-
-margin-top:20px;
-
-
-font-size:14px;
-
-
-
-}
-
-
-
-
-.msg-success{
-
-
-color:#00d27a;
-
-
-
-}
-
-
-
-
-.msg-error{
-
-
-color:#ff4d4f;
-
-
-
-}
-
-
-
-
-
-
-
-
-/* ================================================
-VOLTAR LOGIN
-================================================ */
-
+/* ===========================
+VOLTAR
+=========================== */
 
 .back-login{
-
-
-margin-top:25px;
-
-
-display:flex;
-
-
-justify-content:center;
-
-
-align-items:center;
-
-
-gap:10px;
-
-
-
-text-decoration:none;
-
-
-color:var(--gold-light);
-
-
-
-transition:.3s;
-
-
-
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    margin-top:20px;
+    color:var(--gold);
 }
 
 
+/* ===========================
+STATUS
+=========================== */
 
-.back-login:hover{
-
-
-color:white;
-
-
-transform:translateY(-3px);
-
-
-
+.security-status{
+    margin-top:20px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    color:#888;
+    font-size:11px;
 }
 
 
+/* ===========================
+RODAPÉ
+=========================== */
 
+.recovery-footer{
+    margin-top:20px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    color:#666;
+    font-size:10px;
+}
 
+.recovery-footer strong{
+    color:var(--gold-dark);
+}
 
-
-
-
-
-/* ================================================
-FOOTER
-================================================ */
-
-
-footer{
-
-
-position:fixed;
-
-
-bottom:25px;
-
-
-left:0;
-
-
-width:100%;
-
-
-text-align:center;
-
-
-color:#777;
-
-
-font-size:12px;
-
-
-letter-spacing:2px;
-
-
-
+.recovery-footer b{
+    width:4px;
+    height:4px;
+    border-radius:50%;
+    background:var(--gold-dark);
 }
 
 
-
-footer strong{
-
-
-font-family:"Cinzel",serif;
-
-
-color:var(--gold);
-
-
-
-}
-
-
-
-
-
-
-
-
-
-/* ================================================
-ANIMAÇÕES
-================================================ */
-
-
-@keyframes moveLight{
-
-
-from{
-
-
-transform:translate(0,0);
-
-
-}
-
-
-
-to{
-
-
-transform:translate(80px,40px);
-
-
-}
-
-
-
-}
-
-
-
-
-
-@keyframes loading{
-
-
-from{
-
-
-transform:translateX(-150%);
-
-
-
-}
-
-
-to{
-
-
-transform:translateX(350%);
-
-
-
-}
-
-
-
-}
-
-
-
-
-
-@keyframes pulseEmpire{
-
-
-0%,100%{
-
-
-transform:scale(1);
-
-
-
-}
-
-
-
-50%{
-
-
-transform:scale(1.05);
-
-
-
-}
-
-
-
-}
-
-
-
-
-
-@keyframes logoFloat{
-
-
-0%,100%{
-
-
-transform:translateY(0);
-
-
-
-}
-
-
-
-50%{
-
-
-transform:translateY(-10px);
-
-
-
-}
-
-
-
-}
-
-
-
-
-
-
-
-
-@keyframes empireLight{
-
-
-0%{
-
-
-background-position:0%;
-
-
-
-}
-
-
-
-100%{
-
-
-background-position:300%;
-
-
-
-}
-
-
-
-}
-
-
-
-
-
-
-
-@keyframes empireFloat{
-
-
-0%,100%{
-
-
-transform:
-
-translateY(0);
-
-
-
-}
-
-
-
-50%{
-
-
-transform:
-
-translateY(-7px);
-
-
-
-}
-
-
-
-}
-
-
-
-
-
-
-@keyframes cardShow{
-
-
-from{
-
-
-opacity:0;
-
-
-transform:
-
-
-translateY(40px)
-
-scale(.95);
-
-
-
-}
-
-
-
-to{
-
-
-opacity:1;
-
-
-transform:
-
-translateY(0)
-
-scale(1);
-
-
-
-}
-
-
-
-}
-
-
-
-
-
-
-
-
-
-/* ================================================
+/* ===========================
 RESPONSIVO
-================================================ */
+=========================== */
 
+@media(max-width:600px){
 
-@media(max-width:700px){
+    .recovery-card{
+        padding:25px;
+    }
 
+    .recovery-header h2{
+        font-size:24px;
+    }
 
-
-.recovery-card{
-
-
-padding:30px 22px;
-
-
-}
-
-
-
-
-.logo-area h1{
-
-
-font-size:42px;
-
-
-letter-spacing:8px;
-
-
-
-}
-
-
-
-.logo-area img{
-
-
-width:70px;
-
-
-height:70px;
-
-
-
-}
-
-
-
-footer{
-
-
-position:relative;
-
-
-margin-top:30px;
-
-
-
-}
-
-
-
-}
-
-
-
-
-
-@media(max-width:420px){
-
-
-
-.recovery-card{
-
-
-border-radius:22px;
-
-
-
-}
-
-
-
-.logo-area h1{
-
-
-font-size:34px;
-
-
-letter-spacing:5px;
-
-
-
-}
-
-
-
-.gold-button{
-
-
-height:52px;
-
-
-
-}
-
-
+    .recovery-brand h1{
+        font-size:34px;
+    }
 
 }
