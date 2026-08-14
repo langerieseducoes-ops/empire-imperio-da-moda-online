@@ -1,1490 +1,817 @@
-
-/*
-====================================================
- EMPIRE ERP
- LOGIN PREMIUM
- Preto | Ouro | Grafite
-====================================================
-*/
-
-
-/* ================================================
-RESET
-================================================ */
-
-*{
-
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-
-}
-
-
 :root{
-
     --black:#050505;
-    --dark:#0b0b0b;
-    --graphite:#161616;
-
+    --dark:#090909;
+    --graphite:#121212;
+    --graphite-2:#1a1a1a;
     --gold:#d4af37;
     --gold-light:#f8e48c;
     --gold-dark:#8f6b12;
-
-    --white:#ffffff;
+    --white:#fff;
     --text:#d8d8d8;
-
-    --border:
-    rgba(212,175,55,.35);
-
+    --muted:#858585;
+    --border:rgba(212,175,55,.28);
+    --glass:rgba(255,255,255,.055);
+    --shadow:0 30px 80px rgba(0,0,0,.75);
 }
 
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
 
-
-
+html{
+    min-height:100%;
+}
 
 body{
-
     min-height:100vh;
-
-    overflow:hidden;
-
-    font-family:"Poppins",sans-serif;
-
-    background:var(--black);
-
-    color:white;
-
-}
-
-
-
-/* ================================================
-FUNDO ANIMADO
-================================================ */
-
-
-.background{
-
-    position:fixed;
-
-    inset:0;
-
-    overflow:hidden;
-
-    z-index:-1;
-
-
     background:
+        radial-gradient(
+            circle at 50% -10%,
+            #292929 0,
+            #111 30%,
+            #050505 72%
+        );
+    color:var(--text);
+    font-family:"Poppins",sans-serif;
+    overflow-x:hidden;
+}
 
+button,
+input{
+    font:inherit;
+}
 
-    radial-gradient(
-
-    circle at top,
-
-    rgba(212,175,55,.25),
-
-    transparent 45%
-
-
-    ),
-
-
-    linear-gradient(
-
-    135deg,
-
-    #050505,
-
-    #161616
-
-    );
-
-
+button{
+    cursor:pointer;
 }
 
 
-
-
-
-
-.light{
-
-
-    position:absolute;
-
-    border-radius:50%;
-
-    filter:blur(120px);
-
-    opacity:.4;
-
-    animation:
-
-    moveLight 12s infinite alternate;
-
-
-}
-
-
-
-.light1{
-
-
-    width:450px;
-
-    height:450px;
-
-    background:var(--gold);
-
-    top:-150px;
-
-    left:-150px;
-
-
-}
-
-
-
-.light2{
-
-
-    width:350px;
-
-    height:350px;
-
-    background:var(--gold-dark);
-
-    right:-120px;
-
-    top:40%;
-
-
-}
-
-
-
-.light3{
-
-
-    width:300px;
-
-    height:300px;
-
-    background:var(--gold);
-
-    bottom:-120px;
-
-    left:40%;
-
-
-}
-
-
-
-
-
-
-
-/* ================================================
-PARTÍCULAS
-================================================ */
-
-
-#particles{
-
-    position:absolute;
-
-    inset:0;
-
-}
-
-
-
-.particle{
-
-
-    position:absolute;
-
-    bottom:-20px;
-
-
-    width:4px;
-
-    height:4px;
-
-
-    background:var(--gold);
-
-
-    border-radius:50%;
-
-
-    opacity:.5;
-
-
-    animation:
-
-    particleUp linear infinite;
-
-
-}
-
-
-
-
-
-
-/* ================================================
+/* ==================================================
 LOADER
-================================================ */
-
+================================================== */
 
 .loader{
-
-
     position:fixed;
-
-
     inset:0;
-
-
-    background:
-
-
-    radial-gradient(
-
-    circle,
-
-    #181818,
-
-    #050505
-
-    );
-
-
-    display:flex;
-
-    justify-content:center;
-
-    align-items:center;
-
-
     z-index:9999;
-
-
-    animation:
-
-    loaderOut 1s ease 2s forwards;
-
-
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#050505;
+    transition:
+        opacity .6s ease,
+        visibility .6s ease;
 }
 
+.loader.hide{
+    opacity:0;
+    visibility:hidden;
+    pointer-events:none;
+}
 
-
-.loader-box{
-
+.loader-content{
+    width:300px;
     text-align:center;
-
 }
 
-
-
-
-
-.loader-box h1{
-
-
-    font-family:"Cinzel",serif;
-
-
-    font-size:80px;
-
-
-    letter-spacing:18px;
-
-
+.loader-crown{
+    margin-bottom:3px;
     color:var(--gold);
+    font-size:25px;
+    text-shadow:0 0 25px rgba(212,175,55,.45);
+}
 
-
-    animation:
-
-    empirePulse 2s infinite;
-
-
+.loader-logo{
+    color:var(--gold);
+    font-family:"Cinzel",serif;
+    font-size:42px;
+    font-weight:800;
+    letter-spacing:7px;
     text-shadow:
-
-
-    0 0 30px rgba(212,175,55,.9);
-
-
+        0 0 20px rgba(212,175,55,.2);
 }
 
-
-
-.loader-box span{
-
-
+.loader-subtitle{
+    margin-top:5px;
     color:var(--gold-light);
-
-
-    letter-spacing:5px;
-
-
-    font-size:13px;
-
-
+    font-size:9px;
+    font-weight:600;
+    letter-spacing:3px;
 }
-
-
-
-
-
 
 .loader-line{
-
-
-    width:280px;
-
-
-    height:4px;
-
-
-    background:#222;
-
-
-    border-radius:20px;
-
-
-    margin:30px auto;
-
-
+    width:100%;
+    height:2px;
+    margin-top:26px;
     overflow:hidden;
-
-
+    background:rgba(255,255,255,.08);
 }
 
-
-
-.loader-line div{
-
-
-    width:40%;
-
-
+.loader-line span{
+    display:block;
+    width:35%;
     height:100%;
-
-
     background:
+        linear-gradient(
+            90deg,
+            transparent,
+            var(--gold),
+            var(--gold-light),
+            var(--gold)
+        );
+    box-shadow:0 0 15px rgba(212,175,55,.6);
+    animation:loaderMove 1.4s ease-in-out infinite;
+}
 
+@keyframes loaderMove{
+    0%{
+        transform:translateX(-120%);
+    }
 
-    linear-gradient(
-
-    90deg,
-
-    transparent,
-
-    var(--gold),
-
-    transparent
-
-    );
-
-
-    animation:
-
-    loading 2s infinite;
-
-
+    100%{
+        transform:translateX(390%);
+    }
 }
 
 
-/* ================================================
-LOGIN CONTAINER
-================================================ */
+/* ==================================================
+FUNDO LUXURY
+================================================== */
+
+.luxury-background{
+    position:fixed;
+    inset:0;
+    z-index:0;
+    overflow:hidden;
+    pointer-events:none;
+}
+
+.luxury-background::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:
+        linear-gradient(
+            135deg,
+            rgba(255,255,255,.015),
+            transparent 35%,
+            rgba(212,175,55,.015)
+        );
+}
+
+.luxury-background::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    opacity:.16;
+    background-image:
+        linear-gradient(
+            rgba(255,255,255,.025) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            90deg,
+            rgba(255,255,255,.025) 1px,
+            transparent 1px
+        );
+    background-size:55px 55px;
+    mask-image:linear-gradient(
+        to bottom,
+        #000,
+        transparent 85%
+    );
+}
+
+.luxury-glow{
+    position:absolute;
+    width:420px;
+    height:420px;
+    border-radius:50%;
+    background:rgba(212,175,55,.08);
+    filter:blur(100px);
+}
+
+.glow-one{
+    top:-220px;
+    left:-170px;
+}
+
+.glow-two{
+    right:-220px;
+    bottom:-180px;
+}
+
+.glow-three{
+    top:42%;
+    left:45%;
+    width:260px;
+    height:260px;
+    opacity:.35;
+}
+
+
+/* ==================================================
+CONTAINER
+================================================== */
 
 .login-container{
-
+    position:relative;
+    z-index:1;
+    width:100%;
     min-height:100vh;
-
     display:flex;
-
-    justify-content:center;
-
+    flex-direction:column;
     align-items:center;
-
-    padding:25px;
-
+    justify-content:center;
+    padding:40px 20px;
 }
 
 
+/* ==================================================
+MARCA
+================================================== */
 
-/* ================================================
-CARD LOGIN PREMIUM
-================================================ */
+.login-brand{
+    margin-bottom:28px;
+    text-align:center;
+}
+
+.brand-frame{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:18px;
+}
+
+.brand-frame span{
+    width:55px;
+    height:1px;
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            var(--gold)
+        );
+}
+
+.brand-frame span:last-child{
+    background:
+        linear-gradient(
+            90deg,
+            var(--gold),
+            transparent
+        );
+}
+
+.logo-empresa{
+    width:78px;
+    height:78px;
+    object-fit:contain;
+    filter:
+        drop-shadow(
+            0 0 20px rgba(212,175,55,.35)
+        );
+}
+
+.login-brand > small{
+    display:block;
+    margin-top:13px;
+    color:var(--gold-dark);
+    font-size:8px;
+    font-weight:700;
+    letter-spacing:4px;
+}
+
+.login-brand h1{
+    margin-top:2px;
+    color:var(--gold);
+    font-family:"Cinzel",serif;
+    font-size:40px;
+    font-weight:800;
+    letter-spacing:7px;
+    text-shadow:
+        0 0 25px rgba(212,175,55,.16);
+}
+
+.login-brand p{
+    margin-top:2px;
+    color:var(--gold-light);
+    font-size:9px;
+    font-weight:500;
+    letter-spacing:3px;
+}
+
+
+/* ==================================================
+CARD
+================================================== */
 
 .login-card{
-
-
-    width:100%;
-
-    max-width:460px;
-
-
-    padding:45px;
-
-
-    background:
-
-    rgba(255,255,255,.05);
-
-
-    border:
-
-    1px solid var(--border);
-
-
-    border-radius:30px;
-
-
-    backdrop-filter:blur(25px);
-
-
-
-    box-shadow:
-
-
-    0 30px 80px rgba(0,0,0,.7),
-
-
-    0 0 50px rgba(212,175,55,.12);
-
-
-
-    animation:
-
-
-    cardEntrance 1s ease;
-
-
-}
-
-
-
-
-
-
-
-/* ================================================
-LOGO EMPIRE ANIMADO
-================================================ */
-
-
-.logo-area{
-
-
-    text-align:center;
-
-    margin-bottom:35px;
-
-
-}
-
-
-
-.logo-area img{
-
-
-    width:90px;
-
-    height:90px;
-
-    object-fit:contain;
-
-
-    animation:
-
-
-    logoFloat 4s infinite ease-in-out;
-
-
-}
-
-
-
-
-
-
-.logo-area h1{
-
-
     position:relative;
-
-
-    font-family:"Cinzel",serif;
-
-
-    font-size:65px;
-
-
-    font-weight:900;
-
-
-    letter-spacing:15px;
-
-
-    margin-top:15px;
-
-
-
+    width:100%;
+    max-width:450px;
+    padding:38px 36px;
+    overflow:hidden;
+    border:1px solid var(--border);
+    border-radius:25px;
     background:
-
-
-    linear-gradient(
-
-    90deg,
-
-    #8f6b12,
-
-    #f8e48c,
-
-    #ffffff,
-
-    #d4af37,
-
-    #8f6b12
-
-    );
-
-
-
-    background-size:300%;
-
-
-    -webkit-background-clip:text;
-
-
-    -webkit-text-fill-color:transparent;
-
-
-    animation:
-
-
-    empireLight 5s linear infinite,
-
-
-    empireFloat 4s ease-in-out infinite;
-
-
-
-    filter:
-
-
-    drop-shadow(
-
-    0 0 25px rgba(212,175,55,.8)
-
-    );
-
-
-
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,.085),
+            rgba(255,255,255,.025) 45%,
+            rgba(0,0,0,.35)
+        );
+    box-shadow:
+        var(--shadow),
+        inset 0 1px rgba(255,255,255,.06);
+    backdrop-filter:blur(18px);
 }
 
-
-
-.logo-area h1::after{
-
-
-    content:"";
-
-
+.card-shine{
     position:absolute;
+    top:-100px;
+    left:-130px;
+    width:300px;
+    height:170px;
+    background:rgba(212,175,55,.08);
+    filter:blur(55px);
+    transform:rotate(-20deg);
+    pointer-events:none;
+}
 
+.card-corner{
+    position:absolute;
+    width:35px;
+    height:35px;
+    border-color:rgba(212,175,55,.5);
+    pointer-events:none;
+}
 
-    inset:0;
+.corner-top{
+    top:14px;
+    left:14px;
+    border-top:1px solid;
+    border-left:1px solid;
+}
 
-
-
-    background:
-
-
-    linear-gradient(
-
-    120deg,
-
-    transparent 40%,
-
-    rgba(255,255,255,.9),
-
-    transparent 60%
-
-    );
-
-
-
-    transform:translateX(-120%);
-
-
-
-    animation:
-
-
-    shineEmpire 4s infinite;
-
-
-
+.corner-bottom{
+    right:14px;
+    bottom:14px;
+    border-right:1px solid;
+    border-bottom:1px solid;
 }
 
 
+/* ==================================================
+HEADER
+================================================== */
+
+.login-header{
+    position:relative;
+    text-align:center;
+    margin-bottom:30px;
+}
+
+.login-overline{
+    display:inline-flex;
+    align-items:center;
+    gap:7px;
+    color:var(--gold);
+    font-size:9px;
+    font-weight:700;
+    letter-spacing:2.5px;
+}
+
+.login-overline i{
+    font-size:10px;
+}
+
+.login-header h2{
+    margin-top:9px;
+    color:#fff;
+    font-family:"Cinzel",serif;
+    font-size:27px;
+    font-weight:700;
+}
+
+.login-header p{
+    margin-top:8px;
+    color:#858585;
+    font-size:11px;
+}
 
 
+/* ==================================================
+FORM
+================================================== */
 
+.form-group{
+    margin-bottom:19px;
+}
 
-.logo-area p{
-
-
+.form-group label{
+    display:block;
+    margin-bottom:8px;
     color:var(--gold-light);
-
-
-    font-size:12px;
-
-
-    letter-spacing:4px;
-
-
-    margin-top:10px;
-
-
+    font-size:10px;
+    font-weight:700;
+    letter-spacing:1.5px;
 }
-
-
-
-
-
-
-/* ================================================
-INPUTS
-================================================ */
-
 
 .input-box{
-
-
-    height:58px;
-
-
+    position:relative;
     display:flex;
-
-
     align-items:center;
-
-
-    gap:15px;
-
-
-    padding:0 18px;
-
-
-    margin-bottom:20px;
-
-
-
-    background:
-
-    rgba(0,0,0,.35);
-
-
-
-    border:
-
-
-    1px solid rgba(212,175,55,.25);
-
-
-
-    border-radius:18px;
-
-
-
-    transition:.4s;
-
-
 }
 
-
-
-
-.input-box:focus-within{
-
-
-    border-color:var(--gold);
-
-
-    box-shadow:
-
-
-    0 0 25px rgba(212,175,55,.2);
-
-
-
-    transform:translateY(-3px);
-
-
-
-}
-
-
-
-
-
-.input-box i{
-
-
+.input-box > i{
+    position:absolute;
+    left:16px;
+    z-index:2;
     color:var(--gold);
-
-
-    font-size:18px;
-
-
+    font-size:13px;
 }
-
-
-
 
 .input-box input{
-
-
-    flex:1;
-
-
-    background:none;
-
-
-    border:none;
-
-
+    width:100%;
+    height:52px;
+    padding:
+        0 46px 0 44px;
+    border:1px solid rgba(212,175,55,.2);
+    border-radius:13px;
     outline:none;
-
-
-    color:white;
-
-
-    font-size:15px;
-
-
+    background:
+        linear-gradient(
+            90deg,
+            rgba(0,0,0,.65),
+            rgba(255,255,255,.025)
+        );
+    color:#fff;
+    font-size:13px;
+    transition:
+        border-color .25s,
+        box-shadow .25s,
+        background .25s;
 }
-
-
-
 
 .input-box input::placeholder{
-
-
-    color:#888;
-
-
+    color:#5f5f5f;
 }
 
-
-
-
-
-
-/* ================================================
-BOTÃO MOSTRAR SENHA
-================================================ */
-
-
-#mostrarSenha{
-
-
-    background:none;
-
-
-    border:none;
-
-
-    cursor:pointer;
-
-
-    color:var(--gold);
-
-
-    font-size:18px;
-
-
+.input-box input:hover{
+    border-color:rgba(212,175,55,.4);
 }
 
-
-
-
-
-
-/* ================================================
-MENSAGEM
-================================================ */
-
-
-#mensagem{
-
-
-    min-height:25px;
-
-
-    text-align:center;
-
-
-    font-size:14px;
-
-
-    margin-bottom:15px;
-
-
-}
-
-
-
-
-
-
-/* ================================================
-BOTÃO LOGIN
-================================================ */
-
-
-.btn-login{
-
-
-    width:100%;
-
-
-    height:60px;
-
-
-    border:none;
-
-
-    border-radius:18px;
-
-
-
-    cursor:pointer;
-
-
-    display:flex;
-
-
-    align-items:center;
-
-
-    justify-content:center;
-
-
-    gap:15px;
-
-
-
-
-    background:
-
-
-    linear-gradient(
-
-    135deg,
-
-    var(--gold-light),
-
-    var(--gold)
-
-    );
-
-
-
-    color:#050505;
-
-
-    font-weight:800;
-
-
-    font-size:16px;
-
-
-    letter-spacing:2px;
-
-
-    transition:.4s;
-
-
-    position:relative;
-
-
-    overflow:hidden;
-
-
-}
-
-
-
-
-.btn-login:hover{
-
-
-    transform:translateY(-5px);
-
-
-
+.input-box input:focus{
+    border-color:var(--gold);
+    background:#090909;
     box-shadow:
-
-
-    0 15px 35px rgba(212,175,55,.35);
-
-
-
+        0 0 0 3px rgba(212,175,55,.06),
+        0 0 22px rgba(212,175,55,.1);
 }
 
 
+/* ==================================================
+SENHA
+================================================== */
 
-
-
-.btn-login::before{
-
-
-    content:"";
-
-
+.password-button{
     position:absolute;
-
-
-    width:80px;
-
-
-    height:200%;
-
-
-    background:
-
-    rgba(255,255,255,.5);
-
-
-
-    transform:rotate(35deg);
-
-
-    left:-120px;
-
-
-    transition:.6s;
-
-
-}
-
-
-
-
-
-.btn-login:hover::before{
-
-
-    left:120%;
-
-
-}
-
-
-
-
-
-
-/* ================================================
-ESQUECI SENHA
-================================================ */
-
-
-.forgot{
-
-
-    display:flex;
-
-
-    justify-content:center;
-
-
-    align-items:center;
-
-
-    gap:10px;
-
-
-    margin-top:25px;
-
-
-
-    color:var(--gold-light);
-
-
-    text-decoration:none;
-
-
-    transition:.3s;
-
-
-}
-
-
-
-
-.forgot:hover{
-
-
-    color:white;
-
-
-    transform:translateY(-3px);
-
-
-}
-
-/* ================================================
-FOOTER
-================================================ */
-
-footer{
-
-    position:fixed;
-
-    bottom:25px;
-
-    left:0;
-
-    width:100%;
-
-    text-align:center;
-
+    right:7px;
+    width:38px;
+    height:38px;
+    border:0;
+    border-radius:9px;
+    background:transparent;
     color:#777;
+    transition:.2s;
+}
 
-    font-size:12px;
+.password-button:hover{
+    color:var(--gold-light);
+    background:rgba(212,175,55,.06);
+}
 
+
+/* ==================================================
+MENSAGEM
+================================================== */
+
+.login-message{
+    min-height:19px;
+    margin:
+        0 0 10px;
+    text-align:center;
+    color:#e2a6a6;
+    font-size:11px;
+}
+
+
+/* ==================================================
+BOTÃO
+================================================== */
+
+.login-button{
+    position:relative;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:15px;
+    width:100%;
+    height:54px;
+    overflow:hidden;
+    border:1px solid rgba(248,228,140,.4);
+    border-radius:13px;
+    background:
+        linear-gradient(
+            135deg,
+            #f0ce55,
+            #b68b19 52%,
+            #e1bd48
+        );
+    color:#080808;
+    font-size:11px;
+    font-weight:800;
+    letter-spacing:1.2px;
+    box-shadow:
+        0 12px 30px rgba(0,0,0,.35),
+        inset 0 1px rgba(255,255,255,.45);
+    transition:
+        transform .25s,
+        box-shadow .25s;
+}
+
+.login-button::before{
+    content:"";
+    position:absolute;
+    top:0;
+    left:-100%;
+    width:60%;
+    height:100%;
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(255,255,255,.28),
+            transparent
+        );
+    transform:skewX(-20deg);
+    transition:.6s;
+}
+
+.login-button:hover{
+    transform:translateY(-2px);
+    box-shadow:
+        0 17px 35px rgba(0,0,0,.45),
+        0 0 25px rgba(212,175,55,.2);
+}
+
+.login-button:hover::before{
+    left:130%;
+}
+
+.login-button:disabled{
+    opacity:.6;
+    cursor:not-allowed;
+    transform:none;
+}
+
+
+/* ==================================================
+RECUPERAÇÃO
+================================================== */
+
+.recovery-section{
+    margin-top:25px;
+}
+
+.recovery-divider{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:15px;
+}
+
+.recovery-divider span{
+    flex:1;
+    height:1px;
+    background:rgba(255,255,255,.08);
+}
+
+.recovery-divider small{
+    color:#666;
+    font-size:8px;
+    font-weight:700;
     letter-spacing:2px;
-
 }
 
+.recovery-link{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:13px;
+    border:1px solid rgba(212,175,55,.13);
+    border-radius:13px;
+    background:rgba(255,255,255,.018);
+    color:#ddd;
+    text-decoration:none;
+    transition:.25s;
+}
 
-footer strong{
+.recovery-link:hover{
+    border-color:rgba(212,175,55,.4);
+    background:rgba(212,175,55,.045);
+    transform:translateY(-1px);
+}
 
+.recovery-icon{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    width:34px;
+    height:34px;
+    border-radius:9px;
+    background:rgba(212,175,55,.08);
     color:var(--gold);
+}
 
+.recovery-text{
+    display:flex;
+    flex:1;
+    flex-direction:column;
+}
+
+.recovery-text strong{
+    color:var(--gold-light);
+    font-size:11px;
+}
+
+.recovery-text small{
+    margin-top:2px;
+    color:#666;
+    font-size:9px;
+}
+
+.recovery-link > i{
+    color:#666;
+    font-size:10px;
+}
+
+.recovery-note{
+    margin-top:10px;
+    color:#555;
+    text-align:center;
+    font-size:9px;
+}
+
+
+/* ==================================================
+SEGURANÇA
+================================================== */
+
+.security-status{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin-top:17px;
+    padding:8px 13px;
+    border:1px solid rgba(212,175,55,.1);
+    border-radius:30px;
+    background:rgba(255,255,255,.025);
+    color:#707070;
+    font-size:9px;
+}
+
+.security-status i:first-child{
+    color:var(--gold);
+}
+
+.security-status i:last-child{
+    color:#778f62;
+}
+
+
+/* ==================================================
+RODAPÉ
+================================================== */
+
+.login-footer{
+    display:flex;
+    align-items:center;
+    gap:13px;
+    margin-top:20px;
+    color:#555;
+    font-size:9px;
+}
+
+.login-footer div{
+    display:flex;
+    align-items:center;
+    gap:8px;
+}
+
+.login-footer strong{
+    color:var(--gold-dark);
     font-family:"Cinzel",serif;
+    letter-spacing:1px;
+}
 
+.login-footer b{
+    width:3px;
+    height:3px;
+    border-radius:50%;
+    background:var(--gold-dark);
 }
 
 
-
-/* ================================================
-ANIMAÇÕES
-================================================ */
-
-
-@keyframes moveLight{
-
-
-    from{
-
-        transform:translate(0,0);
-
-    }
-
-
-    to{
-
-        transform:translate(80px,50px);
-
-    }
-
-
-}
-
-
-
-@keyframes particleUp{
-
-
-    0%{
-
-        transform:translateY(0) scale(1);
-
-        opacity:0;
-
-    }
-
-
-    20%{
-
-        opacity:.8;
-
-    }
-
-
-    100%{
-
-        transform:translateY(-110vh) scale(1.8);
-
-        opacity:0;
-
-    }
-
-
-}
-
-
-
-
-
-@keyframes loading{
-
-
-    from{
-
-        transform:translateX(-150%);
-
-    }
-
-
-    to{
-
-        transform:translateX(350%);
-
-    }
-
-
-}
-
-
-
-
-@keyframes loaderOut{
-
-
-    to{
-
-        opacity:0;
-
-        visibility:hidden;
-
-    }
-
-
-}
-
-
-
-
-
-
-@keyframes empirePulse{
-
-
-    0%,100%{
-
-
-        transform:scale(1);
-
-    }
-
-
-
-    50%{
-
-
-        transform:scale(1.05);
-
-    }
-
-
-}
-
-
-
-
-
-
-
-@keyframes logoFloat{
-
-
-    0%,100%{
-
-
-        transform:translateY(0);
-
-    }
-
-
-    50%{
-
-
-        transform:translateY(-10px);
-
-    }
-
-
-}
-
-
-
-
-
-
-
-@keyframes empireLight{
-
-
-    0%{
-
-        background-position:0%;
-
-    }
-
-
-
-    100%{
-
-        background-position:300%;
-
-    }
-
-
-}
-
-
-
-
-
-
-
-@keyframes empireFloat{
-
-
-    0%,100%{
-
-        transform:
-
-        translateY(0)
-
-        scale(1);
-
-
-    }
-
-
-
-    50%{
-
-
-        transform:
-
-        translateY(-8px)
-
-        scale(1.03);
-
-
-    }
-
-
-}
-
-
-
-
-
-@keyframes shineEmpire{
-
-
-    0%{
-
-
-        transform:translateX(-120%);
-
-
-    }
-
-
-    35%{
-
-
-        transform:translateX(120%);
-
-
-    }
-
-
-
-    100%{
-
-
-        transform:translateX(120%);
-
-
-    }
-
-
-}
-
-
-
-
-
-
-
-@keyframes cardEntrance{
-
-
-    from{
-
-
-        opacity:0;
-
-
-        transform:
-
-        translateY(50px)
-
-        scale(.95);
-
-
-    }
-
-
-    to{
-
-
-        opacity:1;
-
-
-        transform:
-
-        translateY(0)
-
-        scale(1);
-
-
-    }
-
-
-}
-
-
-
-
-
-
-
-
-/* ================================================
+/* ==================================================
 RESPONSIVO
-================================================ */
+================================================== */
 
+@media(max-width:600px){
 
-@media(max-width:700px){
-
-
-    body{
-
-        overflow:auto;
-
+    .login-container{
+        padding:30px 15px;
     }
 
+    .login-brand{
+        margin-bottom:22px;
+    }
 
+    .brand-frame{
+        gap:12px;
+    }
+
+    .brand-frame span{
+        width:35px;
+    }
+
+    .logo-empresa{
+        width:65px;
+        height:65px;
+    }
+
+    .login-brand h1{
+        font-size:32px;
+        letter-spacing:5px;
+    }
+
+    .login-brand p{
+        font-size:8px;
+        letter-spacing:2px;
+    }
 
     .login-card{
-
-
         padding:30px 22px;
-
-
+        border-radius:21px;
     }
 
-
-
-    .logo-area h1{
-
-
-        font-size:42px;
-
-
-        letter-spacing:8px;
-
-
+    .login-header h2{
+        font-size:23px;
     }
 
+}
 
+@media(max-width:380px){
 
-    .logo-area img{
-
-
-        width:70px;
-
-        height:70px;
-
-
+    .login-container{
+        padding:22px 12px;
     }
 
-
-
-    footer{
-
-
-        position:relative;
-
-        margin-top:30px;
-
-
+    .login-card{
+        padding:25px 17px;
     }
 
+    .login-brand h1{
+        font-size:28px;
+    }
 
+    .login-footer{
+        flex-direction:column;
+        gap:6px;
+    }
+
+    .login-footer b{
+        display:none;
+    }
 
 }
 
 
+/* ==================================================
+REDUÇÃO DE MOVIMENTO
+================================================== */
 
+@media(prefers-reduced-motion:reduce){
 
-
-
-@media(max-width:420px){
-
-
-
-    .login-card{
-
-
-        border-radius:22px;
-
-
+    *,
+    *::before,
+    *::after{
+        animation-duration:.01ms !important;
+        animation-iteration-count:1 !important;
+        transition:none !important;
     }
-
-
-
-
-    .logo-area h1{
-
-
-        font-size:34px;
-
-
-        letter-spacing:5px;
-
-
-    }
-
-
-
-    .btn-login{
-
-
-        height:52px;
-
-
-    }
-
-
 
 }
