@@ -7,528 +7,378 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+<meta name="theme-color" content="#050505">
 
-<title>
-EMPIRE ERP | Recuperar Senha
-</title>
+<meta
+name="description"
+content="EMPIRE ERP - Recuperação de senha">
 
-
-<link rel="icon" href="../../assets/img/favicon.png">
-
-
-
-<link rel="preconnect" href="https://fonts.googleapis.com">
-
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<title>EMPIRE | Recuperar Senha</title>
 
 
+<link
+rel="icon"
+href="../../assets/img/favicon.png">
 
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<link
+rel="preconnect"
+href="https://fonts.googleapis.com">
 
 
+<link
+rel="preconnect"
+href="https://fonts.gstatic.com"
+crossorigin>
 
-<link rel="stylesheet"
 
+<link
+href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800&display=swap"
+rel="stylesheet">
+
+
+<link
+rel="stylesheet"
 href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
 
-
-<link rel="stylesheet"
-
+<link
+rel="stylesheet"
 href="../../assets/css/recuperar-senha.css">
 
-
-
 </head>
-
 
 
 <body>
 
 
-
 <!-- FUNDO -->
 
-<div class="background">
+<div class="recovery-background">
 
+    <div class="recovery-glow glow-one"></div>
 
-<div class="light light1"></div>
+    <div class="recovery-glow glow-two"></div>
 
-<div class="light light2"></div>
-
-<div class="light light3"></div>
-
+    <div class="recovery-glow glow-three"></div>
 
 </div>
 
 
-
-
-
-
-<!-- LOADER -->
-
-<div class="loader" id="loader">
-
-
-<div class="loader-box">
-
-
-<h1>
-EMPIRE
-</h1>
-
-
-<span>
-Recuperação de Senha
-</span>
-
-
-
-<div class="loader-line">
-
-<div></div>
-
-</div>
-
-
-</div>
-
-
-</div>
-
-
-
-
-
-
-
-
+<!-- CONTAINER -->
 
 <main class="recovery-container">
 
 
+    <!-- MARCA -->
 
-<section class="recovery-card">
+    <section class="recovery-brand">
 
+        <div class="brand-line">
 
+            <span></span>
 
+            <img
+            src="../../assets/img/logo.png"
+            alt="EMPIRE"
+            class="recovery-logo">
 
+            <span></span>
 
+        </div>
 
 
-<div class="logo-area">
+        <small>
+            EMPIRE ERP
+        </small>
 
 
-<img src="../../assets/img/logo.png"
+        <h1>
+            EMPIRE
+        </h1>
 
-alt="EMPIRE">
 
+        <p>
+            IMPÉRIO DA MODA ONLINE
+        </p>
 
-<h1>
-EMPIRE
-</h1>
+    </section>
 
 
-<p>
-Império da Moda Online
-</p>
+    <!-- CARD -->
 
+    <section class="recovery-card">
 
-</div>
 
+        <div class="card-glow"></div>
 
 
+        <div class="card-corner corner-top"></div>
 
+        <div class="card-corner corner-bottom"></div>
 
 
+        <!-- CABEÇALHO -->
 
-<h2>
-Recuperar Senha
-</h2>
+        <header class="recovery-header">
 
+            <div class="recovery-icon-main">
 
+                <i class="fa-solid fa-key"></i>
 
-<p class="description">
+            </div>
 
-Verifique sua identidade e permissão.
 
-</p>
+            <span class="recovery-label">
+                CENTRAL DE SEGURANÇA
+            </span>
 
 
+            <h2>
+                Recuperar Senha
+            </h2>
 
 
+            <p>
+                Informe os dados da sua conta para
+                solicitar uma nova senha.
+            </p>
 
+        </header>
 
 
+        <!-- ETAPAS -->
 
-<div class="input-box">
+        <div class="recovery-steps">
 
 
-<i class="fa-solid fa-user"></i>
+            <div class="step active">
 
+                <span>
+                    1
+                </span>
 
-<input
+                <small>
+                    Identificação
+                </small>
 
-id="usuarioRecuperacao"
+            </div>
 
-type="text"
 
-placeholder="Digite seu usuário">
+            <div class="step-line"></div>
 
 
-</div>
+            <div class="step">
 
+                <span>
+                    2
+                </span>
 
+                <small>
+                    Autorização
+                </small>
 
+            </div>
 
 
+            <div class="step-line"></div>
 
 
-<button
+            <div class="step">
 
-id="buscarUsuario"
+                <span>
+                    3
+                </span>
 
-class="gold-button">
+                <small>
+                    Nova senha
+                </small>
 
+            </div>
 
-<i class="fa-solid fa-magnifying-glass"></i>
 
+        </div>
 
-Verificar Usuário
 
+        <!-- FORMULÁRIO -->
 
-</button>
+        <form
+        id="recoveryForm"
+        autocomplete="off">
 
 
+            <div class="form-group">
 
+                <label for="recoveryUser">
 
+                    USUÁRIO
 
+                </label>
 
 
-<div id="usuarioInfo"
+                <div class="input-box">
 
-class="user-info hidden">
+                    <i class="fa-solid fa-user"></i>
 
 
+                    <input
+                    type="text"
+                    id="recoveryUser"
+                    name="recoveryUser"
+                    placeholder="Digite seu usuário"
+                    autocomplete="off"
+                    required>
 
-<h3>
-Dados do Usuário
-</h3>
+                </div>
 
+            </div>
 
 
-<p>
-Nome:
-<strong id="nomeUsuario"></strong>
-</p>
+            <div class="form-group">
 
+                <label for="recoveryEmail">
 
-<p>
-Cargo:
-<strong id="cargoUsuario"></strong>
-</p>
+                    EMAIL CADASTRADO
 
+                </label>
 
-<p>
-Permissão:
-<strong id="statusUsuario"></strong>
-</p>
 
+                <div class="input-box">
 
+                    <i class="fa-solid fa-envelope"></i>
 
-</div>
-<!-- AUTORIZAÇÃO ADMINISTRADOR -->
 
-<div id="adminAuthorization" class="authorization-box hidden">
+                    <input
+                    type="email"
+                    id="recoveryEmail"
+                    name="recoveryEmail"
+                    placeholder="Digite seu email"
+                    autocomplete="off"
+                    required>
 
+                </div>
 
-<h3>
+            </div>
 
-<i class="fa-solid fa-shield-halved"></i>
 
-Autorização do Administrador
+            <!-- MENSAGEM -->
 
-</h3>
+            <div
+            id="recoveryMessage"
+            class="recovery-message">
+            </div>
 
 
+            <!-- BOTÃO -->
 
-<p>
+            <button
+            type="submit"
+            id="recoveryButton"
+            class="recovery-button">
 
-Este usuário precisa da liberação de um administrador.
+                <span>
+                    SOLICITAR RECUPERAÇÃO
+                </span>
 
-</p>
+                <i class="fa-solid fa-arrow-right"></i>
 
+            </button>
 
 
+        </form>
 
 
-<div class="input-box">
+        <!-- AVISO -->
 
+        <div class="authorization-box">
 
-<i class="fa-solid fa-user-shield"></i>
 
+            <div class="authorization-icon">
 
-<input
+                <i class="fa-solid fa-shield-halved"></i>
 
-id="adminUsuario"
+            </div>
 
-type="text"
 
-placeholder="Usuário administrador">
+            <div>
 
+                <strong>
+                    Autorização obrigatória
+                </strong>
 
-</div>
 
+                <p>
+                    A alteração da senha somente será
+                    liberada após autorização do
+                    administrador do sistema.
+                </p>
 
+            </div>
 
 
+        </div>
 
-<div class="input-box">
 
+        <!-- VOLTAR -->
 
-<i class="fa-solid fa-lock"></i>
+        <a
+        href="../../index.html"
+        class="back-login">
 
+            <i class="fa-solid fa-arrow-left"></i>
 
-<input
+            <span>
+                Voltar para o login
+            </span>
 
-id="adminSenha"
+        </a>
 
-type="password"
 
-placeholder="Senha administrador">
+    </section>
 
 
+    <!-- STATUS -->
 
-<button
+    <div class="security-status">
 
-type="button"
+        <i class="fa-solid fa-lock"></i>
 
-id="mostrarAdminSenha">
+        <span>
+            Ambiente seguro
+        </span>
 
+        <i class="fa-solid fa-circle-check"></i>
 
-<i class="fa-solid fa-eye"></i>
+    </div>
 
 
-</button>
+    <!-- RODAPÉ -->
 
+    <footer class="recovery-footer">
 
+        <strong>
+            EMPIRE ERP
+        </strong>
 
-</div>
+        <span>
+            Império da Moda Online
+        </span>
 
+        <b></b>
 
+        <span>
+            © 2026
+        </span>
 
-
-
-
-<button
-
-id="autorizarAdmin"
-
-class="gold-button">
-
-
-<i class="fa-solid fa-check"></i>
-
-
-Autorizar Alteração
-
-
-</button>
-
-
-
-</div>
-
-
-
-
-
-
-
-
-
-<!-- ALTERAÇÃO DE SENHA -->
-
-
-<div id="alterarSenhaBox" class="password-box hidden">
-
-
-
-<h3>
-
-<i class="fa-solid fa-key"></i>
-
-Nova Senha
-
-</h3>
-
-
-
-
-
-<div class="input-box">
-
-
-<i class="fa-solid fa-lock"></i>
-
-
-<input
-
-id="novaSenha"
-
-type="password"
-
-placeholder="Nova senha">
-
-
-</div>
-
-
-
-
-
-
-
-<div class="input-box">
-
-
-<i class="fa-solid fa-lock"></i>
-
-
-<input
-
-id="confirmarSenha"
-
-type="password"
-
-placeholder="Confirmar nova senha">
-
-
-</div>
-
-
-
-
-
-
-
-<div class="strength">
-
-
-<div id="strengthBar"></div>
-
-
-</div>
-
-
-<p id="strengthText">
-
-</p>
-
-
-
-
-
-
-
-<button
-
-id="salvarSenha"
-
-class="gold-button">
-
-
-<i class="fa-solid fa-save"></i>
-
-
-Salvar Nova Senha
-
-
-</button>
-
-
-
-</div>
-
-
-
-
-
-
-
-
-<div id="mensagem"></div>
-
-
-
-
-
-
-
-
-
-<a href="../../index.html"
-
-class="back-login">
-
-
-<i class="fa-solid fa-arrow-left"></i>
-
-
-Voltar para Login
-
-
-</a>
-
-
-
-
-
-</section>
+    </footer>
 
 
 </main>
 
 
-
-
-
-
-
-
-
-<footer>
-
-
-<strong>
-
-EMPIRE ERP
-
-</strong>
-
-
-<br>
-
-
-Recuperação segura de acesso
-
-
-</footer>
-
-
-
-
-
-
-
-
-
 <script src="../../assets/js/recuperar-senha.js"></script>
 
 
-
 </body>
-
 
 </html>
