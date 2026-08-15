@@ -1,241 +1,251 @@
 (() => {
     "use strict";
 
-    const KEY = "empire_produtos";
+    if (window.empireProdutosLoaded) return;
+    window.empireProdutosLoaded = true;
+
     const $ = id => document.getElementById(id);
+
+    const elements = {
+        loader: $("productsLoader"),
+        clock: $("systemClock"),
+        lastUpdate: $("lastUpdate"),
+
+        total: $("totalProducts"),
+        stock: $("totalStock"),
+        categories: $("totalCategories"),
+        lowStock: $("lowStock"),
+
+        search: $("productSearch"),
+        category: $("categoryFilter"),
+        table: $("productsTable"),
+        chart: $("categoryChart"),
+
+        add: $("addProductButton"),
+        modal: $("productModal"),
+        close: $("closeModal"),
+        cancel: $("cancelProduct"),
+        form: $("productForm"),
+        message: $("formMessage"),
+
+        id: $("productId"),
+        name: $("productName"),
+        size: $("productSize"),
+        color: $("productColor"),
+        categoryInput: $("productCategory"),
+        sale: $("salePrice"),
+        cost: $("stockPrice"),
+        quantity: $("productQuantity"),
+        image: $("productImage"),
+        preview: $("imagePreview"),
+
+        modalTitle: $("modalTitle"),
+        modalOverline: $("modalOverline"),
+
+        viewModal: $("viewModal"),
+        closeView: $("closeViewModal"),
+        viewImage: $("viewImage"),
+        viewCategory: $("viewCategory"),
+        viewCategoryText: $("viewCategoryText"),
+        viewName: $("viewName"),
+        viewDescription: $("viewDescription"),
+        viewSize: $("viewSize"),
+        viewColor: $("viewColor"),
+        viewSale: $("viewSale"),
+        viewCost: $("viewCost"),
+        viewStock: $("viewStock"),
+        viewStatus: $("viewStatus"),
+
+        notifications: $("notificationPanel"),
+        notificationList: $("notificationList"),
+        notificationButton: $("notificationButton"),
+        notificationCount: $("notificationCount"),
+        closeNotifications: $("closeNotifications"),
+
+        toast: $("toastContainer")
+    };
+
+    const STORAGE_KEY = "empire_erp_produtos";
 
     let products = [];
     let editingId = null;
-    let imageData = "";
 
-    const money = value =>
-        Number(value || 0).toLocaleString("pt-BR", {
-            style: "currency",
-            currency: "BRL"
-        });
-
-    const escapeHTML = value =>
-        String(value ?? "").replace(/[&<>"']/g, char => ({
-            "&": "&amp;",
-            "<": "&lt;",
-            ">": "&gt;",
-            '"': "&quot;",
-            "'": "&#039;"
-        }[char]));
-
-    function loadProducts() {
+    function readProducts() {
         try {
-            const saved = JSON.parse(localStorage.getItem(KEY));
-            products = Array.isArray(saved) ? saved : [];
+            const data = localStorage.getItem(STORAGE_KEY);
+
+            if (!data) return [];
+
+            const parsed = JSON.parse(data);
+
+            return Array.isArray(parsed)
+                ? parsed
+                : [];
         } catch {
-            products = [];
+            return [];
         }
     }
 
     function saveProducts() {
-        localStorage.setItem(KEY, JSON.stringify(products));
+        localStorage.setItem(
+            STORAGE_KEY,
+            JSON.stringify(products)
+        );
     }
 
-    function hideLoader() {
-        const loader = $("productsLoader");
+    function createId() {
+        return Date.now().toString(36) +
+            Math.random().toString(36).slice(2, 8);
+    }
 
-        if (!loader) return;
+    function money(value) {
+        return Number(value || 0).toLocaleString(
+            "pt-BR",
+            {
+                style: "currency",
+                currency: "BRL"
+            }
+        );
+    }
 
-        loader.classList.add("hide");
+    function escapeHTML(value) {
+        return String(value ?? "")
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
+
+    function getImage(product) {
+        return product.image || "";
+    }
+
+    function status(product) {
+        const quantity = Number(product.quantity || 0);
+
+        if (quantity <= 0) {
+            return "Sem estoque";
+        }
+
+        if (quantity <= 5) {
+            return "Estoque baixo";
+        }
+
+        return "Disponível";
+    }
+
+    function statusClass(product) {
+        return Number(product.quantity || 0) <= 5
+            ? "low"
+            : "";
+    }
+
+    function showToast(message, error = false) {
+        if (!elements.toast) return;
+
+        const item = document.createElement("div");
+
+        item.className =
+            "toast" + (error ? " error" : "");
+
+        item.innerHTML = `
+            <i class="fa-solid ${
+                error
+                    ? "fa-circle-exclamation"
+                    : "fa-circle-check"
+            }"></i>
+            <span>${escapeHTML(message)}</span>
+        `;
+
+        elements.toast.appendChild(item);
 
         setTimeout(() => {
-            loader.remove();
-        }, 750);
+            item.classList.add("hide");
+
+            setTimeout(() => {
+                item.remove();
+            }, 250);
+        }, 3000);
     }
 
     function updateClock() {
-        const clock = $("systemClock");
+        if (!elements.clock) return;
 
-        if (!clock) return;
+        const now = new Date();
 
-        clock.textContent = new Date().toLocaleTimeString(
-            "pt-BR",
-            {
-                hour: "2-digit",
-                minute: "2-digit",
-                second: "2-digit"
-            }
-        );
-    }
-
-    function updateLastUpdate() {
-        const element = $("lastUpdate");
-
-        if (!element) return;
-
-        element.textContent = new Date().toLocaleString(
-            "pt-BR",
-            {
-                day: "2-digit",
-                month: "2-digit",
-                hour: "2-digit",
-                minute: "2-digit"
-            }
-        );
-    }
-
-    function updateMetrics() {
-        const total = products.length;
-
-        const stock = products.reduce(
-            (sum, product) =>
-                sum + Number(product.quantity || 0),
-            0
-        );
-
-        const categories = new Set(
-            products
-                .map(product => product.category)
-                .filter(Boolean)
-                .map(category => category.toLowerCase())
-        );
-
-        const low = products.filter(
-            product =>
-                Number(product.quantity || 0) <= 0
-        ).length;
-
-        $("totalProducts").textContent = total;
-        $("totalStock").textContent = stock;
-        $("totalCategories").textContent = categories.size;
-        $("lowStock").textContent = low;
-
-        const saleTotal = products.reduce(
-            (sum, product) =>
-                sum +
-                Number(product.salePrice || 0) *
-                Number(product.quantity || 0),
-            0
-        );
-
-        const costTotal = products.reduce(
-            (sum, product) =>
-                sum +
-                Number(product.cost || 0) *
-                Number(product.quantity || 0),
-            0
-        );
-
-        const profit = saleTotal - costTotal;
-
-        if ($("stockValue")) {
-            $("stockValue").textContent = money(saleTotal);
-        }
-
-        if ($("costValue")) {
-            $("costValue").textContent = money(costTotal);
-        }
-
-        if ($("profitValue")) {
-            $("profitValue").textContent = money(profit);
-        }
-
-        if ($("productCountLabel")) {
-            $("productCountLabel").textContent =
-                `${total} produto${total === 1 ? "" : "s"}`;
-        }
-
-        if ($("chartTotal")) {
-            $("chartTotal").textContent =
-                `${stock} unidade${stock === 1 ? "" : "s"}`;
-        }
-
-        const progress = $("stockProgress");
-
-        if (progress) {
-            const percent = Math.min(
-                100,
-                total ? (products.filter(
-                    product =>
-                        Number(product.quantity || 0) > 0
-                ).length / total) * 100 : 0
+        elements.clock.textContent =
+            now.toLocaleTimeString(
+                "pt-BR",
+                {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    second: "2-digit"
+                }
             );
-
-            progress.style.width = `${percent}%`;
-        }
     }
 
-    function updateCategories() {
-        const select = $("categoryFilter");
+    function updateDate() {
+        if (!elements.lastUpdate) return;
 
-        if (!select) return;
+        const now = new Date();
 
-        const current = select.value;
-
-        const categories = [
-            ...new Set(
-                products
-                    .map(product => product.category)
-                    .filter(Boolean)
-            )
-        ].sort((a, b) =>
-            a.localeCompare(b, "pt-BR")
-        );
-
-        select.innerHTML =
-            '<option value="">Todas categorias</option>';
-
-        categories.forEach(category => {
-            const option = document.createElement("option");
-
-            option.value = category;
-            option.textContent = category;
-
-            select.appendChild(option);
-        });
-
-        if (
-            categories.includes(current)
-        ) {
-            select.value = current;
-        }
+        elements.lastUpdate.textContent =
+            now.toLocaleString(
+                "pt-BR",
+                {
+                    day: "2-digit",
+                    month: "2-digit",
+                    year: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit"
+                }
+            );
     }
 
-    function renderProducts() {
-        const table = $("productsTable");
-
-        if (!table) return;
-
-        const search =
-            ($("productSearch")?.value || "")
+    function filteredProducts() {
+        const text =
+            (elements.search?.value || "")
                 .trim()
                 .toLowerCase();
 
         const category =
-            $("categoryFilter")?.value || "";
+            elements.category?.value || "";
 
-        const filtered = products.filter(product => {
+        return products.filter(product => {
 
-            const text = [
-                product.name,
-                product.color,
-                product.category
-            ]
-                .join(" ")
-                .toLowerCase();
-
-            const matchesSearch =
-                !search || text.includes(search);
+            const matchesText =
+                !text ||
+                product.name.toLowerCase().includes(text) ||
+                product.color.toLowerCase().includes(text) ||
+                product.size.toLowerCase().includes(text) ||
+                product.category.toLowerCase().includes(text);
 
             const matchesCategory =
                 !category ||
                 product.category === category;
 
-            return matchesSearch && matchesCategory;
+            return matchesText && matchesCategory;
         });
+    }
 
-        if (!filtered.length) {
-            table.innerHTML = `
+    function renderTable() {
+        if (!elements.table) return;
+
+        const list = filteredProducts();
+
+        if (!list.length) {
+            elements.table.innerHTML = `
                 <tr>
                     <td colspan="8" class="empty">
                         <i class="fa-solid fa-box-open"></i>
-                        <strong>Nenhum produto encontrado</strong>
-                        <span>Cadastre um produto ou altere os filtros.</span>
+                        <strong>
+                            Nenhum produto encontrado
+                        </strong>
+                        <span>
+                            Cadastre um produto ou altere
+                            os filtros da pesquisa.
+                        </span>
                     </td>
                 </tr>
             `;
@@ -243,28 +253,25 @@
             return;
         }
 
-        table.innerHTML = filtered.map(product => {
+        elements.table.innerHTML = list.map(product => {
 
-            const quantity =
-                Number(product.quantity || 0);
+            const image = getImage(product);
 
-            const image = product.image
-                ? `
-                    <img
-                        src="${product.image}"
-                        alt=""
-                    >
-                `
-                : `
-                    <i class="fa-solid fa-box-open"></i>
-                `;
+            const imageHTML = image
+                ? `<img
+                    src="${escapeHTML(image)}"
+                    alt="${escapeHTML(product.name)}"
+                  >`
+                : `<i class="fa-solid fa-box-open"></i>`;
 
             return `
                 <tr>
+
                     <td>
                         <div class="product-info">
+
                             <div class="product-thumb">
-                                ${image}
+                                ${imageHTML}
                             </div>
 
                             <div>
@@ -273,14 +280,15 @@
                                 </strong>
 
                                 <small>
-                                    ID #${escapeHTML(product.id)}
+                                    ${escapeHTML(product.size)}
                                 </small>
                             </div>
+
                         </div>
                     </td>
 
                     <td>
-                        —
+                        ${escapeHTML(product.size)}
                     </td>
 
                     <td>
@@ -292,7 +300,7 @@
                     </td>
 
                     <td class="price">
-                        ${money(product.salePrice)}
+                        ${money(product.sale)}
                     </td>
 
                     <td>
@@ -300,77 +308,143 @@
                     </td>
 
                     <td>
-                        <span class="stock ${
-                            quantity <= 0
-                                ? "low"
-                                : "good"
-                        }">
-                            ${quantity}
+                        <span class="stock ${statusClass(product)}">
+                            ${Number(product.quantity || 0)}
                         </span>
                     </td>
 
                     <td>
+
                         <div class="actions">
 
                             <button
                                 class="action-button"
+                                data-action="view"
+                                data-id="${product.id}"
                                 title="Visualizar"
-                                data-view="${product.id}"
                             >
                                 <i class="fa-solid fa-eye"></i>
                             </button>
 
                             <button
                                 class="action-button"
+                                data-action="edit"
+                                data-id="${product.id}"
                                 title="Editar"
-                                data-edit="${product.id}"
                             >
                                 <i class="fa-solid fa-pen"></i>
                             </button>
 
                             <button
                                 class="action-button delete"
+                                data-action="delete"
+                                data-id="${product.id}"
                                 title="Excluir"
-                                data-delete="${product.id}"
                             >
                                 <i class="fa-solid fa-trash"></i>
                             </button>
 
                         </div>
+
                     </td>
+
                 </tr>
             `;
         }).join("");
     }
 
-    function renderChart() {
-        const chart = $("categoryChart");
+    function updateCategories() {
+        if (!elements.category) return;
 
-        if (!chart) return;
+        const current =
+            elements.category.value;
 
-        const groups = {};
+        const categories = [
+            ...new Set(
+                products
+                    .map(item => item.category)
+                    .filter(Boolean)
+            )
+        ].sort(
+            (a, b) =>
+                a.localeCompare(b, "pt-BR")
+        );
 
-        products.forEach(product => {
+        elements.category.innerHTML = `
+            <option value="">
+                Todas categorias
+            </option>
+        `;
 
-            const category =
-                product.category || "Sem categoria";
+        categories.forEach(category => {
 
-            groups[category] =
-                (groups[category] || 0) +
-                Number(product.quantity || 0);
+            const option =
+                document.createElement("option");
+
+            option.value = category;
+            option.textContent = category;
+
+            elements.category.appendChild(option);
         });
 
-        const entries =
-            Object.entries(groups)
-                .sort((a, b) => b[1] - a[1]);
+        if (
+            categories.includes(current)
+        ) {
+            elements.category.value =
+                current;
+        }
+    }
 
-        if (!entries.length) {
-            chart.innerHTML = `
+    function updateMetrics() {
+        const total =
+            products.length;
+
+        const stock =
+            products.reduce(
+                (sum, product) =>
+                    sum + Number(product.quantity || 0),
+                0
+            );
+
+        const categories =
+            new Set(
+                products
+                    .map(item => item.category)
+                    .filter(Boolean)
+            ).size;
+
+        const low =
+            products.filter(
+                product =>
+                    Number(product.quantity || 0) <= 5
+            ).length;
+
+        if (elements.total)
+            elements.total.textContent = total;
+
+        if (elements.stock)
+            elements.stock.textContent = stock;
+
+        if (elements.categories)
+            elements.categories.textContent = categories;
+
+        if (elements.lowStock)
+            elements.lowStock.textContent = low;
+    }
+
+    function renderChart() {
+        if (!elements.chart) return;
+
+        if (!products.length) {
+            elements.chart.innerHTML = `
                 <div class="empty">
-                    <i class="fa-solid fa-chart-column"></i>
-                    <strong>Sem dados para analisar</strong>
+                    <i class="fa-solid fa-chart-simple"></i>
+                    <strong>
+                        Nenhum dado disponível
+                    </strong>
                     <span>
-                        Cadastre produtos para visualizar o estoque.
+                        Cadastre produtos para visualizar
+                        o estoque por categoria.
                     </span>
                 </div>
             `;
@@ -378,248 +452,444 @@
             return;
         }
 
+        const data = {};
+
+        products.forEach(product => {
+
+            const category =
+                product.category || "Sem categoria";
+
+            data[category] =
+                (data[category] || 0) +
+                Number(product.quantity || 0);
+        });
+
+        const values =
+            Object.values(data);
+
         const max =
-            Math.max(...entries.map(item => item[1]), 1);
+            Math.max(...values, 1);
 
-        chart.innerHTML = entries.map(
-            ([category, value]) => {
+        elements.chart.innerHTML =
+            Object.entries(data)
+                .sort((a, b) => b[1] - a[1])
+                .map(([category, value]) => {
 
-                const width =
-                    Math.max(4, (value / max) * 100);
+                    const percentage =
+                        Math.max(
+                            3,
+                            (value / max) * 100
+                        );
 
-                return `
-                    <div class="chart-row">
+                    return `
+                        <div class="chart-row">
 
-                        <span class="chart-name">
-                            ${escapeHTML(category)}
-                        </span>
+                            <span class="chart-name">
+                                ${escapeHTML(category)}
+                            </span>
 
-                        <div class="chart-bar">
-                            <i style="width:${width}%"></i>
+                            <div class="chart-bar">
+                                <i
+                                    style="width:${percentage}%"
+                                ></i>
+                            </div>
+
+                            <span class="chart-value">
+                                ${value}
+                            </span>
+
                         </div>
-
-                        <strong class="chart-value">
-                            ${value}
-                        </strong>
-
-                    </div>
-                `;
-            }
-        ).join("");
+                    `;
+                }).join("");
     }
 
-    function refresh() {
+    function renderAll() {
         updateMetrics();
         updateCategories();
-        renderProducts();
+        renderTable();
         renderChart();
-        updateLastUpdate();
+        renderNotifications();
+        updateDate();
     }
 
     function openModal(product = null) {
 
-        const modal = $("productModal");
+        if (!elements.modal) return;
 
-        if (!modal) return;
+        editingId =
+            product?.id || null;
 
-        editingId = product?.id || null;
-        imageData = product?.image || "";
+        elements.form?.reset();
 
-        $("productId").value =
-            product?.id || "";
+        if (elements.id)
+            elements.id.value =
+                product?.id || "";
 
-        $("productName").value =
-            product?.name || "";
+        if (product) {
 
-        $("productColor").value =
-            product?.color || "";
+            if (elements.modalTitle)
+                elements.modalTitle.textContent =
+                    "Editar produto";
 
-        $("productCategory").value =
-            product?.category || "";
+            if (elements.modalOverline)
+                elements.modalOverline.textContent =
+                    "EDIÇÃO DE PRODUTO";
 
-        $("salePrice").value =
-            product?.salePrice ?? "";
+            elements.name.value =
+                product.name || "";
 
-        $("stockPrice").value =
-            product?.cost ?? "";
+            elements.size.value =
+                product.size || "";
 
-        $("productQuantity").value =
-            product?.quantity ?? "";
+            elements.color.value =
+                product.color || "";
 
-        $("modalTitle").textContent =
-            product
-                ? "Editar produto"
-                : "Adicionar produto";
+            elements.categoryInput.value =
+                product.category || "";
 
-        $("modalOverline").textContent =
-            product
-                ? "EDIÇÃO DE PRODUTO"
-                : "NOVO CADASTRO";
+            elements.sale.value =
+                product.sale ?? "";
 
-        $("formMessage").textContent = "";
+            elements.cost.value =
+                product.cost ?? "";
 
-        renderImagePreview();
+            elements.quantity.value =
+                product.quantity ?? "";
 
-        modal.classList.add("open");
+            showPreview(
+                product.image || ""
+            );
+
+        } else {
+
+            if (elements.modalTitle)
+                elements.modalTitle.textContent =
+                    "Adicionar produto";
+
+            if (elements.modalOverline)
+                elements.modalOverline.textContent =
+                    "NOVO CADASTRO";
+
+            showPreview("");
+
+        }
+
+        clearMessage();
+
+        elements.modal.classList.add("open");
+
         document.body.style.overflow = "hidden";
 
         setTimeout(() => {
-            $("productName")?.focus();
-        }, 100);
+            elements.name?.focus();
+        }, 150);
     }
 
     function closeModal() {
 
-        const modal = $("productModal");
+        if (!elements.modal) return;
 
-        if (!modal) return;
-
-        modal.classList.remove("open");
+        elements.modal.classList.remove("open");
 
         document.body.style.overflow = "";
 
         editingId = null;
-        imageData = "";
-
-        $("productForm")?.reset();
-
-        renderImagePreview();
     }
 
-    function renderImagePreview() {
+    function openView(product) {
 
-        const preview = $("imagePreview");
+        if (!elements.viewModal) return;
 
-        if (!preview) return;
+        const image =
+            getImage(product);
 
-        if (!imageData) {
-            preview.className = "image-preview";
+        elements.viewName.textContent =
+            product.name || "Produto";
 
-            preview.innerHTML = `
+        elements.viewCategory.textContent =
+            product.category || "PRODUTO";
+
+        elements.viewCategoryText.textContent =
+            product.category || "—";
+
+        elements.viewDescription.textContent =
+            `${product.color || "Sem cor"} • ${
+                product.size || "Sem tamanho"
+            }`;
+
+        elements.viewSize.textContent =
+            product.size || "—";
+
+        elements.viewColor.textContent =
+            product.color || "—";
+
+        elements.viewSale.textContent =
+            money(product.sale);
+
+        elements.viewCost.textContent =
+            money(product.cost);
+
+        elements.viewStock.textContent =
+            Number(product.quantity || 0);
+
+        elements.viewStatus.textContent =
+            status(product);
+
+        if (image) {
+
+            elements.viewImage.innerHTML = `
+                <img
+                    src="${escapeHTML(image)}"
+                    alt="${escapeHTML(product.name)}"
+                >
+            `;
+
+        } else {
+
+            elements.viewImage.innerHTML = `
+                <i class="fa-solid fa-box-open"></i>
+            `;
+        }
+
+        elements.viewModal.classList.add("open");
+
+        document.body.style.overflow = "hidden";
+    }
+
+    function closeView() {
+
+        if (!elements.viewModal) return;
+
+        elements.viewModal.classList.remove("open");
+
+        document.body.style.overflow = "";
+    }
+
+    function showPreview(src) {
+
+        if (!elements.preview) return;
+
+        if (!src) {
+
+            elements.preview.classList.remove(
+                "has-image"
+            );
+
+            elements.preview.innerHTML = `
                 <i class="fa-solid fa-image"></i>
-                <span>Prévia da imagem</span>
+                <span>
+                    Prévia da imagem
+                </span>
             `;
 
             return;
         }
 
-        preview.className =
-            "image-preview has-image";
+        elements.preview.classList.add(
+            "has-image"
+        );
 
-        preview.innerHTML = `
+        elements.preview.innerHTML = `
             <img
-                src="${imageData}"
-                alt="Prévia do produto"
+                src="${escapeHTML(src)}"
+                alt="Prévia"
             >
         `;
     }
 
     function readImage(file) {
 
-        if (!file) return;
+        return new Promise(resolve => {
 
-        if (!file.type.startsWith("image/")) {
-            showMessage(
-                "Selecione uma imagem válida.",
-                true
-            );
+            if (!file) {
+                resolve("");
+                return;
+            }
 
-            return;
-        }
+            const reader =
+                new FileReader();
 
-        const reader = new FileReader();
+            reader.onload = event => {
+                resolve(
+                    event.target.result || ""
+                );
+            };
 
-        reader.onload = event => {
-            imageData = event.target.result;
-            renderImagePreview();
-        };
+            reader.onerror = () => {
+                resolve("");
+            };
 
-        reader.readAsDataURL(file);
+            reader.readAsDataURL(file);
+        });
     }
 
-    function showMessage(message, error = false) {
+    function clearMessage() {
 
-        const element = $("formMessage");
+        if (!elements.message) return;
 
-        if (!element) return;
+        elements.message.textContent = "";
+        elements.message.style.color = "";
+    }
 
-        element.textContent = message;
-        element.style.color =
+    function showMessage(
+        message,
+        error = false
+    ) {
+
+        if (!elements.message) return;
+
+        elements.message.textContent =
+            message;
+
+        elements.message.style.color =
             error
-                ? "var(--danger)"
-                : "var(--success)";
+                ? "var(--red)"
+                : "var(--green)";
     }
 
-    function submitProduct(event) {
+    async function submitProduct(event) {
 
         event.preventDefault();
 
-        const name =
-            $("productName").value.trim();
-
-        const color =
-            $("productColor").value.trim();
-
-        const category =
-            $("productCategory").value.trim();
-
-        const salePrice =
-            Number($("salePrice").value);
-
-        const cost =
-            Number($("stockPrice").value);
-
-        const quantity =
-            Number($("productQuantity").value);
-
-        if (!name || !color || !category) {
+        if (!elements.name.value.trim()) {
             showMessage(
-                "Preencha os campos obrigatórios.",
+                "Informe o nome do produto.",
                 true
             );
+            return;
+        }
 
+        if (!elements.size.value.trim()) {
+            showMessage(
+                "Informe o tamanho.",
+                true
+            );
+            return;
+        }
+
+        if (!elements.color.value.trim()) {
+            showMessage(
+                "Informe a cor.",
+                true
+            );
+            return;
+        }
+
+        if (!elements.categoryInput.value.trim()) {
+            showMessage(
+                "Informe a categoria.",
+                true
+            );
+            return;
+        }
+
+        const sale =
+            Number(elements.sale.value);
+
+        const cost =
+            Number(elements.cost.value);
+
+        const quantity =
+            Number(elements.quantity.value);
+
+        if (
+            !Number.isFinite(sale) ||
+            sale < 0
+        ) {
+            showMessage(
+                "Informe um preço de venda válido.",
+                true
+            );
             return;
         }
 
         if (
-            !Number.isFinite(salePrice) ||
-            salePrice < 0 ||
             !Number.isFinite(cost) ||
-            cost < 0 ||
+            cost < 0
+        ) {
+            showMessage(
+                "Informe um preço de custo válido.",
+                true
+            );
+            return;
+        }
+
+        if (
             !Number.isFinite(quantity) ||
             quantity < 0
         ) {
             showMessage(
-                "Confira os valores informados.",
+                "Informe uma quantidade válida.",
                 true
             );
-
             return;
         }
 
-        const data = {
-            id: editingId ||
-                Date.now().toString(36),
-            name,
-            color,
-            category,
-            salePrice,
+        let image = "";
+
+        const selectedFile =
+            elements.image.files?.[0];
+
+        if (selectedFile) {
+            image =
+                await readImage(selectedFile);
+        }
+
+        if (
+            !image &&
+            editingId
+        ) {
+
+            const old =
+                products.find(
+                    item =>
+                        item.id === editingId
+                );
+
+            image =
+                old?.image || "";
+        }
+
+        const product = {
+
+            id:
+                editingId ||
+                createId(),
+
+            name:
+                elements.name.value.trim(),
+
+            size:
+                elements.size.value.trim(),
+
+            color:
+                elements.color.value.trim(),
+
+            category:
+                elements.categoryInput.value.trim(),
+
+            sale,
+
             cost,
+
             quantity,
-            image: imageData,
-            updatedAt: Date.now()
+
+            image,
+
+            updatedAt:
+                new Date().toISOString()
         };
 
         if (editingId) {
 
             const index =
                 products.findIndex(
-                    product =>
-                        product.id === editingId
+                    item =>
+                        item.id === editingId
                 );
 
-            if (index !== -1) {
-                products[index] = data;
+            if (index >= 0) {
+                products[index] = product;
             }
 
             showToast(
@@ -628,7 +898,7 @@
 
         } else {
 
-            products.unshift(data);
+            products.unshift(product);
 
             showToast(
                 "Produto cadastrado com sucesso."
@@ -636,72 +906,22 @@
         }
 
         saveProducts();
-        refresh();
+
+        renderAll();
+
         closeModal();
     }
 
-    function openView(product) {
+    function editProduct(id) {
 
-        const modal = $("viewModal");
+        const product =
+            products.find(
+                item => item.id === id
+            );
 
-        if (!modal || !product) return;
-
-        $("viewCategory").textContent =
-            product.category || "PRODUTO";
-
-        $("viewName").textContent =
-            product.name || "Produto";
-
-        $("viewDescription").textContent =
-            "Informações comerciais e de estoque.";
-
-        $("viewColor").textContent =
-            product.color || "—";
-
-        $("viewCategoryText").textContent =
-            product.category || "—";
-
-        $("viewSale").textContent =
-            money(product.salePrice);
-
-        $("viewCost").textContent =
-            money(product.cost);
-
-        $("viewStock").textContent =
-            product.quantity ?? 0;
-
-        $("viewStatus").textContent =
-            Number(product.quantity || 0) > 0
-                ? "Disponível"
-                : "Sem estoque";
-
-        const image =
-            $("viewImage");
-
-        if (product.image) {
-
-            image.innerHTML = `
-                <img
-                    src="${product.image}"
-                    alt="${escapeHTML(product.name)}"
-                >
-            `;
-
-        } else {
-
-            image.innerHTML =
-                '<i class="fa-solid fa-box-open"></i>';
+        if (product) {
+            openModal(product);
         }
-
-        modal.classList.add("open");
-        document.body.style.overflow = "hidden";
-    }
-
-    function closeView() {
-
-        $("viewModal")?.classList.remove("open");
-
-        document.body.style.overflow = "";
     }
 
     function deleteProduct(id) {
@@ -726,75 +946,33 @@
             );
 
         saveProducts();
-        refresh();
+
+        renderAll();
 
         showToast(
-            "Produto excluído.",
-            true
+            "Produto excluído com sucesso."
         );
     }
 
-    function showToast(message, error = false) {
+    function renderNotifications() {
 
-        const container =
-            $("toastContainer");
-
-        if (!container) return;
-
-        const toast =
-            document.createElement("div");
-
-        toast.className =
-            `toast${error ? " error" : ""}`;
-
-        toast.innerHTML = `
-            <i class="fa-solid ${
-                error
-                    ? "fa-circle-exclamation"
-                    : "fa-circle-check"
-            }"></i>
-
-            <span>
-                ${escapeHTML(message)}
-            </span>
-        `;
-
-        container.appendChild(toast);
-
-        setTimeout(() => {
-            toast.classList.add("hide");
-
-            setTimeout(
-                () => toast.remove(),
-                300
-            );
-        }, 3000);
-    }
-
-    function updateNotifications() {
-
-        const list =
-            $("notificationList");
-
-        const badge =
-            $("notificationCount");
-
-        if (!list) return;
+        if (
+            !elements.notificationList ||
+            !elements.notificationCount
+        ) return;
 
         const low =
             products.filter(
                 product =>
-                    Number(product.quantity || 0) <= 0
+                    Number(product.quantity || 0) <= 5
             );
 
-        if (badge) {
-            badge.textContent = low.length;
-            badge.style.display =
-                low.length ? "block" : "none";
-        }
+        elements.notificationCount.textContent =
+            low.length;
 
         if (!low.length) {
-            list.innerHTML = `
+
+            elements.notificationList.innerHTML = `
                 <div class="notification-empty">
                     Nenhuma notificação no momento.
                 </div>
@@ -803,7 +981,7 @@
             return;
         }
 
-        list.innerHTML =
+        elements.notificationList.innerHTML =
             low.map(product => `
                 <div class="notification-item">
 
@@ -812,14 +990,17 @@
                     </div>
 
                     <div>
+
                         <strong>
-                            Estoque esgotado
+                            ${escapeHTML(product.name)}
                         </strong>
 
                         <span>
-                            ${escapeHTML(product.name)}
-                            está sem unidades disponíveis.
+                            Estoque atual:
+                            ${Number(product.quantity || 0)}
+                            unidade(s).
                         </span>
+
                     </div>
 
                 </div>
@@ -827,121 +1008,151 @@
     }
 
     function toggleNotifications() {
-        $("notificationPanel")
-            ?.classList.toggle("open");
+
+        if (!elements.notifications) return;
+
+        elements.notifications.classList.toggle(
+            "open"
+        );
+    }
+
+    function handleTableClick(event) {
+
+        const button =
+            event.target.closest(
+                "[data-action]"
+            );
+
+        if (!button) return;
+
+        const id =
+            button.dataset.id;
+
+        const action =
+            button.dataset.action;
+
+        const product =
+            products.find(
+                item => item.id === id
+            );
+
+        if (!product) return;
+
+        if (action === "view") {
+            openView(product);
+        }
+
+        if (action === "edit") {
+            editProduct(id);
+        }
+
+        if (action === "delete") {
+            deleteProduct(id);
+        }
     }
 
     function bindEvents() {
 
-        $("addProductButton")
-            ?.addEventListener(
-                "click",
-                () => openModal()
-            );
-
-        $("closeModal")
-            ?.addEventListener(
-                "click",
-                closeModal
-            );
-
-        $("cancelProduct")
-            ?.addEventListener(
-                "click",
-                closeModal
-            );
-
-        $("productForm")
-            ?.addEventListener(
-                "submit",
-                submitProduct
-            );
-
-        $("productImage")
-            ?.addEventListener(
-                "change",
-                event =>
-                    readImage(event.target.files[0])
-            );
-
-        $("productSearch")
-            ?.addEventListener(
-                "input",
-                renderProducts
-            );
-
-        $("categoryFilter")
-            ?.addEventListener(
-                "change",
-                renderProducts
-            );
-
-        $("notificationButton")
-            ?.addEventListener(
-                "click",
-                toggleNotifications
-            );
-
-        $("closeNotifications")
-            ?.addEventListener(
-                "click",
-                toggleNotifications
-            );
-
-        $("closeViewModal")
-            ?.addEventListener(
-                "click",
-                closeView
-            );
-
-        document.addEventListener(
+        elements.add?.addEventListener(
             "click",
-            event => {
+            () => openModal()
+        );
 
-                const view =
-                    event.target.closest(
-                        "[data-view]"
-                    );
+        elements.close?.addEventListener(
+            "click",
+            closeModal
+        );
 
-                const edit =
-                    event.target.closest(
-                        "[data-edit]"
-                    );
+        elements.cancel?.addEventListener(
+            "click",
+            closeModal
+        );
 
-                const remove =
-                    event.target.closest(
-                        "[data-delete]"
-                    );
+        elements.form?.addEventListener(
+            "submit",
+            submitProduct
+        );
 
-                if (view) {
+        elements.table?.addEventListener(
+            "click",
+            handleTableClick
+        );
 
-                    const product =
-                        products.find(
-                            item =>
-                                item.id ===
-                                view.dataset.view
-                        );
+        elements.search?.addEventListener(
+            "input",
+            renderTable
+        );
 
-                    openView(product);
+        elements.category?.addEventListener(
+            "change",
+            renderTable
+        );
+
+        elements.image?.addEventListener(
+            "change",
+            async () => {
+
+                const file =
+                    elements.image.files?.[0];
+
+                if (!file) {
+                    showPreview("");
+                    return;
                 }
 
-                if (edit) {
+                if (
+                    !file.type.startsWith("image/")
+                ) {
+                    elements.image.value = "";
 
-                    const product =
-                        products.find(
-                            item =>
-                                item.id ===
-                                edit.dataset.edit
-                        );
+                    showPreview("");
 
-                    openModal(product);
-                }
-
-                if (remove) {
-                    deleteProduct(
-                        remove.dataset.delete
+                    showToast(
+                        "Selecione uma imagem válida.",
+                        true
                     );
+
+                    return;
                 }
+
+                if (
+                    file.size > 5 * 1024 * 1024
+                ) {
+
+                    elements.image.value = "";
+
+                    showPreview("");
+
+                    showToast(
+                        "A imagem deve ter no máximo 5 MB.",
+                        true
+                    );
+
+                    return;
+                }
+
+                const image =
+                    await readImage(file);
+
+                showPreview(image);
+            }
+        );
+
+        elements.closeView?.addEventListener(
+            "click",
+            closeView
+        );
+
+        elements.notificationButton?.addEventListener(
+            "click",
+            toggleNotifications
+        );
+
+        elements.closeNotifications?.addEventListener(
+            "click",
+            () => {
+                elements.notifications
+                    ?.classList.remove("open");
             }
         );
 
@@ -971,39 +1182,64 @@
             "keydown",
             event => {
 
-                if (event.key !== "Escape") {
-                    return;
-                }
+                if (
+                    event.key !== "Escape"
+                ) return;
 
                 closeModal();
                 closeView();
 
-                $("notificationPanel")
+                elements.notifications
                     ?.classList.remove("open");
             }
         );
     }
 
-    function init() {
+    function finishLoader() {
 
-        loadProducts();
-        bindEvents();
-        refresh();
-        updateNotifications();
-        updateClock();
+        if (!elements.loader) return;
 
-        setInterval(updateClock, 1000);
+        setTimeout(() => {
 
-        setTimeout(
-            hideLoader,
-            650
-        );
+            elements.loader.classList.add(
+                "hide"
+            );
+
+        }, 450);
     }
 
-    document.addEventListener(
-        "DOMContentLoaded",
-        init,
-        { once: true }
-    );
+    function init() {
+
+        products =
+            readProducts();
+
+        bindEvents();
+
+        renderAll();
+
+        updateClock();
+
+        window.setInterval(
+            updateClock,
+            1000
+        );
+
+        finishLoader();
+    }
+
+    if (
+        document.readyState === "loading"
+    ) {
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            init,
+            { once: true }
+        );
+
+    } else {
+
+        init();
+    }
 
 })();
