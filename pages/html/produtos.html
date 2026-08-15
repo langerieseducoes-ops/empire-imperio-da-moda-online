@@ -1,778 +1,718 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>EMPIRE | Império da Moda Online</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <link rel="icon" href="../../assets/img/favicon.png">
-    <link rel="stylesheet" href="../../assets/css/produtos.css">
+<meta name="theme-color" content="#050505">
+<meta name="description" content="EMPIRE ERP - Gestão de Produtos">
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<title>EMPIRE | Império da Moda Online</title>
 
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" href="../../assets/img/favicon.png">
 
-    <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<link rel="stylesheet" href="../../assets/css/produtos.css">
+
 </head>
 
 <body>
 
-    <div id="productsLoader" class="products-loader">
-        <div class="loader-box">
-            <div class="loader-logo">EMPIRE</div>
-            <div class="loader-subtitle">Império da Moda Online</div>
-            <div class="loader-bar">
-                <span></span>
-            </div>
-        </div>
+<!-- LOADER -->
+
+<div class="products-loader" id="productsLoader">
+
+    <div class="loader-logo">EMPIRE</div>
+
+    <div class="loader-subtitle">
+        Império da Moda Online
     </div>
 
-    <div class="products-app">
+    <div class="loader-line">
+        <span></span>
+    </div>
 
-        <aside class="products-sidebar">
+</div>
 
-            <div class="sidebar-brand">
-                <img src="../../assets/img/logo.png" alt="Logo EMPIRE">
 
-                <div class="brand-text">
-                    <strong>EMPIRE</strong>
-                    <span>ERP PREMIUM</span>
-                </div>
-            </div>
+<!-- FUNDO -->
 
-            <nav class="sidebar-menu">
+<div class="luxury-background">
 
-                <a href="dashboard.html" class="menu-item">
-                    <i class="fa-solid fa-house"></i>
-                    <span>Tela Inicial</span>
-                </a>
+    <div class="background-glow glow-one"></div>
+    <div class="background-glow glow-two"></div>
+    <div class="background-glow glow-three"></div>
 
-                <a href="produtos.html" class="menu-item active">
-                    <i class="fa-solid fa-box-open"></i>
-                    <span>Produtos</span>
-                </a>
+</div>
 
-                <a href="clientes.html" class="menu-item">
-                    <i class="fa-solid fa-users"></i>
-                    <span>Clientes</span>
-                </a>
 
-                <a href="vendas.html" class="menu-item">
-                    <i class="fa-solid fa-cart-shopping"></i>
-                    <span>Vendas</span>
-                </a>
+<!-- SISTEMA -->
 
-                <a href="compras.html" class="menu-item">
-                    <i class="fa-solid fa-bag-shopping"></i>
-                    <span>Compras</span>
-                </a>
+<div class="products-layout">
 
-                <a href="financeiro.html" class="menu-item">
-                    <i class="fa-solid fa-chart-line"></i>
-                    <span>Financeiro</span>
-                </a>
 
-                <a href="fornecedores.html" class="menu-item">
-                    <i class="fa-solid fa-truck"></i>
-                    <span>Fornecedores</span>
-                </a>
+<!-- SIDEBAR -->
 
-                <a href="relatorios.html" class="menu-item">
-                    <i class="fa-solid fa-file-lines"></i>
-                    <span>Relatórios</span>
-                </a>
+<aside class="sidebar" id="sidebar">
 
-                <a href="usuarios.html" class="menu-item">
-                    <i class="fa-solid fa-user-shield"></i>
-                    <span>Usuários</span>
-                </a>
+    <div class="brand">
 
-                <a href="configuracoes.html" class="menu-item">
-                    <i class="fa-solid fa-gear"></i>
-                    <span>Configurações</span>
-                </a>
+        <img
+            src="../../assets/img/logo.png"
+            alt="EMPIRE"
+        >
 
-            </nav>
+        <h2>EMPIRE</h2>
 
-            <div class="sidebar-footer">
-
-                <div class="system-status">
-                    <span class="status-dot"></span>
-
-                    <div>
-                        <strong>Sistema Online</strong>
-                        <small>EMPIRE ERP</small>
-                    </div>
-                </div>
-
-                <button type="button"
-                        id="logoutButton"
-                        class="logout-button">
-                    <i class="fa-solid fa-right-from-bracket"></i>
-                    <span>Sair</span>
-                </button>
-
-            </div>
-
-        </aside>
-
-        <main class="products-main">
-
-            <header class="products-header">
-
-                <div class="header-title">
-                    <span class="section-label">GESTÃO DO ERP</span>
-
-                    <h1>Produtos</h1>
-
-                    <p>
-                        Gerencie seu catálogo, estoque, preços e informações dos produtos.
-                    </p>
-                </div>
-
-                <div class="header-actions">
-
-                    <button type="button"
-                            id="notificationButton"
-                            class="icon-button"
-                            aria-label="Notificações">
-
-                        <i class="fa-regular fa-bell"></i>
-
-                        <span class="notification-badge">3</span>
-
-                    </button>
-
-                    <button type="button"
-                            id="openProductModal"
-                            class="gold-button">
-
-                        <i class="fa-solid fa-plus"></i>
-
-                        Novo Produto
-
-                    </button>
-
-                </div>
-
-            </header>
-
-            <section class="product-stats">
-
-                <article class="stat-card">
-
-                    <div class="stat-icon">
-                        <i class="fa-solid fa-boxes-stacked"></i>
-                    </div>
-
-                    <div class="stat-info">
-                        <span>Total de Produtos</span>
-                        <strong id="totalProducts">0</strong>
-                    </div>
-
-                </article>
-
-                <article class="stat-card">
-
-                    <div class="stat-icon">
-                        <i class="fa-solid fa-circle-check"></i>
-                    </div>
-
-                    <div class="stat-info">
-                        <span>Produtos Ativos</span>
-                        <strong id="activeProducts">0</strong>
-                    </div>
-
-                </article>
-
-                <article class="stat-card warning">
-
-                    <div class="stat-icon">
-                        <i class="fa-solid fa-triangle-exclamation"></i>
-                    </div>
-
-                    <div class="stat-info">
-                        <span>Estoque Baixo</span>
-                        <strong id="lowStockProducts">0</strong>
-                    </div>
-
-                </article>
-
-                <article class="stat-card">
-
-                    <div class="stat-icon">
-                        <i class="fa-solid fa-coins"></i>
-                    </div>
-
-                    <div class="stat-info">
-                        <span>Valor em Estoque</span>
-                        <strong id="stockValue">R$ 0,00</strong>
-                    </div>
-
-                </article>
-
-            </section>
-
-            <section class="products-panel">
-
-                <div class="panel-header">
-
-                    <div class="panel-title">
-                        <span class="section-label">CATÁLOGO EMPIRE</span>
-
-                        <h2>Produtos cadastrados</h2>
-
-                        <p>
-                            Visualize e gerencie todos os produtos da loja.
-                        </p>
-                    </div>
-
-                    <div class="panel-counter">
-                        <strong id="visibleProducts">0</strong>
-                        <span>produtos</span>
-                    </div>
-
-                </div>
-
-                <div class="products-toolbar">
-
-                    <div class="search-box">
-
-                        <i class="fa-solid fa-magnifying-glass"></i>
-
-                        <input
-                            type="search"
-                            id="productSearch"
-                            placeholder="Buscar produto ou código..."
-                            autocomplete="off">
-
-                    </div>
-
-                    <div class="filter-group">
-
-                        <select id="categoryFilter">
-                            <option value="all">Todas as categorias</option>
-                            <option value="lingerie">Lingerie</option>
-                            <option value="conjunto">Conjuntos</option>
-                            <option value="pijamas">Pijamas</option>
-                            <option value="moda">Moda</option>
-                            <option value="acessorios">Acessórios</option>
-                        </select>
-
-                        <select id="statusFilter">
-                            <option value="all">Todos os status</option>
-                            <option value="active">Ativos</option>
-                            <option value="inactive">Inativos</option>
-                            <option value="low">Estoque baixo</option>
-                        </select>
-
-                    </div>
-
-                </div>
-
-                <div id="productsGrid" class="products-grid">
-
-                    <div id="emptyProducts" class="empty-products">
-
-                        <div class="empty-icon">
-                            <i class="fa-solid fa-box-open"></i>
-                        </div>
-
-                        <h3>Nenhum produto cadastrado</h3>
-
-                        <p>
-                            Adicione produtos para começar a montar o catálogo da EMPIRE.
-                        </p>
-
-                        <button type="button"
-                                id="emptyAddProduct"
-                                class="gold-button">
-
-                            <i class="fa-solid fa-plus"></i>
-
-                            Cadastrar Produto
-
-                        </button>
-
-                    </div>
-
-                </div>
-              
-            </section>
-
-        </main>
+        <span>
+            Império da Moda Online
+        </span>
 
     </div>
 
-    <div id="productModal" class="modal">
 
-        <div class="modal-overlay" data-close-modal></div>
+    <div class="profile">
 
-        <div class="modal-box">
+        <img
+            src="../../assets/img/avatar.png"
+            alt="Administrador"
+        >
 
-            <div class="modal-header">
+        <div>
 
-                <div>
-                    <span class="section-label">CATÁLOGO EMPIRE</span>
-                    <h2 id="modalTitle">Novo Produto</h2>
-                </div>
+            <strong id="profileName">
+                Administrador
+            </strong>
 
-                <button type="button"
-                        class="modal-close"
-                        data-close-modal
-                        aria-label="Fechar">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
-
-            </div>
-
-            <form id="productForm">
-
-                <input type="hidden" id="productId">
-
-                <div class="product-form-grid">
-
-                    <div class="form-group form-image-group">
-
-                        <label>Imagem do Produto</label>
-
-                        <div class="image-preview" id="imagePreview">
-
-                            <i class="fa-solid fa-image"></i>
-
-                            <span>Sem imagem</span>
-
-                        </div>
-
-                        <label for="productImage" class="upload-button">
-                            <i class="fa-solid fa-camera"></i>
-                            Escolher imagem
-                        </label>
-
-                        <input
-                            type="file"
-                            id="productImage"
-                            accept="image/*"
-                            hidden>
-
-                    </div>
-
-                    <div class="form-fields">
-
-                        <div class="form-group">
-
-                            <label for="productName">
-                                Nome do Produto
-                            </label>
-
-                            <input
-                                type="text"
-                                id="productName"
-                                placeholder="Ex.: Conjunto Premium"
-                                required>
-
-                        </div>
-
-                        <div class="form-row">
-
-                            <div class="form-group">
-
-                                <label for="productCode">
-                                    Código
-                                </label>
-
-                                <input
-                                    type="text"
-                                    id="productCode"
-                                    placeholder="EMP-001"
-                                    required>
-
-                            </div>
-
-                            <div class="form-group">
-
-                                <label for="productCategory">
-                                    Categoria
-                                </label>
-
-                                <select id="productCategory" required>
-
-                                    <option value="">
-                                        Selecionar
-                                    </option>
-
-                                    <option value="lingerie">
-                                        Lingerie
-                                    </option>
-
-                                    <option value="conjunto">
-                                        Conjuntos
-                                    </option>
-
-                                    <option value="pijamas">
-                                        Pijamas
-                                    </option>
-
-                                    <option value="moda">
-                                        Moda
-                                    </option>
-
-                                    <option value="acessorios">
-                                        Acessórios
-                                    </option>
-
-                                </select>
-
-                            </div>
-
-                        </div>
-
-                        <div class="form-row">
-
-                            <div class="form-group">
-
-                                <label for="productCost">
-                                    Preço de Custo
-                                </label>
-
-                                <div class="money-input">
-                                    <span>R$</span>
-
-                                    <input
-                                        type="number"
-                                        id="productCost"
-                                        min="0"
-                                        step="0.01"
-                                        placeholder="0,00"
-                                        required>
-                                </div>
-
-                            </div>
-
-                            <div class="form-group">
-
-                                <label for="productPrice">
-                                    Preço de Venda
-                                </label>
-
-                                <div class="money-input">
-                                    <span>R$</span>
-
-                                    <input
-                                        type="number"
-                                        id="productPrice"
-                                        min="0"
-                                        step="0.01"
-                                        placeholder="0,00"
-                                        required>
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                        <div class="form-row">
-
-                            <div class="form-group">
-
-                                <label for="productStock">
-                                    Estoque
-                                </label>
-
-                                <input
-                                    type="number"
-                                    id="productStock"
-                                    min="0"
-                                    step="1"
-                                    placeholder="0"
-                                    required>
-
-                            </div>
-
-                            <div class="form-group">
-
-                                <label for="productMinStock">
-                                    Estoque Mínimo
-                                </label>
-
-                                <input
-                                    type="number"
-                                    id="productMinStock"
-                                    min="0"
-                                    step="1"
-                                    placeholder="5"
-                                    required>
-
-                            </div>
-
-                        </div>
-
-                        <div class="form-group">
-
-                            <label for="productDescription">
-                                Descrição
-                            </label>
-
-                            <textarea
-                                id="productDescription"
-                                rows="3"
-                                placeholder="Descrição do produto..."></textarea>
-
-                        </div>
-
-                        <label class="switch-field">
-
-                            <input
-                                type="checkbox"
-                                id="productActive"
-                                checked>
-
-                            <span class="switch"></span>
-
-                            <span>
-                                Produto ativo
-                            </span>
-
-                        </label>
-
-                    </div>
-
-                </div>
-
-                <div class="modal-footer">
-
-                    <button
-                        type="button"
-                        class="secondary-button"
-                        data-close-modal>
-                        Cancelar
-                    </button>
-
-                    <button
-                        type="submit"
-                        class="gold-button">
-
-                        <i class="fa-solid fa-floppy-disk"></i>
-
-                        Salvar Produto
-
-                    </button>
-
-                </div>
-
-            </form>
+            <small>
+                ● Online
+            </small>
 
         </div>
 
     </div>
 
-    <div id="viewProductModal" class="modal">
 
-        <div class="modal-overlay" data-close-view></div>
+    <nav class="menu">
 
-        <div class="modal-box product-view-box">
+        <a href="dashboard.html">
+            <i class="fa-solid fa-house"></i>
+            <span>Tela Inicial</span>
+        </a>
 
-            <div class="modal-header">
+        <a href="produtos.html" class="active">
+            <i class="fa-solid fa-box-open"></i>
+            <span>Produtos</span>
+        </a>
 
-                <div>
-                    <span class="section-label">DETALHES</span>
-                    <h2>Visualizar Produto</h2>
-                </div>
+        <a href="clientes.html">
+            <i class="fa-solid fa-users"></i>
+            <span>Clientes</span>
+        </a>
 
-                <button
-                    type="button"
-                    class="modal-close"
-                    data-close-view
-                    aria-label="Fechar">
+        <a href="vendas.html">
+            <i class="fa-solid fa-cart-shopping"></i>
+            <span>Vendas</span>
+        </a>
 
-                    <i class="fa-solid fa-xmark"></i>
+        <a href="financeiro.html">
+            <i class="fa-solid fa-wallet"></i>
+            <span>Financeiro</span>
+        </a>
 
-                </button>
+        <a href="compras.html">
+            <i class="fa-solid fa-bag-shopping"></i>
+            <span>Compras</span>
+        </a>
 
-            </div>
+        <a href="fornecedores.html">
+            <i class="fa-solid fa-truck"></i>
+            <span>Fornecedores</span>
+        </a>
 
-            <div id="productDetails" class="product-details">
+        <a href="relatorios.html">
+            <i class="fa-solid fa-chart-line"></i>
+            <span>Relatórios</span>
+        </a>
 
-                <div class="product-details-image">
+        <a href="notificacoes.html">
+            <i class="fa-solid fa-bell"></i>
+            <span>Notificações</span>
+        </a>
 
-                    <img
-                        id="viewProductImage"
-                        src=""
-                        alt="Produto">
+        <a href="emails.html">
+            <i class="fa-solid fa-envelope"></i>
+            <span>Emails</span>
+        </a>
 
-                </div>
+        <a href="configuracoes.html">
+            <i class="fa-solid fa-gear"></i>
+            <span>Configurações</span>
+        </a>
 
-                <div class="product-details-content">
+    </nav>
 
-                    <span id="viewProductCategory"
-                          class="product-category">
-                        Categoria
-                    </span>
 
-                    <h3 id="viewProductName">
-                        Produto
-                    </h3>
+    <footer>
 
-                    <p id="viewProductDescription">
-                        Descrição do produto.
-                    </p>
+        <strong>EMPIRE ERP</strong>
 
-                    <div class="details-grid">
+        <span>
+            Sistema de Gestão
+        </span>
 
-                        <div>
-                            <span>Código</span>
-                            <strong id="viewProductCode">---</strong>
-                        </div>
+    </footer>
 
-                        <div>
-                            <span>Estoque</span>
-                            <strong id="viewProductStock">0</strong>
-                        </div>
+</aside>
 
-                        <div>
-                            <span>Preço de Custo</span>
-                            <strong id="viewProductCost">R$ 0,00</strong>
-                        </div>
 
-                        <div>
-                            <span>Preço de Venda</span>
-                            <strong id="viewProductPrice">R$ 0,00</strong>
-                        </div>
+<!-- CONTEÚDO -->
 
-                    </div>
+<main class="main-content">
 
-                    <div class="product-status-line">
 
-                        <span>Status</span>
+<!-- TOPBAR -->
 
-                        <strong id="viewProductStatus">
-                            Ativo
-                        </strong>
+<header class="topbar">
 
-                    </div>
+    <div>
 
-                </div>
+        <span class="overline">
+            GESTÃO COMERCIAL
+        </span>
 
-            </div>
+        <h1>
+            Produtos
+        </h1>
+
+        <p>
+            Controle completo do catálogo, preços e estoque.
+        </p>
+
+    </div>
+
+
+    <div class="top-actions">
+
+        <div class="clock">
+
+            <i class="fa-solid fa-clock"></i>
+
+            <strong id="systemClock">
+                00:00:00
+            </strong>
+
+        </div>
+
+
+        <button
+            class="gold-button"
+            id="addProductButton"
+        >
+
+            <i class="fa-solid fa-plus"></i>
+
+            Novo Produto
+
+        </button>
+
+    </div>
+
+</header>
+
+
+<!-- MÉTRICAS -->
+
+<section class="metrics">
+
+
+    <div class="metric">
+
+        <div class="metric-icon">
+            <i class="fa-solid fa-boxes-stacked"></i>
+        </div>
+
+        <div>
+
+            <span>
+                Produtos cadastrados
+            </span>
+
+            <strong id="totalProducts">
+                0
+            </strong>
 
         </div>
 
     </div>
 
-    <div id="deleteModal" class="modal">
 
-        <div class="modal-overlay" data-close-delete></div>
+    <div class="metric">
 
-        <div class="modal-box confirmation-box">
+        <div class="metric-icon">
+            <i class="fa-solid fa-cubes"></i>
+        </div>
 
-            <div class="confirmation-icon">
-                <i class="fa-solid fa-trash-can"></i>
+        <div>
+
+            <span>
+                Unidades em estoque
+            </span>
+
+            <strong id="totalStock">
+                0
+            </strong>
+
+        </div>
+
+    </div>
+
+
+    <div class="metric">
+
+        <div class="metric-icon">
+            <i class="fa-solid fa-tags"></i>
+        </div>
+
+        <div>
+
+            <span>
+                Categorias
+            </span>
+
+            <strong id="totalCategories">
+                0
+            </strong>
+
+        </div>
+
+    </div>
+
+
+    <div class="metric warning">
+
+        <div class="metric-icon">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+        </div>
+
+        <div>
+
+            <span>
+                Estoque crítico
+            </span>
+
+            <strong id="lowStock">
+                0
+            </strong>
+
+        </div>
+
+    </div>
+
+
+</section>
+
+
+<!-- CATÁLOGO -->
+
+<section class="product-panel">
+
+    <div class="panel-header">
+
+        <div>
+
+            <span class="overline">
+                CATÁLOGO
+            </span>
+
+            <h2>
+                Produtos cadastrados
+            </h2>
+
+        </div>
+
+
+        <div class="filters">
+
+            <div class="search">
+
+                <i class="fa-solid fa-magnifying-glass"></i>
+
+                <input
+                    type="search"
+                    id="productSearch"
+                    placeholder="Pesquisar produto..."
+                >
+
             </div>
 
-            <span class="section-label">CONFIRMAÇÃO</span>
 
-            <h2>Excluir produto?</h2>
+            <select id="categoryFilter">
+
+                <option value="">
+                    Todas categorias
+                </option>
+
+            </select>
+
+        </div>
+
+    </div>
+
+
+    <div class="table-wrapper">
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>Produto</th>
+
+                    <th>Modelo</th>
+
+                    <th>Cor</th>
+
+                    <th>Categoria</th>
+
+                    <th>Venda</th>
+
+                    <th>Custo</th>
+
+                    <th>Estoque</th>
+
+                    <th>Ações</th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody id="productsTable">
+
+                <tr>
+
+                    <td
+                        colspan="8"
+                        class="empty"
+                    >
+                        Nenhum produto cadastrado.
+                    </td>
+
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</section>
+
+
+<!-- ANÁLISE -->
+
+<section class="chart-panel">
+
+    <div class="panel-header">
+
+        <div>
+
+            <span class="overline">
+                ANÁLISE
+            </span>
+
+            <h2>
+                Estoque por categoria
+            </h2>
+
+        </div>
+
+    </div>
+
+
+    <div
+        class="category-chart"
+        id="categoryChart"
+    >
+
+        <div class="empty">
+            Cadastre produtos para visualizar os dados.
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- RODAPÉ -->
+
+<footer class="main-footer">
+
+    <div>
+
+        <strong>
+            EMPIRE ERP
+        </strong>
+
+        <span>
+            Império da Moda Online
+        </span>
+
+    </div>
+
+
+    <div>
+
+        <span>
+            Última atualização:
+        </span>
+
+        <strong id="lastUpdate">
+            Aguardando
+        </strong>
+
+    </div>
+
+</footer>
+
+
+</main>
+
+</div>
+
+
+<!-- MODAL PRODUTO -->
+
+<div
+    class="modal"
+    id="productModal"
+>
+
+    <div class="modal-card">
+
+
+        <button
+            class="close-modal"
+            id="closeModal"
+            type="button"
+        >
+
+            <i class="fa-solid fa-xmark"></i>
+
+        </button>
+
+
+        <div class="modal-header">
+
+            <span class="overline">
+                NOVO CADASTRO
+            </span>
+
+            <h2>
+                Adicionar produto
+            </h2>
 
             <p>
-                Esta ação removerá o produto do catálogo.
-                Deseja realmente continuar?
+                Cadastre as informações comerciais e de estoque.
             </p>
 
-            <div class="modal-footer">
+        </div>
+
+
+        <form id="productForm">
+
+
+            <div class="form-grid">
+
+
+                <div class="form-group">
+
+                    <label for="productName">
+                        Nome do produto
+                    </label>
+
+                    <input
+                        id="productName"
+                        type="text"
+                        placeholder="Ex.: Conjunto Premium"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="productModel">
+                        Modelo
+                    </label>
+
+                    <input
+                        id="productModel"
+                        type="text"
+                        placeholder="Ex.: CP-001"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="productColor">
+                        Cor
+                    </label>
+
+                    <input
+                        id="productColor"
+                        type="text"
+                        placeholder="Ex.: Preto"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="productCategory">
+                        Categoria
+                    </label>
+
+                    <input
+                        id="productCategory"
+                        type="text"
+                        placeholder="Ex.: Conjuntos"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="salePrice">
+                        Preço de venda
+                    </label>
+
+                    <input
+                        id="salePrice"
+                        type="number"
+                        min="0"
+                        step="0.01"
+                        placeholder="R$ 0,00"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="stockPrice">
+                        Preço de estoque / custo
+                    </label>
+
+                    <input
+                        id="stockPrice"
+                        type="number"
+                        min="0"
+                        step="0.01"
+                        placeholder="R$ 0,00"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="productQuantity">
+                        Quantidade em estoque
+                    </label>
+
+                    <input
+                        id="productQuantity"
+                        type="number"
+                        min="0"
+                        step="1"
+                        placeholder="0"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="minimumStock">
+                        Estoque mínimo
+                    </label>
+
+                    <input
+                        id="minimumStock"
+                        type="number"
+                        min="0"
+                        step="1"
+                        value="5"
+                        required
+                    >
+
+                </div>
+
+
+            </div>
+
+
+            <div
+                class="form-message"
+                id="formMessage"
+            ></div>
+
+
+            <div class="modal-actions">
 
                 <button
                     type="button"
-                    class="secondary-button"
-                    data-close-delete>
+                    class="cancel-button"
+                    id="cancelProduct"
+                >
                     Cancelar
                 </button>
 
+
                 <button
-                    type="button"
-                    id="confirmDelete"
-                    class="danger-button">
-                    <i class="fa-solid fa-trash"></i>
-                    Excluir
+                    type="submit"
+                    class="gold-button"
+                >
+
+                    <i class="fa-solid fa-check"></i>
+
+                    Salvar Produto
+
                 </button>
 
             </div>
 
-        </div>
+
+        </form>
 
     </div>
 
-    <div id="notificationPanel" class="notification-panel">
+</div>
 
-        <div class="notification-header">
 
-            <div>
-                <span class="section-label">CENTRAL</span>
-                <h3>Notificações</h3>
-            </div>
+<script src="../../assets/js/produtos.js"></script>
 
-            <button
-                type="button"
-                id="closeNotifications"
-                class="modal-close"
-                aria-label="Fechar notificações">
-
-                <i class="fa-solid fa-xmark"></i>
-
-            </button>
-
-        </div>
-
-        <div class="notification-list">
-
-            <div class="notification-item">
-
-                <div class="notification-icon warning">
-                    <i class="fa-solid fa-triangle-exclamation"></i>
-                </div>
-
-                <div>
-                    <strong>Estoque baixo</strong>
-                    <p>Existem produtos próximos do estoque mínimo.</p>
-                </div>
-
-            </div>
-
-            <div class="notification-item">
-
-                <div class="notification-icon">
-                    <i class="fa-solid fa-box"></i>
-                </div>
-
-                <div>
-                    <strong>Catálogo</strong>
-                    <p>Mantenha os produtos atualizados.</p>
-                </div>
-
-            </div>
-
-            <div class="notification-item">
-
-                <div class="notification-icon success">
-                    <i class="fa-solid fa-circle-check"></i>
-                </div>
-
-                <div>
-                    <strong>Sistema online</strong>
-                    <p>O módulo de produtos está funcionando normalmente.</p>
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-    <div id="toastContainer" class="toast-container"></div>
-
-    <script src="../../assets/js/produtos.js"></script>
 
 </body>
 </html>
