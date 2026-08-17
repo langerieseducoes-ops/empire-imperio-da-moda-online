@@ -1,5 +1,4 @@
 document.addEventListener("DOMContentLoaded", () => {
-
     const loader = document.getElementById("loader");
     const form = document.getElementById("loginForm");
     const user = document.getElementById("username");
@@ -8,23 +7,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const button = document.getElementById("loginButton");
     const message = document.getElementById("loginMessage");
 
-    /* LOADER */
-
     setTimeout(() => {
-        if (loader) {
-            loader.classList.add("hide");
-        }
+        if (loader) loader.classList.add("hide");
     }, 900);
 
-
-    /* MOSTRAR SENHA */
-
     if (toggle && password) {
-
         toggle.addEventListener("click", () => {
-
             const showing = password.type === "text";
-
             password.type = showing ? "password" : "text";
 
             const icon = toggle.querySelector("i");
@@ -34,127 +23,79 @@ document.addEventListener("DOMContentLoaded", () => {
                     ? "fa-solid fa-eye"
                     : "fa-solid fa-eye-slash";
             }
-
         });
-
     }
-
-
-    /* LIMPAR MENSAGEM */
 
     function clearMessage() {
+        if (message) message.textContent = "";
+    }
 
-        if (message) {
-            message.textContent = "";
+    user?.addEventListener("input", clearMessage);
+    password?.addEventListener("input", clearMessage);
+
+    if (!form) return;
+
+    form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+
+        if (!user || !password || !button) return;
+
+        const username = user.value.trim();
+        const pass = password.value;
+
+        if (!username || !pass) {
+            if (message) {
+                message.textContent = "Preencha usuário e senha.";
+            }
+            return;
         }
 
-    }
+        button.disabled = true;
 
+        const text = button.querySelector("span");
 
-    if (user) {
-        user.addEventListener("input", clearMessage);
-    }
+        if (text) text.textContent = "VERIFICANDO...";
 
-    if (password) {
-        password.addEventListener("input", clearMessage);
-    }
+        try {
+            const { data: email, error: emailError } =
+                await supabaseClient.rpc(
+                    "obter_email_usuario",
+                    { p_usuario: username }
+                );
 
-
-    /* LOGIN */
-
-    if (form) {
-
-        form.addEventListener("submit", event => {
-
-            event.preventDefault();
-
-            if (!user || !password || !button) {
-                return;
+            if (emailError || !email) {
+                throw new Error("Usuário ou senha inválidos.");
             }
 
-            const username = user.value.trim();
-            const pass = password.value;
+            const { data, error } =
+                await supabaseClient.auth.signInWithPassword({
+                    email: email,
+                    password: pass
+                });
 
-            if (!username || !pass) {
-
-                if (message) {
-                    message.textContent =
-                        "Preencha usuário e senha.";
-                }
-
-                return;
+            if (error || !data.user) {
+                throw new Error("Usuário ou senha inválidos.");
             }
 
+            sessionStorage.setItem("empireLogged", "true");
+            sessionStorage.setItem("empireUser", username);
 
-            button.disabled = true;
+            if (text) text.textContent = "ACESSANDO...";
 
-            const text = button.querySelector("span");
+            window.location.href =
+                "pages/html/dashboard.html";
+
+        } catch (error) {
+            if (message) {
+                message.textContent =
+                    error.message || "Não foi possível entrar.";
+            }
+
+            button.disabled = false;
 
             if (text) {
-                text.textContent = "VERIFICANDO...";
+                text.textContent = "ENTRAR NO SISTEMA";
             }
-
-
-            /*
-             * LOGIN LOCAL TEMPORÁRIO
-             *
-             * Sem banco de dados.
-             *
-             * Depois podemos trocar somente
-             * esta parte pelo sistema definitivo.
-             */
-
-            setTimeout(() => {
-
-                const validUser =
-                    username.toLowerCase() === "admin";
-
-                const validPassword =
-                    pass === "123456";
-
-
-                if (!validUser || !validPassword) {
-
-                    if (message) {
-                        message.textContent =
-                            "Usuário ou senha inválidos.";
-                    }
-
-                    button.disabled = false;
-
-                    if (text) {
-                        text.textContent =
-                            "ENTRAR NO SISTEMA";
-                    }
-
-                    return;
-                }
-
-
-                sessionStorage.setItem(
-                    "empireLogged",
-                    "true"
-                );
-
-                sessionStorage.setItem(
-                    "empireUser",
-                    username
-                );
-
-
-                if (text) {
-                    text.textContent =
-                        "ACESSANDO...";
-                }
-
-
-                window.location.href =
-                    "pages/html/dashboard.html";
-
-            }, 500);
-
-        });
-
-    }
-
+        }
+    });
 });
