@@ -543,39 +543,42 @@
         reader.readAsDataURL(file);
     }
 
-    async function enviarImagem(file) {
-        if (!file) return "";
+async function enviarImagem(file) {
+    if (!file) return "";
 
-        const extensao =
-            file.name.split(".").pop();
+    const extensao =
+        file.name.split(".").pop().toLowerCase();
 
-        const nomeArquivo =
-            `${crypto.randomUUID()}.${extensao}`;
+    const nomeArquivo =
+        `${crypto.randomUUID()}.${extensao}`;
 
-        const caminho =
-            `produtos/${nomeArquivo}`;
+    const { error } =
+        await supabaseClient.storage
+            .from("produtos")
+            .upload(nomeArquivo, file, {
+                upsert: false,
+                contentType: file.type,
+                cacheControl: "3600"
+            });
 
-        const { error } =
-            await supabaseClient.storage
-                .from("produtos")
-                .upload(caminho, file, {
-                    upsert: false,
-                    contentType: file.type
-                });
-
-        if (error) {
-            console.error(error);
-            throw error;
-        }
-
-        const { data } =
-            supabaseClient.storage
-                .from("produtos")
-                .getPublicUrl(caminho);
-
-        return data.publicUrl;
+    if (error) {
+        console.error("Erro ao enviar imagem:", error);
+        throw error;
     }
 
+    const { data } =
+        supabaseClient.storage
+            .from("produtos")
+            .getPublicUrl(nomeArquivo);
+
+    if (!data?.publicUrl) {
+        throw new Error(
+            "Não foi possível gerar a URL pública da imagem."
+        );
+    }
+
+    return data.publicUrl;
+}
     async function salvarProduto(evento) {
         evento.preventDefault();
 
