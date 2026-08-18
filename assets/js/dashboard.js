@@ -1,39 +1,53 @@
 (() => {
     "use strict";
 
+    let iniciado = false;
     let produtos = [];
-    let sessionSeconds = 0;
-    let relogioInterval = null;
-    let realtimeChannel = null;
+    let clientes = [];
+    let vendas = [];
+    let sessaoSegundos = 0;
 
     const $ = id => document.getElementById(id);
 
-    const money = value =>
-        Number(value || 0).toLocaleString("pt-BR", {
+    const dinheiro = valor =>
+        Number(valor || 0).toLocaleString("pt-BR", {
             style: "currency",
             currency: "BRL"
         });
 
-    const escapeHTML = value =>
-        String(value ?? "")
+    const textoSeguro = valor =>
+        String(valor ?? "")
             .replace(/&/g, "&amp;")
             .replace(/</g, "&lt;")
             .replace(/>/g, "&gt;")
             .replace(/"/g, "&quot;")
             .replace(/'/g, "&#039;");
 
+    function esconderLoader() {
+        const loader = $("loader");
+
+        if (!loader) return;
+
+        setTimeout(() => {
+            loader.classList.add("hide");
+        }, 500);
+    }
+
     function atualizarRelogio() {
         const agora = new Date();
 
-        if ($("systemClock")) {
-            $("systemClock").textContent =
+        const clock = $("systemClock");
+        const date = $("dateToday");
+
+        if (clock) {
+            clock.textContent =
                 agora.toLocaleTimeString("pt-BR", {
                     hour12: false
                 });
         }
 
-        if ($("dateToday")) {
-            $("dateToday").textContent =
+        if (date) {
+            date.textContent =
                 agora.toLocaleDateString("pt-BR", {
                     weekday: "long",
                     day: "2-digit",
@@ -42,8 +56,10 @@
                 });
         }
 
-        if ($("lastUpdate")) {
-            $("lastUpdate").textContent =
+        const update = $("lastUpdate");
+
+        if (update) {
+            update.textContent =
                 agora.toLocaleTimeString("pt-BR", {
                     hour12: false
                 });
@@ -51,15 +67,18 @@
     }
 
     function atualizarSessao() {
-        sessionSeconds++;
+        sessaoSegundos++;
 
-        const horas = Math.floor(sessionSeconds / 3600);
-        const minutos = Math.floor(
-            (sessionSeconds % 3600) / 60
-        );
-        const segundos = sessionSeconds % 60;
+        const horas =
+            Math.floor(sessaoSegundos / 3600);
 
-        const tempo = [
+        const minutos =
+            Math.floor((sessaoSegundos % 3600) / 60);
+
+        const segundos =
+            sessaoSegundos % 60;
+
+        const resultado = [
             horas,
             minutos,
             segundos
@@ -69,213 +88,171 @@
             )
             .join(":");
 
-        if ($("sessionTimer")) {
-            $("sessionTimer").textContent = tempo;
+        const campo = $("sessionTimer");
+
+        if (campo) {
+            campo.textContent = resultado;
         }
     }
 
     function atualizarConexao() {
-        if (!$("connectionStatus")) return;
+        const campo = $("connectionStatus");
 
-        $("connectionStatus").textContent =
+        if (!campo) return;
+
+        campo.textContent =
             navigator.onLine ? "Online" : "Offline";
 
-        $("connectionStatus").classList.toggle(
-            "offline",
-            !navigator.onLine
-        );
+        campo.style.color =
+            navigator.onLine ? "#54c76b" : "#d9534f";
     }
 
-    async function carregarProdutos() {
-        if (
-            typeof supabaseClient === "undefined" ||
-            !supabaseClient
-        ) {
-            console.error(
-                "supabaseClient não encontrado."
-            );
-
-            return;
-        }
-
+    async function buscarTabela(nome) {
         try {
             const { data, error } =
                 await supabaseClient
-                    .from("produtos")
-                    .select("*")
-                    .order("criado_em", {
-                        ascending: false
-                    });
+                    .from(nome)
+                    .select("*");
 
             if (error) {
-                console.error(
-                    "Erro ao carregar produtos:",
-                    error
+                console.warn(
+                    `Tabela ${nome}:`,
+                    error.message
                 );
 
-                return;
+                return [];
             }
 
-            produtos = data || [];
-
-            atualizarDashboard();
+            return data || [];
 
         } catch (erro) {
-            console.error(
-                "Erro de conexão com o Supabase:",
+            console.warn(
+                `Erro ao buscar ${nome}:`,
                 erro
             );
+
+            return [];
         }
     }
 
-    function atualizarDashboard() {
-        atualizarMetricas();
-        atualizarEstoque();
-        atualizarNotificacoes();
+    async function carregarDados() {
+        const resultados =
+            await Promise.all([
+                buscarTabela("produtos"),
+                buscarTabela("clientes"),
+                buscarTabela("vendas")
+            ]);
+
+        produtos = resultados[0];
+        clientes = resultados[1];
+        vendas = resultados[2];
+
+        atualizarDashboard();
     }
 
     function atualizarMetricas() {
-        const total = produtos.length;
+        const totalProdutos =
+            produtos.length;
 
-        const estoqueTotal =
-            produtos.reduce(
-                (total, produto) =>
-                    total +
-                    Number(produto.quantidade || 0),
+        const totalClientes =
+            clientes.length;
+
+        const totalVendas =
+            vendas.length;
+
+        let faturamento = 0;
+
+        vendas.forEach(venda => {
+            faturamento += Number(
+                venda.total ??
+                venda.valor_total ??
+                venda.valor ??
+                venda.total_venda ??
                 0
             );
+        });
 
-        const produtosComEstoque =
-            produtos.filter(
-                produto =>
-                    Number(produto.quantidade || 0) > 0
-            ).length;
+        const produtosCampo =
+            $("totalProducts");
 
-        const valorEstoque =
-            produtos.reduce(
-                (total, produto) =>
-                    total +
-                    Number(produto.venda || 0) *
-                    Number(produto.quantidade || 0),
-                0
-            );
+        const clientesCampo =
+            $("totalClients");
 
-        if ($("totalProducts")) {
-            $("totalProducts").textContent = total;
-        }
+        const vendasCampo =
+            $("totalSales");
 
-        if ($("totalRevenue")) {
-            $("totalRevenue").textContent =
-                money(valorEstoque);
-        }
+        const faturamentoCampo =
+            $("totalRevenue");
 
-        const estoqueTexto =
-            `${estoqueTotal} unidade${
-                estoqueTotal === 1 ? "" : "s"
-            }`;
+        if (produtosCampo)
+            produtosCampo.textContent =
+                totalProdutos;
 
-        const stockList = $("stockList");
+        if (clientesCampo)
+            clientesCampo.textContent =
+                totalClientes;
 
-        if (stockList) {
-            stockList.dataset.total = estoqueTexto;
-        }
+        if (vendasCampo)
+            vendasCampo.textContent =
+                totalVendas;
 
-        if (console && console.debug) {
-            console.debug(
-                "Produtos:",
-                total,
-                "| Estoque:",
-                estoqueTotal,
-                "| Ativos:",
-                produtosComEstoque
-            );
-        }
+        if (faturamentoCampo)
+            faturamentoCampo.textContent =
+                dinheiro(faturamento);
     }
 
     function atualizarEstoque() {
-        const container = $("stockList");
+        const lista = $("stockList");
 
-        if (!container) return;
+        if (!lista) return;
 
-        if (!produtos.length) {
-            container.innerHTML = `
-                <div class="empty">
-                    Nenhum produto cadastrado.
-                </div>
-            `;
-
-            return;
-        }
-
-        const alertas = produtos
-            .filter(produto =>
-                Number(produto.quantidade || 0) <= 5
-            )
-            .slice(0, 5);
+        const alertas =
+            produtos
+                .filter(produto =>
+                    Number(
+                        produto.quantidade ?? 0
+                    ) <= 5
+                )
+                .sort((a, b) =>
+                    Number(a.quantidade || 0) -
+                    Number(b.quantidade || 0)
+                )
+                .slice(0, 5);
 
         if (!alertas.length) {
-            container.innerHTML = `
+            lista.innerHTML = `
                 <div class="empty">
                     <i class="fa-solid fa-circle-check"></i>
-                    Estoque em situação normal.
+                    <strong>Estoque saudável</strong>
+                    <span>Nenhum alerta encontrado.</span>
                 </div>
             `;
 
             return;
         }
 
-        container.innerHTML =
+        lista.innerHTML =
             alertas.map(produto => {
 
                 const quantidade =
                     Number(produto.quantidade || 0);
 
-                const imagem =
-                    produto.imagem
-                        ? `
-                            <img
-                                src="${escapeHTML(produto.imagem)}"
-                                alt="${escapeHTML(produto.nome)}"
-                                loading="lazy"
-                            >
-                        `
-                        : `
-                            <i class="fa-solid fa-box-open"></i>
-                        `;
-
-                const status =
-                    quantidade <= 0
-                        ? "Sem estoque"
-                        : `Somente ${quantidade} unidade${
-                            quantidade === 1
-                                ? ""
-                                : "s"
-                        }`;
-
                 return `
                     <div class="stock-item">
 
-                        <div class="stock-image">
-                            ${imagem}
-                        </div>
+                        <i class="fa-solid fa-box"></i>
 
-                        <div class="stock-info">
-
+                        <div>
                             <strong>
-                                ${escapeHTML(produto.nome)}
+                                ${textoSeguro(produto.nome)}
                             </strong>
 
                             <span>
-                                ${escapeHTML(
-                                    produto.categoria ||
-                                    "Sem categoria"
-                                )}
+                                ${quantidade <= 0
+                                    ? "Sem estoque"
+                                    : `${quantidade} unidade${quantidade === 1 ? "" : "s"} restantes`
+                                }
                             </span>
-
-                        </div>
-
-                        <div class="stock-status">
-                            ${escapeHTML(status)}
                         </div>
 
                     </div>
@@ -284,110 +261,345 @@
     }
 
     function atualizarNotificacoes() {
-        const semEstoque =
+        const lista =
+            $("notificationList");
+
+        const badge =
+            $("notificationBadge");
+
+        if (!lista) return;
+
+        const alertas =
             produtos.filter(produto =>
                 Number(produto.quantidade || 0) <= 0
             );
 
-        const estoqueBaixo =
-            produtos.filter(produto => {
-                const quantidade =
-                    Number(produto.quantidade || 0);
+        if (badge) {
+            badge.textContent =
+                alertas.length;
 
-                return quantidade > 0 &&
-                    quantidade <= 5;
-            });
-
-        const totalAlertas =
-            semEstoque.length +
-            estoqueBaixo.length;
-
-        if ($("notificationBadge")) {
-            $("notificationBadge").textContent =
-                totalAlertas;
-
-            $("notificationBadge").style.display =
-                totalAlertas > 0
-                    ? "flex"
+            badge.style.display =
+                alertas.length
+                    ? "grid"
                     : "none";
         }
 
-        const lista = $("notificationList");
-
-        if (!lista) return;
-
-        if (!totalAlertas) {
+        if (!alertas.length) {
             lista.innerHTML = `
                 <div class="empty">
-                    <i class="fa-solid fa-circle-check"></i>
-                    Nenhuma notificação.
+                    <i class="fa-solid fa-bell"></i>
+                    <strong>Nenhuma notificação</strong>
+                    <span>O sistema está em ordem.</span>
                 </div>
             `;
 
             return;
         }
 
-        const alertas = [
-            ...semEstoque.map(produto => ({
-                ...produto,
-                tipo: "Sem estoque"
-            })),
-
-            ...estoqueBaixo.map(produto => ({
-                ...produto,
-                tipo: "Estoque baixo"
-            }))
-        ].slice(0, 5);
-
         lista.innerHTML =
-            alertas.map(produto => `
+            alertas.slice(0, 5).map(produto => `
                 <div class="notification-item">
 
-                    <div class="notification-icon">
-                        <i class="fa-solid fa-triangle-exclamation"></i>
-                    </div>
+                    <i class="fa-solid fa-triangle-exclamation"></i>
 
                     <div>
-
                         <strong>
-                            ${escapeHTML(produto.nome)}
+                            ${textoSeguro(produto.nome)}
                         </strong>
 
                         <span>
-                            ${escapeHTML(produto.tipo)}
+                            Produto sem estoque.
                         </span>
-
                     </div>
 
                 </div>
             `).join("");
     }
 
-    function configurarRealtime() {
-        if (
-            typeof supabaseClient === "undefined" ||
-            !supabaseClient
-        ) {
+    function atualizarGrafico() {
+        const container =
+            $("categoryChart");
+
+        if (!container) return;
+
+        const categorias = {};
+
+        produtos.forEach(produto => {
+
+            const categoria =
+                String(
+                    produto.categoria ||
+                    "Sem categoria"
+                ).trim();
+
+            const quantidade =
+                Number(
+                    produto.quantidade || 0
+                );
+
+            categorias[categoria] =
+                (categorias[categoria] || 0) +
+                quantidade;
+        });
+
+        const dados =
+            Object.entries(categorias)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 6);
+
+        if (!dados.length) {
+            container.innerHTML = `
+                <div class="empty">
+                    <i class="fa-solid fa-chart-column"></i>
+                    <strong>Sem dados</strong>
+                    <span>Cadastre produtos para gerar o gráfico.</span>
+                </div>
+            `;
+
             return;
         }
 
-        if (realtimeChannel) return;
+        const maior =
+            Math.max(
+                ...dados.map(item => item[1]),
+                1
+            );
 
-        realtimeChannel =
-            supabaseClient
-                .channel("dashboard-produtos")
-                .on(
-                    "postgres_changes",
-                    {
-                        event: "*",
-                        schema: "public",
-                        table: "produtos"
-                    },
-                    () => {
-                        carregarProdutos();
-                    }
+        container.innerHTML =
+            dados.map(([categoria, quantidade]) => {
+
+                const percentual =
+                    (quantidade / maior) * 100;
+
+                return `
+                    <div class="chart-row">
+
+                        <div class="chart-label">
+                            <span>
+                                ${textoSeguro(categoria)}
+                            </span>
+
+                            <strong>
+                                ${quantidade}
+                            </strong>
+                        </div>
+
+                        <div class="chart-bar">
+                            <i
+                                style="width:${percentual}%"
+                            ></i>
+                        </div>
+
+                    </div>
+                `;
+            }).join("");
+    }
+
+    function atualizarEmails() {
+        const lista = $("emailList");
+
+        if (!lista) return;
+
+        lista.innerHTML = `
+            <div class="empty">
+                <i class="fa-solid fa-envelope"></i>
+                <strong>Nenhum email pendente</strong>
+                <span>Sua caixa está em dia.</span>
+            </div>
+        `;
+    }
+
+    function atualizarAgenda() {
+        const lista =
+            $("calendarEvents");
+
+        if (!lista) return;
+
+        lista.innerHTML = `
+            <div class="empty">
+                <i class="fa-solid fa-calendar-days"></i>
+                <strong>Nenhum compromisso</strong>
+                <span>Sua agenda está livre.</span>
+            </div>
+        `;
+    }
+
+    function atualizarTarefas() {
+        const lista =
+            $("taskList");
+
+        if (!lista) return;
+
+        lista.innerHTML = `
+            <div class="empty">
+                <i class="fa-solid fa-list-check"></i>
+                <strong>Nenhuma tarefa pendente</strong>
+                <span>Tudo está em dia.</span>
+            </div>
+        `;
+    }
+
+    function atualizarAtividades() {
+        const timeline =
+            $("activityTimeline");
+
+        if (!timeline) return;
+
+        const atividades = [];
+
+        produtos
+            .slice()
+            .sort((a, b) =>
+                new Date(
+                    b.criado_em || 0
+                ) -
+                new Date(
+                    a.criado_em || 0
                 )
-                .subscribe();
+            )
+            .slice(0, 4)
+            .forEach(produto => {
+
+                atividades.push({
+                    icone: "fa-box",
+                    titulo: "Produto cadastrado",
+                    descricao:
+                        produto.nome ||
+                        "Novo produto",
+                    data:
+                        produto.criado_em
+                });
+            });
+
+        if (!atividades.length) {
+            timeline.innerHTML = `
+                <div class="timeline-item">
+
+                    <div class="timeline-icon">
+                        <i class="fa-solid fa-power-off"></i>
+                    </div>
+
+                    <div>
+                        <strong>Sistema iniciado</strong>
+
+                        <p>
+                            EMPIRE ERP pronto para utilização.
+                        </p>
+
+                        <small>Agora</small>
+                    </div>
+
+                </div>
+            `;
+
+            return;
+        }
+
+        timeline.innerHTML =
+            atividades.map(atividade => {
+
+                const data =
+                    atividade.data
+                        ? new Date(
+                            atividade.data
+                        ).toLocaleString(
+                            "pt-BR"
+                        )
+                        : "Agora";
+
+                return `
+                    <div class="timeline-item">
+
+                        <div class="timeline-icon">
+                            <i class="fa-solid ${atividade.icone}"></i>
+                        </div>
+
+                        <div>
+
+                            <strong>
+                                ${textoSeguro(
+                                    atividade.titulo
+                                )}
+                            </strong>
+
+                            <p>
+                                ${textoSeguro(
+                                    atividade.descricao
+                                )}
+                            </p>
+
+                            <small>
+                                ${data}
+                            </small>
+
+                        </div>
+
+                    </div>
+                `;
+            }).join("");
+    }
+
+    function atualizarDashboard() {
+        atualizarMetricas();
+        atualizarEstoque();
+        atualizarNotificacoes();
+        atualizarGrafico();
+        atualizarEmails();
+        atualizarAgenda();
+        atualizarTarefas();
+        atualizarAtividades();
+        atualizarRelogio();
+    }
+
+    function criarFaísca() {
+        const container =
+            $("particles");
+
+        if (!container) return;
+
+        const spark =
+            document.createElement("span");
+
+        spark.className = "spark";
+
+        spark.style.left =
+            `${Math.random() * 100}%`;
+
+        spark.style.top =
+            `${Math.random() * 100}%`;
+
+        spark.style.setProperty(
+            "--x",
+            `${(Math.random() - .5) * 180}px`
+        );
+
+        spark.style.setProperty(
+            "--y",
+            `${(Math.random() - .5) * 180}px`
+        );
+
+        spark.style.animationDuration =
+            `${1.5 + Math.random() * 2.5}s`;
+
+        container.appendChild(spark);
+
+        setTimeout(() => {
+            spark.remove();
+        }, 4500);
+    }
+
+    function iniciarFaíscas() {
+        for (let i = 0; i < 12; i++) {
+            setTimeout(
+                criarFaísca,
+                i * 150
+            );
+        }
+
+        setInterval(
+            criarFaísca,
+            280
+        );
     }
 
     function configurarCards() {
@@ -411,12 +623,13 @@
             });
     }
 
-    function configurarBusca() {
-        const busca = $("searchSystem");
+    function configurarPesquisa() {
+        const search =
+            $("searchSystem");
 
-        if (!busca) return;
+        if (!search) return;
 
-        busca.addEventListener(
+        search.addEventListener(
             "keydown",
             evento => {
 
@@ -424,11 +637,9 @@
                     return;
 
                 const valor =
-                    busca.value
+                    search.value
                         .trim()
                         .toLowerCase();
-
-                if (!valor) return;
 
                 const paginas = {
                     produtos: "produtos.html",
@@ -456,21 +667,18 @@
     }
 
     function configurarLogout() {
-        const botao = $("logoutButton");
+        const logout =
+            $("logoutButton");
 
-        if (!botao) return;
+        if (!logout) return;
 
-        botao.addEventListener(
+        logout.addEventListener(
             "click",
             async () => {
 
-                if (
-                    !confirm(
-                        "Deseja sair do EMPIRE ERP?"
-                    )
-                ) {
-                    return;
-                }
+                if (!confirm(
+                    "Deseja sair do EMPIRE ERP?"
+                )) return;
 
                 try {
                     if (
@@ -482,7 +690,7 @@
                             .signOut();
                     }
                 } catch (erro) {
-                    console.error(erro);
+                    console.warn(erro);
                 }
 
                 window.location.href =
@@ -500,8 +708,17 @@
         botao.addEventListener(
             "click",
             () => {
-                window.location.href =
-                    "notificacoes.html";
+
+                const primeiroAlerta =
+                    produtos.find(produto =>
+                        Number(
+                            produto.quantidade || 0
+                        ) <= 0
+                    );
+
+                if (primeiroAlerta) {
+                    atualizarNotificacoes();
+                }
             }
         );
     }
@@ -520,49 +737,35 @@
         atualizarConexao();
     }
 
-    function esconderLoader() {
-        const loader = $("loader");
-
-        if (!loader) return;
-
-        setTimeout(() => {
-            loader.classList.add("hide");
-
-            setTimeout(() => {
-                loader.style.display = "none";
-            }, 600);
-        }, 500);
-    }
-
     async function iniciar() {
+        if (iniciado) return;
+
+        iniciado = true;
+
+        esconderLoader();
+
         atualizarRelogio();
-        atualizarSessao();
         atualizarConexao();
 
         configurarCards();
-        configurarBusca();
+        configurarPesquisa();
         configurarLogout();
         configurarNotificacoes();
         configurarRede();
 
-        await carregarProdutos();
+        iniciarFaíscas();
 
-        configurarRealtime();
-
-        esconderLoader();
-
-        if (!relogioInterval) {
-            relogioInterval =
-                setInterval(
-                    atualizarRelogio,
-                    1000
-                );
-        }
+        setInterval(
+            atualizarRelogio,
+            1000
+        );
 
         setInterval(
             atualizarSessao,
             1000
         );
+
+        await carregarDados();
     }
 
     if (
