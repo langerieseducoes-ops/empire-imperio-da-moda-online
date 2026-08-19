@@ -1,1287 +1,831 @@
 <!DOCTYPE html>
+
 <html lang="pt-BR">
 
 <head>
-
 <meta charset="UTF-8">
-
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#050505">
+<meta name="description" content="EMPIRE ERP - Gestão de Usuários">
 
-
-<title>EMPIRE ERP | Gestão de Usuários</title>
-
+<title>EMPIRE | Império da Moda Online</title>
 
 <link rel="icon" href="../../assets/img/favicon.png">
 
-
 <link rel="preconnect" href="https://fonts.googleapis.com">
-
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
+<link
+href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap"
+rel="stylesheet">
 
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link
+rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
-
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-
-
-
-<link rel="stylesheet" href="../../assets/css/usuarios.css">
-
+<link
+rel="stylesheet"
+href="../../assets/css/usuarios.css">
 
 </head>
 
-
-
-
 <body>
 
+<div class="loader" id="usersLoader">
 
+<div class="loader-content">
 
-<!-- LOADER DO SISTEMA -->
+    <div class="loader-logo">
+        EMPIRE
+    </div>
 
+    <div class="loader-subtitle">
+        Gestão de Usuários
+    </div>
 
-<div class="users-loader" id="usersLoader">
-
-
-<div class="users-loader-logo">
-
-EMPIRE
-
-</div>
-
-
-<span>
-
-Gestão de Usuários
-
-</span>
-
-
-<div class="users-loader-bar"></div>
-
+    <div class="loader-line">
+        <span></span>
+    </div>
 
 </div>
 
+</div>
 
+<div class="background-animation">
 
+<div class="glow glow-1"></div>
+<div class="glow glow-2"></div>
+<div class="glow glow-3"></div>
 
+<div
+class="spark-container"
+id="sparkContainer">
+</div>
 
-
+</div>
 
 <div class="users-layout">
 
-
-
-
-
-
-
-<!-- MENU LATERAL -->
-
-
 <aside class="users-sidebar">
-
-
 
 <div class="users-brand">
 
+    <img
+    src="../../assets/img/logo.png"
+    alt="EMPIRE">
 
-<img src="../../assets/img/logo.png" alt="EMPIRE">
+    <div>
 
+        <h2>
+            EMPIRE
+        </h2>
 
-<div>
+        <span>
+            Império da Moda Online
+        </span>
 
-<h2>
-
-EMPIRE
-
-</h2>
-
-
-<p>
-
-Império da Moda Online
-
-</p>
-
+    </div>
 
 </div>
 
+<div class="users-profile">
+
+    <img
+    src="../../assets/img/avatar.png"
+    alt="Perfil">
+
+    <div>
+
+        <strong id="userName">
+            Administrador
+        </strong>
+
+        <p>
+            <span class="status-dot"></span>
+            Online
+        </p>
+
+    </div>
 
 </div>
 
+<nav class="users-navigation">
 
+    <a href="dashboard.html">
+        <i class="fa-solid fa-house"></i>
+        <span>Tela Inicial</span>
+    </a>
 
+    <a href="produtos.html">
+        <i class="fa-solid fa-box"></i>
+        <span>Produtos</span>
+    </a>
 
+    <a href="clientes.html">
+        <i class="fa-solid fa-users"></i>
+        <span>Clientes</span>
+    </a>
 
+    <a href="vendas.html">
+        <i class="fa-solid fa-cart-shopping"></i>
+        <span>Vendas</span>
+    </a>
 
+    <a href="financeiro.html">
+        <i class="fa-solid fa-wallet"></i>
+        <span>Financeiro</span>
+    </a>
 
-<nav class="users-menu">
+    <a href="compras.html">
+        <i class="fa-solid fa-bag-shopping"></i>
+        <span>Compras</span>
+    </a>
 
+    <a href="fornecedores.html">
+        <i class="fa-solid fa-truck"></i>
+        <span>Fornecedores</span>
+    </a>
 
-<a href="dashboard.html">
+    <a href="relatorios.html">
+        <i class="fa-solid fa-chart-line"></i>
+        <span>Relatórios</span>
+    </a>
 
+    <a
+    href="usuarios.html"
+    class="active">
 
-<i class="fa-solid fa-house"></i>
+        <i class="fa-solid fa-user-shield"></i>
+        <span>Usuários</span>
 
-Tela Inicial
+    </a>
 
-</a>
+    <a href="monitoramento.html">
 
+        <i class="fa-solid fa-desktop"></i>
+        <span>Monitoramento</span>
 
+    </a>
 
+    <a href="configuracoes.html">
 
-<a href="usuarios.html" class="active">
+        <i class="fa-solid fa-gear"></i>
+        <span>Configurações</span>
 
-
-<i class="fa-solid fa-user-shield"></i>
-
-Usuários
-
-</a>
-
-
-
-
-
-<a href="produtos.html">
-
-
-<i class="fa-solid fa-box"></i>
-
-Produtos
-
-</a>
-
-
-
-
-
-<a href="clientes.html">
-
-
-<i class="fa-solid fa-users"></i>
-
-Clientes
-
-</a>
-
-
-
-
-
-<a href="vendas.html">
-
-
-<i class="fa-solid fa-cart-shopping"></i>
-
-Vendas
-
-</a>
-
-
-
-
-
-<a href="financeiro.html">
-
-
-<i class="fa-solid fa-wallet"></i>
-
-Financeiro
-
-</a>
-
-
+    </a>
 
 </nav>
 
+<div class="users-sidebar-footer">
 
+    <strong>
+        EMPIRE ERP
+    </strong>
 
+    <small>
+        Sistema de Gestão
+    </small>
 
+</div>
 
 </aside>
 
-
-
-
-
-
-
-
-
-<!-- ÁREA PRINCIPAL -->
-
-
 <main class="users-content">
 
+<header class="users-topbar">
 
+<div class="users-title">
 
+    <span>
+        ADMINISTRAÇÃO
+    </span>
 
+    <h1>
+        Gestão de Usuários
+    </h1>
 
-<header class="users-header">
-
-
-
-<div>
-
-
-<h1>
-
-Gestão de Usuários
-
-</h1>
-
-
-<p>
-
-Controle de acessos, permissões e segurança do ERP
-
-</p>
-
+    <p>
+        Controle de acessos, permissões e segurança do ERP.
+    </p>
 
 </div>
-
-
-
-
-
 
 <div class="users-actions">
 
+    <button
+    type="button"
+    class="users-icon-button"
+    id="usersNotification"
+    title="Notificações">
 
-<button class="users-notification" id="usersNotification">
+        <i class="fa-solid fa-bell"></i>
 
+        <span id="notificationBadge">
+            0
+        </span>
 
-<i class="fa-solid fa-bell"></i>
+    </button>
 
+    <button
+    type="button"
+    class="users-icon-button"
+    id="usersLogout"
+    title="Sair">
 
-<strong id="usersNotificationCount">
+        <i class="fa-solid fa-right-from-bracket"></i>
 
-0
-
-</strong>
-
-
-</button>
-
-
-
-
-
-
-<button class="users-primary-btn" id="openUserModal">
-
-
-<i class="fa-solid fa-user-plus"></i>
-
-
-Novo Usuário
-
-
-</button>
-
+    </button>
 
 </div>
-
-
 
 </header>
 
-
-
-
-
-
-
-
-
-<!-- CARDS DE INFORMAÇÃO -->
-
-
-<section class="users-cards">
-
-
-
-<div class="users-info-card">
-
-
-<div class="users-card-icon">
-
-
-<i class="fa-solid fa-users"></i>
-
-
-</div>
-
-
-
-<div>
-
-
-<span>
-
-Total cadastrados
-
-</span>
-
-
-<strong id="usersTotalCount">
-
-0
-
-</strong>
-
-
-</div>
-
-
-</div>
-
-
-
-
-
-
-
-<div class="users-info-card">
-
-
-<div class="users-card-icon">
-
-
-<i class="fa-solid fa-user-check"></i>
-
-
-</div>
-
-
-
-<div>
-
-
-<span>
-
-Usuários ativos
-
-</span>
-
-
-<strong id="usersActiveCount">
-
-0
-
-</strong>
-
-
-</div>
-
-
-</div>
-
-
-
-
-
-
-
-
-<div class="users-info-card">
-
-
-<div class="users-card-icon">
-
-
-<i class="fa-solid fa-user-lock"></i>
-
-
-</div>
-
-
-
-<div>
-
-
-<span>
-
-Administradores
-
-</span>
-
-
-<strong id="usersAdminCount">
-
-0
-
-</strong>
-
-
-</div>
-
-
-</div>
-
-
-
-
-
-</section>
-
-
-
-
-
-<!-- =====================================================
-PAINEL DE USUÁRIOS
-===================================================== -->
-
-
-<section class="users-panels">
-
-
-
-
-
-
-
-<!-- GRÁFICO DE ACESSOS -->
-
-
-<div class="users-box users-chart-box">
-
-
-
-<div class="users-box-header">
-
-
-<div>
-
-
-<h3>
-
-Acessos dos usuários
-
-</h3>
-
-
-<p>
-
-Últimos 7 dias
-
-</p>
-
-
-</div>
-
-
-
-<i class="fa-solid fa-chart-line"></i>
-
-
-</div>
-
-
-
-
-
-<canvas id="usersAccessChart"></canvas>
-
-
-
-</div>
-
-
-
-
-
-
-
-
-
-<!-- ATIVIDADES -->
-
-
-<div class="users-box users-activity-box">
-
-
-
-<div class="users-box-header">
-
-
-<div>
-
-
-<h3>
-
-Atividades recentes
-
-</h3>
-
-
-<p>
-
-Histórico de ações
-
-</p>
-
-
-</div>
-
-
-
-<i class="fa-solid fa-clock"></i>
-
-
-</div>
-
-
-
-
-
-
-<div id="usersActivityList">
-
-
-<div class="users-empty">
-
-Aguardando atividades...
-
-</div>
-
-
-</div>
-
-
-
-
-
-
-</div>
-
-
-
-
-
-
-</section>
-
-
-
-
-
-
-
-
-
-<!-- =====================================================
-CONTROLE
-===================================================== -->
-
-
-<section class="users-box users-table-box">
-
-
-
-<div class="users-box-header">
-
-
-
-<div>
-
-
-<h3>
-
-Usuários cadastrados
-
-</h3>
-
-
-<p>
-
-Gerenciamento de permissões
-
-</p>
-
-
-</div>
-
-
-
-
-
+<section class="users-toolbar">
 
 <div class="users-search">
 
+    <i class="fa-solid fa-magnifying-glass"></i>
 
-<i class="fa-solid fa-magnifying-glass"></i>
-
-
-<input 
-
-id="usersSearchInput"
-
-type="search"
-
-placeholder="Buscar usuário...">
-
+    <input
+    type="search"
+    id="userSearch"
+    placeholder="Pesquisar usuário..."
+    autocomplete="off">
 
 </div>
-
-
-
-
-</div>
-
-
-
-
-
-
-
-
 
 <div class="users-filters">
 
+    <select id="roleFilter">
 
+        <option value="">
+            Todos os perfis
+        </option>
 
-<select id="usersLevelFilter">
+        <option value="administrador">
+            Administrador
+        </option>
 
+        <option value="estoquista">
+            Estoquista
+        </option>
 
-<option value="">
+        <option value="vendedor">
+            Vendedor
+        </option>
 
-Todos os níveis
+    </select>
 
-</option>
+    <select id="statusFilter">
 
+        <option value="">
+            Todos os status
+        </option>
 
-<option value="Administrador">
+        <option value="ativo">
+            Ativos
+        </option>
 
-Administrador
+        <option value="inativo">
+            Inativos
+        </option>
 
-</option>
+    </select>
 
+    <button
+    type="button"
+    class="users-primary-button"
+    id="openUserModal">
 
-<option value="Gerente">
+        <i class="fa-solid fa-user-plus"></i>
 
-Gerente
+        Novo usuário
 
-</option>
-
-
-<option value="Funcionário">
-
-Funcionário
-
-</option>
-
-
-
-</select>
-
-
-
-
-
-
-
-<select id="usersStatusFilter">
-
-
-<option value="">
-
-Todos os status
-
-</option>
-
-
-<option value="ativo">
-
-Ativos
-
-</option>
-
-
-<option value="inativo">
-
-Inativos
-
-</option>
-
-
-
-</select>
-
-
+    </button>
 
 </div>
-
-
-
-
-
-
-
-
-
-<div class="users-table-container">
-
-
-
-<table class="users-table">
-
-
-
-<thead>
-
-
-<tr>
-
-
-<th>
-
-Nome
-
-</th>
-
-
-<th>
-
-Email
-
-</th>
-
-
-<th>
-
-Nível
-
-</th>
-
-
-<th>
-
-Status
-
-</th>
-
-
-<th>
-
-Último acesso
-
-</th>
-
-
-<th>
-
-Ações
-
-</th>
-
-
-</tr>
-
-
-</thead>
-
-
-
-
-
-
-
-<tbody id="usersTableBody">
-
-
-
-<tr>
-
-
-<td colspan="6">
-
-
-<div class="users-empty">
-
-
-<i class="fa-solid fa-user-slash"></i>
-
-
-<p>
-
-Nenhum usuário carregado
-
-</p>
-
-
-</div>
-
-
-</td>
-
-
-</tr>
-
-
-
-
-</tbody>
-
-
-
-
-
-</table>
-
-
-
-</div>
-
-
 
 </section>
 
+<section class="users-info-grid">
 
+<article class="users-info-card">
 
+    <div class="info-card-icon">
+        <i class="fa-solid fa-users"></i>
+    </div>
 
+    <div>
 
+        <span>
+            TOTAL
+        </span>
 
-<!-- =====================================================
-MODAL DE USUÁRIO
-===================================================== -->
+        <strong id="usersTotalCount">
+            0
+        </strong>
 
+        <small>
+            Usuários cadastrados
+        </small>
 
-<div class="users-modal" id="usersModal">
+    </div>
 
+</article>
 
+<article class="users-info-card">
 
-<div class="users-modal-content">
+    <div class="info-card-icon">
+        <i class="fa-solid fa-user-check"></i>
+    </div>
 
+    <div>
 
+        <span>
+            ATIVOS
+        </span>
 
+        <strong id="usersActiveCount">
+            0
+        </strong>
 
+        <small>
+            Acessos liberados
+        </small>
 
-<button class="users-close-modal" id="closeUsersModal">
+    </div>
 
+</article>
 
-<i class="fa-solid fa-xmark"></i>
+<article class="users-info-card">
 
+    <div class="info-card-icon">
+        <i class="fa-solid fa-crown"></i>
+    </div>
 
-</button>
+    <div>
 
+        <span>
+            ADMINISTRADORES
+        </span>
 
+        <strong id="usersAdminCount">
+            0
+        </strong>
 
+        <small>
+            Controle total
+        </small>
 
+    </div>
 
+</article>
 
+<article class="users-info-card">
 
-<h2>
+    <div class="info-card-icon">
+        <i class="fa-solid fa-user-clock"></i>
+    </div>
 
-Novo Usuário
+    <div>
 
-</h2>
+        <span>
+            ONLINE
+        </span>
 
+        <strong id="usersOnlineCount">
+            0
+        </strong>
 
+        <small>
+            Sessões ativas
+        </small>
 
+    </div>
 
+</article>
 
+</section>
 
+<section class="users-main-grid">
 
-<form id="usersForm">
+<div class="users-table-card">
 
+    <div class="users-card-header">
 
+        <div>
 
+            <label>
+                CONTROLE DE ACESSO
+            </label>
 
+            <h2>
+                Usuários cadastrados
+            </h2>
 
+        </div>
 
-<div class="users-form-grid">
+        <span id="usersTableStatus">
+            Carregando...
+        </span>
 
+    </div>
 
+    <div class="users-table-wrapper">
 
+        <table class="users-table">
 
+            <thead>
 
+                <tr>
 
-<div class="users-input">
+                    <th>
+                        Usuário
+                    </th>
 
+                    <th>
+                        Email
+                    </th>
 
-<label>
+                    <th>
+                        Perfil
+                    </th>
 
-Nome completo
+                    <th>
+                        Status
+                    </th>
 
-</label>
+                    <th>
+                        Último acesso
+                    </th>
 
+                    <th>
+                        Ações
+                    </th>
 
-<input
+                </tr>
 
-id="usersNameInput"
+            </thead>
 
-type="text"
+            <tbody id="usersTableBody">
 
-required>
+                <tr>
 
+                    <td
+                    colspan="6"
+                    class="users-empty">
+
+                        <i class="fa-solid fa-spinner fa-spin"></i>
+
+                        Carregando usuários...
+
+                    </td>
+
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
 
 </div>
 
+<div class="users-chart-box">
 
+    <div class="users-card-header">
 
+        <div>
 
+            <label>
+                ACESSOS
+            </label>
 
+            <h2>
+                Atividade dos usuários
+            </h2>
 
+        </div>
 
-<div class="users-input">
+        <span>
+            7 dias
+        </span>
 
+    </div>
 
-<label>
+    <div class="users-chart-area">
 
-Email
+        <canvas id="usersAccessChart"></canvas>
 
-</label>
+        <div
+        class="users-chart-loading"
+        id="usersChartLoading">
 
+            Preparando gráfico...
 
-<input
+        </div>
 
-id="usersEmailInput"
-
-type="email"
-
-required>
-
-
-</div>
-
-
-
-
-
-
-
-<div class="users-input">
-
-
-<label>
-
-Senha
-
-</label>
-
-
-<input
-
-id="usersPasswordInput"
-
-type="password"
-
-required>
-
+    </div>
 
 </div>
 
+</section>
 
+<section class="users-security-grid">
 
+<div class="security-card">
 
+    <div class="security-icon">
+        <i class="fa-solid fa-shield-halved"></i>
+    </div>
 
+    <div>
 
+        <label>
+            SEGURANÇA
+        </label>
 
-<div class="users-input">
+        <h3>
+            Controle de permissões
+        </h3>
 
+        <p>
+            Cada usuário possui um perfil de acesso definido pelo administrador.
+        </p>
 
-<label>
-
-Nível de acesso
-
-</label>
-
-
-
-<select id="usersRoleInput">
-
-
-<option value="Administrador">
-
-Administrador
-
-</option>
-
-
-<option value="Gerente">
-
-Gerente
-
-</option>
-
-
-<option value="Funcionário">
-
-Funcionário
-
-</option>
-
-
-
-</select>
-
-
+    </div>
 
 </div>
 
+<div class="security-card">
 
+    <div class="security-icon">
+        <i class="fa-solid fa-cloud"></i>
+    </div>
 
+    <div>
 
+        <label>
+            BANCO DE DADOS
+        </label>
+
+        <h3 id="usersDatabaseStatus">
+            Conectando...
+        </h3>
+
+        <p>
+            Usuários sincronizados com o banco de dados EMPIRE.
+        </p>
+
+    </div>
 
 </div>
 
+<div class="security-card">
 
+    <div class="security-icon">
+        <i class="fa-solid fa-clock-rotate-left"></i>
+    </div>
 
+    <div>
 
+        <label>
+            MONITORAMENTO
+        </label>
 
+        <h3>
+            Histórico de acessos
+        </h3>
 
+        <p>
+            A atividade dos usuários poderá ser acompanhada no Monitoramento.
+        </p>
 
-
-
-<div class="users-permissions">
-
-
-
-<h3>
-
-Permissões
-
-</h3>
-
-
-
-
-
-<label>
-
-<input 
-
-type="checkbox"
-
-checked>
-
-
-Acesso à Tela Inicial
-
-</label>
-
-
-
-
-
-
-<label>
-
-<input 
-
-type="checkbox">
-
-
-Gerenciar Produtos
-
-</label>
-
-
-
-
-
-
-<label>
-
-<input 
-
-type="checkbox">
-
-
-Gerenciar Vendas
-
-</label>
-
-
-
-
-
-
-
-<label>
-
-<input 
-
-type="checkbox">
-
-
-Financeiro
-
-</label>
-
-
-
-
-
-
-<label>
-
-<input 
-
-type="checkbox">
-
-
-Usuários
-
-</label>
-
-
-
-
+    </div>
 
 </div>
 
-
-
-
-
-
-
-
-
-<button 
-
-type="submit"
-
-class="users-primary-btn">
-
-
-
-<i class="fa-solid fa-save"></i>
-
-
-Salvar usuário
-
-
-
-</button>
-
-
-
-
-
-
-</form>
-
-
-
-
-
-</div>
-
-
-
-</div>
-
-
-
-
-
-
-
-
-
-<!-- =====================================================
-RODAPÉ
-===================================================== -->
-
+</section>
 
 <footer class="users-footer">
 
-
-
 <div>
 
+    <strong>
+        EMPIRE ERP
+    </strong>
 
-<strong>
-
-EMPIRE ERP V4 PREMIUM
-
-</strong>
-
-
-<p>
-
-Gestão de Usuários e Segurança
-
-</p>
-
+    <span>
+        Império da Moda Online
+    </span>
 
 </div>
 
+<div>
 
+    <span>
+        Sistema de Gestão
+    </span>
 
+    <strong id="usersLastUpdate">
+        Agora
+    </strong>
 
-
-<span>
-
-Império da Moda Online
-
-</span>
-
-
+</div>
 
 </footer>
-
-
-
-
-
-
-
-
 
 </main>
 
 </div>
 
+<div
+class="user-modal"
+id="userModal"
+aria-hidden="true">
 
+<div class="user-modal-overlay" id="userModalOverlay"></div>
 
+<div class="user-modal-box">
 
+    <div class="user-modal-header">
 
+        <div>
 
+            <label>
+                NOVO ACESSO
+            </label>
 
+            <h2 id="userModalTitle">
+                Cadastrar usuário
+            </h2>
 
+        </div>
 
+        <button
+        type="button"
+        class="user-modal-close"
+        id="closeUserModal"
+        title="Fechar">
 
+            <i class="fa-solid fa-xmark"></i>
 
-<!-- =====================================================
-BIBLIOTECA GRÁFICOS
-===================================================== -->
+        </button>
 
+    </div>
+
+    <form id="userForm">
+
+        <input
+        type="hidden"
+        id="userId">
+
+        <div class="user-form-grid">
+
+            <div class="user-field">
+
+                <label for="userFullName">
+                    Nome completo
+                </label>
+
+                <input
+                type="text"
+                id="userFullName"
+                placeholder="Nome do usuário"
+                required>
+
+            </div>
+
+            <div class="user-field">
+
+                <label for="userEmail">
+                    Email
+                </label>
+
+                <input
+                type="email"
+                id="userEmail"
+                placeholder="usuario@empresa.com"
+                required>
+
+            </div>
+
+            <div class="user-field">
+
+                <label for="userRole">
+                    Perfil
+                </label>
+
+                <select id="userRole" required>
+
+                    <option value="administrador">
+                        Administrador
+                    </option>
+
+                    <option value="estoquista">
+                        Estoquista
+                    </option>
+
+                    <option value="vendedor">
+                        Vendedor
+                    </option>
+
+                </select>
+
+            </div>
+
+            <div class="user-field">
+
+                <label for="userStatus">
+                    Status
+                </label>
+
+                <select id="userStatus" required>
+
+                    <option value="ativo">
+                        Ativo
+                    </option>
+
+                    <option value="inativo">
+                        Inativo
+                    </option>
+
+                </select>
+
+            </div>
+
+            <div
+            class="user-field user-password-field">
+
+                <label for="userPassword">
+                    Senha
+                </label>
+
+                <input
+                type="password"
+                id="userPassword"
+                placeholder="Senha de acesso"
+                autocomplete="new-password">
+
+            </div>
+
+            <div class="user-field">
+
+                <label for="userPhone">
+                    Telefone
+                </label>
+
+                <input
+                type="tel"
+                id="userPhone"
+                placeholder="(00) 00000-0000">
+
+            </div>
+
+        </div>
+
+        <div
+        class="user-form-message"
+        id="userFormMessage">
+        </div>
+
+        <div class="user-modal-footer">
+
+            <button
+            type="button"
+            class="users-secondary-button"
+            id="cancelUserModal">
+
+                Cancelar
+
+            </button>
+
+            <button
+            type="submit"
+            class="users-primary-button"
+            id="saveUserButton">
+
+                <i class="fa-solid fa-floppy-disk"></i>
+
+                Salvar usuário
+
+            </button>
+
+        </div>
+
+    </form>
+
+</div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-
-
-
-
-
-
-<!-- =====================================================
-SISTEMA
-===================================================== -->
-
-
-<script src="../../assets/js/database.js"></script>
-
-
-<script src="../../assets/js/components.js"></script>
-
+<script src="../../assets/js/supabase.js"></script>
 
 <script src="../../assets/js/usuarios.js"></script>
-
-
-
-
-
-
-
 
 </body>
 
