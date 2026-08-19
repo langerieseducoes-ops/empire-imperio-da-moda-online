@@ -1,1428 +1,848 @@
-"use strict";
+/* =========================================================
+   EMPIRE ERP — GESTÃO DE USUÁRIOS
+   usuarios.js
+   ========================================================= */
 
-/*=========================================================
- EMPIRE ERP V4 PREMIUM
- MÓDULO: USUÁRIOS
-=========================================================*/
+(() => {
+    "use strict";
 
-const Users = {
+    let usuarios = [];
+    let graficoAcessos = null;
+    let inicializado = false;
 
-    version: "4.0.0",
+    const $ = (id) => document.getElementById(id);
 
-    storage: "empire_users",
+    const elementos = {
+        loader: $("usersLoader"),
+        sparkContainer: $("sparkContainer"),
 
-    chart: null,
+        search: $("userSearch"),
+        roleFilter: $("roleFilter"),
+        statusFilter: $("statusFilter"),
 
-    notifications: [],
+        tableBody: $("usersTableBody"),
+        tableStatus: $("usersTableStatus"),
 
-    activities: [],
+        total: $("usersTotalCount"),
+        active: $("usersActiveCount"),
+        admins: $("usersAdminCount"),
+        online: $("usersOnlineCount"),
 
-    users: [],
+        database: $("usersDatabaseStatus"),
+        lastUpdate: $("usersLastUpdate"),
 
-    elements: {},
+        modal: $("userModal"),
+        modalOverlay: $("userModalOverlay"),
+        modalTitle: $("userModalTitle"),
+        openModal: $("openUserModal"),
+        closeModal: $("closeUserModal"),
+        cancelModal: $("cancelUserModal"),
 
-    init() {
+        form: $("userForm"),
+        userId: $("userId"),
+        name: $("userFullName"),
+        email: $("userEmail"),
+        role: $("userRole"),
+        status: $("userStatus"),
+        password: $("userPassword"),
+        phone: $("userPhone"),
 
-        console.log("EMPIRE ERP - Usuários iniciado");
+        message: $("userFormMessage"),
+        saveButton: $("saveUserButton"),
 
-        this.cache();
+        chart: $("usersAccessChart"),
+        chartLoading: $("usersChartLoading"),
 
-        this.loader();
+        notification: $("usersNotification"),
+        logout: $("usersLogout")
+    };
 
-        this.events();
+    function esconderLoader() {
+        if (!elementos.loader) return;
 
-        this.loadStorage();
+        elementos.loader.classList.add("hidden");
 
-        this.renderCards();
-
-        this.renderTable();
-
-        this.renderActivities();
-
-        this.renderChart();
-
-        this.clock();
-
-        this.notificationsSystem();
-
-    },
-
-    cache() {
-
-        this.elements.loader =
-            document.getElementById("usersLoader");
-
-        this.elements.table =
-            document.getElementById("usersTableBody");
-
-        this.elements.modal =
-            document.getElementById("usersModal");
-
-        this.elements.form =
-            document.getElementById("usersForm");
-
-        this.elements.search =
-            document.getElementById("usersSearchInput");
-
-        this.elements.level =
-            document.getElementById("usersLevelFilter");
-
-        this.elements.status =
-            document.getElementById("usersStatusFilter");
-
-        this.elements.total =
-            document.getElementById("usersTotalCount");
-
-        this.elements.active =
-            document.getElementById("usersActiveCount");
-
-        this.elements.admin =
-            document.getElementById("usersAdminCount");
-
-        this.elements.activity =
-            document.getElementById("usersActivityList");
-
-        this.elements.notification =
-            document.getElementById("usersNotificationCount");
-
-    },
-
-    loader() {
-
-        window.addEventListener("load", () => {
-
-            if (!this.elements.loader) return;
-
-            setTimeout(() => {
-
-                this.elements.loader.classList.add("hide");
-
-                setTimeout(() => {
-
-                    this.elements.loader.remove();
-
-                }, 700);
-
-            }, 900);
-
-        });
-
-    },
-
-    events() {
-
-        document
-            .getElementById("openUserModal")
-            ?.addEventListener("click", () => {
-
-                this.openModal();
-
-            });
-
-        document
-            .getElementById("closeUsersModal")
-            ?.addEventListener("click", () => {
-
-                this.closeModal();
-
-            });
-
-        this.elements.modal?.addEventListener("click", e => {
-
-            if (e.target === this.elements.modal) {
-
-                this.closeModal();
-
+        setTimeout(() => {
+            if (elementos.loader) {
+                elementos.loader.style.display = "none";
             }
+        }, 500);
+    }
 
-        });
+    function mostrarMensagem(texto, tipo = "info") {
+        if (!elementos.message) return;
 
-        this.elements.form?.addEventListener("submit", e => {
+        elementos.message.textContent = texto;
+        elementos.message.className = `user-form-message ${tipo}`;
+    }
 
-            e.preventDefault();
+    function limparMensagem() {
+        if (!elementos.message) return;
 
-            this.save();
+        elementos.message.textContent = "";
+        elementos.message.className = "user-form-message";
+    }
 
-        });
+    function formatarData(data) {
+        if (!data) return "Nunca";
 
-        this.elements.search?.addEventListener("keyup", () => {
+        const valor = new Date(data);
 
-            this.filter();
-
-        });
-
-        this.elements.level?.addEventListener("change", () => {
-
-            this.filter();
-
-        });
-
-        this.elements.status?.addEventListener("change", () => {
-
-            this.filter();
-
-        });
-
-    },
-
-    openModal() {
-
-        this.elements.modal.classList.add("active");
-
-    },
-
-    closeModal() {
-
-        this.elements.modal.classList.remove("active");
-
-        this.elements.form.reset();
-
-    },
-
-    loadStorage() {
-
-        const data = localStorage.getItem(this.storage);
-
-        if (data) {
-
-            this.users = JSON.parse(data);
-
-            return;
-
+        if (Number.isNaN(valor.getTime())) {
+            return "Nunca";
         }
 
-        this.users = [
+        return valor.toLocaleString("pt-BR", {
+            dateStyle: "short",
+            timeStyle: "short"
+        });
+    }
 
-            {
+    function escaparHTML(valor) {
+        return String(valor ?? "")
+            .replaceAll("&", "&amp;")
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;")
+            .replaceAll('"', "&quot;")
+            .replaceAll("'", "&#039;");
+    }
 
-                id: Date.now(),
+    function nomePerfil(perfil) {
+        const nomes = {
+            administrador: "Administrador",
+            estoquista: "Estoquista",
+            vendedor: "Vendedor"
+        };
 
-                nome: "Administrador",
+        return nomes[perfil] || perfil || "Não definido";
+    }
 
-                email: "admin@empire.com",
+    function normalizarUsuario(usuario) {
+        return {
+            id: usuario.id,
+            nome: usuario.nome || usuario.nome_completo || usuario.name || "Sem nome",
+            email: usuario.email || "",
+            perfil: String(
+                usuario.perfil ||
+                usuario.role ||
+                "vendedor"
+            ).toLowerCase(),
+            status: String(
+                usuario.status ||
+                "ativo"
+            ).toLowerCase(),
+            telefone: usuario.telefone || usuario.phone || "",
+            ultimo_acesso:
+                usuario.ultimo_acesso ||
+                usuario.last_login ||
+                usuario.updated_at ||
+                null,
+            criado_em:
+                usuario.created_at ||
+                usuario.criado_em ||
+                null
+        };
+    }
 
-                senha: "123456",
-
-                nivel: "Administrador",
-
-                status: "ativo",
-
-                acesso: new Date().toLocaleString("pt-BR")
-
-            }
-
+    async function descobrirTabela() {
+        const tabelas = [
+            "usuarios",
+            "users"
         ];
 
-        this.saveStorage();
+        for (const tabela of tabelas) {
+            try {
+                const { error } = await supabaseClient
+                    .from(tabela)
+                    .select("id")
+                    .limit(1);
 
-    },
-
-    saveStorage() {
-
-        localStorage.setItem(
-
-            this.storage,
-
-            JSON.stringify(this.users)
-
-        );
-
-    },
-
-    save() {
-
-        const nome =
-            document.getElementById("usersNameInput").value.trim();
-
-        const email =
-            document.getElementById("usersEmailInput").value.trim();
-
-        const senha =
-            document.getElementById("usersPasswordInput").value;
-
-        const nivel =
-            document.getElementById("usersRoleInput").value;
-
-        if (!nome || !email || !senha) {
-
-            this.notify(
-
-                "Preencha todos os campos",
-
-                "error"
-
-            );
-
-            return;
-
+                if (!error) {
+                    return tabela;
+                }
+            } catch (_) {}
         }
 
-        this.users.push({
+        return null;
+    }
 
-            id: Date.now(),
+    let tabelaUsuarios = null;
 
-            nome,
-
-            email,
-
-            senha,
-
-            nivel,
-
-            status: "ativo",
-
-            acesso: new Date().toLocaleString("pt-BR")
-
-        });
-
-        this.saveStorage();
-
-        this.renderTable();
-
-        this.renderCards();
-
-        this.activity(
-
-            "Novo usuário",
-
-            nome + " foi cadastrado."
-
-        );
-
-        this.notify(
-
-            "Usuário cadastrado",
-
-            "success"
-
-        );
-
-        this.closeModal();
-
-    },
-
-    renderTable(list = this.users) {
-
-        if (!this.elements.table) return;
-
-        if (!list.length) {
-
-            this.elements.table.innerHTML = `
-
-<tr>
-
-<td colspan="6">
-
-<div class="users-empty">
-
-Nenhum usuário encontrado
-
-</div>
-
-</td>
-
-</tr>
-
-`;
-
+    async function carregarUsuarios() {
+        if (!window.supabaseClient) {
+            atualizarBanco("Supabase não carregado", false);
             return;
-
         }
 
-        this.elements.table.innerHTML = "";
+        tabelaUsuarios = tabelaUsuarios || await descobrirTabela();
 
-        list.forEach(user => {
+        if (!tabelaUsuarios) {
+            atualizarBanco("Tabela não encontrada", false);
 
-            this.elements.table.innerHTML += `
+            usuarios = [];
+            renderizarUsuarios();
 
-<tr>
+            return;
+        }
 
-<td>${user.nome}</td>
+        try {
+            const { data, error } = await supabaseClient
+                .from(tabelaUsuarios)
+                .select("*")
+                .order("created_at", {
+                    ascending: false
+                });
 
-<td>${user.email}</td>
+            if (error) {
+                throw error;
+            }
 
-<td>${user.nivel}</td>
+            usuarios = (data || []).map(normalizarUsuario);
 
-<td>
+            atualizarBanco("Conectado", true);
+            renderizarUsuarios();
+            atualizarIndicadores();
+            atualizarGrafico();
 
-<span class="users-status ${user.status === "ativo" ? "active" : "inactive"}">
+        } catch (erro) {
+            console.error("Erro ao carregar usuários:", erro);
 
-${user.status}
+            atualizarBanco("Erro de conexão", false);
 
-</span>
+            usuarios = [];
+            renderizarUsuarios();
+        }
+    }
 
-</td>
+    function atualizarBanco(texto, online) {
+        if (!elementos.database) return;
 
-<td>${user.acesso}</td>
+        elementos.database.textContent = texto;
+        elementos.database.classList.toggle("online", online);
+        elementos.database.classList.toggle("offline", !online);
+    }
 
-<td>
-
-<div class="users-actions-table">
-
-<button
-class="users-action-btn"
-onclick="Users.remove(${user.id})">
-
-<i class="fa-solid fa-trash"></i>
-
-</button>
-
-</div>
-
-</td>
-
-</tr>
-
-`;
-
-        });
-
-    },
-     remove(id) {
-
-        const user = this.users.find(
-            item => item.id === id
-        );
-
-
-        if (!user) return;
-
-
-        const confirmDelete = confirm(
-            `Deseja remover o usuário ${user.nome}?`
-        );
-
-
-        if (!confirmDelete) return;
-
-
-        this.users = this.users.filter(
-            item => item.id !== id
-        );
-
-
-        this.saveStorage();
-
-
-        this.renderTable();
-
-        this.renderCards();
-
-
-        this.activity(
-
-            "Usuário removido",
-
-            `${user.nome} foi excluído do sistema.`
-
-        );
-
-
-        this.notify(
-
-            "Usuário removido",
-
-            "success"
-
-        );
-
-
-    },
-
-
-
-    filter() {
-
-
-        const text =
-
-            this.elements.search.value
-
+    function usuariosFiltrados() {
+        const busca = (elementos.search?.value || "")
+            .trim()
             .toLowerCase();
 
+        const perfil = elementos.roleFilter?.value || "";
+        const status = elementos.statusFilter?.value || "";
 
+        return usuarios.filter((usuario) => {
+            const correspondeBusca =
+                !busca ||
+                usuario.nome.toLowerCase().includes(busca) ||
+                usuario.email.toLowerCase().includes(busca);
 
-        const level =
+            const correspondePerfil =
+                !perfil ||
+                usuario.perfil === perfil;
 
-            this.elements.level.value;
-
-
-
-        const status =
-
-            this.elements.status.value;
-
-
-
-        const result = this.users.filter(user => {
-
-
-            const searchMatch =
-
-
-                user.nome
-
-                .toLowerCase()
-
-                .includes(text)
-
-
-                ||
-
-                user.email
-
-                .toLowerCase()
-
-                .includes(text);
-
-
-
-            const levelMatch =
-
-
-                !level
-
-                ||
-
-                user.nivel === level;
-
-
-
-            const statusMatch =
-
-
-                !status
-
-                ||
-
-                user.status === status;
-
-
+            const correspondeStatus =
+                !status ||
+                usuario.status === status;
 
             return (
-
-                searchMatch
-
-                &&
-
-                levelMatch
-
-                &&
-
-                statusMatch
-
+                correspondeBusca &&
+                correspondePerfil &&
+                correspondeStatus
             );
-
-
         });
-
-
-
-        this.renderTable(result);
-
-
-    },
-
-
-
-
-
-
-
-    renderCards() {
-
-
-        const total = this.users.length;
-
-
-
-        const active = this.users.filter(
-
-            user => user.status === "ativo"
-
-        ).length;
-
-
-
-        const admin = this.users.filter(
-
-            user => user.nivel === "Administrador"
-
-        ).length;
-
-
-
-
-
-        this.animateNumber(
-
-            this.elements.total,
-
-            total
-
-        );
-
-
-
-        this.animateNumber(
-
-            this.elements.active,
-
-            active
-
-        );
-
-
-
-        this.animateNumber(
-
-            this.elements.admin,
-
-            admin
-
-        );
-
-
-
-    },
-
-
-
-
-
-
-
-    animateNumber(element,value){
-
-
-        if(!element) return;
-
-
-
-        let start = 0;
-
-
-
-        const duration = 700;
-
-
-
-        const step = Math.ceil(
-
-            value / (duration / 30)
-
-        );
-
-
-
-        const timer = setInterval(()=>{
-
-
-            start += step;
-
-
-
-            if(start >= value){
-
-
-                start = value;
-
-
-                clearInterval(timer);
-
-
+    }
+
+    function renderizarUsuarios() {
+        if (!elementos.tableBody) return;
+
+        const lista = usuariosFiltrados();
+
+        if (elementos.tableStatus) {
+            elementos.tableStatus.textContent =
+                `${lista.length} usuário(s)`;
+        }
+
+        if (!lista.length) {
+            elementos.tableBody.innerHTML = `
+                <tr>
+                    <td colspan="6" class="users-empty">
+                        <i class="fa-solid fa-users-slash"></i>
+                        Nenhum usuário encontrado.
+                    </td>
+                </tr>
+            `;
+            return;
+        }
+
+        elementos.tableBody.innerHTML = lista.map((usuario) => {
+            const online =
+                usuario.status === "ativo" &&
+                usuario.ultimo_acesso &&
+                Date.now() -
+                    new Date(usuario.ultimo_acesso).getTime() <
+                    15 * 60 * 1000;
+
+            return `
+                <tr>
+                    <td>
+                        <div class="user-table-name">
+                            <div class="user-avatar-small">
+                                ${escaparHTML(
+                                    usuario.nome.charAt(0).toUpperCase()
+                                )}
+                            </div>
+
+                            <strong>
+                                ${escaparHTML(usuario.nome)}
+                            </strong>
+                        </div>
+                    </td>
+
+                    <td>
+                        ${escaparHTML(usuario.email)}
+                    </td>
+
+                    <td>
+                        <span class="user-role-badge ${escaparHTML(usuario.perfil)}">
+                            ${escaparHTML(nomePerfil(usuario.perfil))}
+                        </span>
+                    </td>
+
+                    <td>
+                        <span class="user-status-badge ${escaparHTML(usuario.status)}">
+                            <i class="fa-solid fa-circle"></i>
+                            ${usuario.status === "ativo" ? "Ativo" : "Inativo"}
+                        </span>
+                    </td>
+
+                    <td>
+                        <div class="last-access">
+                            ${online ? "Online agora" : formatarData(usuario.ultimo_acesso)}
+                        </div>
+                    </td>
+
+                    <td>
+                        <div class="user-actions">
+                            <button
+                                type="button"
+                                class="user-action edit"
+                                data-action="edit"
+                                data-id="${escaparHTML(usuario.id)}"
+                                title="Editar">
+                                <i class="fa-solid fa-pen"></i>
+                            </button>
+
+                            <button
+                                type="button"
+                                class="user-action delete"
+                                data-action="delete"
+                                data-id="${escaparHTML(usuario.id)}"
+                                title="Excluir">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `;
+        }).join("");
+    }
+
+    function atualizarIndicadores() {
+        if (elementos.total) {
+            elementos.total.textContent = usuarios.length;
+        }
+
+        if (elementos.active) {
+            elementos.active.textContent =
+                usuarios.filter(
+                    (usuario) => usuario.status === "ativo"
+                ).length;
+        }
+
+        if (elementos.admins) {
+            elementos.admins.textContent =
+                usuarios.filter(
+                    (usuario) => usuario.perfil === "administrador"
+                ).length;
+        }
+
+        if (elementos.online) {
+            const limite = Date.now() - 15 * 60 * 1000;
+
+            elementos.online.textContent =
+                usuarios.filter((usuario) => {
+                    if (!usuario.ultimo_acesso) return false;
+
+                    return (
+                        usuario.status === "ativo" &&
+                        new Date(usuario.ultimo_acesso).getTime() >= limite
+                    );
+                }).length;
+        }
+    }
+
+    function abrirModal(usuario = null) {
+        if (!elementos.modal) return;
+
+        limparMensagem();
+
+        elementos.form?.reset();
+
+        if (usuario) {
+            elementos.modalTitle.textContent = "Editar usuário";
+            elementos.userId.value = usuario.id || "";
+            elementos.name.value = usuario.nome || "";
+            elementos.email.value = usuario.email || "";
+            elementos.role.value = usuario.perfil || "vendedor";
+            elementos.status.value = usuario.status || "ativo";
+            elementos.phone.value = usuario.telefone || "";
+            elementos.password.value = "";
+
+            if (elementos.saveButton) {
+                elementos.saveButton.innerHTML = `
+                    <i class="fa-solid fa-floppy-disk"></i>
+                    Atualizar usuário
+                `;
             }
+        } else {
+            elementos.modalTitle.textContent = "Cadastrar usuário";
 
+            elementos.userId.value = "";
 
+            elementos.role.value = "vendedor";
+            elementos.status.value = "ativo";
 
-            element.textContent = start;
+            if (elementos.saveButton) {
+                elementos.saveButton.innerHTML = `
+                    <i class="fa-solid fa-floppy-disk"></i>
+                    Salvar usuário
+                `;
+            }
+        }
 
+        elementos.modal.classList.add("open");
+        elementos.modal.setAttribute("aria-hidden", "false");
 
+        document.body.classList.add("modal-open");
 
-        },30);
+        setTimeout(() => {
+            elementos.name?.focus();
+        }, 100);
+    }
 
+    function fecharModal() {
+        if (!elementos.modal) return;
 
+        elementos.modal.classList.remove("open");
+        elementos.modal.setAttribute("aria-hidden", "true");
 
-    },
+        document.body.classList.remove("modal-open");
 
+        limparMensagem();
+    }
 
+    async function salvarUsuario(event) {
+        event.preventDefault();
 
+        if (!tabelaUsuarios) {
+            mostrarMensagem(
+                "Tabela de usuários não encontrada no Supabase.",
+                "error"
+            );
+            return;
+        }
 
+        const nome = elementos.name.value.trim();
+        const email = elementos.email.value.trim();
+        const perfil = elementos.role.value;
+        const status = elementos.status.value;
+        const telefone = elementos.phone.value.trim();
+        const senha = elementos.password.value.trim();
+        const id = elementos.userId.value;
 
+        if (!nome || !email) {
+            mostrarMensagem(
+                "Preencha nome e email.",
+                "error"
+            );
+            return;
+        }
 
-
-
-    activity(title,text){
-
-
-        const item = {
-
-
-            title,
-
-
-            text,
-
-
-            date:new Date()
-
-            .toLocaleString("pt-BR")
-
-
+        const dados = {
+            nome,
+            email,
+            perfil,
+            status,
+            telefone
         };
 
-
-
-        this.activities.unshift(item);
-
-
-
-        if(this.activities.length > 10){
-
-
-            this.activities.pop();
-
-
+        if (senha) {
+            dados.senha = senha;
         }
 
+        const original = elementos.saveButton?.innerHTML;
 
-
-        this.renderActivities();
-
-
-
-    },
-
-
-
-
-
-
-
-    renderActivities(){
-
-
-        if(!this.elements.activity)
-
-            return;
-
-
-
-        if(!this.activities.length){
-
-
-            this.elements.activity.innerHTML = `
-
-
-<div class="users-empty">
-
-
-<i class="fa-solid fa-clock"></i>
-
-
-<p>
-
-
-Aguardando atividades...
-
-
-</p>
-
-
-</div>
-
-
-`;
-
-            return;
-
-
+        if (elementos.saveButton) {
+            elementos.saveButton.disabled = true;
+            elementos.saveButton.innerHTML = `
+                <i class="fa-solid fa-spinner fa-spin"></i>
+                Salvando...
+            `;
         }
 
-
-
-
-
-
-        this.elements.activity.innerHTML = "";
-
-
-
-
-        this.activities.forEach(item=>{
-
-
-            this.elements.activity.innerHTML += `
-
-
-<div class="users-activity-item">
-
-
-<strong>
-
-${item.title}
-
-</strong>
-
-
-<span>
-
-${item.text}
-
-</span>
-
-
-<small>
-
-${item.date}
-
-</small>
-
-
-</div>
-
-
-`;
-
-
-
-        });
-
-
-
-    },
-
-
-
-
-
-
-
-
-    notify(message,type="success"){
-
-
-
-        this.notifications.unshift({
-
-
-            message,
-
-
-            type,
-
-
-            time:new Date()
-
-
-        });
-
-
-
-
-        if(this.notifications.length > 99){
-
-
-            this.notifications.pop();
-
-
-        }
-
-
-
-        if(this.elements.notification){
-
-
-            this.elements.notification.textContent =
-
-                this.notifications.length;
-
-
-
-        }
-
-
-
-        console.log(
-
-            `[${type}] ${message}`
-
-        );
-
-
-
-    },
-
-
-
-
-
-
-
-
-    notificationsSystem(){
-
-
-
-        this.notify(
-
-            "Sistema de usuários iniciado",
-
-            "success"
-
-        );
-
-
-
-    },
-
-
-
-
-
-
-
-
-
-    renderChart(){
-
-
-
-        const canvas =
-
-            document.getElementById(
-
-                "usersAccessChart"
-
+        try {
+            let resultado;
+
+            if (id) {
+                resultado = await supabaseClient
+                    .from(tabelaUsuarios)
+                    .update(dados)
+                    .eq("id", id);
+            } else {
+                resultado = await supabaseClient
+                    .from(tabelaUsuarios)
+                    .insert([dados]);
+            }
+
+            if (resultado.error) {
+                throw resultado.error;
+            }
+
+            mostrarMensagem(
+                id
+                    ? "Usuário atualizado com sucesso."
+                    : "Usuário cadastrado com sucesso.",
+                "success"
             );
 
+            await carregarUsuarios();
 
+            setTimeout(() => {
+                fecharModal();
+            }, 700);
 
-        if(!canvas) return;
+        } catch (erro) {
+            console.error("Erro ao salvar usuário:", erro);
 
-
-
-
-        if(typeof Chart === "undefined"){
-
-
-
-            console.warn(
-
-                "Chart.js não carregado"
-
+            mostrarMensagem(
+                erro.message ||
+                "Não foi possível salvar o usuário.",
+                "error"
             );
 
+        } finally {
+            if (elementos.saveButton) {
+                elementos.saveButton.disabled = false;
+                elementos.saveButton.innerHTML =
+                    original || `
+                        <i class="fa-solid fa-floppy-disk"></i>
+                        Salvar usuário
+                    `;
+            }
+        }
+    }
 
-            return;
+    async function excluirUsuario(id) {
+        const usuario = usuarios.find(
+            (item) => String(item.id) === String(id)
+        );
 
+        if (!usuario) return;
 
+        const confirmar = window.confirm(
+            `Excluir o usuário "${usuario.nome}"?`
+        );
 
+        if (!confirmar) return;
+
+        try {
+            const { error } = await supabaseClient
+                .from(tabelaUsuarios)
+                .delete()
+                .eq("id", id);
+
+            if (error) {
+                throw error;
+            }
+
+            await carregarUsuarios();
+
+        } catch (erro) {
+            console.error("Erro ao excluir usuário:", erro);
+
+            window.alert(
+                erro.message ||
+                "Não foi possível excluir o usuário."
+            );
+        }
+    }
+
+    function tratarTabela(event) {
+        const botao = event.target.closest("[data-action]");
+
+        if (!botao) return;
+
+        const id = botao.dataset.id;
+        const acao = botao.dataset.action;
+
+        const usuario = usuarios.find(
+            (item) => String(item.id) === String(id)
+        );
+
+        if (acao === "edit" && usuario) {
+            abrirModal(usuario);
         }
 
-
-
-
-
-
-
-        this.chart = new Chart(
-
-            canvas,
-
-            {
-
-
-                type:"line",
-
-
-
-                data:{
-
-
-                    labels:[
-
-
-                        "Seg",
-
-                        "Ter",
-
-                        "Qua",
-
-                        "Qui",
-
-                        "Sex",
-
-                        "Sáb",
-
-                        "Dom"
-
-
-                    ],
-
-
-
-                    datasets:[{
-
-
-
-
-                        label:
-
-                        "Acessos",
-
-
-
-
-                        data:[
-
-
-                            12,
-
-                            18,
-
-                            9,
-
-                            25,
-
-                            20,
-
-                            30,
-
-                            22
-
-
-                        ],
-
-
-
-
-                        borderColor:
-
-                        "#d4af37",
-
-
-
-
-                        backgroundColor:
-
-                        "rgba(212,175,55,.15)",
-
-
-
-
-                        borderWidth:3,
-
-
-
-
-                        fill:true,
-
-
-
-
-                        tension:.4
-
-
-
-
-                    }]
-
-
+        if (acao === "delete") {
+            excluirUsuario(id);
+        }
+    }
+
+    function prepararGrafico() {
+        if (!elementos.chart || !window.Chart) return;
+
+        const contexto = elementos.chart.getContext("2d");
+
+        graficoAcessos = new Chart(contexto, {
+            type: "line",
+
+            data: {
+                labels: [],
+                datasets: [{
+                    label: "Acessos",
+                    data: [],
+                    borderWidth: 2,
+                    tension: 0.4,
+                    fill: true
+                }]
+            },
+
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+
+                plugins: {
+                    legend: {
+                        display: false
+                    }
                 },
 
-
-
-                options:{
-
-
-                    responsive:true,
-
-
-
-                    animation:{
-
-
-                        duration:1500
-
-
-                    },
-
-
-
-                    plugins:{
-
-
-                        legend:{
-
-
-                            labels:{
-
-
-                                color:"#fff"
-
-
-                            }
-
-
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            precision: 0
                         }
-
-
-                    },
-
-
-
-                    scales:{
-
-
-                        x:{
-
-
-                            ticks:{
-
-
-                                color:"#aaa"
-
-
-                            }
-
-
-                        },
-
-
-
-                        y:{
-
-
-                            ticks:{
-
-
-                                color:"#aaa"
-
-
-                            }
-
-
-                        }
-
-
-
                     }
-
-
-
                 }
-
-
-
             }
-
-
-
-        );
-
-
-
-    },
-     clock(){
-
-        const update = ()=>{
-
-            const now = new Date();
-
-            document
-            .querySelectorAll(".users-clock")
-            .forEach(clock=>{
-
-                clock.textContent =
-                now.toLocaleString("pt-BR");
-
-            });
-
-        };
-
-
-        update();
-
-
-        setInterval(update,1000);
-
-
-    },
-
-
-
-
-
-    security(){
-
-
-        document.addEventListener(
-
-            "contextmenu",
-
-            e=>{
-
-
-                if(
-
-                    e.target.tagName === "IMG"
-
-                ){
-
-                    e.preventDefault();
-
-                }
-
-
-            }
-
-        );
-
-
-    },
-
-
-
-
-
-
-    animations(){
-
-
-        const cards = document
-
-        .querySelectorAll(
-
-            ".users-info-card"
-
-        );
-
-
-
-        cards.forEach((card,index)=>{
-
-
-            card.style.animationDelay =
-
-            `${index * 120}ms`;
-
-
-
-            card.classList.add(
-
-                "show"
-
-            );
-
-
         });
-
-
-
-
-        const boxes = document
-
-        .querySelectorAll(
-
-            ".users-box"
-
-        );
-
-
-
-        boxes.forEach((box,index)=>{
-
-
-            box.style.animationDelay =
-
-            `${index * 150}ms`;
-
-
-
-            box.classList.add(
-
-                "show"
-
-            );
-
-
-        });
-
-
-
-    },
-
-
-
-
-
-
-
-    particles(){
-
-
-
-        const area = document.createElement(
-
-            "div"
-
-        );
-
-
-
-        area.className =
-
-        "users-particles";
-
-
-
-        document.body.appendChild(area);
-
-
-
-
-
-        for(
-
-            let i = 0;
-
-            i < 25;
-
-            i++
-
-        ){
-
-
-
-            const particle =
-
-            document.createElement(
-
-                "span"
-
-            );
-
-
-
-            particle.className =
-
-            "particle";
-
-
-
-            particle.style.left =
-
-            Math.random()*100+"%";
-
-
-
-            particle.style.animationDelay =
-
-            Math.random()*10+"s";
-
-
-
-            particle.style.animationDuration =
-
-            8 +
-
-            Math.random()*12 +
-
-            "s";
-
-
-
-            area.appendChild(
-
-                particle
-
-            );
-
-
+    }
+
+    function atualizarGrafico() {
+        if (!graficoAcessos) {
+            prepararGrafico();
         }
 
+        if (!graficoAcessos) return;
 
+        const hoje = new Date();
 
-    },
+        const labels = [];
+        const valores = [];
 
+        for (let i = 6; i >= 0; i--) {
+            const data = new Date(hoje);
 
+            data.setDate(hoje.getDate() - i);
 
+            const inicio = new Date(data);
+            inicio.setHours(0, 0, 0, 0);
 
+            const fim = new Date(data);
+            fim.setHours(23, 59, 59, 999);
 
+            const quantidade = usuarios.filter((usuario) => {
+                if (!usuario.ultimo_acesso) return false;
 
+                const acesso = new Date(usuario.ultimo_acesso);
 
-    errorHandler(){
+                return acesso >= inicio && acesso <= fim;
+            }).length;
 
+            labels.push(
+                data.toLocaleDateString("pt-BR", {
+                    weekday: "short"
+                })
+            );
 
+            valores.push(quantidade);
+        }
 
-        window.addEventListener(
+        graficoAcessos.data.labels = labels;
+        graficoAcessos.data.datasets[0].data = valores;
 
-            "error",
+        graficoAcessos.update();
 
-            event=>{
+        if (elementos.chartLoading) {
+            elementos.chartLoading.style.display = "none";
+        }
+    }
 
+    function criarFaiscas() {
+        if (!elementos.sparkContainer) return;
 
-                console.error(
+        elementos.sparkContainer.innerHTML = "";
 
-                    "EMPIRE ERP ERROR:",
+        const quantidade = window.innerWidth < 700 ? 12 : 24;
 
-                    event.message
+        const fragmento = document.createDocumentFragment();
 
-                );
+        for (let i = 0; i < quantidade; i++) {
+            const faisca = document.createElement("span");
 
+            faisca.className = "spark";
 
+            faisca.style.left = `${Math.random() * 100}%`;
+            faisca.style.top = `${Math.random() * 100}%`;
+            faisca.style.animationDelay =
+                `${Math.random() * 5}s`;
+
+            fragmento.appendChild(faisca);
+        }
+
+        elementos.sparkContainer.appendChild(fragmento);
+    }
+
+    function atualizarData() {
+        const agora = new Date();
+
+        const texto = agora.toLocaleDateString(
+            "pt-BR",
+            {
+                weekday: "long",
+                day: "2-digit",
+                month: "long",
+                year: "numeric"
             }
-
-
         );
 
+        const dataElement = $("dateToday");
 
+        if (dataElement) {
+            dataElement.textContent =
+                texto.charAt(0).toUpperCase() +
+                texto.slice(1);
+        }
 
+        if (elementos.lastUpdate) {
+            elementos.lastUpdate.textContent =
+                agora.toLocaleTimeString("pt-BR");
+        }
     }
 
+    function configurarEventos() {
+        elementos.openModal?.addEventListener(
+            "click",
+            () => abrirModal()
+        );
 
+        elementos.closeModal?.addEventListener(
+            "click",
+            fecharModal
+        );
 
+        elementos.cancelModal?.addEventListener(
+            "click",
+            fecharModal
+        );
 
+        elementos.modalOverlay?.addEventListener(
+            "click",
+            fecharModal
+        );
 
-};
+        elementos.form?.addEventListener(
+            "submit",
+            salvarUsuario
+        );
 
+        elementos.search?.addEventListener(
+            "input",
+            renderizarUsuarios
+        );
 
+        elementos.roleFilter?.addEventListener(
+            "change",
+            renderizarUsuarios
+        );
 
+        elementos.statusFilter?.addEventListener(
+            "change",
+            renderizarUsuarios
+        );
 
+        elementos.tableBody?.addEventListener(
+            "click",
+            tratarTabela
+        );
 
+        document.addEventListener(
+            "keydown",
+            (event) => {
+                if (event.key === "Escape") {
+                    fecharModal();
+                }
+            }
+        );
 
+        elementos.notification?.addEventListener(
+            "click",
+            () => {
+                window.location.href = "notificacoes.html";
+            }
+        );
 
+        elementos.logout?.addEventListener(
+            "click",
+            async () => {
+                try {
+                    if (window.supabaseClient) {
+                        await supabaseClient.auth.signOut();
+                    }
+                } catch (erro) {
+                    console.warn(
+                        "Logout:",
+                        erro
+                    );
+                }
 
-
-/*=========================================================
- INICIALIZAÇÃO
-=========================================================*/
-
-
-document.addEventListener(
-
-    "DOMContentLoaded",
-
-    ()=>{
-
-
-        Users.init();
-
-
-        Users.security();
-
-
-        Users.animations();
-
-
-        Users.particles();
-
-
-        Users.errorHandler();
-
-
-
+                window.location.href = "login.html";
+            }
+        );
     }
 
-);
+    async function iniciar() {
+        if (inicializado) return;
+
+        inicializado = true;
+
+        esconderLoader();
+        criarFaiscas();
+        atualizarData();
+        configurarEventos();
+
+        await carregarUsuarios();
+    }
+
+    if (document.readyState === "loading") {
+        document.addEventListener(
+            "DOMContentLoaded",
+            iniciar,
+            { once: true }
+        );
+    } else {
+        iniciar();
+    }
+
+})();
