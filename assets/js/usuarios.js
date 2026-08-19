@@ -1,105 +1,39 @@
-/* =========================================================
-   EMPIRE ERP — GESTÃO DE USUÁRIOS
-   usuarios.js
-   ========================================================= */
+document.addEventListener("DOMContentLoaded", () => {
+    if (window.EMPIRE_USERS_STARTED) return;
+    window.EMPIRE_USERS_STARTED = true;
 
-(() => {
-    "use strict";
+    const $ = id => document.getElementById(id);
 
-    let usuarios = [];
-    let graficoAcessos = null;
-    let inicializado = false;
+    const loader = $("usersLoader");
+    const modal = $("userModal");
+    const form = $("userForm");
+    const tableBody = $("usersTableBody");
+    const search = $("userSearch");
+    const roleFilter = $("roleFilter");
+    const statusFilter = $("statusFilter");
 
-    const $ = (id) => document.getElementById(id);
+    let users = [];
+    let chart = null;
+    let editingId = null;
+    let clockTimer = null;
 
-    const elementos = {
-        loader: $("usersLoader"),
-        sparkContainer: $("sparkContainer"),
+    const supabaseReady =
+        typeof window.supabaseClient !== "undefined" &&
+        window.supabaseClient &&
+        typeof window.supabaseClient.from === "function";
 
-        search: $("userSearch"),
-        roleFilter: $("roleFilter"),
-        statusFilter: $("statusFilter"),
+    function hideLoader() {
+        if (!loader) return;
 
-        tableBody: $("usersTableBody"),
-        tableStatus: $("usersTableStatus"),
-
-        total: $("usersTotalCount"),
-        active: $("usersActiveCount"),
-        admins: $("usersAdminCount"),
-        online: $("usersOnlineCount"),
-
-        database: $("usersDatabaseStatus"),
-        lastUpdate: $("usersLastUpdate"),
-
-        modal: $("userModal"),
-        modalOverlay: $("userModalOverlay"),
-        modalTitle: $("userModalTitle"),
-        openModal: $("openUserModal"),
-        closeModal: $("closeUserModal"),
-        cancelModal: $("cancelUserModal"),
-
-        form: $("userForm"),
-        userId: $("userId"),
-        name: $("userFullName"),
-        email: $("userEmail"),
-        role: $("userRole"),
-        status: $("userStatus"),
-        password: $("userPassword"),
-        phone: $("userPhone"),
-
-        message: $("userFormMessage"),
-        saveButton: $("saveUserButton"),
-
-        chart: $("usersAccessChart"),
-        chartLoading: $("usersChartLoading"),
-
-        notification: $("usersNotification"),
-        logout: $("usersLogout")
-    };
-
-    function esconderLoader() {
-        if (!elementos.loader) return;
-
-        elementos.loader.classList.add("hidden");
+        loader.classList.add("hidden");
 
         setTimeout(() => {
-            if (elementos.loader) {
-                elementos.loader.style.display = "none";
-            }
+            loader.style.display = "none";
         }, 500);
     }
 
-    function mostrarMensagem(texto, tipo = "info") {
-        if (!elementos.message) return;
-
-        elementos.message.textContent = texto;
-        elementos.message.className = `user-form-message ${tipo}`;
-    }
-
-    function limparMensagem() {
-        if (!elementos.message) return;
-
-        elementos.message.textContent = "";
-        elementos.message.className = "user-form-message";
-    }
-
-    function formatarData(data) {
-        if (!data) return "Nunca";
-
-        const valor = new Date(data);
-
-        if (Number.isNaN(valor.getTime())) {
-            return "Nunca";
-        }
-
-        return valor.toLocaleString("pt-BR", {
-            dateStyle: "short",
-            timeStyle: "short"
-        });
-    }
-
-    function escaparHTML(valor) {
-        return String(valor ?? "")
+    function escapeHTML(value) {
+        return String(value ?? "")
             .replaceAll("&", "&amp;")
             .replaceAll("<", "&lt;")
             .replaceAll(">", "&gt;")
@@ -107,166 +41,75 @@
             .replaceAll("'", "&#039;");
     }
 
-    function nomePerfil(perfil) {
-        const nomes = {
+    function formatDate(value) {
+        if (!value) return "Nunca";
+
+        const date = new Date(value);
+
+        if (Number.isNaN(date.getTime())) {
+            return "Nunca";
+        }
+
+        return date.toLocaleString("pt-BR", {
+            dateStyle: "short",
+            timeStyle: "short"
+        });
+    }
+
+    function roleName(role) {
+        const roles = {
             administrador: "Administrador",
             estoquista: "Estoquista",
             vendedor: "Vendedor"
         };
 
-        return nomes[perfil] || perfil || "Não definido";
+        return roles[String(role || "").toLowerCase()]
+            || role
+            || "Não definido";
     }
 
-    function normalizarUsuario(usuario) {
-        return {
-            id: usuario.id,
-            nome: usuario.nome || usuario.nome_completo || usuario.name || "Sem nome",
-            email: usuario.email || "",
-            perfil: String(
-                usuario.perfil ||
-                usuario.role ||
-                "vendedor"
-            ).toLowerCase(),
-            status: String(
-                usuario.status ||
-                "ativo"
-            ).toLowerCase(),
-            telefone: usuario.telefone || usuario.phone || "",
-            ultimo_acesso:
-                usuario.ultimo_acesso ||
-                usuario.last_login ||
-                usuario.updated_at ||
-                null,
-            criado_em:
-                usuario.created_at ||
-                usuario.criado_em ||
-                null
-        };
+    function updateCounters(list = users) {
+        const total = list.length;
+
+        const active = list.filter(user =>
+            String(user.status || "").toLowerCase() === "ativo"
+        ).length;
+
+        const admins = list.filter(user =>
+            String(user.role || "").toLowerCase() === "administrador"
+        ).length;
+
+        const online = list.filter(user => {
+            const value = String(
+                user.online ??
+                user.is_online ??
+                ""
+            ).toLowerCase();
+
+            return ["true", "1", "online"].includes(value);
+        }).length;
+
+        if ($("usersTotalCount"))
+            $("usersTotalCount").textContent = total;
+
+        if ($("usersActiveCount"))
+            $("usersActiveCount").textContent = active;
+
+        if ($("usersAdminCount"))
+            $("usersAdminCount").textContent = admins;
+
+        if ($("usersOnlineCount"))
+            $("usersOnlineCount").textContent = online;
     }
 
-    async function descobrirTabela() {
-        const tabelas = [
-            "usuarios",
-            "users"
-        ];
+    function renderUsers(list = users) {
+        if (!tableBody) return;
 
-        for (const tabela of tabelas) {
-            try {
-                const { error } = await supabaseClient
-                    .from(tabela)
-                    .select("id")
-                    .limit(1);
-
-                if (!error) {
-                    return tabela;
-                }
-            } catch (_) {}
-        }
-
-        return null;
-    }
-
-    let tabelaUsuarios = null;
-
-    async function carregarUsuarios() {
-        if (!window.supabaseClient) {
-            atualizarBanco("Supabase não carregado", false);
-            return;
-        }
-
-        tabelaUsuarios = tabelaUsuarios || await descobrirTabela();
-
-        if (!tabelaUsuarios) {
-            atualizarBanco("Tabela não encontrada", false);
-
-            usuarios = [];
-            renderizarUsuarios();
-
-            return;
-        }
-
-        try {
-            const { data, error } = await supabaseClient
-                .from(tabelaUsuarios)
-                .select("*")
-                .order("created_at", {
-                    ascending: false
-                });
-
-            if (error) {
-                throw error;
-            }
-
-            usuarios = (data || []).map(normalizarUsuario);
-
-            atualizarBanco("Conectado", true);
-            renderizarUsuarios();
-            atualizarIndicadores();
-            atualizarGrafico();
-
-        } catch (erro) {
-            console.error("Erro ao carregar usuários:", erro);
-
-            atualizarBanco("Erro de conexão", false);
-
-            usuarios = [];
-            renderizarUsuarios();
-        }
-    }
-
-    function atualizarBanco(texto, online) {
-        if (!elementos.database) return;
-
-        elementos.database.textContent = texto;
-        elementos.database.classList.toggle("online", online);
-        elementos.database.classList.toggle("offline", !online);
-    }
-
-    function usuariosFiltrados() {
-        const busca = (elementos.search?.value || "")
-            .trim()
-            .toLowerCase();
-
-        const perfil = elementos.roleFilter?.value || "";
-        const status = elementos.statusFilter?.value || "";
-
-        return usuarios.filter((usuario) => {
-            const correspondeBusca =
-                !busca ||
-                usuario.nome.toLowerCase().includes(busca) ||
-                usuario.email.toLowerCase().includes(busca);
-
-            const correspondePerfil =
-                !perfil ||
-                usuario.perfil === perfil;
-
-            const correspondeStatus =
-                !status ||
-                usuario.status === status;
-
-            return (
-                correspondeBusca &&
-                correspondePerfil &&
-                correspondeStatus
-            );
-        });
-    }
-
-    function renderizarUsuarios() {
-        if (!elementos.tableBody) return;
-
-        const lista = usuariosFiltrados();
-
-        if (elementos.tableStatus) {
-            elementos.tableStatus.textContent =
-                `${lista.length} usuário(s)`;
-        }
-
-        if (!lista.length) {
-            elementos.tableBody.innerHTML = `
+        if (!list.length) {
+            tableBody.innerHTML = `
                 <tr>
                     <td colspan="6" class="users-empty">
-                        <i class="fa-solid fa-users-slash"></i>
+                        <i class="fa-solid fa-user-slash"></i>
                         Nenhum usuário encontrado.
                     </td>
                 </tr>
@@ -274,346 +117,635 @@
             return;
         }
 
-        elementos.tableBody.innerHTML = lista.map((usuario) => {
-            const online =
-                usuario.status === "ativo" &&
-                usuario.ultimo_acesso &&
-                Date.now() -
-                    new Date(usuario.ultimo_acesso).getTime() <
-                    15 * 60 * 1000;
+        tableBody.innerHTML = list.map(user => {
+            const id = escapeHTML(user.id);
+
+            const name = escapeHTML(
+                user.name ||
+                user.full_name ||
+                user.nome ||
+                "Usuário"
+            );
+
+            const email = escapeHTML(
+                user.email || "Sem email"
+            );
+
+            const rawRole = String(
+                user.role || ""
+            ).toLowerCase();
+
+            const role = escapeHTML(
+                roleName(rawRole)
+            );
+
+            const status = String(
+                user.status || "ativo"
+            ).toLowerCase();
+
+            const statusText =
+                status === "ativo"
+                    ? "Ativo"
+                    : "Inativo";
+
+            const lastAccess =
+                user.last_access ||
+                user.last_login ||
+                user.updated_at;
+
+            const initial =
+                name.charAt(0).toUpperCase();
 
             return `
-                <tr>
+                <tr data-user-id="${id}">
+
                     <td>
-                        <div class="user-table-name">
-                            <div class="user-avatar-small">
-                                ${escaparHTML(
-                                    usuario.nome.charAt(0).toUpperCase()
-                                )}
+                        <div class="user-table-person">
+
+                            <div class="user-table-avatar">
+                                ${initial}
                             </div>
 
                             <strong>
-                                ${escaparHTML(usuario.nome)}
+                                ${name}
                             </strong>
+
                         </div>
                     </td>
 
                     <td>
-                        ${escaparHTML(usuario.email)}
+                        ${email}
                     </td>
 
                     <td>
-                        <span class="user-role-badge ${escaparHTML(usuario.perfil)}">
-                            ${escaparHTML(nomePerfil(usuario.perfil))}
+                        <span class="role-badge role-${escapeHTML(rawRole)}">
+                            ${role}
                         </span>
                     </td>
 
                     <td>
-                        <span class="user-status-badge ${escaparHTML(usuario.status)}">
-                            <i class="fa-solid fa-circle"></i>
-                            ${usuario.status === "ativo" ? "Ativo" : "Inativo"}
+                        <span class="status-badge status-${escapeHTML(status)}">
+                            <span></span>
+                            ${statusText}
                         </span>
                     </td>
 
                     <td>
-                        <div class="last-access">
-                            ${online ? "Online agora" : formatarData(usuario.ultimo_acesso)}
-                        </div>
+                        ${formatDate(lastAccess)}
                     </td>
 
                     <td>
-                        <div class="user-actions">
+                        <div class="user-table-actions">
+
                             <button
                                 type="button"
                                 class="user-action edit"
                                 data-action="edit"
-                                data-id="${escaparHTML(usuario.id)}"
+                                data-id="${id}"
                                 title="Editar">
+
                                 <i class="fa-solid fa-pen"></i>
+
                             </button>
 
                             <button
                                 type="button"
                                 class="user-action delete"
                                 data-action="delete"
-                                data-id="${escaparHTML(usuario.id)}"
+                                data-id="${id}"
                                 title="Excluir">
+
                                 <i class="fa-solid fa-trash"></i>
+
                             </button>
+
                         </div>
                     </td>
+
                 </tr>
             `;
         }).join("");
     }
 
-    function atualizarIndicadores() {
-        if (elementos.total) {
-            elementos.total.textContent = usuarios.length;
-        }
+    function applyFilters() {
+        const term = String(
+            search?.value || ""
+        ).trim().toLowerCase();
 
-        if (elementos.active) {
-            elementos.active.textContent =
-                usuarios.filter(
-                    (usuario) => usuario.status === "ativo"
-                ).length;
-        }
+        const role = String(
+            roleFilter?.value || ""
+        ).toLowerCase();
 
-        if (elementos.admins) {
-            elementos.admins.textContent =
-                usuarios.filter(
-                    (usuario) => usuario.perfil === "administrador"
-                ).length;
-        }
+        const status = String(
+            statusFilter?.value || ""
+        ).toLowerCase();
 
-        if (elementos.online) {
-            const limite = Date.now() - 15 * 60 * 1000;
+        const filtered = users.filter(user => {
+            const name = String(
+                user.name ||
+                user.full_name ||
+                user.nome ||
+                ""
+            ).toLowerCase();
 
-            elementos.online.textContent =
-                usuarios.filter((usuario) => {
-                    if (!usuario.ultimo_acesso) return false;
+            const email = String(
+                user.email || ""
+            ).toLowerCase();
 
-                    return (
-                        usuario.status === "ativo" &&
-                        new Date(usuario.ultimo_acesso).getTime() >= limite
-                    );
-                }).length;
-        }
-    }
+            const userRole = String(
+                user.role || ""
+            ).toLowerCase();
 
-    function abrirModal(usuario = null) {
-        if (!elementos.modal) return;
+            const userStatus = String(
+                user.status || ""
+            ).toLowerCase();
 
-        limparMensagem();
+            const matchesSearch =
+                !term ||
+                name.includes(term) ||
+                email.includes(term);
 
-        elementos.form?.reset();
+            const matchesRole =
+                !role ||
+                userRole === role;
 
-        if (usuario) {
-            elementos.modalTitle.textContent = "Editar usuário";
-            elementos.userId.value = usuario.id || "";
-            elementos.name.value = usuario.nome || "";
-            elementos.email.value = usuario.email || "";
-            elementos.role.value = usuario.perfil || "vendedor";
-            elementos.status.value = usuario.status || "ativo";
-            elementos.phone.value = usuario.telefone || "";
-            elementos.password.value = "";
+            const matchesStatus =
+                !status ||
+                userStatus === status;
 
-            if (elementos.saveButton) {
-                elementos.saveButton.innerHTML = `
-                    <i class="fa-solid fa-floppy-disk"></i>
-                    Atualizar usuário
-                `;
-            }
-        } else {
-            elementos.modalTitle.textContent = "Cadastrar usuário";
-
-            elementos.userId.value = "";
-
-            elementos.role.value = "vendedor";
-            elementos.status.value = "ativo";
-
-            if (elementos.saveButton) {
-                elementos.saveButton.innerHTML = `
-                    <i class="fa-solid fa-floppy-disk"></i>
-                    Salvar usuário
-                `;
-            }
-        }
-
-        elementos.modal.classList.add("open");
-        elementos.modal.setAttribute("aria-hidden", "false");
-
-        document.body.classList.add("modal-open");
-
-        setTimeout(() => {
-            elementos.name?.focus();
-        }, 100);
-    }
-
-    function fecharModal() {
-        if (!elementos.modal) return;
-
-        elementos.modal.classList.remove("open");
-        elementos.modal.setAttribute("aria-hidden", "true");
-
-        document.body.classList.remove("modal-open");
-
-        limparMensagem();
-    }
-
-    async function salvarUsuario(event) {
-        event.preventDefault();
-
-        if (!tabelaUsuarios) {
-            mostrarMensagem(
-                "Tabela de usuários não encontrada no Supabase.",
-                "error"
+            return (
+                matchesSearch &&
+                matchesRole &&
+                matchesStatus
             );
-            return;
+        });
+
+        renderUsers(filtered);
+        updateCounters(filtered);
+
+        if ($("usersTableStatus")) {
+            $("usersTableStatus").textContent =
+                `${filtered.length} usuário(s)`;
         }
+    }
 
-        const nome = elementos.name.value.trim();
-        const email = elementos.email.value.trim();
-        const perfil = elementos.role.value;
-        const status = elementos.status.value;
-        const telefone = elementos.phone.value.trim();
-        const senha = elementos.password.value.trim();
-        const id = elementos.userId.value;
-
-        if (!nome || !email) {
-            mostrarMensagem(
-                "Preencha nome e email.",
-                "error"
+    async function loadUsers() {
+        if (!supabaseReady) {
+            setDatabaseStatus("Supabase não carregado");
+            showTableError(
+                "Cliente Supabase não encontrado."
             );
+            hideLoader();
             return;
-        }
-
-        const dados = {
-            nome,
-            email,
-            perfil,
-            status,
-            telefone
-        };
-
-        if (senha) {
-            dados.senha = senha;
-        }
-
-        const original = elementos.saveButton?.innerHTML;
-
-        if (elementos.saveButton) {
-            elementos.saveButton.disabled = true;
-            elementos.saveButton.innerHTML = `
-                <i class="fa-solid fa-spinner fa-spin"></i>
-                Salvando...
-            `;
         }
 
         try {
-            let resultado;
+            setDatabaseStatus("Conectando...");
 
-            if (id) {
-                resultado = await supabaseClient
-                    .from(tabelaUsuarios)
-                    .update(dados)
-                    .eq("id", id);
+            const { data, error } =
+                await window.supabaseClient
+                    .from("usuarios")
+                    .select("*")
+                    .order("created_at", {
+                        ascending: false
+                    });
+
+            if (error) throw error;
+
+            users = Array.isArray(data)
+                ? data
+                : [];
+
+            setDatabaseStatus("Online");
+
+            updateCounters(users);
+            renderUsers(users);
+
+            if ($("usersTableStatus")) {
+                $("usersTableStatus").textContent =
+                    `${users.length} usuário(s)`;
+            }
+
+            renderAccessChart();
+
+        } catch (error) {
+            console.error(
+                "EMPIRE Usuários:",
+                error
+            );
+
+            setDatabaseStatus(
+                "Erro de conexão"
+            );
+
+            showTableError(
+                "Não foi possível carregar os usuários."
+            );
+
+        } finally {
+            hideLoader();
+        }
+    }
+
+    function showTableError(message) {
+        if (!tableBody) return;
+
+        tableBody.innerHTML = `
+            <tr>
+                <td colspan="6" class="users-empty">
+
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+
+                    ${escapeHTML(message)}
+
+                </td>
+            </tr>
+        `;
+
+        updateCounters([]);
+    }
+
+    function setDatabaseStatus(text) {
+        const status = $("usersDatabaseStatus");
+
+        if (status) {
+            status.textContent = text;
+        }
+    }
+
+    function openModal(user = null) {
+        if (!modal || !form) return;
+
+        editingId = user?.id || null;
+
+        form.reset();
+
+        if ($("userId")) {
+            $("userId").value =
+                user?.id || "";
+        }
+
+        if ($("userFullName")) {
+            $("userFullName").value =
+                user?.name ||
+                user?.full_name ||
+                user?.nome ||
+                "";
+        }
+
+        if ($("userEmail")) {
+            $("userEmail").value =
+                user?.email || "";
+        }
+
+        if ($("userRole")) {
+            $("userRole").value =
+                user?.role ||
+                "administrador";
+        }
+
+        if ($("userStatus")) {
+            $("userStatus").value =
+                user?.status ||
+                "ativo";
+        }
+
+        if ($("userPhone")) {
+            $("userPhone").value =
+                user?.phone ||
+                user?.telefone ||
+                "";
+        }
+
+        if ($("userPassword")) {
+            $("userPassword").value = "";
+        }
+
+        if ($("userModalTitle")) {
+            $("userModalTitle").textContent =
+                user
+                    ? "Editar usuário"
+                    : "Cadastrar usuário";
+        }
+
+        const label = modal.querySelector(
+            ".user-modal-header label"
+        );
+
+        if (label) {
+            label.textContent =
+                user
+                    ? "EDITAR ACESSO"
+                    : "NOVO ACESSO";
+        }
+
+        clearFormMessage();
+
+        modal.classList.add("open");
+        modal.setAttribute(
+            "aria-hidden",
+            "false"
+        );
+
+        setTimeout(() => {
+            $("userFullName")?.focus();
+        }, 100);
+    }
+
+    function closeModal() {
+        if (!modal) return;
+
+        modal.classList.remove("open");
+        modal.setAttribute(
+            "aria-hidden",
+            "true"
+        );
+
+        editingId = null;
+        clearFormMessage();
+    }
+
+    function clearFormMessage() {
+        const box = $("userFormMessage");
+
+        if (!box) return;
+
+        box.textContent = "";
+        box.className =
+            "user-form-message";
+    }
+
+    function showFormMessage(
+        message,
+        type = "error"
+    ) {
+        const box = $("userFormMessage");
+
+        if (!box) return;
+
+        box.textContent = message;
+        box.className =
+            `user-form-message ${type}`;
+    }
+
+    async function saveUser(event) {
+        event.preventDefault();
+
+        if (!supabaseReady) {
+            showFormMessage(
+                "Supabase não está disponível."
+            );
+            return;
+        }
+
+        const name =
+            $("userFullName")?.value.trim();
+
+        const email =
+            $("userEmail")?.value.trim();
+
+        const role =
+            $("userRole")?.value;
+
+        const status =
+            $("userStatus")?.value;
+
+        const phone =
+            $("userPhone")?.value.trim();
+
+        const password =
+            $("userPassword")?.value;
+
+        if (!name || !email || !role || !status) {
+            showFormMessage(
+                "Preencha os campos obrigatórios."
+            );
+            return;
+        }
+
+        const button =
+            $("saveUserButton");
+
+        const originalText =
+            button?.innerHTML ||
+            `<i class="fa-solid fa-floppy-disk"></i> Salvar usuário`;
+
+        if (button) {
+            button.disabled = true;
+
+            button.innerHTML =
+                `<i class="fa-solid fa-spinner fa-spin"></i> Salvando...`;
+        }
+
+        try {
+            const payload = {
+                name,
+                email,
+                role,
+                status,
+                phone: phone || null
+            };
+
+            if (password) {
+                payload.password = password;
+            }
+
+            let error = null;
+
+            if (editingId) {
+                const response =
+                    await window.supabaseClient
+                        .from("usuarios")
+                        .update(payload)
+                        .eq("id", editingId);
+
+                error = response.error;
+
             } else {
-                resultado = await supabaseClient
-                    .from(tabelaUsuarios)
-                    .insert([dados]);
+                const response =
+                    await window.supabaseClient
+                        .from("usuarios")
+                        .insert(payload);
+
+                error = response.error;
             }
 
-            if (resultado.error) {
-                throw resultado.error;
-            }
+            if (error) throw error;
 
-            mostrarMensagem(
-                id
+            showFormMessage(
+                editingId
                     ? "Usuário atualizado com sucesso."
                     : "Usuário cadastrado com sucesso.",
                 "success"
             );
 
-            await carregarUsuarios();
+            await loadUsers();
 
             setTimeout(() => {
-                fecharModal();
+                closeModal();
             }, 700);
 
-        } catch (erro) {
-            console.error("Erro ao salvar usuário:", erro);
+        } catch (error) {
+            console.error(
+                "Erro ao salvar usuário:",
+                error
+            );
 
-            mostrarMensagem(
-                erro.message ||
-                "Não foi possível salvar o usuário.",
-                "error"
+            showFormMessage(
+                error?.message ||
+                "Não foi possível salvar o usuário."
             );
 
         } finally {
-            if (elementos.saveButton) {
-                elementos.saveButton.disabled = false;
-                elementos.saveButton.innerHTML =
-                    original || `
-                        <i class="fa-solid fa-floppy-disk"></i>
-                        Salvar usuário
-                    `;
+            if (button) {
+                button.disabled = false;
+                button.innerHTML =
+                    originalText;
             }
         }
     }
 
-    async function excluirUsuario(id) {
-        const usuario = usuarios.find(
-            (item) => String(item.id) === String(id)
+    async function deleteUser(id) {
+        if (!id || !supabaseReady) return;
+
+        const user = users.find(
+            item =>
+                String(item.id) ===
+                String(id)
         );
 
-        if (!usuario) return;
+        const name =
+            user?.name ||
+            user?.full_name ||
+            user?.nome ||
+            "este usuário";
 
-        const confirmar = window.confirm(
-            `Excluir o usuário "${usuario.nome}"?`
-        );
-
-        if (!confirmar) return;
+        if (!confirm(
+            `Deseja realmente excluir ${name}?`
+        )) {
+            return;
+        }
 
         try {
-            const { error } = await supabaseClient
-                .from(tabelaUsuarios)
-                .delete()
-                .eq("id", id);
+            const { error } =
+                await window.supabaseClient
+                    .from("usuarios")
+                    .delete()
+                    .eq("id", id);
 
-            if (error) {
-                throw error;
-            }
+            if (error) throw error;
 
-            await carregarUsuarios();
+            await loadUsers();
 
-        } catch (erro) {
-            console.error("Erro ao excluir usuário:", erro);
+        } catch (error) {
+            console.error(
+                "Erro ao excluir usuário:",
+                error
+            );
 
-            window.alert(
-                erro.message ||
+            alert(
+                error?.message ||
                 "Não foi possível excluir o usuário."
             );
         }
     }
 
-    function tratarTabela(event) {
-        const botao = event.target.closest("[data-action]");
-
-        if (!botao) return;
-
-        const id = botao.dataset.id;
-        const acao = botao.dataset.action;
-
-        const usuario = usuarios.find(
-            (item) => String(item.id) === String(id)
+    function editUser(id) {
+        const user = users.find(
+            item =>
+                String(item.id) ===
+                String(id)
         );
 
-        if (acao === "edit" && usuario) {
-            abrirModal(usuario);
-        }
-
-        if (acao === "delete") {
-            excluirUsuario(id);
+        if (user) {
+            openModal(user);
         }
     }
 
-    function prepararGrafico() {
-        if (!elementos.chart || !window.Chart) return;
+    function handleTableAction(event) {
+        const button =
+            event.target.closest(
+                "[data-action]"
+            );
 
-        const contexto = elementos.chart.getContext("2d");
+        if (!button) return;
 
-        graficoAcessos = new Chart(contexto, {
+        const id =
+            button.dataset.id;
+
+        const action =
+            button.dataset.action;
+
+        if (action === "edit") {
+            editUser(id);
+        }
+
+        if (action === "delete") {
+            deleteUser(id);
+        }
+    }
+
+    function renderAccessChart() {
+        const canvas =
+            $("usersAccessChart");
+
+        if (
+            !canvas ||
+            typeof Chart === "undefined"
+        ) {
+            return;
+        }
+
+        const labels = [];
+        const values = [];
+
+        for (let i = 6; i >= 0; i--) {
+            const date = new Date();
+
+            date.setDate(
+                date.getDate() - i
+            );
+
+            labels.push(
+                date.toLocaleDateString(
+                    "pt-BR",
+                    {
+                        weekday: "short"
+                    }
+                ).replace(".", "")
+            );
+
+            values.push(
+                countAccessForDay(date)
+            );
+        }
+
+        const loading =
+            $("usersChartLoading");
+
+        if (loading) {
+            loading.style.display = "none";
+        }
+
+        if (chart) {
+            chart.destroy();
+            chart = null;
+        }
+
+        chart = new Chart(canvas, {
             type: "line",
 
             data: {
-                labels: [],
+                labels,
+
                 datasets: [{
                     label: "Acessos",
-                    data: [],
+                    data: values,
                     borderWidth: 2,
                     tension: 0.4,
-                    fill: true
+                    fill: true,
+                    pointRadius: 3,
+                    pointHoverRadius: 5
                 }]
             },
 
@@ -628,6 +760,12 @@
                 },
 
                 scales: {
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    },
+
                     y: {
                         beginAtZero: true,
                         ticks: {
@@ -639,210 +777,158 @@
         });
     }
 
-    function atualizarGrafico() {
-        if (!graficoAcessos) {
-            prepararGrafico();
-        }
+    function countAccessForDay(date) {
+        const target =
+            date.toISOString()
+                .slice(0, 10);
 
-        if (!graficoAcessos) return;
+        return users.filter(user => {
+            const value =
+                user.last_access ||
+                user.last_login ||
+                user.updated_at;
 
-        const hoje = new Date();
+            if (!value) return false;
 
-        const labels = [];
-        const valores = [];
-
-        for (let i = 6; i >= 0; i--) {
-            const data = new Date(hoje);
-
-            data.setDate(hoje.getDate() - i);
-
-            const inicio = new Date(data);
-            inicio.setHours(0, 0, 0, 0);
-
-            const fim = new Date(data);
-            fim.setHours(23, 59, 59, 999);
-
-            const quantidade = usuarios.filter((usuario) => {
-                if (!usuario.ultimo_acesso) return false;
-
-                const acesso = new Date(usuario.ultimo_acesso);
-
-                return acesso >= inicio && acesso <= fim;
-            }).length;
-
-            labels.push(
-                data.toLocaleDateString("pt-BR", {
-                    weekday: "short"
-                })
-            );
-
-            valores.push(quantidade);
-        }
-
-        graficoAcessos.data.labels = labels;
-        graficoAcessos.data.datasets[0].data = valores;
-
-        graficoAcessos.update();
-
-        if (elementos.chartLoading) {
-            elementos.chartLoading.style.display = "none";
-        }
+            return String(value)
+                .slice(0, 10) === target;
+        }).length;
     }
 
-    function criarFaiscas() {
-        if (!elementos.sparkContainer) return;
+    function createSparks() {
+        const container =
+            $("sparkContainer");
 
-        elementos.sparkContainer.innerHTML = "";
+        if (!container) return;
 
-        const quantidade = window.innerWidth < 700 ? 12 : 24;
+        container.innerHTML = "";
 
-        const fragmento = document.createDocumentFragment();
+        const total =
+            window.innerWidth < 700
+                ? 18
+                : 32;
 
-        for (let i = 0; i < quantidade; i++) {
-            const faisca = document.createElement("span");
+        for (let i = 0; i < total; i++) {
+            const spark =
+                document.createElement("span");
 
-            faisca.className = "spark";
+            spark.className = "spark";
 
-            faisca.style.left = `${Math.random() * 100}%`;
-            faisca.style.top = `${Math.random() * 100}%`;
-            faisca.style.animationDelay =
+            spark.style.left =
+                `${Math.random() * 100}%`;
+
+            spark.style.animationDelay =
                 `${Math.random() * 5}s`;
 
-            fragmento.appendChild(faisca);
-        }
+            spark.style.animationDuration =
+                `${3 + Math.random() * 5}s`;
 
-        elementos.sparkContainer.appendChild(fragmento);
+            container.appendChild(spark);
+        }
     }
 
-    function atualizarData() {
-        const agora = new Date();
+    function startClock() {
+        if (clockTimer) {
+            clearInterval(clockTimer);
+        }
 
-        const texto = agora.toLocaleDateString(
-            "pt-BR",
-            {
-                weekday: "long",
-                day: "2-digit",
-                month: "long",
-                year: "numeric"
+        const update = () => {
+            const element =
+                $("usersLastUpdate");
+
+            if (!element) return;
+
+            element.textContent =
+                new Date().toLocaleTimeString(
+                    "pt-BR"
+                );
+        };
+
+        update();
+
+        clockTimer =
+            setInterval(update, 1000);
+    }
+
+    function setupEvents() {
+        search?.addEventListener(
+            "input",
+            applyFilters
+        );
+
+        roleFilter?.addEventListener(
+            "change",
+            applyFilters
+        );
+
+        statusFilter?.addEventListener(
+            "change",
+            applyFilters
+        );
+
+        $("openUserModal")?.addEventListener(
+            "click",
+            () => openModal()
+        );
+
+        $("closeUserModal")?.addEventListener(
+            "click",
+            closeModal
+        );
+
+        $("cancelUserModal")?.addEventListener(
+            "click",
+            closeModal
+        );
+
+        $("userModalOverlay")?.addEventListener(
+            "click",
+            closeModal
+        );
+
+        $("usersLogout")?.addEventListener(
+            "click",
+            () => {
+                window.location.href =
+                    "login.html";
             }
         );
 
-        const dataElement = $("dateToday");
-
-        if (dataElement) {
-            dataElement.textContent =
-                texto.charAt(0).toUpperCase() +
-                texto.slice(1);
-        }
-
-        if (elementos.lastUpdate) {
-            elementos.lastUpdate.textContent =
-                agora.toLocaleTimeString("pt-BR");
-        }
-    }
-
-    function configurarEventos() {
-        elementos.openModal?.addEventListener(
-            "click",
-            () => abrirModal()
-        );
-
-        elementos.closeModal?.addEventListener(
-            "click",
-            fecharModal
-        );
-
-        elementos.cancelModal?.addEventListener(
-            "click",
-            fecharModal
-        );
-
-        elementos.modalOverlay?.addEventListener(
-            "click",
-            fecharModal
-        );
-
-        elementos.form?.addEventListener(
+        form?.addEventListener(
             "submit",
-            salvarUsuario
+            saveUser
         );
 
-        elementos.search?.addEventListener(
-            "input",
-            renderizarUsuarios
-        );
-
-        elementos.roleFilter?.addEventListener(
-            "change",
-            renderizarUsuarios
-        );
-
-        elementos.statusFilter?.addEventListener(
-            "change",
-            renderizarUsuarios
-        );
-
-        elementos.tableBody?.addEventListener(
+        tableBody?.addEventListener(
             "click",
-            tratarTabela
+            handleTableAction
         );
 
         document.addEventListener(
             "keydown",
-            (event) => {
-                if (event.key === "Escape") {
-                    fecharModal();
+            event => {
+                if (
+                    event.key === "Escape" &&
+                    modal?.classList.contains("open")
+                ) {
+                    closeModal();
                 }
             }
         );
 
-        elementos.notification?.addEventListener(
-            "click",
-            () => {
-                window.location.href = "notificacoes.html";
-            }
+        window.addEventListener(
+            "online",
+            () => setDatabaseStatus("Online")
         );
 
-        elementos.logout?.addEventListener(
-            "click",
-            async () => {
-                try {
-                    if (window.supabaseClient) {
-                        await supabaseClient.auth.signOut();
-                    }
-                } catch (erro) {
-                    console.warn(
-                        "Logout:",
-                        erro
-                    );
-                }
-
-                window.location.href = "login.html";
-            }
+        window.addEventListener(
+            "offline",
+            () => setDatabaseStatus("Offline")
         );
     }
 
-    async function iniciar() {
-        if (inicializado) return;
-
-        inicializado = true;
-
-        esconderLoader();
-        criarFaiscas();
-        atualizarData();
-        configurarEventos();
-
-        await carregarUsuarios();
-    }
-
-    if (document.readyState === "loading") {
-        document.addEventListener(
-            "DOMContentLoaded",
-            iniciar,
-            { once: true }
-        );
-    } else {
-        iniciar();
-    }
-
-})();
+    createSparks();
+    setupEvents();
+    startClock();
+    loadUsers();
+});
