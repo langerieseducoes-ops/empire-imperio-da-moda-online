@@ -1,6 +1,7 @@
 "use strict";
 
 document.addEventListener("DOMContentLoaded", () => {
+
     if (window.EMPIRE_USERS_STARTED) return;
     window.EMPIRE_USERS_STARTED = true;
 
@@ -9,14 +10,15 @@ document.addEventListener("DOMContentLoaded", () => {
     const loader = $("usersLoader");
     const modal = $("userModal");
     const form = $("userForm");
-    const table = $("usersTableBody");
+    const tableBody = $("usersTableBody");
+
     const search = $("userSearch");
     const roleFilter = $("roleFilter");
     const statusFilter = $("statusFilter");
 
     let users = [];
-    let editingUser = null;
-    let chart = null;
+    let editingId = null;
+    let accessChart = null;
 
     const client =
         window.supabaseClient &&
@@ -43,61 +45,101 @@ document.addEventListener("DOMContentLoaded", () => {
             .replaceAll("'", "&#039;");
     }
 
+    function formatDate(value) {
+        if (!value) return "Nunca";
+
+        const date = new Date(value);
+
+        if (Number.isNaN(date.getTime())) {
+            return "Nunca";
+        }
+
+        return date.toLocaleString("pt-BR", {
+            dateStyle: "short",
+            timeStyle: "short"
+        });
+    }
+
+    function getRoleName(role) {
+        const roles = {
+            administrador: "Administrador",
+            estoquista: "Estoquista",
+            vendedor: "Vendedor",
+            usuario: "Usuário"
+        };
+
+        return roles[String(role).toLowerCase()]
+            || role
+            || "Usuário";
+    }
+
+    function getStatus(active) {
+        return active === true ||
+               active === "true" ||
+               active === 1 ||
+               active === "1";
+    }
+
     function setDatabaseStatus(text) {
-        const el = $("usersDatabaseStatus");
-        if (el) el.textContent = text;
-    }
+        const element = $("usersDatabaseStatus");
 
-    function getUserName(user) {
-        return user.nome || user.name || user.usuario || "Usuário";
-    }
-
-    function getUsername(user) {
-        return user.usuario || user.email || "usuario";
-    }
-
-    function roleLabel(user) {
-        return user.role || "Administrador";
-    }
-
-    function statusLabel(user) {
-        return user.status || "ativo";
+        if (element) {
+            element.textContent = text;
+        }
     }
 
     function updateCounters(list = users) {
+
         const total = list.length;
 
-        const active = list.filter(user =>
-            statusLabel(user).toLowerCase() === "ativo"
+        const active = list.filter(
+            user => getStatus(user.ativo)
         ).length;
 
-        const admins = list.filter(user =>
-            roleLabel(user).toLowerCase() === "administrador"
+        const admins = list.filter(
+            user =>
+                String(user.perfil).toLowerCase()
+                === "administrador"
         ).length;
 
-        const online = list.filter(user =>
-            user.online === true ||
-            user.is_online === true
-        ).length;
+        const online = list.filter(user => {
 
-        $("usersTotalCount") &&
-            ($("usersTotalCount").textContent = total);
+            if (!user.ultimo_acesso) return false;
 
-        $("usersActiveCount") &&
-            ($("usersActiveCount").textContent = active);
+            const lastAccess =
+                new Date(user.ultimo_acesso);
 
-        $("usersAdminCount") &&
-            ($("usersAdminCount").textContent = admins);
+            if (Number.isNaN(lastAccess.getTime())) {
+                return false;
+            }
 
-        $("usersOnlineCount") &&
-            ($("usersOnlineCount").textContent = online);
+            const difference =
+                Date.now() - lastAccess.getTime();
+
+            return difference <= 15 * 60 * 1000;
+
+        }).length;
+
+        if ($("usersTotalCount"))
+            $("usersTotalCount").textContent = total;
+
+        if ($("usersActiveCount"))
+            $("usersActiveCount").textContent = active;
+
+        if ($("usersAdminCount"))
+            $("usersAdminCount").textContent = admins;
+
+        if ($("usersOnlineCount"))
+            $("usersOnlineCount").textContent = online;
     }
 
     function renderUsers(list = users) {
-        if (!table) return;
+
+        if (!tableBody) return;
 
         if (!list.length) {
-            table.innerHTML = `
+
+            tableBody.innerHTML = `
                 <tr>
                     <td colspan="6" class="users-empty">
                         <i class="fa-solid fa-user-slash"></i>
@@ -105,55 +147,99 @@ document.addEventListener("DOMContentLoaded", () => {
                     </td>
                 </tr>
             `;
+
             return;
         }
 
-        table.innerHTML = list.map(user => {
-            const id = escapeHTML(
-                user.id || user.usuario || user.email
-            );
+        tableBody.innerHTML = list.map(user => {
 
-            const name = escapeHTML(getUserName(user));
-            const username = escapeHTML(getUsername(user));
-            const email = escapeHTML(user.email || "Sem email");
-            const role = escapeHTML(roleLabel(user));
-            const status = escapeHTML(statusLabel(user));
+            const id =
+                escapeHTML(user.id);
+
+            const name =
+                escapeHTML(
+                    user.nome || "Usuário"
+                );
+
+            const username =
+                escapeHTML(
+                    user.usuario || ""
+                );
+
+            const email =
+                escapeHTML(
+                    user.email || "Sem email"
+                );
+
+            const role =
+                String(user.perfil || "usuario")
+                    .toLowerCase();
+
+            const roleText =
+                escapeHTML(
+                    getRoleName(role)
+                );
+
+            const active =
+                getStatus(user.ativo);
+
+            const statusText =
+                active ? "Ativo" : "Inativo";
+
+            const lastAccess =
+                user.ultimo_acesso;
+
+            const initial =
+                (user.nome || user.usuario || "U")
+                    .charAt(0)
+                    .toUpperCase();
 
             return `
                 <tr data-user-id="${id}">
 
                     <td>
                         <div class="user-table-person">
+
                             <div class="user-table-avatar">
-                                ${name.charAt(0).toUpperCase()}
+                                ${escapeHTML(initial)}
                             </div>
-                            <strong>${name}</strong>
+
+                            <div>
+                                <strong>
+                                    ${name}
+                                </strong>
+
+                                <small>
+                                    @${username}
+                                </small>
+                            </div>
+
                         </div>
                     </td>
 
                     <td>
                         ${email}
-                        <small>${username}</small>
                     </td>
 
                     <td>
-                        <span class="role-badge">
-                            ${role}
+                        <span class="role-badge role-${escapeHTML(role)}">
+                            ${roleText}
                         </span>
                     </td>
 
                     <td>
-                        <span class="status-badge status-${status}">
+                        <span class="status-badge status-${active ? "ativo" : "inativo"}">
                             <span></span>
-                            ${status === "ativo" ? "Ativo" : "Inativo"}
+                            ${statusText}
                         </span>
                     </td>
 
                     <td>
-                        ${user.ultimo_acesso || "Nunca"}
+                        ${formatDate(lastAccess)}
                     </td>
 
                     <td>
+
                         <div class="user-table-actions">
 
                             <button
@@ -179,155 +265,254 @@ document.addEventListener("DOMContentLoaded", () => {
                             </button>
 
                         </div>
+
                     </td>
 
                 </tr>
             `;
+
         }).join("");
     }
 
     function applyFilters() {
+
         const term =
-            String(search?.value || "").toLowerCase().trim();
+            String(search?.value || "")
+                .trim()
+                .toLowerCase();
 
         const role =
-            String(roleFilter?.value || "").toLowerCase();
+            String(roleFilter?.value || "")
+                .toLowerCase();
 
         const status =
-            String(statusFilter?.value || "").toLowerCase();
+            String(statusFilter?.value || "")
+                .toLowerCase();
 
-        const filtered = users.filter(user => {
-            const name =
-                getUserName(user).toLowerCase();
+        const filtered =
+            users.filter(user => {
 
-            const username =
-                getUsername(user).toLowerCase();
+                const name =
+                    String(user.nome || "")
+                        .toLowerCase();
 
-            const email =
-                String(user.email || "").toLowerCase();
+                const username =
+                    String(user.usuario || "")
+                        .toLowerCase();
 
-            const userRole =
-                roleLabel(user).toLowerCase();
+                const email =
+                    String(user.email || "")
+                        .toLowerCase();
 
-            const userStatus =
-                statusLabel(user).toLowerCase();
+                const userRole =
+                    String(user.perfil || "")
+                        .toLowerCase();
 
-            return (
-                (!term ||
+                const userStatus =
+                    getStatus(user.ativo)
+                        ? "ativo"
+                        : "inativo";
+
+                const matchesSearch =
+                    !term ||
                     name.includes(term) ||
                     username.includes(term) ||
-                    email.includes(term)) &&
+                    email.includes(term);
 
-                (!role || userRole === role) &&
+                const matchesRole =
+                    !role ||
+                    userRole === role;
 
-                (!status || userStatus === status)
-            );
-        });
+                const matchesStatus =
+                    !status ||
+                    userStatus === status;
+
+                return (
+                    matchesSearch &&
+                    matchesRole &&
+                    matchesStatus
+                );
+            });
 
         renderUsers(filtered);
         updateCounters(filtered);
 
         if ($("usersTableStatus")) {
+
             $("usersTableStatus").textContent =
                 `${filtered.length} usuário(s)`;
         }
     }
 
     async function loadUsers() {
+
         if (!client) {
-            setDatabaseStatus("Supabase não carregado");
-            showError("Cliente Supabase não encontrado.");
+
+            setDatabaseStatus(
+                "Supabase não carregado"
+            );
+
+            showTableError(
+                "Cliente Supabase não encontrado."
+            );
+
             hideLoader();
+
             return;
         }
 
         try {
+
             setDatabaseStatus("Conectando...");
 
-            const { data, error } = await client
-                .from("usuarios")
-                .select("usuario,nome,email,senha");
+            const { data, error } =
+                await client
+                    .from("usuarios")
+                    .select(`
+                        id,
+                        usuario,
+                        nome,
+                        email,
+                        perfil,
+                        ativo,
+                        telefone,
+                        ultimo_acesso,
+                        criado_em,
+                        atualizado_em
+                    `)
+                    .order(
+                        "criado_em",
+                        { ascending: false }
+                    );
 
             if (error) throw error;
 
-            users = Array.isArray(data) ? data : [];
-
-            users = users.map(user => ({
-                ...user,
-                role: "administrador",
-                status: "ativo",
-                online: false
-            }));
+            users =
+                Array.isArray(data)
+                    ? data
+                    : [];
 
             setDatabaseStatus("Online");
 
             updateCounters(users);
             renderUsers(users);
-            renderChart();
 
             if ($("usersTableStatus")) {
+
                 $("usersTableStatus").textContent =
                     `${users.length} usuário(s)`;
             }
 
+            renderAccessChart();
+
         } catch (error) {
-            console.error("EMPIRE Usuários:", error);
 
-            setDatabaseStatus("Erro");
+            console.error(
+                "EMPIRE Usuários:",
+                error
+            );
 
-            showError(
+            setDatabaseStatus(
+                "Erro de conexão"
+            );
+
+            showTableError(
                 "Não foi possível carregar os usuários."
             );
 
         } finally {
+
             hideLoader();
         }
     }
 
-    function showError(message) {
-        if (!table) return;
+    function showTableError(message) {
 
-        table.innerHTML = `
+        if (!tableBody) return;
+
+        tableBody.innerHTML = `
             <tr>
                 <td colspan="6" class="users-empty">
+
                     <i class="fa-solid fa-triangle-exclamation"></i>
+
                     ${escapeHTML(message)}
+
                 </td>
             </tr>
         `;
+
+        updateCounters([]);
+    }
+
+    function clearFormMessage() {
+
+        const box =
+            $("userFormMessage");
+
+        if (!box) return;
+
+        box.textContent = "";
+        box.className =
+            "user-form-message";
+    }
+
+    function showFormMessage(
+        message,
+        type = "error"
+    ) {
+
+        const box =
+            $("userFormMessage");
+
+        if (!box) return;
+
+        box.textContent = message;
+
+        box.className =
+            `user-form-message ${type}`;
     }
 
     function openModal(user = null) {
+
         if (!modal || !form) return;
 
-        editingUser = user;
+        editingId =
+            user?.id || null;
 
         form.reset();
 
-        $("userId") &&
-            ($("userId").value = user?.usuario || "");
+        if ($("userId"))
+            $("userId").value =
+                user?.id || "";
 
-        $("userFullName") &&
-            ($("userFullName").value = user?.nome || "");
+        if ($("userFullName"))
+            $("userFullName").value =
+                user?.nome || "";
 
-        $("userEmail") &&
-            ($("userEmail").value = user?.email || "");
+        if ($("userEmail"))
+            $("userEmail").value =
+                user?.email || "";
 
-        $("userRole") &&
-            ($("userRole").value =
-                user?.role || "administrador");
+        if ($("userRole"))
+            $("userRole").value =
+                user?.perfil || "usuario";
 
-        $("userStatus") &&
-            ($("userStatus").value =
-                user?.status || "ativo");
+        if ($("userStatus"))
+            $("userStatus").value =
+                getStatus(user?.ativo)
+                    ? "ativo"
+                    : "inativo";
 
-        $("userPassword") &&
-            ($("userPassword").value = "");
+        if ($("userPhone"))
+            $("userPhone").value =
+                user?.telefone || "";
 
-        $("userPhone") &&
-            ($("userPhone").value = "");
+        if ($("userPassword"))
+            $("userPassword").value = "";
 
         if ($("userModalTitle")) {
+
             $("userModalTitle").textContent =
                 user
                     ? "Editar usuário"
@@ -335,142 +520,274 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         const label =
-            modal.querySelector(".user-modal-header label");
+            modal.querySelector(
+                ".user-modal-header label"
+            );
 
         if (label) {
+
             label.textContent =
-                user ? "EDITAR ACESSO" : "NOVO ACESSO";
+                user
+                    ? "EDITAR ACESSO"
+                    : "NOVO ACESSO";
         }
 
+        clearFormMessage();
+
         modal.classList.add("open");
-        modal.setAttribute("aria-hidden", "false");
+
+        modal.setAttribute(
+            "aria-hidden",
+            "false"
+        );
 
         setTimeout(() => {
+
             $("userFullName")?.focus();
+
         }, 100);
     }
 
     function closeModal() {
+
         if (!modal) return;
 
         modal.classList.remove("open");
-        modal.setAttribute("aria-hidden", "true");
 
-        editingUser = null;
+        modal.setAttribute(
+            "aria-hidden",
+            "true"
+        );
+
+        editingId = null;
+
+        clearFormMessage();
     }
 
     async function saveUser(event) {
+
         event.preventDefault();
 
         if (!client) {
-            showMessage("Supabase não está disponível.");
+
+            showFormMessage(
+                "Supabase não está disponível."
+            );
+
             return;
         }
 
-        const name = $("userFullName")?.value.trim();
-        const email = $("userEmail")?.value.trim();
-        const password = $("userPassword")?.value;
-        const username =
-            email?.split("@")[0] || "";
+        const name =
+            $("userFullName")?.value.trim();
 
-        if (!name || !email) {
-            showMessage("Preencha nome e email.");
+        const email =
+            $("userEmail")?.value.trim();
+
+        const role =
+            $("userRole")?.value;
+
+        const status =
+            $("userStatus")?.value;
+
+        const phone =
+            $("userPhone")?.value.trim();
+
+        if (!name) {
+
+            showFormMessage(
+                "Informe o nome completo."
+            );
+
             return;
         }
 
-        const button = $("saveUserButton");
+        if (!email) {
+
+            showFormMessage(
+                "Informe o email."
+            );
+
+            return;
+        }
+
+        if (!role) {
+
+            showFormMessage(
+                "Selecione o perfil."
+            );
+
+            return;
+        }
+
+        const button =
+            $("saveUserButton");
 
         if (button) {
+
             button.disabled = true;
+
+            button.dataset.originalText =
+                button.innerHTML;
+
             button.innerHTML =
                 `<i class="fa-solid fa-spinner fa-spin"></i> Salvando...`;
         }
 
         try {
-            if (editingUser) {
 
-                const oldUsername =
-                    editingUser.usuario;
+            if (!editingId) {
 
-                const payload = {
-                    usuario: username,
-                    nome: name,
-                    email: email
-                };
+                const username =
+                    email
+                        .split("@")[0]
+                        .toLowerCase()
+                        .replace(/[^a-z0-9._-]/g, "");
 
-                if (password) {
-                    payload.senha = password;
+                if (!username) {
+
+                    throw new Error(
+                        "Não foi possível gerar o usuário."
+                    );
                 }
 
-                const { error } = await client
-                    .from("usuarios")
-                    .update(payload)
-                    .eq("usuario", oldUsername);
+                const payload = {
+
+                    usuario: username,
+
+                    nome: name,
+
+                    email:
+                        email || null,
+
+                    perfil: role,
+
+                    ativo:
+                        status === "ativo",
+
+                    telefone:
+                        phone || null
+                };
+
+                const { error } =
+                    await client
+                        .from("usuarios")
+                        .insert(payload);
 
                 if (error) throw error;
+
+                showFormMessage(
+                    "Usuário cadastrado com sucesso.",
+                    "success"
+                );
 
             } else {
 
                 const payload = {
-                    usuario: username,
+
                     nome: name,
-                    email: email,
-                    senha: password || null
+
+                    email:
+                        email || null,
+
+                    perfil: role,
+
+                    ativo:
+                        status === "ativo",
+
+                    telefone:
+                        phone || null,
+
+                    atualizado_em:
+                        new Date().toISOString()
                 };
 
-                const { error } = await client
-                    .from("usuarios")
-                    .insert(payload);
+                const { error } =
+                    await client
+                        .from("usuarios")
+                        .update(payload)
+                        .eq("id", editingId);
 
                 if (error) throw error;
+
+                showFormMessage(
+                    "Usuário atualizado com sucesso.",
+                    "success"
+                );
             }
 
             await loadUsers();
-            closeModal();
+
+            setTimeout(
+                closeModal,
+                700
+            );
 
         } catch (error) {
-            console.error(error);
 
-            showMessage(
+            console.error(
+                "EMPIRE Usuários:",
+                error
+            );
+
+            showFormMessage(
                 error?.message ||
                 "Não foi possível salvar o usuário."
             );
 
         } finally {
+
             if (button) {
+
                 button.disabled = false;
+
                 button.innerHTML =
+                    button.dataset.originalText ||
                     `<i class="fa-solid fa-floppy-disk"></i> Salvar usuário`;
             }
         }
     }
 
     async function deleteUser(id) {
-        const user = users.find(item =>
-            String(item.usuario) === String(id) ||
-            String(item.id) === String(id)
-        );
 
-        if (!user) return;
+        if (!id || !client) return;
 
-        const name = getUserName(user);
+        const user =
+            users.find(
+                item =>
+                    String(item.id)
+                    === String(id)
+            );
+
+        const name =
+            user?.nome ||
+            user?.usuario ||
+            "este usuário";
 
         if (!confirm(
             `Deseja realmente excluir ${name}?`
-        )) return;
+        )) {
+
+            return;
+        }
 
         try {
-            const { error } = await client
-                .from("usuarios")
-                .delete()
-                .eq("usuario", user.usuario);
+
+            const { error } =
+                await client
+                    .from("usuarios")
+                    .delete()
+                    .eq("id", id);
 
             if (error) throw error;
 
             await loadUsers();
 
         } catch (error) {
-            console.error(error);
+
+            console.error(
+                "EMPIRE Usuários:",
+                error
+            );
 
             alert(
                 error?.message ||
@@ -479,103 +796,203 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    function showMessage(message, type = "error") {
-        const box = $("userFormMessage");
+    function editUser(id) {
 
-        if (!box) return;
+        const user =
+            users.find(
+                item =>
+                    String(item.id)
+                    === String(id)
+            );
 
-        box.textContent = message;
-        box.className =
-            `user-form-message ${type}`;
+        if (!user) return;
+
+        openModal(user);
     }
 
-    function renderChart() {
-        const canvas = $("usersAccessChart");
+    function handleTableAction(event) {
 
-        if (!canvas || typeof Chart === "undefined") {
-            return;
+        const button =
+            event.target.closest(
+                "[data-action]"
+            );
+
+        if (!button) return;
+
+        const id =
+            button.dataset.id;
+
+        const action =
+            button.dataset.action;
+
+        if (action === "edit") {
+            editUser(id);
         }
 
-        if (chart) {
-            chart.destroy();
+        if (action === "delete") {
+            deleteUser(id);
+        }
+    }
+
+    function countAccessForDay(date) {
+
+        const start =
+            new Date(date);
+
+        start.setHours(
+            0, 0, 0, 0
+        );
+
+        const end =
+            new Date(start);
+
+        end.setDate(
+            end.getDate() + 1
+        );
+
+        return users.filter(user => {
+
+            if (!user.ultimo_acesso) {
+                return false;
+            }
+
+            const access =
+                new Date(
+                    user.ultimo_acesso
+                );
+
+            return (
+                access >= start &&
+                access < end
+            );
+
+        }).length;
+    }
+
+    function renderAccessChart() {
+
+        const canvas =
+            $("usersAccessChart");
+
+        if (
+            !canvas ||
+            typeof Chart === "undefined"
+        ) {
+            return;
         }
 
         const labels = [];
         const values = [];
 
         for (let i = 6; i >= 0; i--) {
-            const date = new Date();
-            date.setDate(date.getDate() - i);
+
+            const date =
+                new Date();
+
+            date.setDate(
+                date.getDate() - i
+            );
 
             labels.push(
                 date.toLocaleDateString(
                     "pt-BR",
-                    { weekday: "short" }
+                    {
+                        weekday: "short"
+                    }
                 ).replace(".", "")
             );
 
             values.push(
-                i === 0 ? users.length : 0
+                countAccessForDay(date)
             );
         }
 
-        chart = new Chart(canvas, {
-            type: "line",
+        $("usersChartLoading")?.style
+            && ($("usersChartLoading").style.display = "none");
 
-            data: {
-                labels,
+        if (accessChart) {
 
-                datasets: [{
-                    data: values,
-                    borderWidth: 2,
-                    tension: 0.4,
-                    fill: true,
-                    pointRadius: 3
-                }]
-            },
+            accessChart.destroy();
 
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
+            accessChart = null;
+        }
 
-                plugins: {
-                    legend: {
-                        display: false
-                    }
-                },
+        accessChart =
+            new Chart(
+                canvas,
+                {
+                    type: "line",
 
-                scales: {
-                    x: {
-                        grid: {
-                            display: false
-                        }
+                    data: {
+
+                        labels,
+
+                        datasets: [{
+                            label: "Acessos",
+                            data: values,
+                            borderWidth: 2,
+                            tension: 0.4,
+                            fill: true,
+                            pointRadius: 3,
+                            pointHoverRadius: 5
+                        }]
                     },
 
-                    y: {
-                        beginAtZero: true,
-                        ticks: {
-                            precision: 0
+                    options: {
+
+                        responsive: true,
+
+                        maintainAspectRatio: false,
+
+                        plugins: {
+
+                            legend: {
+                                display: false
+                            }
+                        },
+
+                        scales: {
+
+                            x: {
+                                grid: {
+                                    display: false
+                                }
+                            },
+
+                            y: {
+
+                                beginAtZero: true,
+
+                                ticks: {
+                                    precision: 0
+                                }
+                            }
                         }
                     }
                 }
-            }
-        });
-
-        $("usersChartLoading") &&
-            ($("usersChartLoading").style.display = "none");
+            );
     }
 
     function createSparks() {
-        const container = $("sparkContainer");
+
+        const container =
+            $("sparkContainer");
 
         if (!container) return;
 
         container.innerHTML = "";
 
-        const amount =
-            window.innerWidth < 700 ? 15 : 30;
+        const total =
+            window.innerWidth < 700
+                ? 18
+                : 30;
 
-        for (let i = 0; i < amount; i++) {
+        for (
+            let i = 0;
+            i < total;
+            i++
+        ) {
+
             const spark =
                 document.createElement("span");
 
@@ -587,11 +1004,30 @@ document.addEventListener("DOMContentLoaded", () => {
             spark.style.animationDelay =
                 `${Math.random() * 5}s`;
 
-            container.appendChild(spark);
+            spark.style.animationDuration =
+                `${3 + Math.random() * 5}s`;
+
+            container.appendChild(
+                spark
+            );
         }
     }
 
+    function updateLastUpdate() {
+
+        const element =
+            $("usersLastUpdate");
+
+        if (!element) return;
+
+        element.textContent =
+            new Date().toLocaleTimeString(
+                "pt-BR"
+            );
+    }
+
     function setupEvents() {
+
         search?.addEventListener(
             "input",
             applyFilters
@@ -607,77 +1043,80 @@ document.addEventListener("DOMContentLoaded", () => {
             applyFilters
         );
 
-        $("openUserModal")?.addEventListener(
-            "click",
-            () => openModal()
-        );
+        $("openUserModal")
+            ?.addEventListener(
+                "click",
+                () => openModal()
+            );
 
-        $("closeUserModal")?.addEventListener(
-            "click",
-            closeModal
-        );
+        $("closeUserModal")
+            ?.addEventListener(
+                "click",
+                closeModal
+            );
 
-        $("cancelUserModal")?.addEventListener(
-            "click",
-            closeModal
-        );
+        $("cancelUserModal")
+            ?.addEventListener(
+                "click",
+                closeModal
+            );
 
-        $("userModalOverlay")?.addEventListener(
-            "click",
-            closeModal
-        );
+        $("userModalOverlay")
+            ?.addEventListener(
+                "click",
+                closeModal
+            );
 
         form?.addEventListener(
             "submit",
             saveUser
         );
 
-        table?.addEventListener(
+        tableBody?.addEventListener(
             "click",
-            event => {
-                const button =
-                    event.target.closest("[data-action]");
-
-                if (!button) return;
-
-                const id = button.dataset.id;
-
-                if (button.dataset.action === "edit") {
-                    const user = users.find(item =>
-                        String(item.usuario) === String(id)
-                    );
-
-                    if (user) openModal(user);
-                }
-
-                if (button.dataset.action === "delete") {
-                    deleteUser(id);
-                }
-            }
+            handleTableAction
         );
 
-        $("usersLogout")?.addEventListener(
-            "click",
-            () => {
-                window.location.href =
-                    "login.html";
-            }
-        );
+        $("usersLogout")
+            ?.addEventListener(
+                "click",
+                () => {
+                    window.location.href =
+                        "login.html";
+                }
+            );
 
         document.addEventListener(
             "keydown",
             event => {
+
                 if (
                     event.key === "Escape" &&
                     modal?.classList.contains("open")
                 ) {
+
                     closeModal();
                 }
             }
         );
+
+        window.addEventListener(
+            "online",
+            () => setDatabaseStatus("Online")
+        );
+
+        window.addEventListener(
+            "offline",
+            () => setDatabaseStatus("Offline")
+        );
     }
 
     createSparks();
+
     setupEvents();
+
+    updateLastUpdate();
+
     loadUsers();
+
 });
