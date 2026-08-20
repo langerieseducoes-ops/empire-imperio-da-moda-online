@@ -60,18 +60,19 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    function getRoleName(role) {
-        const roles = {
-            administrador: "Administrador",
-            estoquista: "Estoquista",
-            vendedor: "Vendedor",
-            usuario: "Usuário"
-        };
+ function getRoleName(role) {
+    const roles = {
+        administrador: "Administrador",
+        gerente: "Gerente",
+        estoquista: "Estoquista",
+        vendedor: "Vendedor",
+        usuario: "Usuário"
+    };
 
-        return roles[String(role).toLowerCase()]
-            || role
-            || "Usuário";
-    }
+    return roles[String(role).toLowerCase()]
+        || role
+        || "Usuário";
+}
 
     function getStatus(active) {
         return active === true ||
