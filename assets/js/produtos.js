@@ -8,22 +8,18 @@
 
 "use strict";
 
-
 /* =========================================================
-   CONTROLE PRINCIPAL
+   ESTADO
    ========================================================= */
 
 let produtos = [];
-
 let cameraReader = null;
 let cameraControls = null;
 let cameraTrack = null;
-
 let flashAtivo = false;
 let carregando = false;
 let sistemaIniciado = false;
 let intervaloRelogio = null;
-
 let codigoProcessando = false;
 
 
@@ -64,14 +60,29 @@ function cliente(){
 
 function moeda(valor){
 
-    return Number(valor || 0).toLocaleString(
-        "pt-BR",
-        {
-            style:"currency",
-            currency:"BRL"
-        }
-    );
+    const numero = Number(valor);
 
+    return Number.isFinite(numero)
+        ? numero.toLocaleString(
+            "pt-BR",
+            {
+                style:"currency",
+                currency:"BRL"
+            }
+        )
+        : "R$ 0,00";
+}
+
+
+/* =========================================================
+   NÚMERO
+   ========================================================= */
+
+function numero(valor){
+
+    const n = Number(valor);
+
+    return Number.isFinite(n) ? n : 0;
 }
 
 
@@ -87,7 +98,6 @@ function escapeHTML(valor){
         .replace(/>/g,"&gt;")
         .replace(/"/g,"&quot;")
         .replace(/'/g,"&#039;");
-
 }
 
 
@@ -99,32 +109,22 @@ function toast(texto, erro = false){
 
     const area = $("toastContainer");
 
-    if(!area){
+    if(!area) return;
 
-        console[erro ? "error" : "log"](texto);
-
-        return;
-    }
-
-    const item =
-        document.createElement("div");
+    const item = document.createElement("div");
 
     item.className =
         "toast" +
         (erro ? " error" : "");
 
     item.innerHTML = `
-
         <i class="fa-solid ${
             erro
-            ? "fa-circle-exclamation"
-            : "fa-circle-check"
+                ? "fa-circle-exclamation"
+                : "fa-circle-check"
         }"></i>
 
-        <span>
-            ${escapeHTML(texto)}
-        </span>
-
+        <span>${escapeHTML(texto)}</span>
     `;
 
     area.appendChild(item);
@@ -135,12 +135,13 @@ function toast(texto, erro = false){
 
         setTimeout(() => {
 
-            item.remove();
+            if(item.parentNode){
+                item.remove();
+            }
 
         },300);
 
     },3000);
-
 }
 
 
@@ -205,12 +206,10 @@ function bip(sucesso = true){
         setTimeout(() => {
 
             try{
-
                 contexto.close();
+            }catch(e){}
 
-            }catch(error){}
-
-        },300);
+        },500);
 
     }catch(error){
 
@@ -220,16 +219,15 @@ function bip(sucesso = true){
         );
 
     }
-
 }
 
 
 /* =========================================================
-   STATUS DO SCANNER
+   STATUS SCANNER
    ========================================================= */
 
 function statusScanner(
-    texto,
+    texto = "Pronto",
     tipo = ""
 ){
 
@@ -239,28 +237,18 @@ function statusScanner(
     const status =
         $("barcodeStatus");
 
-    if(box){
+    if(!box || !status) return;
 
-        box.classList.remove(
-            "success",
-            "error"
-        );
+    box.classList.remove(
+        "success",
+        "error"
+    );
 
-        if(tipo){
-
-            box.classList.add(tipo);
-
-        }
-
+    if(tipo){
+        box.classList.add(tipo);
     }
 
-    if(status){
-
-        status.textContent =
-            texto || "Pronto";
-
-    }
-
+    status.textContent = texto;
 }
 
 
@@ -279,7 +267,6 @@ function relogio(){
         new Date().toLocaleTimeString(
             "pt-BR"
         );
-
 }
 
 
@@ -305,12 +292,11 @@ function esconderLoader(){
 
 function quantidade(produto){
 
-    return Number(
+    return numero(
         produto?.quantidade ??
         produto?.estoque ??
         0
-    ) || 0;
-
+    );
 }
 
 
@@ -320,13 +306,12 @@ function quantidade(produto){
 
 function venda(produto){
 
-    return Number(
+    return numero(
         produto?.preco_venda ??
         produto?.valor_venda ??
         produto?.sale_price ??
         0
-    ) || 0;
-
+    );
 }
 
 
@@ -336,13 +321,66 @@ function venda(produto){
 
 function custo(produto){
 
-    return Number(
+    return numero(
         produto?.preco_custo ??
         produto?.custo ??
         produto?.stock_price ??
         0
-    ) || 0;
+    );
+}
 
+
+/* =========================================================
+   NOME DO USUÁRIO
+   ========================================================= */
+
+function carregarPerfil(){
+
+    const elemento =
+        $("profileName");
+
+    if(!elemento) return;
+
+    try{
+
+        const dados =
+            localStorage.getItem(
+                "usuarioLogado"
+            ) ||
+            sessionStorage.getItem(
+                "usuarioLogado"
+            );
+
+        if(!dados) return;
+
+        let usuario = null;
+
+        try{
+            usuario = JSON.parse(dados);
+        }catch(e){
+            usuario = {
+                nome:dados
+            };
+        }
+
+        const nome =
+            usuario?.nome ||
+            usuario?.usuario ||
+            usuario?.email;
+
+        if(nome){
+            elemento.textContent =
+                String(nome);
+        }
+
+    }catch(error){
+
+        console.warn(
+            "Não foi possível carregar perfil:",
+            error
+        );
+
+    }
 }
 
 
@@ -352,8 +390,7 @@ function custo(produto){
 
 async function carregarProdutos(){
 
-    const db =
-        cliente();
+    const db = cliente();
 
     if(!db){
 
@@ -372,20 +409,12 @@ async function carregarProdutos(){
 
     }
 
-
     try{
 
-        const resposta =
+        let resposta =
             await db
                 .from("produtos")
-                .select("*")
-                .order(
-                    "created_at",
-                    {
-                        ascending:false
-                    }
-                );
-
+                .select("*");
 
         if(resposta.error){
 
@@ -393,19 +422,35 @@ async function carregarProdutos(){
 
         }
 
-
-        produtos =
+        let lista =
             Array.isArray(resposta.data)
-            ? resposta.data
-            : [];
+                ? resposta.data
+                : [];
 
+        lista.sort((a,b) => {
+
+            const dataA =
+                new Date(
+                    a?.created_at || 0
+                ).getTime();
+
+            const dataB =
+                new Date(
+                    b?.created_at || 0
+                ).getTime();
+
+            return dataB - dataA;
+
+        });
+
+        produtos = lista;
 
         renderizar();
 
+        atualizarNotificacoes();
 
         const ultima =
             $("lastUpdate");
-
 
         if(ultima){
 
@@ -416,13 +461,16 @@ async function carregarProdutos(){
 
         }
 
-
     }catch(error){
 
         console.error(
             "Erro ao carregar produtos:",
             error
         );
+
+        produtos = [];
+
+        renderizar();
 
         toast(
             "Erro ao carregar produtos.",
@@ -434,7 +482,6 @@ async function carregarProdutos(){
         esconderLoader();
 
     }
-
 }
 
 
@@ -464,7 +511,6 @@ function metricas(){
     const total =
         produtos.length;
 
-
     const estoque =
         produtos.reduce(
             (soma,produto) =>
@@ -472,34 +518,30 @@ function metricas(){
             0
         );
 
-
     const categoriasSet =
-        new Set(
-            produtos
-                .map(
-                    produto =>
-                        produto.categoria
-                )
-                .filter(Boolean)
-                .map(
-                    categoria =>
-                        String(categoria)
-                            .trim()
-                            .toLowerCase()
-                )
-        );
+        new Set();
 
+    produtos.forEach(produto => {
+
+        const categoria =
+            String(
+                produto?.categoria || ""
+            ).trim().toLowerCase();
+
+        if(categoria){
+            categoriasSet.add(categoria);
+        }
+
+    });
 
     const totalCategorias =
         categoriasSet.size;
-
 
     const semEstoque =
         produtos.filter(
             produto =>
                 quantidade(produto) <= 0
         ).length;
-
 
     const valorVenda =
         produtos.reduce(
@@ -510,7 +552,6 @@ function metricas(){
             0
         );
 
-
     const valorCusto =
         produtos.reduce(
             (soma,produto) =>
@@ -519,7 +560,6 @@ function metricas(){
                 quantidade(produto),
             0
         );
-
 
     const ativos =
         produtos.filter(
@@ -531,7 +571,7 @@ function metricas(){
     if($("totalProducts")){
 
         $("totalProducts").textContent =
-            total;
+            total.toLocaleString("pt-BR");
 
     }
 
@@ -539,9 +579,7 @@ function metricas(){
     if($("totalStock")){
 
         $("totalStock").textContent =
-            estoque.toLocaleString(
-                "pt-BR"
-            );
+            estoque.toLocaleString("pt-BR");
 
     }
 
@@ -549,7 +587,9 @@ function metricas(){
     if($("totalCategories")){
 
         $("totalCategories").textContent =
-            totalCategorias;
+            totalCategorias.toLocaleString(
+                "pt-BR"
+            );
 
     }
 
@@ -557,7 +597,9 @@ function metricas(){
     if($("lowStock")){
 
         $("lowStock").textContent =
-            semEstoque;
+            semEstoque.toLocaleString(
+                "pt-BR"
+            );
 
     }
 
@@ -592,10 +634,10 @@ function metricas(){
     if($("productCountLabel")){
 
         $("productCountLabel").textContent =
-            `${total} ${
-                total === 1
-                ? "produto"
-                : "produtos"
+            `${ativos} ${
+                ativos === 1
+                    ? "produto ativo"
+                    : "produtos ativos"
             }`;
 
     }
@@ -605,15 +647,11 @@ function metricas(){
 
         const percentual =
             total > 0
-            ? Math.min(
-                100,
-                (ativos / total) * 100
-            )
-            : 0;
-
+                ? (ativos / total) * 100
+                : 0;
 
         $("stockProgress").style.width =
-            `${percentual}%`;
+            `${Math.min(100,Math.max(0,percentual))}%`;
 
     }
 
@@ -631,44 +669,44 @@ function categorias(){
 
     if(!select) return;
 
-
     const atual =
         select.value;
 
+    const mapa =
+        new Map();
+
+    produtos.forEach(produto => {
+
+        const valor =
+            String(
+                produto?.categoria || ""
+            ).trim();
+
+        if(!valor) return;
+
+        const chave =
+            valor.toLowerCase();
+
+        if(!mapa.has(chave)){
+            mapa.set(chave,valor);
+        }
+
+    });
 
     const lista =
-        [
-            ...new Set(
-                produtos
-                    .map(
-                        produto =>
-                            produto.categoria
-                    )
-                    .filter(
-                        categoria =>
-                            String(
-                                categoria || ""
-                            ).trim()
-                    )
-            )
-        ]
-        .sort(
+        [...mapa.values()].sort(
             (a,b) =>
-                String(a).localeCompare(
-                    String(b),
+                a.localeCompare(
+                    b,
                     "pt-BR"
                 )
         );
 
-
     select.innerHTML = `
-
         <option value="">
             Todas categorias
         </option>
-
     `;
-
 
     lista.forEach(categoria => {
 
@@ -677,29 +715,17 @@ function categorias(){
                 "option"
             );
 
-        option.value =
-            categoria;
+        option.value = categoria;
 
-        option.textContent =
-            categoria;
+        option.textContent = categoria;
 
-        select.appendChild(
-            option
-        );
+        select.appendChild(option);
 
     });
 
+    if(lista.includes(atual)){
 
-    if(
-        lista.some(
-            categoria =>
-                String(categoria) ===
-                String(atual)
-        )
-    ){
-
-        select.value =
-            atual;
+        select.value = atual;
 
     }
 
@@ -707,67 +733,52 @@ function categorias(){
 
 
 /* =========================================================
-   LISTA FILTRADA
+   FILTRO
    ========================================================= */
 
 function listaFiltrada(){
 
-    const campoBusca =
-        $("productSearch");
-
-    const campoCategoria =
-        $("categoryFilter");
-
-
     const busca =
         String(
-            campoBusca?.value || ""
+            $("productSearch")?.value || ""
         )
         .trim()
         .toLowerCase();
 
-
     const categoria =
-        campoCategoria?.value || "";
+        $("categoryFilter")?.value || "";
 
+    return produtos.filter(produto => {
 
-    return produtos.filter(
-        produto => {
+        const texto = [
 
-            const texto = [
+            produto?.nome,
+            produto?.codigo_barras,
+            produto?.sku,
+            produto?.tamanho,
+            produto?.cor,
+            produto?.categoria
 
-                produto.nome,
-                produto.codigo_barras,
-                produto.sku,
-                produto.tamanho,
-                produto.cor,
-                produto.categoria
+        ]
+        .filter(valor => valor !== null && valor !== undefined)
+        .join(" ")
+        .toLowerCase();
 
-            ]
-            .filter(Boolean)
-            .join(" ")
-            .toLowerCase();
+        const correspondeBusca =
+            !busca ||
+            texto.includes(busca);
 
+        const correspondeCategoria =
+            !categoria ||
+            String(produto?.categoria || "") ===
+            String(categoria);
 
-            const correspondeBusca =
-                !busca ||
-                texto.includes(busca);
+        return (
+            correspondeBusca &&
+            correspondeCategoria
+        );
 
-
-            const correspondeCategoria =
-                !categoria ||
-                String(
-                    produto.categoria || ""
-                ) === String(categoria);
-
-
-            return (
-                correspondeBusca &&
-                correspondeCategoria
-            );
-
-        }
-    );
+    });
 
 }
 
@@ -783,10 +794,8 @@ function tabela(){
 
     if(!tbody) return;
 
-
     const lista =
         listaFiltrada();
-
 
     if(!lista.length){
 
@@ -799,10 +808,7 @@ function tabela(){
                     class="empty"
                 >
 
-                    <i class="
-                        fa-solid
-                        fa-box-open
-                    "></i>
+                    <i class="fa-solid fa-box-open"></i>
 
                     <strong>
                         Nenhum produto encontrado
@@ -822,171 +828,140 @@ function tabela(){
 
     }
 
-
     tbody.innerHTML =
-        lista
-            .map(produto => {
+        lista.map(produto => {
 
-                const estoque =
-                    quantidade(produto);
+            const estoque =
+                quantidade(produto);
 
+            const id =
+                escapeHTML(
+                    produto?.id ?? ""
+                );
 
-                return `
+            return `
 
-                    <tr>
+                <tr>
 
-                        <td>
+                    <td>
 
-                            <strong>
-                                ${escapeHTML(
-                                    produto.nome ||
-                                    "Sem nome"
-                                )}
-                            </strong>
-
-                        </td>
-
-
-                        <td>
-
-                            <span
-                                class="barcode-value"
-                            >
-
-                                <i class="
-                                    fa-solid
-                                    fa-barcode
-                                "></i>
-
-                                ${escapeHTML(
-                                    produto.codigo_barras ||
-                                    "—"
-                                )}
-
-                            </span>
-
-                        </td>
-
-
-                        <td>
+                        <strong>
                             ${escapeHTML(
-                                produto.tamanho ||
+                                produto?.nome ||
+                                "Sem nome"
+                            )}
+                        </strong>
+
+                    </td>
+
+                    <td>
+
+                        <span class="barcode-value">
+
+                            <i class="fa-solid fa-barcode"></i>
+
+                            ${escapeHTML(
+                                produto?.codigo_barras ||
                                 "—"
                             )}
-                        </td>
 
+                        </span>
 
-                        <td>
-                            ${escapeHTML(
-                                produto.cor ||
-                                "—"
-                            )}
-                        </td>
+                    </td>
 
+                    <td>
+                        ${escapeHTML(
+                            produto?.tamanho ||
+                            "—"
+                        )}
+                    </td>
 
-                        <td>
-                            ${escapeHTML(
-                                produto.categoria ||
-                                "—"
-                            )}
-                        </td>
+                    <td>
+                        ${escapeHTML(
+                            produto?.cor ||
+                            "—"
+                        )}
+                    </td>
 
+                    <td>
+                        ${escapeHTML(
+                            produto?.categoria ||
+                            "—"
+                        )}
+                    </td>
 
-                        <td>
-                            ${moeda(
-                                venda(produto)
-                            )}
-                        </td>
+                    <td>
+                        ${moeda(
+                            venda(produto)
+                        )}
+                    </td>
 
+                    <td>
+                        ${moeda(
+                            custo(produto)
+                        )}
+                    </td>
 
-                        <td>
-                            ${moeda(
-                                custo(produto)
-                            )}
-                        </td>
+                    <td>
 
+                        <span class="${
+                            estoque > 0
+                                ? "stock-ok"
+                                : "stock-empty"
+                        }">
 
-                        <td>
+                            ${estoque}
 
-                            <span
-                                class="${
-                                    estoque > 0
-                                    ? "stock-ok"
-                                    : "stock-empty"
-                                }"
+                        </span>
+
+                    </td>
+
+                    <td>
+
+                        <div class="table-actions">
+
+                            <button
+                                type="button"
+                                data-action="view"
+                                data-id="${id}"
+                                title="Visualizar"
                             >
-                                ${estoque}
-                            </span>
 
-                        </td>
+                                <i class="fa-solid fa-eye"></i>
 
+                            </button>
 
-                        <td>
-
-                            <div
-                                class="table-actions"
+                            <button
+                                type="button"
+                                data-action="edit"
+                                data-id="${id}"
+                                title="Editar"
                             >
 
-                                <button
-                                    type="button"
-                                    data-action="view"
-                                    data-id="${escapeHTML(
-                                        produto.id
-                                    )}"
-                                    title="Visualizar"
-                                >
+                                <i class="fa-solid fa-pen"></i>
 
-                                    <i class="
-                                        fa-solid
-                                        fa-eye
-                                    "></i>
+                            </button>
 
-                                </button>
+                            <button
+                                type="button"
+                                data-action="delete"
+                                data-id="${id}"
+                                title="Excluir"
+                            >
 
+                                <i class="fa-solid fa-trash"></i>
 
-                                <button
-                                    type="button"
-                                    data-action="edit"
-                                    data-id="${escapeHTML(
-                                        produto.id
-                                    )}"
-                                    title="Editar"
-                                >
+                            </button>
 
-                                    <i class="
-                                        fa-solid
-                                        fa-pen
-                                    "></i>
+                        </div>
 
-                                </button>
+                    </td>
 
+                </tr>
 
-                                <button
-                                    type="button"
-                                    data-action="delete"
-                                    data-id="${escapeHTML(
-                                        produto.id
-                                    )}"
-                                    title="Excluir"
-                                >
+            `;
 
-                                    <i class="
-                                        fa-solid
-                                        fa-trash
-                                    "></i>
-
-                                </button>
-
-                            </div>
-
-                        </td>
-
-                    </tr>
-
-                `;
-
-            })
-            .join("");
+        }).join("");
 
 }
 
@@ -1002,23 +977,21 @@ function grafico(){
 
     if(!area) return;
 
-
     const dados = {};
-
 
     produtos.forEach(produto => {
 
         const categoria =
-            produto.categoria ||
-            "Sem categoria";
-
+            String(
+                produto?.categoria ||
+                "Sem categoria"
+            ).trim();
 
         dados[categoria] =
             (dados[categoria] || 0) +
             quantidade(produto);
 
     });
-
 
     const lista =
         Object.entries(dados)
@@ -1027,14 +1000,12 @@ function grafico(){
                     b[1] - a[1]
             );
 
-
     const total =
         lista.reduce(
             (soma,item) =>
                 soma + item[1],
             0
         );
-
 
     if($("chartTotal")){
 
@@ -1045,17 +1016,13 @@ function grafico(){
 
     }
 
-
     if(!lista.length){
 
         area.innerHTML = `
 
             <div class="empty">
 
-                <i class="
-                    fa-solid
-                    fa-chart-column
-                "></i>
+                <i class="fa-solid fa-chart-column"></i>
 
                 <strong>
                     Sem dados para analisar
@@ -1073,16 +1040,27 @@ function grafico(){
 
     }
 
-
     const maior =
-        lista[0]?.[1] || 1;
-
+        Math.max(
+            1,
+            lista[0]?.[1] || 1
+        );
 
     area.innerHTML =
         lista
             .slice(0,8)
-            .map(
-                ([categoria,valor]) => `
+            .map(([categoria,valor]) => {
+
+                const percentual =
+                    Math.max(
+                        3,
+                        Math.min(
+                            100,
+                            (valor / maior) * 100
+                        )
+                    );
+
+                return `
 
                     <div class="chart-row">
 
@@ -1095,29 +1073,26 @@ function grafico(){
                             </span>
 
                             <strong>
-                                ${valor}
+                                ${valor.toLocaleString(
+                                    "pt-BR"
+                                )}
                             </strong>
 
                         </div>
 
-
                         <div class="chart-bar">
 
                             <i
-                                style="
-                                    width:${Math.max(
-                                        3,
-                                        (valor / maior) * 100
-                                    )}%
-                                "
+                                style="width:${percentual}%"
                             ></i>
 
                         </div>
 
                     </div>
 
-                `
-            )
+                `;
+
+            })
             .join("");
 
 }
@@ -1132,52 +1107,32 @@ function abrirProduto(){
     const form =
         $("productForm");
 
-
     if(form){
-
         form.reset();
-
     }
-
 
     if($("productId")){
-
-        $("productId").value =
-            "";
-
+        $("productId").value = "";
     }
-
 
     if($("modalTitle")){
-
         $("modalTitle").textContent =
             "Adicionar produto";
-
     }
-
 
     if($("modalOverline")){
-
         $("modalOverline").textContent =
             "NOVO CADASTRO";
-
     }
-
 
     if($("formMessage")){
-
-        $("formMessage").textContent =
-            "";
-
+        $("formMessage").textContent = "";
     }
-
 
     limparPreview();
 
-
     $("productModal")
         ?.classList.add("active");
-
 
     setTimeout(() => {
 
@@ -1197,29 +1152,28 @@ function editarProduto(produto){
 
     if(!produto) return;
 
-
     const campos = {
 
         productId:
-            produto.id || "",
+            produto?.id || "",
 
         productBarcode:
-            produto.codigo_barras || "",
+            produto?.codigo_barras || "",
 
         productSku:
-            produto.sku || "",
+            produto?.sku || "",
 
         productName:
-            produto.nome || "",
+            produto?.nome || "",
 
         productSize:
-            produto.tamanho || "",
+            produto?.tamanho || "",
 
         productColor:
-            produto.cor || "",
+            produto?.cor || "",
 
         productCategory:
-            produto.categoria || "",
+            produto?.categoria || "",
 
         salePrice:
             venda(produto),
@@ -1232,24 +1186,16 @@ function editarProduto(produto){
 
     };
 
-
     Object.entries(campos)
-        .forEach(
-            ([id,valor]) => {
+        .forEach(([id,valor]) => {
 
-                const campo =
-                    $(id);
+            const campo = $(id);
 
-                if(campo){
-
-                    campo.value =
-                        valor;
-
-                }
-
+            if(campo){
+                campo.value = valor;
             }
-        );
 
+        });
 
     if($("modalTitle")){
 
@@ -1258,7 +1204,6 @@ function editarProduto(produto){
 
     }
 
-
     if($("modalOverline")){
 
         $("modalOverline").textContent =
@@ -1266,16 +1211,20 @@ function editarProduto(produto){
 
     }
 
-
     if($("formMessage")){
 
-        $("formMessage").textContent =
-            "";
+        $("formMessage").textContent = "";
 
     }
 
+    const arquivo =
+        $("productImage");
 
-    if(produto.imagem_url){
+    if(arquivo){
+        arquivo.value = "";
+    }
+
+    if(produto?.imagem_url){
 
         preview(
             produto.imagem_url
@@ -1286,7 +1235,6 @@ function editarProduto(produto){
         limparPreview();
 
     }
-
 
     $("productModal")
         ?.classList.add("active");
@@ -1317,7 +1265,6 @@ function limparPreview(){
 
     if(!area) return;
 
-
     area.innerHTML = `
 
         <i class="fa-solid fa-image"></i>
@@ -1338,7 +1285,6 @@ function preview(src){
 
     if(!area || !src) return;
 
-
     area.innerHTML = `
 
         <img
@@ -1352,24 +1298,22 @@ function preview(src){
 
 
 /* =========================================================
-   IMAGEM
+   EVENTO IMAGEM
    ========================================================= */
 
-function imagemPreview(){
+function configurarImagem(){
 
     const input =
         $("productImage");
 
     if(!input) return;
 
-
     input.addEventListener(
         "change",
-        function(){
+        () => {
 
             const arquivo =
-                this.files?.[0];
-
+                input.files?.[0];
 
             if(!arquivo){
 
@@ -1379,10 +1323,11 @@ function imagemPreview(){
 
             }
 
-
             if(
                 !arquivo.type ||
-                !arquivo.type.startsWith("image/")
+                !arquivo.type.startsWith(
+                    "image/"
+                )
             ){
 
                 toast(
@@ -1390,8 +1335,7 @@ function imagemPreview(){
                     true
                 );
 
-                this.value =
-                    "";
+                input.value = "";
 
                 limparPreview();
 
@@ -1399,10 +1343,8 @@ function imagemPreview(){
 
             }
 
-
             const leitor =
                 new FileReader();
-
 
             leitor.onload =
                 event => {
@@ -1413,7 +1355,6 @@ function imagemPreview(){
 
                 };
 
-
             leitor.onerror =
                 () => {
 
@@ -1423,7 +1364,6 @@ function imagemPreview(){
                     );
 
                 };
-
 
             leitor.readAsDataURL(
                 arquivo
@@ -1436,7 +1376,7 @@ function imagemPreview(){
 
 
 /* =========================================================
-   UPLOAD IMAGEM
+   UPLOAD
    ========================================================= */
 
 async function uploadImagem(
@@ -1445,36 +1385,36 @@ async function uploadImagem(
 ){
 
     if(!arquivo || !id){
-
         return null;
-
     }
-
 
     const db =
         cliente();
 
+    if(!db?.storage){
+        return null;
+    }
 
-    if(!db) return null;
+    const nomeOriginal =
+        String(
+            arquivo.name || "imagem.jpg"
+        );
 
+    const partes =
+        nomeOriginal.split(".");
 
     const extensao =
         (
-            arquivo.name
-                .split(".")
-                .pop() ||
-            "jpg"
+            partes.length > 1
+                ? partes.pop()
+                : "jpg"
         )
         .toLowerCase()
-        .replace(
-            /[^a-z0-9]/g,
-            ""
-        );
-
+        .replace(/[^a-z0-9]/g,"") ||
+        "jpg";
 
     const caminho =
         `produtos/${id}-${Date.now()}.${extensao}`;
-
 
     try{
 
@@ -1493,13 +1433,11 @@ async function uploadImagem(
                     }
                 );
 
-
         if(envio.error){
 
             throw envio.error;
 
         }
-
 
         const resultado =
             db
@@ -1509,11 +1447,9 @@ async function uploadImagem(
                     caminho
                 );
 
-
         return resultado
             ?.data
             ?.publicUrl || null;
-
 
     }catch(error){
 
@@ -1530,24 +1466,19 @@ async function uploadImagem(
 
 
 /* =========================================================
-   SALVAR PRODUTO
+   SALVAR
    ========================================================= */
 
 async function salvarProduto(event){
 
     event.preventDefault();
 
-
     if(carregando){
-
         return;
-
     }
-
 
     const db =
         cliente();
-
 
     if(!db){
 
@@ -1560,79 +1491,59 @@ async function salvarProduto(event){
 
     }
 
-
     const id =
-        $("productId")
-            ?.value
-            ?.trim() ||
-        null;
-
+        String(
+            $("productId")?.value || ""
+        ).trim() || null;
 
     const codigo =
-        $("productBarcode")
-            ?.value
-            ?.trim() ||
-        null;
-
+        String(
+            $("productBarcode")?.value || ""
+        ).trim() || null;
 
     const sku =
-        $("productSku")
-            ?.value
-            ?.trim() ||
-        null;
-
+        String(
+            $("productSku")?.value || ""
+        ).trim() || null;
 
     const nome =
-        $("productName")
-            ?.value
-            ?.trim() ||
-        "";
-
+        String(
+            $("productName")?.value || ""
+        ).trim();
 
     const tamanho =
-        $("productSize")
-            ?.value
-            ?.trim() ||
-        "";
-
+        String(
+            $("productSize")?.value || ""
+        ).trim();
 
     const cor =
-        $("productColor")
-            ?.value
-            ?.trim() ||
-        "";
-
+        String(
+            $("productColor")?.value || ""
+        ).trim();
 
     const categoria =
-        $("productCategory")
-            ?.value
-            ?.trim() ||
-        "";
-
+        String(
+            $("productCategory")?.value || ""
+        ).trim();
 
     const precoVenda =
         Number(
-            $("salePrice")
-                ?.value || 0
+            $("salePrice")?.value || 0
         );
-
 
     const precoCusto =
         Number(
-            $("stockPrice")
-                ?.value || 0
+            $("stockPrice")?.value || 0
         );
-
 
     const qtd =
         Number(
-            $("productQuantity")
-                ?.value || 0
+            $("productQuantity")?.value || 0
         );
 
 
     /* =====================================================
-       VALIDAÇÕES
+       VALIDAÇÃO
        ===================================================== */
 
     if(!nome){
@@ -1642,13 +1553,11 @@ async function salvarProduto(event){
             true
         );
 
-        $("productName")
-            ?.focus();
+        $("productName")?.focus();
 
         return;
 
     }
-
 
     if(!tamanho){
 
@@ -1657,13 +1566,11 @@ async function salvarProduto(event){
             true
         );
 
-        $("productSize")
-            ?.focus();
+        $("productSize")?.focus();
 
         return;
 
     }
-
 
     if(!cor){
 
@@ -1672,13 +1579,11 @@ async function salvarProduto(event){
             true
         );
 
-        $("productColor")
-            ?.focus();
+        $("productColor")?.focus();
 
         return;
 
     }
-
 
     if(!categoria){
 
@@ -1687,13 +1592,11 @@ async function salvarProduto(event){
             true
         );
 
-        $("productCategory")
-            ?.focus();
+        $("productCategory")?.focus();
 
         return;
 
     }
-
 
     if(
         !Number.isFinite(precoVenda) ||
@@ -1705,10 +1608,11 @@ async function salvarProduto(event){
             true
         );
 
+        $("salePrice")?.focus();
+
         return;
 
     }
-
 
     if(
         !Number.isFinite(precoCusto) ||
@@ -1720,10 +1624,11 @@ async function salvarProduto(event){
             true
         );
 
+        $("stockPrice")?.focus();
+
         return;
 
     }
-
 
     if(
         !Number.isFinite(qtd) ||
@@ -1735,44 +1640,35 @@ async function salvarProduto(event){
             true
         );
 
+        $("productQuantity")?.focus();
+
         return;
 
     }
 
 
     /* =====================================================
-       CÓDIGO DE BARRAS DUPLICADO
+       CÓDIGO DUPLICADO
        ===================================================== */
 
     if(codigo){
-
-        const codigoNormalizado =
-            String(codigo)
-                .replace(/\s/g,"")
-                .trim();
-
 
         const duplicado =
             produtos.find(produto => {
 
                 const existente =
                     String(
-                        produto.codigo_barras ||
+                        produto?.codigo_barras ||
                         ""
-                    )
-                    .replace(/\s/g,"")
-                    .trim();
-
+                    ).trim();
 
                 return (
-                    existente ===
-                    codigoNormalizado &&
-                    String(produto.id) !==
+                    existente === codigo &&
+                    String(produto?.id) !==
                     String(id)
                 );
 
             });
-
 
         if(duplicado){
 
@@ -1793,56 +1689,41 @@ async function salvarProduto(event){
 
     const dados = {
 
-        codigo_barras:
-            codigo,
+        codigo_barras: codigo,
 
-        sku:
-            sku,
+        sku: sku,
 
-        nome:
-            nome,
+        nome: nome,
 
-        tamanho:
-            tamanho,
+        tamanho: tamanho,
 
-        cor:
-            cor,
+        cor: cor,
 
-        categoria:
-            categoria,
+        categoria: categoria,
 
-        preco_venda:
-            precoVenda,
+        preco_venda: precoVenda,
 
-        preco_custo:
-            precoCusto,
+        preco_custo: precoCusto,
 
-        quantidade:
-            qtd
+        quantidade: qtd
 
     };
 
 
-    carregando =
-        true;
-
+    carregando = true;
 
     if($("formMessage")){
 
         $("formMessage").textContent =
-            "Salvando produto...";
+            id
+                ? "Atualizando produto..."
+                : "Salvando produto...";
 
     }
 
-
     try{
 
-        let resposta;
-
-
-        /* =================================================
-           EDITAR
-           ================================================= */
+        let resposta = null;
 
         if(id){
 
@@ -1850,21 +1731,11 @@ async function salvarProduto(event){
                 await db
                     .from("produtos")
                     .update(dados)
-                    .eq(
-                        "id",
-                        id
-                    )
+                    .eq("id",id)
                     .select()
                     .single();
 
-        }
-
-
-        /* =================================================
-           NOVO
-           ================================================= */
-
-        else{
+        }else{
 
             resposta =
                 await db
@@ -1875,15 +1746,13 @@ async function salvarProduto(event){
 
         }
 
-
         if(resposta.error){
 
             throw resposta.error;
 
         }
 
-
-        const produtoSalvo =
+        let produtoSalvo =
             resposta.data;
 
 
@@ -1893,8 +1762,8 @@ async function salvarProduto(event){
 
         const arquivo =
             $("productImage")
-                ?.files?.[0];
-
+                ?.files
+                ?.[0];
 
         if(
             arquivo &&
@@ -1907,56 +1776,58 @@ async function salvarProduto(event){
                     produtoSalvo.id
                 );
 
-
             if(url){
 
                 const imagemUpdate =
                     await db
                         .from("produtos")
                         .update({
-                            imagem_url:
-                                url
+                            imagem_url:url
                         })
                         .eq(
                             "id",
                             produtoSalvo.id
-                        );
+                        )
+                        .select()
+                        .single();
 
-
-                if(
-                    imagemUpdate.error
-                ){
+                if(imagemUpdate.error){
 
                     console.warn(
-                        "Imagem enviada, mas URL não foi registrada.",
+                        "Produto salvo, mas a imagem não foi vinculada:",
                         imagemUpdate.error
                     );
 
+                }else if(imagemUpdate.data){
+
+                    produtoSalvo =
+                        imagemUpdate.data;
+
                 }
+
+            }else{
+
+                toast(
+                    "Produto salvo, mas a imagem não pôde ser enviada.",
+                    true
+                );
 
             }
 
         }
 
 
-        /* =================================================
-           FINAL
-           ================================================= */
-
         fecharProduto();
 
         bip(true);
 
-
         toast(
             id
-            ? "Produto atualizado com sucesso."
-            : "Produto cadastrado com sucesso."
+                ? "Produto atualizado com sucesso."
+                : "Produto cadastrado com sucesso."
         );
 
-
         await carregarProdutos();
-
 
     }catch(error){
 
@@ -1965,9 +1836,7 @@ async function salvarProduto(event){
             error
         );
 
-
         bip(false);
-
 
         if($("formMessage")){
 
@@ -1977,18 +1846,14 @@ async function salvarProduto(event){
 
         }
 
-
         toast(
-            error?.message ||
             "Não foi possível salvar o produto.",
             true
         );
 
-
     }finally{
 
-        carregando =
-            false;
+        carregando = false;
 
     }
 
@@ -2004,34 +1869,27 @@ async function excluirProduto(id){
     const produto =
         produtos.find(
             item =>
-                String(item.id) ===
+                String(item?.id) ===
                 String(id)
         );
 
+    if(!produto) return;
 
-    if(!produto){
-
-        return;
-
-    }
-
+    const nome =
+        produto?.nome ||
+        "produto";
 
     const confirmou =
         window.confirm(
-            `Excluir "${produto.nome || "produto"}"?`
+            `Excluir "${nome}"?\n\nEsta ação não poderá ser desfeita.`
         );
 
-
     if(!confirmou){
-
         return;
-
     }
-
 
     const db =
         cliente();
-
 
     if(!db){
 
@@ -2044,18 +1902,13 @@ async function excluirProduto(id){
 
     }
 
-
     try{
 
         const resposta =
             await db
                 .from("produtos")
                 .delete()
-                .eq(
-                    "id",
-                    id
-                );
-
+                .eq("id",id);
 
         if(resposta.error){
 
@@ -2063,17 +1916,11 @@ async function excluirProduto(id){
 
         }
 
-
-        bip(true);
-
-
         toast(
             "Produto excluído com sucesso."
         );
 
-
         await carregarProdutos();
-
 
     }catch(error){
 
@@ -2081,10 +1928,6 @@ async function excluirProduto(id){
             "Erro ao excluir:",
             error
         );
-
-
-        bip(false);
-
 
         toast(
             "Erro ao excluir o produto.",
@@ -2104,79 +1947,70 @@ function visualizar(produto){
 
     if(!produto) return;
 
-
     if($("viewCategory")){
 
         $("viewCategory").textContent =
-            produto.categoria ||
+            produto?.categoria ||
             "PRODUTO";
 
     }
 
-
     if($("viewName")){
 
         $("viewName").textContent =
-            produto.nome ||
+            produto?.nome ||
             "Produto";
 
     }
 
-
     if($("viewDescription")){
 
         $("viewDescription").textContent =
-            produto.sku
-            ? `SKU: ${produto.sku}`
-            : "Informações comerciais e de estoque.";
+            produto?.sku
+                ? `SKU: ${produto.sku}`
+                : "Informações comerciais e de estoque.";
 
     }
-
 
     if($("viewBarcode")){
 
         $("viewBarcode").textContent =
-            produto.codigo_barras ||
+            produto?.codigo_barras ||
             "—";
 
     }
-
 
     if($("viewSku")){
 
         $("viewSku").textContent =
-            produto.sku ||
+            produto?.sku ||
             "—";
 
     }
-
 
     if($("viewSize")){
 
         $("viewSize").textContent =
-            produto.tamanho ||
+            produto?.tamanho ||
             "—";
 
     }
-
 
     if($("viewColor")){
 
         $("viewColor").textContent =
-            produto.cor ||
+            produto?.cor ||
             "—";
 
     }
-
 
     if($("viewCategoryText")){
 
         $("viewCategoryText").textContent =
-            produto.categoria ||
+            produto?.categoria ||
             "—";
 
     }
-
 
     if($("viewSale")){
 
@@ -2187,7 +2021,6 @@ function visualizar(produto){
 
     }
 
-
     if($("viewCost")){
 
         $("viewCost").textContent =
@@ -2197,32 +2030,31 @@ function visualizar(produto){
 
     }
 
-
     if($("viewStock")){
 
         $("viewStock").textContent =
-            quantidade(produto);
+            quantidade(produto)
+                .toLocaleString(
+                    "pt-BR"
+                );
 
     }
-
 
     if($("viewStatus")){
 
         $("viewStatus").textContent =
             quantidade(produto) > 0
-            ? "Disponível"
-            : "Sem estoque";
+                ? "Disponível"
+                : "Sem estoque";
 
     }
-
 
     const imagem =
         $("viewImage");
 
-
     if(imagem){
 
-        if(produto.imagem_url){
+        if(produto?.imagem_url){
 
             imagem.innerHTML = `
 
@@ -2231,7 +2063,7 @@ function visualizar(produto){
                         produto.imagem_url
                     )}"
                     alt="${escapeHTML(
-                        produto.nome ||
+                        produto?.nome ||
                         "Produto"
                     )}"
                 >
@@ -2242,17 +2074,13 @@ function visualizar(produto){
 
             imagem.innerHTML = `
 
-                <i class="
-                    fa-solid
-                    fa-box-open
-                "></i>
+                <i class="fa-solid fa-box-open"></i>
 
             `;
 
         }
 
     }
-
 
     $("viewModal")
         ?.classList.add("active");
@@ -2280,9 +2108,7 @@ function procurarCodigo(codigo){
 
     const valor =
         String(codigo || "")
-            .replace(/\s/g,"")
             .trim();
-
 
     if(!valor){
 
@@ -2297,19 +2123,15 @@ function procurarCodigo(codigo){
 
     }
 
-
     const produto =
         produtos.find(produto => {
 
             return String(
-                produto.codigo_barras ||
+                produto?.codigo_barras ||
                 ""
-            )
-            .replace(/\s/g,"")
-            .trim() === valor;
+            ).trim() === valor;
 
         });
-
 
     if(!produto){
 
@@ -2320,49 +2142,37 @@ function procurarCodigo(codigo){
 
         bip(false);
 
-
         toast(
             `Código ${valor} não cadastrado.`,
             true
         );
 
-
         setTimeout(() => {
 
-            statusScanner(
-                "Pronto"
-            );
+            statusScanner("Pronto");
 
-        },2000);
-
+        },2500);
 
         return;
 
     }
-
 
     statusScanner(
         "Produto encontrado.",
         "success"
     );
 
-
     bip(true);
-
 
     visualizar(produto);
 
-
     toast(
-        `${produto.nome || "Produto"} encontrado.`
+        `${produto?.nome || "Produto"} encontrado.`
     );
-
 
     setTimeout(() => {
 
-        statusScanner(
-            "Pronto"
-        );
+        statusScanner("Pronto");
 
     },1800);
 
@@ -2370,7 +2180,7 @@ function procurarCodigo(codigo){
 
 
 /* =========================================================
-   LEITOR MANUAL / PISTOLA USB
+   LEITOR USB / PISTOLA
    ========================================================= */
 
 function configurarLeitor(){
@@ -2378,31 +2188,26 @@ function configurarLeitor(){
     const input =
         $("barcodeScanner");
 
-
     if(!input) return;
-
 
     input.addEventListener(
         "keydown",
         event => {
 
-            if(
-                event.key !==
-                "Enter"
-            ){
-
+            if(event.key !== "Enter"){
                 return;
-
             }
-
 
             event.preventDefault();
 
+            const valor =
+                input.value.trim();
 
-            procurarCodigo(
-                input.value
-            );
+            if(valor){
 
+                procurarCodigo(valor);
+
+            }
 
             input.select();
 
@@ -2430,57 +2235,36 @@ async function abrirCamera(){
     const loading =
         $("cameraLoading");
 
-
-    if(
-        !modal ||
-        !video
-    ){
-
-        toast(
-            "Área da câmera não encontrada.",
-            true
-        );
-
+    if(!modal || !video){
         return;
-
     }
-
 
     if(
         !window.isSecureContext &&
         location.hostname !== "localhost"
     ){
 
-        toast(
-            "A câmera precisa de HTTPS para funcionar no celular.",
-            true
-        );
-
         if(status){
 
             status.textContent =
-                "Abra o sistema por HTTPS.";
+                "A câmera precisa de uma conexão HTTPS.";
 
         }
+
+        toast(
+            "A câmera só funciona em HTTPS.",
+            true
+        );
 
         return;
 
     }
 
-
-    modal.classList.add(
-        "active"
-    );
-
+    modal.classList.add("active");
 
     if(loading){
-
-        loading.classList.remove(
-            "hidden"
-        );
-
+        loading.classList.remove("hidden");
     }
-
 
     if(status){
 
@@ -2489,24 +2273,7 @@ async function abrirCamera(){
 
     }
 
-
-    codigoProcessando =
-        false;
-
-
     try{
-
-        if(
-            !navigator.mediaDevices ||
-            !navigator.mediaDevices.getUserMedia
-        ){
-
-            throw new Error(
-                "Este navegador não permite acesso à câmera."
-            );
-
-        }
-
 
         if(
             !window.ZXing ||
@@ -2514,26 +2281,35 @@ async function abrirCamera(){
         ){
 
             throw new Error(
-                "Biblioteca de leitura de código de barras não carregada."
+                "Leitor de código de barras não carregado."
             );
 
         }
 
-
         pararCamera();
-
 
         cameraReader =
             new ZXing.BrowserMultiFormatReader();
 
+        let dispositivos = [];
 
-        const dispositivos =
-            await ZXing.BrowserCodeReader
-                .listVideoInputDevices();
+        try{
 
+            dispositivos =
+                await ZXing.BrowserCodeReader
+                    .listVideoInputDevices();
+
+        }catch(error){
+
+            console.warn(
+                "Não foi possível listar câmeras:",
+                error
+            );
+
+        }
 
         if(
-            !dispositivos ||
+            !Array.isArray(dispositivos) ||
             !dispositivos.length
         ){
 
@@ -2543,20 +2319,14 @@ async function abrirCamera(){
 
         }
 
-
-        /* =================================================
-           CÂMERA TRASEIRA
-           ================================================= */
-
         let camera =
             dispositivos.find(
                 item =>
                     /back|rear|traseira|environment/i
-                        .test(
-                            item.label || ""
-                        )
+                    .test(
+                        item?.label || ""
+                    )
             );
-
 
         if(!camera){
 
@@ -2567,11 +2337,6 @@ async function abrirCamera(){
 
         }
 
-
-        /* =================================================
-           LEITURA
-           ================================================= */
-
         cameraControls =
             await cameraReader
                 .decodeFromVideoDevice(
@@ -2579,32 +2344,22 @@ async function abrirCamera(){
                     video,
                     (resultado,erro) => {
 
-                        if(
-                            !resultado ||
-                            codigoProcessando
-                        ){
-
+                        if(!resultado){
                             return;
-
                         }
 
+                        if(codigoProcessando){
+                            return;
+                        }
 
                         const codigo =
-                            resultado
-                                .getText()
-                                ?.trim();
-
+                            resultado.getText();
 
                         if(!codigo){
-
                             return;
-
                         }
 
-
-                        codigoProcessando =
-                            true;
-
+                        codigoProcessando = true;
 
                         if(status){
 
@@ -2613,48 +2368,35 @@ async function abrirCamera(){
 
                         }
 
-
                         bip(true);
 
+                        fecharCamera();
+
+                        procurarCodigo(
+                            codigo
+                        );
 
                         setTimeout(() => {
 
-                            fecharCamera();
+                            codigoProcessando = false;
 
-                            procurarCodigo(
-                                codigo
-                            );
-
-                            setTimeout(() => {
-
-                                codigoProcessando =
-                                    false;
-
-                            },800);
-
-                        },100);
+                        },1000);
 
                     }
                 );
 
-
-        /* =================================================
-           TRACK DA CÂMERA
-           ================================================= */
-
         const stream =
             video.srcObject;
 
-
         if(stream){
 
+            const tracks =
+                stream.getVideoTracks();
+
             cameraTrack =
-                stream
-                    .getVideoTracks()
-                    [0] || null;
+                tracks?.[0] || null;
 
         }
-
 
         if(loading){
 
@@ -2663,7 +2405,6 @@ async function abrirCamera(){
             );
 
         }
-
 
         if(status){
 
@@ -2672,17 +2413,14 @@ async function abrirCamera(){
 
         }
 
-
     }catch(error){
 
         console.error(
-            "Erro ao iniciar câmera:",
+            "Erro câmera:",
             error
         );
 
-
         pararCamera();
-
 
         if(loading){
 
@@ -2691,7 +2429,6 @@ async function abrirCamera(){
             );
 
         }
-
 
         if(status){
 
@@ -2701,9 +2438,7 @@ async function abrirCamera(){
 
         }
 
-
         toast(
-            error?.message ||
             "Não foi possível acessar a câmera.",
             true
         );
@@ -2736,10 +2471,7 @@ function pararCamera(){
 
     }
 
-
-    cameraControls =
-        null;
-
+    cameraControls = null;
 
     try{
 
@@ -2758,10 +2490,7 @@ function pararCamera(){
 
     }
 
-
-    cameraReader =
-        null;
-
+    cameraReader = null;
 
     if(cameraTrack){
 
@@ -2780,38 +2509,22 @@ function pararCamera(){
 
     }
 
-
-    cameraTrack =
-        null;
-
+    cameraTrack = null;
 
     const video =
         $("barcodeCamera");
 
-
     if(video){
 
         try{
-
             video.pause();
+        }catch(e){}
 
-        }catch(error){}
-
-
-        video.srcObject =
-            null;
+        try{
+            video.srcObject = null;
+        }catch(e){}
 
     }
-
-
-    flashAtivo =
-        false;
-
-
-    $("toggleFlash")
-        ?.classList.remove(
-            "active"
-        );
 
 }
 
@@ -2824,24 +2537,17 @@ function fecharCamera(){
 
     pararCamera();
 
+    flashAtivo = false;
+
+    $("toggleFlash")
+        ?.classList.remove(
+            "active"
+        );
 
     $("cameraScannerModal")
         ?.classList.remove(
             "active"
         );
-
-
-    const loading =
-        $("cameraLoading");
-
-
-    if(loading){
-
-        loading.classList.add(
-            "hidden"
-        );
-
-    }
 
 }
 
@@ -2863,16 +2569,15 @@ async function lanterna(){
 
     }
 
-
     const capacidades =
-        cameraTrack.getCapabilities
-        ? cameraTrack.getCapabilities()
-        : null;
-
+        typeof cameraTrack.getCapabilities ===
+        "function"
+            ? cameraTrack.getCapabilities()
+            : null;
 
     if(
         !capacidades ||
-        !capacidades.torch
+        !("torch" in capacidades)
     ){
 
         toast(
@@ -2884,10 +2589,8 @@ async function lanterna(){
 
     }
 
-
     const novoEstado =
         !flashAtivo;
-
 
     try{
 
@@ -2902,10 +2605,8 @@ async function lanterna(){
 
         });
 
-
         flashAtivo =
             novoEstado;
-
 
         $("toggleFlash")
             ?.classList.toggle(
@@ -2913,24 +2614,19 @@ async function lanterna(){
                 flashAtivo
             );
 
-
     }catch(error){
 
         console.error(
-            "Erro na lanterna:",
+            "Lanterna:",
             error
         );
 
-
-        flashAtivo =
-            false;
-
+        flashAtivo = false;
 
         $("toggleFlash")
             ?.classList.remove(
                 "active"
             );
-
 
         toast(
             "Não foi possível controlar a lanterna.",
@@ -2938,6 +2634,137 @@ async function lanterna(){
         );
 
     }
+
+}
+
+
+/* =========================================================
+   NOTIFICAÇÕES
+   ========================================================= */
+
+function atualizarNotificacoes(){
+
+    const lista =
+        $("notificationList");
+
+    const contador =
+        $("notificationCount");
+
+    if(!lista) return;
+
+    const semEstoque =
+        produtos.filter(
+            produto =>
+                quantidade(produto) <= 0
+        );
+
+    if(contador){
+
+        contador.textContent =
+            semEstoque.length;
+
+        contador.style.display =
+            semEstoque.length
+                ? ""
+                : "none";
+
+    }
+
+    if(!semEstoque.length){
+
+        lista.innerHTML = `
+
+            <div class="notification-empty">
+
+                <i class="fa-solid fa-circle-check"></i>
+
+                Nenhuma notificação no momento.
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+    lista.innerHTML =
+        semEstoque
+            .slice(0,10)
+            .map(produto => `
+
+                <div class="notification-item">
+
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+
+                    <div>
+
+                        <strong>
+                            ${escapeHTML(
+                                produto?.nome ||
+                                "Produto"
+                            )}
+                        </strong>
+
+                        <span>
+                            Produto sem estoque.
+                        </span>
+
+                    </div>
+
+                </div>
+
+            `)
+            .join("");
+
+}
+
+
+/* =========================================================
+   NOTIFICAÇÕES - ABRIR
+   ========================================================= */
+
+function abrirNotificacoes(){
+
+    atualizarNotificacoes();
+
+    $("notificationPanel")
+        ?.classList.toggle(
+            "active"
+        );
+
+}
+
+
+/* =========================================================
+   LOGOUT
+   ========================================================= */
+
+function logout(){
+
+    pararCamera();
+
+    try{
+
+        localStorage.removeItem(
+            "usuarioLogado"
+        );
+
+        sessionStorage.removeItem(
+            "usuarioLogado"
+        );
+
+    }catch(error){
+
+        console.warn(
+            "Erro ao limpar sessão:",
+            error
+        );
+
+    }
+
+    window.location.href =
+        "login.html";
 
 }
 
@@ -2958,20 +2785,17 @@ function eventos(){
             abrirProduto
         );
 
-
     $("closeModal")
         ?.addEventListener(
             "click",
             fecharProduto
         );
 
-
     $("cancelProduct")
         ?.addEventListener(
             "click",
             fecharProduto
         );
-
 
     document
         .querySelectorAll(
@@ -2997,7 +2821,6 @@ function eventos(){
             fecharVisualizacao
         );
 
-
     document
         .querySelectorAll(
             "[data-close-view]"
@@ -3013,7 +2836,7 @@ function eventos(){
 
 
     /* -----------------------------------------------------
-       FORM
+       FORMULÁRIO
        ----------------------------------------------------- */
 
     $("productForm")
@@ -3032,7 +2855,6 @@ function eventos(){
             "input",
             tabela
         );
-
 
     $("categoryFilter")
         ?.addEventListener(
@@ -3055,93 +2877,38 @@ function eventos(){
                         "[data-action]"
                     );
 
-
                 if(!botao){
-
                     return;
-
                 }
-
 
                 const id =
                     botao.dataset.id;
 
-
                 const produto =
                     produtos.find(
                         item =>
-                            String(item.id) ===
+                            String(item?.id) ===
                             String(id)
                     );
 
-
                 if(!produto){
-
                     return;
-
                 }
-
 
                 const acao =
                     botao.dataset.action;
 
+                if(acao === "view"){
 
-                switch(acao){
+                    visualizar(produto);
 
-                    case "view":
+                }else if(acao === "edit"){
 
-                        visualizar(
-                            produto
-                        );
+                    editarProduto(produto);
 
-                        break;
+                }else if(acao === "delete"){
 
-
-                    case "edit":
-
-                        editarProduto(
-                            produto
-                        );
-
-                        break;
-
-
-                    case "delete":
-
-                        excluirProduto(
-                            id
-                        );
-
-                        break;
-
-                }
-
-            }
-        );
-
-
-    /* -----------------------------------------------------
-       LEITOR MANUAL
-       ----------------------------------------------------- */
-
-    $("barcodeScanner")
-        ?.addEventListener(
-            "input",
-            event => {
-
-                const valor =
-                    event.target.value;
-
-
-                if(
-                    valor &&
-                    valor.length >= 8
-                ){
-
-                    /*
-                     * Não dispara automaticamente.
-                     * O leitor físico normalmente envia ENTER.
-                     */
+                    excluirProduto(id);
 
                 }
 
@@ -3159,13 +2926,11 @@ function eventos(){
             abrirCamera
         );
 
-
     $("closeCameraScanner")
         ?.addEventListener(
             "click",
             fecharCamera
         );
-
 
     $("closeCameraButton")
         ?.addEventListener(
@@ -3173,13 +2938,11 @@ function eventos(){
             fecharCamera
         );
 
-
     $("closeCameraScannerOverlay")
         ?.addEventListener(
             "click",
             fecharCamera
         );
-
 
     $("toggleFlash")
         ?.addEventListener(
@@ -3211,16 +2974,8 @@ function eventos(){
     $("notificationButton")
         ?.addEventListener(
             "click",
-            () => {
-
-                $("notificationPanel")
-                    ?.classList.toggle(
-                        "active"
-                    );
-
-            }
+            abrirNotificacoes
         );
-
 
     $("closeNotifications")
         ?.addEventListener(
@@ -3243,21 +2998,7 @@ function eventos(){
     $("logoutButton")
         ?.addEventListener(
             "click",
-            () => {
-
-                localStorage.removeItem(
-                    "usuarioLogado"
-                );
-
-                sessionStorage.removeItem(
-                    "usuarioLogado"
-                );
-
-
-                window.location.href =
-                    "login.html";
-
-            }
+            logout
         );
 
 
@@ -3269,22 +3010,15 @@ function eventos(){
         "keydown",
         event => {
 
-            if(
-                event.key !==
-                "Escape"
-            ){
-
+            if(event.key !== "Escape"){
                 return;
-
             }
-
 
             fecharProduto();
 
             fecharVisualizacao();
 
             fecharCamera();
-
 
             $("notificationPanel")
                 ?.classList.remove(
@@ -3296,7 +3030,7 @@ function eventos(){
 
 
     /* -----------------------------------------------------
-       FECHAR PRODUTO FORA
+       MODAL PRODUTO
        ----------------------------------------------------- */
 
     $("productModal")
@@ -3318,7 +3052,7 @@ function eventos(){
 
 
     /* -----------------------------------------------------
-       FECHAR VIEW FORA
+       MODAL VISUALIZAÇÃO
        ----------------------------------------------------- */
 
     $("viewModal")
@@ -3340,7 +3074,7 @@ function eventos(){
 
 
     /* -----------------------------------------------------
-       FECHAR CÂMERA FORA
+       MODAL CÂMERA
        ----------------------------------------------------- */
 
     $("cameraScannerModal")
@@ -3360,6 +3094,25 @@ function eventos(){
             }
         );
 
+
+    /* -----------------------------------------------------
+       ENTER NO CÓDIGO DO FORMULÁRIO
+       ----------------------------------------------------- */
+
+    $("productBarcode")
+        ?.addEventListener(
+            "keydown",
+            event => {
+
+                if(event.key === "Enter"){
+
+                    event.preventDefault();
+
+                }
+
+            }
+        );
+
 }
 
 
@@ -3370,14 +3123,10 @@ function eventos(){
 async function iniciar(){
 
     if(sistemaIniciado){
-
         return;
-
     }
 
-
-    sistemaIniciado =
-        true;
+    sistemaIniciado = true;
 
 
     /* -----------------------------------------------------
@@ -3386,16 +3135,18 @@ async function iniciar(){
 
     relogio();
 
+    intervaloRelogio =
+        setInterval(
+            relogio,
+            1000
+        );
 
-    if(!intervaloRelogio){
 
-        intervaloRelogio =
-            setInterval(
-                relogio,
-                1000
-            );
+    /* -----------------------------------------------------
+       PERFIL
+       ----------------------------------------------------- */
 
-    }
+    carregarPerfil();
 
 
     /* -----------------------------------------------------
@@ -3406,11 +3157,11 @@ async function iniciar(){
 
     configurarLeitor();
 
-    imagemPreview();
+    configurarImagem();
 
 
     /* -----------------------------------------------------
-       PRODUTOS
+       CARREGAR DADOS
        ----------------------------------------------------- */
 
     await carregarProdutos();
@@ -3443,7 +3194,7 @@ if(
 
 
 /* =========================================================
-   LIMPEZA
+   LIMPEZA AO SAIR
    ========================================================= */
 
 window.addEventListener(
@@ -3452,15 +3203,13 @@ window.addEventListener(
 
         pararCamera();
 
-
         if(intervaloRelogio){
 
             clearInterval(
                 intervaloRelogio
             );
 
-            intervaloRelogio =
-                null;
+            intervaloRelogio = null;
 
         }
 
@@ -3487,10 +3236,5 @@ document.addEventListener(
 
     }
 );
-
-
-/* =========================================================
-   FIM
-   ========================================================= */
 
 })();
