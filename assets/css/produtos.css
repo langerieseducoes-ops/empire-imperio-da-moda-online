@@ -40,6 +40,10 @@ button{
     cursor:pointer;
 }
 
+/* =========================================================
+   LOADER
+   ========================================================= */
+
 .products-loader{
     position:fixed;
     inset:0;
@@ -92,14 +96,26 @@ button{
     to{transform:translateX(350%)}
 }
 
+/* =========================================================
+   FUNDO
+   ========================================================= */
+
 .luxury-background{
     position:fixed;
     inset:0;
     z-index:-1;
     overflow:hidden;
     background:
-        radial-gradient(circle at 20% 20%,rgba(212,175,55,.06),transparent 28%),
-        radial-gradient(circle at 80% 80%,rgba(212,175,55,.04),transparent 30%),
+        radial-gradient(
+            circle at 20% 20%,
+            rgba(212,175,55,.06),
+            transparent 28%
+        ),
+        radial-gradient(
+            circle at 80% 80%,
+            rgba(212,175,55,.04),
+            transparent 30%
+        ),
         var(--black);
 }
 
@@ -112,14 +128,33 @@ button{
     background:rgba(212,175,55,.06);
 }
 
-.glow-one{top:-100px;left:-80px}
-.glow-two{right:-100px;top:30%}
-.glow-three{bottom:-120px;left:40%}
+.glow-one{
+    top:-100px;
+    left:-80px;
+}
+
+.glow-two{
+    right:-100px;
+    top:30%;
+}
+
+.glow-three{
+    bottom:-120px;
+    left:40%;
+}
+
+/* =========================================================
+   LAYOUT
+   ========================================================= */
 
 .products-layout{
     display:flex;
     min-height:100vh;
 }
+
+/* =========================================================
+   SIDEBAR
+   ========================================================= */
 
 .sidebar{
     position:fixed;
@@ -254,6 +289,10 @@ button{
     border-radius:7px;
 }
 
+/* =========================================================
+   CONTEÚDO PRINCIPAL
+   ========================================================= */
+
 .main-content{
     width:calc(100% - 255px);
     margin-left:255px;
@@ -294,6 +333,10 @@ button{
     flex-wrap:wrap;
 }
 
+/* =========================================================
+   RELÓGIO
+   ========================================================= */
+
 .clock{
     display:flex;
     align-items:center;
@@ -312,6 +355,10 @@ button{
     color:#ddd;
     font-size:11px;
 }
+
+/* =========================================================
+   LEITOR MANUAL DE CÓDIGO DE BARRAS
+   ========================================================= */
 
 .barcode-scanner{
     display:flex;
@@ -369,6 +416,10 @@ button{
     white-space:nowrap;
 }
 
+/* =========================================================
+   BOTÕES
+   ========================================================= */
+
 .gold-button{
     display:inline-flex;
     align-items:center;
@@ -376,7 +427,11 @@ button{
     gap:7px;
     padding:11px 15px;
     color:#090909;
-    background:linear-gradient(135deg,var(--gold-light),var(--gold));
+    background:linear-gradient(
+        135deg,
+        var(--gold-light),
+        var(--gold)
+    );
     border:0;
     border-radius:8px;
     font-size:11px;
@@ -409,6 +464,10 @@ button{
     border-radius:20px;
     font-size:8px;
 }
+
+/* =========================================================
+   MÉTRICAS
+   ========================================================= */
 
 .metrics{
     display:grid;
@@ -463,6 +522,10 @@ button{
     color:var(--gold-light);
 }
 
+/* =========================================================
+   MÉTRICAS FINANCEIRAS
+   ========================================================= */
+
 .financial-metrics{
     display:grid;
     grid-template-columns:repeat(4,1fr);
@@ -497,6 +560,10 @@ button{
     background:var(--gold);
     transition:.5s;
 }
+
+/* =========================================================
+   PAINEL DE PRODUTOS
+   ========================================================= */
 
 .product-panel{
     padding:18px;
@@ -562,6 +629,10 @@ button{
     padding:0 10px;
     font-size:10px;
 }
+
+/* =========================================================
+   TABELA
+   ========================================================= */
 
 .table-wrapper{
     overflow:auto;
@@ -658,6 +729,10 @@ td strong{
     font-size:9px;
 }
 
+/* =========================================================
+   ANALYTICS
+   ========================================================= */
+
 .analytics-grid{
     display:grid;
     grid-template-columns:2fr 1fr;
@@ -719,7 +794,11 @@ td strong{
 .chart-bar i{
     display:block;
     height:100%;
-    background:linear-gradient(90deg,var(--gold-dark),var(--gold-light));
+    background:linear-gradient(
+        90deg,
+        var(--gold-dark),
+        var(--gold-light)
+    );
     border-radius:10px;
 }
 
@@ -750,6 +829,10 @@ td strong{
     color:var(--gold);
 }
 
+/* =========================================================
+   RODAPÉ
+   ========================================================= */
+
 .main-footer{
     display:flex;
     justify-content:space-between;
@@ -767,6 +850,10 @@ td strong{
 .main-footer span{
     margin-left:6px;
 }
+
+/* =========================================================
+   MODAIS
+   ========================================================= */
 
 .modal{
     position:fixed;
@@ -833,6 +920,10 @@ td strong{
     color:#666;
     font-size:10px;
 }
+
+/* =========================================================
+   FORMULÁRIO
+   ========================================================= */
 
 .form-grid{
     display:grid;
@@ -923,6 +1014,7 @@ td strong{
 
 .cancel-button,
 .camera-light-button{
+    min-height:40px;
     padding:10px 14px;
     color:#aaa;
     background:#181818;
@@ -936,6 +1028,10 @@ td strong{
     color:var(--gold);
     border-color:var(--gold-dark);
 }
+
+/* =========================================================
+   VISUALIZAÇÃO DO PRODUTO
+   ========================================================= */
 
 .view-card{
     display:grid;
@@ -1003,6 +1099,10 @@ td strong{
     word-break:break-word;
 }
 
+/* =========================================================
+   SCANNER DE CÓDIGO DE BARRAS POR CÂMERA
+   ========================================================= */
+
 .camera-scanner-card{
     width:min(650px,100%);
 }
@@ -1010,7 +1110,8 @@ td strong{
 .camera-reader{
     position:relative;
     width:100%;
-    aspect-ratio:16/10;
+    aspect-ratio:16/9;
+    min-height:280px;
     overflow:hidden;
     background:#000;
     border:1px solid var(--gold-dark);
@@ -1024,18 +1125,30 @@ td strong{
     object-fit:cover;
 }
 
+/*
+   Área horizontal própria para código de barras.
+   Não é enquadramento de QR Code.
+*/
+
 .camera-frame{
     position:absolute;
-    inset:16%;
+    top:32%;
+    left:8%;
+    right:8%;
+    height:36%;
     pointer-events:none;
+    z-index:2;
 }
 
 .corner{
     position:absolute;
-    width:35px;
-    height:35px;
+    width:42px;
+    height:42px;
     border-color:var(--gold-light);
     border-style:solid;
+    filter:drop-shadow(
+        0 0 5px rgba(212,175,55,.6)
+    );
 }
 
 .top-left{
@@ -1065,22 +1178,54 @@ td strong{
 .scan-line{
     position:absolute;
     top:50%;
-    left:0;
-    width:100%;
+    left:2%;
+    width:96%;
     height:2px;
     background:var(--gold-light);
-    box-shadow:0 0 12px var(--gold);
-    animation:scan 1.8s ease-in-out infinite;
+    box-shadow:
+        0 0 6px var(--gold),
+        0 0 15px var(--gold);
+    animation:barcodeScan 1.8s ease-in-out infinite;
 }
 
-@keyframes scan{
-    0%,100%{
-        transform:translateY(-55px);
+@keyframes barcodeScan{
+
+    0%,
+    100%{
+        transform:translateY(-45px);
     }
+
     50%{
-        transform:translateY(55px);
+        transform:translateY(45px);
     }
+
 }
+
+/* =========================================================
+   ÁREA ESCURA FORA DO CÓDIGO
+   ========================================================= */
+
+.camera-reader::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    z-index:1;
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(0,0,0,.48) 0%,
+            rgba(0,0,0,.48) 31%,
+            transparent 31%,
+            transparent 69%,
+            rgba(0,0,0,.48) 69%,
+            rgba(0,0,0,.48) 100%
+        );
+}
+
+/* =========================================================
+   LOADING DA CÂMERA
+   ========================================================= */
 
 .camera-loading{
     position:absolute;
@@ -1091,8 +1236,9 @@ td strong{
     justify-content:center;
     gap:10px;
     color:#aaa;
-    background:rgba(0,0,0,.75);
+    background:rgba(0,0,0,.78);
     font-size:10px;
+    z-index:5;
 }
 
 .camera-loading.hidden{
@@ -1104,8 +1250,16 @@ td strong{
     font-size:28px;
 }
 
+/* =========================================================
+   STATUS DA CÂMERA
+   ========================================================= */
+
 .camera-status{
     margin-top:12px;
+    min-height:36px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
     padding:10px;
     color:#999;
     background:#0b0b0b;
@@ -1114,6 +1268,20 @@ td strong{
     text-align:center;
     font-size:9px;
 }
+
+.camera-status.success{
+    color:#69cf82;
+    border-color:#356b42;
+}
+
+.camera-status.error{
+    color:#e26b6b;
+    border-color:#703838;
+}
+
+/* =========================================================
+   BOTÕES DA CÂMERA
+   ========================================================= */
 
 .camera-actions{
     display:flex;
@@ -1126,6 +1294,10 @@ td strong{
     color:#111;
     background:var(--gold);
 }
+
+/* =========================================================
+   NOTIFICAÇÕES
+   ========================================================= */
 
 .notification-panel{
     position:fixed;
@@ -1168,6 +1340,10 @@ td strong{
     text-align:center;
     font-size:9px;
 }
+
+/* =========================================================
+   TOAST
+   ========================================================= */
 
 .toast-container{
     position:fixed;
@@ -1213,15 +1389,22 @@ td strong{
 }
 
 @keyframes toastIn{
+
     from{
         opacity:0;
         transform:translateX(20px);
     }
+
     to{
         opacity:1;
         transform:none;
     }
+
 }
+
+/* =========================================================
+   RESPONSIVO - TABLET
+   ========================================================= */
 
 @media(max-width:1200px){
 
@@ -1241,6 +1424,10 @@ td strong{
     }
 
 }
+
+/* =========================================================
+   RESPONSIVO - TABLET PEQUENO
+   ========================================================= */
 
 @media(max-width:850px){
 
@@ -1288,6 +1475,10 @@ td strong{
     }
 
 }
+
+/* =========================================================
+   RESPONSIVO - CELULAR
+   ========================================================= */
 
 @media(max-width:650px){
 
@@ -1340,12 +1531,43 @@ td strong{
         min-height:170px;
     }
 
+    /* Scanner de código de barras no celular */
+
+    .camera-scanner-card{
+        width:100%;
+        max-height:94vh;
+        padding:18px;
+    }
+
     .camera-reader{
+        min-height:240px;
         aspect-ratio:4/3;
     }
 
     .camera-frame{
-        inset:12%;
+        top:34%;
+        left:5%;
+        right:5%;
+        height:32%;
+    }
+
+    .corner{
+        width:32px;
+        height:32px;
+    }
+
+    .scan-line{
+        left:1%;
+        width:98%;
+    }
+
+    .camera-actions{
+        flex-direction:column;
+    }
+
+    .camera-light-button,
+    .cancel-button{
+        width:100%;
     }
 
     .main-footer{
