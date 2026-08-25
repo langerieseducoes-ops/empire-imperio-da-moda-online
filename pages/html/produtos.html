@@ -5,15 +5,9 @@
 
 <meta charset="UTF-8">
 
-<meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<meta
-    name="theme-color"
-    content="#050505"
->
+<meta name="theme-color" content="#050505">
 
 <meta
     name="description"
@@ -28,6 +22,7 @@
 >
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
+
 <link
     rel="preconnect"
     href="https://fonts.gstatic.com"
@@ -78,7 +73,7 @@
 
 
 <!-- =====================================================
-     BACKGROUND
+     FUNDO
 ===================================================== -->
 
 <div class="luxury-background">
@@ -243,6 +238,10 @@
 <main class="main-content">
 
 
+<!-- =====================================================
+     TOPBAR
+===================================================== -->
+
 <header class="topbar">
 
     <div>
@@ -278,7 +277,7 @@
         </div>
 
 
-        <!-- LEITOR -->
+        <!-- LEITOR DE CÓDIGO -->
 
         <div
             class="barcode-scanner"
@@ -299,7 +298,8 @@
             <button
                 id="openCameraScanner"
                 type="button"
-                title="Ler código pela câmera"
+                title="Ler código de barras pela câmera"
+                aria-label="Abrir câmera"
             >
 
                 <i class="fa-solid fa-camera"></i>
@@ -319,6 +319,7 @@
             class="notification-button"
             id="notificationButton"
             type="button"
+            aria-label="Notificações"
         >
 
             <i class="fa-solid fa-bell"></i>
@@ -330,7 +331,7 @@
         </button>
 
 
-        <!-- NOVO -->
+        <!-- NOVO PRODUTO -->
 
         <button
             class="gold-button"
@@ -359,9 +360,7 @@
     <article class="metric">
 
         <div class="metric-icon">
-
             <i class="fa-solid fa-boxes-stacked"></i>
-
         </div>
 
         <div>
@@ -382,9 +381,7 @@
     <article class="metric">
 
         <div class="metric-icon">
-
             <i class="fa-solid fa-cubes"></i>
-
         </div>
 
         <div>
@@ -405,9 +402,7 @@
     <article class="metric">
 
         <div class="metric-icon">
-
             <i class="fa-solid fa-tags"></i>
-
         </div>
 
         <div>
@@ -428,9 +423,7 @@
     <article class="metric warning">
 
         <div class="metric-icon">
-
             <i class="fa-solid fa-triangle-exclamation"></i>
-
         </div>
 
         <div>
@@ -451,7 +444,7 @@
 
 
 <!-- =====================================================
-     FINANCEIRO
+     MÉTRICAS FINANCEIRAS
 ===================================================== -->
 
 <section class="financial-metrics">
@@ -507,7 +500,9 @@
         </strong>
 
         <div class="progress">
+
             <i id="stockProgress"></i>
+
         </div>
 
     </article>
@@ -516,7 +511,7 @@
 
 
 <!-- =====================================================
-     PRODUTOS
+     TABELA DE PRODUTOS
 ===================================================== -->
 
 <section class="product-panel">
@@ -550,6 +545,7 @@
                 <input
                     id="productSearch"
                     type="search"
+                    autocomplete="off"
                     placeholder="Pesquisar produto, SKU ou código..."
                 >
 
@@ -578,13 +574,21 @@
                 <tr>
 
                     <th>Produto</th>
+
                     <th>Código</th>
+
                     <th>Tamanho</th>
+
                     <th>Cor</th>
+
                     <th>Categoria</th>
+
                     <th>Venda</th>
+
                     <th>Custo</th>
+
                     <th>Estoque</th>
+
                     <th>Ações</th>
 
                 </tr>
@@ -632,6 +636,7 @@
 
 
     <div class="chart-panel">
+
 
         <div class="panel-header">
 
@@ -774,19 +779,19 @@
 
 </footer>
 
-
 </main>
 
 </div>
 
 
 <!-- =====================================================
-     MODAL CÂMERA
+     MODAL DA CÂMERA
 ===================================================== -->
 
 <div
     class="modal camera-modal"
     id="cameraScannerModal"
+    aria-hidden="true"
 >
 
     <div
@@ -795,13 +800,19 @@
     ></div>
 
 
-    <div class="modal-card camera-scanner-card">
+    <div
+        class="modal-card camera-scanner-card"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="cameraModalTitle"
+    >
 
 
         <button
             class="close-modal"
             id="closeCameraScanner"
             type="button"
+            aria-label="Fechar câmera"
         >
 
             <i class="fa-solid fa-xmark"></i>
@@ -815,16 +826,18 @@
                 LEITOR ÓPTICO
             </span>
 
-            <h2>
+            <h2 id="cameraModalTitle">
                 Ler código de barras
             </h2>
 
             <p>
-                Aponte a câmera para o código de barras.
+                Aponte a câmera traseira para o código de barras.
             </p>
 
         </div>
 
+
+        <!-- ÁREA DA CÂMERA -->
 
         <div class="camera-reader">
 
@@ -839,14 +852,19 @@
             <div class="camera-frame">
 
                 <span class="corner top-left"></span>
+
                 <span class="corner top-right"></span>
+
                 <span class="corner bottom-left"></span>
+
                 <span class="corner bottom-right"></span>
 
                 <div class="scan-line"></div>
 
             </div>
 
+
+            <!-- LOADING -->
 
             <div
                 class="camera-loading"
@@ -864,15 +882,20 @@
         </div>
 
 
+        <!-- STATUS -->
+
         <div
             class="camera-status"
             id="cameraStatus"
         >
-            Aguardando câmera...
+            Toque em permitir quando o navegador solicitar acesso à câmera.
         </div>
 
 
+        <!-- AÇÕES -->
+
         <div class="camera-actions">
+
 
             <button
                 class="camera-light-button"
@@ -913,6 +936,7 @@
 <div
     class="modal"
     id="productModal"
+    aria-hidden="true"
 >
 
     <div
@@ -921,13 +945,18 @@
     ></div>
 
 
-    <div class="modal-card">
+    <div
+        class="modal-card"
+        role="dialog"
+        aria-modal="true"
+    >
 
 
         <button
             class="close-modal"
             id="closeModal"
             type="button"
+            aria-label="Fechar"
         >
 
             <i class="fa-solid fa-xmark"></i>
@@ -966,6 +995,8 @@
             <div class="form-grid">
 
 
+                <!-- CÓDIGO -->
+
                 <div class="form-group">
 
                     <label for="productBarcode">
@@ -978,6 +1009,7 @@
                             id="productBarcode"
                             type="text"
                             inputmode="numeric"
+                            autocomplete="off"
                             maxlength="32"
                             placeholder="Ex.: 7891234567890"
                         >
@@ -985,6 +1017,7 @@
                         <button
                             id="focusBarcode"
                             type="button"
+                            title="Focar código"
                         >
 
                             <i class="fa-solid fa-barcode"></i>
@@ -996,6 +1029,8 @@
                 </div>
 
 
+                <!-- SKU -->
+
                 <div class="form-group">
 
                     <label for="productSku">
@@ -1005,11 +1040,14 @@
                     <input
                         id="productSku"
                         type="text"
+                        autocomplete="off"
                         placeholder="Ex.: CONJ-PRETO-M"
                     >
 
                 </div>
 
+
+                <!-- NOME -->
 
                 <div class="form-group">
 
@@ -1020,12 +1058,15 @@
                     <input
                         id="productName"
                         type="text"
+                        autocomplete="off"
                         placeholder="Ex.: Conjunto Premium"
                         required
                     >
 
                 </div>
 
+
+                <!-- TAMANHO -->
 
                 <div class="form-group">
 
@@ -1036,12 +1077,15 @@
                     <input
                         id="productSize"
                         type="text"
+                        autocomplete="off"
                         placeholder="P, M, G, GG ou 38"
                         required
                     >
 
                 </div>
 
+
+                <!-- COR -->
 
                 <div class="form-group">
 
@@ -1052,12 +1096,15 @@
                     <input
                         id="productColor"
                         type="text"
+                        autocomplete="off"
                         placeholder="Ex.: Preto"
                         required
                     >
 
                 </div>
 
+
+                <!-- CATEGORIA -->
 
                 <div class="form-group">
 
@@ -1068,12 +1115,15 @@
                     <input
                         id="productCategory"
                         type="text"
+                        autocomplete="off"
                         placeholder="Ex.: Conjuntos"
                         required
                     >
 
                 </div>
 
+
+                <!-- VENDA -->
 
                 <div class="form-group">
 
@@ -1086,12 +1136,15 @@
                         type="number"
                         min="0"
                         step="0.01"
+                        inputmode="decimal"
                         placeholder="0,00"
                         required
                     >
 
                 </div>
 
+
+                <!-- CUSTO -->
 
                 <div class="form-group">
 
@@ -1104,12 +1157,15 @@
                         type="number"
                         min="0"
                         step="0.01"
+                        inputmode="decimal"
                         placeholder="0,00"
                         required
                     >
 
                 </div>
 
+
+                <!-- ESTOQUE -->
 
                 <div class="form-group">
 
@@ -1122,12 +1178,15 @@
                         type="number"
                         min="0"
                         step="1"
+                        inputmode="numeric"
                         placeholder="0"
                         required
                     >
 
                 </div>
 
+
+                <!-- IMAGEM -->
 
                 <div class="form-group">
 
@@ -1143,6 +1202,8 @@
 
                 </div>
 
+
+                <!-- PREVIEW -->
 
                 <div class="form-group full">
 
@@ -1181,7 +1242,9 @@
                     id="cancelProduct"
                     type="button"
                 >
+
                     Cancelar
+
                 </button>
 
 
@@ -1212,6 +1275,7 @@
 <div
     class="modal"
     id="viewModal"
+    aria-hidden="true"
 >
 
     <div
@@ -1220,13 +1284,18 @@
     ></div>
 
 
-    <div class="modal-card view-card">
+    <div
+        class="modal-card view-card"
+        role="dialog"
+        aria-modal="true"
+    >
 
 
         <button
             class="close-modal"
             id="closeViewModal"
             type="button"
+            aria-label="Fechar"
         >
 
             <i class="fa-solid fa-xmark"></i>
@@ -1410,6 +1479,7 @@
         <button
             id="closeNotifications"
             type="button"
+            aria-label="Fechar notificações"
         >
 
             <i class="fa-solid fa-xmark"></i>
@@ -1422,7 +1492,9 @@
     <div id="notificationList">
 
         <div class="notification-empty">
+
             Nenhuma notificação no momento.
+
         </div>
 
     </div>
@@ -1431,7 +1503,7 @@
 
 
 <!-- =====================================================
-     TOAST
+     TOASTS
 ===================================================== -->
 
 <div
@@ -1450,9 +1522,11 @@
 
 <script src="../../assets/js/supabase.js"></script>
 
-<script src="../../assets/js/produtos.js"></script>
-
+<!-- Scanner dedicado -->
 <script src="../../assets/js/camera.js"></script>
+
+<!-- Produtos -->
+<script src="../../assets/js/produtos.js"></script>
 
 </body>
 
