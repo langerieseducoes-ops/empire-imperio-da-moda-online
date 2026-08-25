@@ -1,29 +1,34 @@
 /* =========================================================
    EMPIRE ERP
    PRODUTOS.JS
-   PARTE 1/3
+   VERSÃO COMPLETA CORRIGIDA
    ========================================================= */
 
 (() => {
 
 "use strict";
 
+
 /* =========================================================
    CONTROLE PRINCIPAL
    ========================================================= */
 
 let produtos = [];
+
 let cameraReader = null;
 let cameraControls = null;
 let cameraTrack = null;
+
 let flashAtivo = false;
 let carregando = false;
-let iniciado = false;
+let sistemaIniciado = false;
 let intervaloRelogio = null;
+
+let codigoProcessando = false;
 
 
 /* =========================================================
-   ATALHO PARA ELEMENTOS
+   ATALHO
    ========================================================= */
 
 const $ = id => document.getElementById(id);
@@ -39,22 +44,17 @@ function cliente(){
         window.supabaseClient &&
         typeof window.supabaseClient.from === "function"
     ){
-
         return window.supabaseClient;
-
     }
 
     if(
         window.supabase &&
         typeof window.supabase.from === "function"
     ){
-
         return window.supabase;
-
     }
 
     return null;
-
 }
 
 
@@ -99,15 +99,22 @@ function toast(texto, erro = false){
 
     const area = $("toastContainer");
 
-    if(!area) return;
+    if(!area){
 
-    const item = document.createElement("div");
+        console[erro ? "error" : "log"](texto);
+
+        return;
+    }
+
+    const item =
+        document.createElement("div");
 
     item.className =
         "toast" +
         (erro ? " error" : "");
 
     item.innerHTML = `
+
         <i class="fa-solid ${
             erro
             ? "fa-circle-exclamation"
@@ -117,6 +124,7 @@ function toast(texto, erro = false){
         <span>
             ${escapeHTML(texto)}
         </span>
+
     `;
 
     area.appendChild(item);
@@ -125,10 +133,11 @@ function toast(texto, erro = false){
 
         item.classList.add("hide");
 
-        setTimeout(
-            () => item.remove(),
-            300
-        );
+        setTimeout(() => {
+
+            item.remove();
+
+        },300);
 
     },3000);
 
@@ -193,6 +202,16 @@ function bip(sucesso = true){
             contexto.currentTime + duracao
         );
 
+        setTimeout(() => {
+
+            try{
+
+                contexto.close();
+
+            }catch(error){}
+
+        },300);
+
     }catch(error){
 
         console.warn(
@@ -220,21 +239,27 @@ function statusScanner(
     const status =
         $("barcodeStatus");
 
-    if(!box || !status) return;
+    if(box){
 
-    box.classList.remove(
-        "success",
-        "error"
-    );
+        box.classList.remove(
+            "success",
+            "error"
+        );
 
-    if(tipo){
+        if(tipo){
 
-        box.classList.add(tipo);
+            box.classList.add(tipo);
+
+        }
 
     }
 
-    status.textContent =
-        texto || "Pronto";
+    if(status){
+
+        status.textContent =
+            texto || "Pronto";
+
+    }
 
 }
 
@@ -269,9 +294,7 @@ function esconderLoader(){
 
     if(!loader) return;
 
-    loader.classList.add(
-        "hidden"
-    );
+    loader.classList.add("hidden");
 
 }
 
@@ -286,13 +309,13 @@ function quantidade(produto){
         produto?.quantidade ??
         produto?.estoque ??
         0
-    );
+    ) || 0;
 
 }
 
 
 /* =========================================================
-   PREÇO DE VENDA
+   PREÇO VENDA
    ========================================================= */
 
 function venda(produto){
@@ -302,13 +325,13 @@ function venda(produto){
         produto?.valor_venda ??
         produto?.sale_price ??
         0
-    );
+    ) || 0;
 
 }
 
 
 /* =========================================================
-   PREÇO DE CUSTO
+   PREÇO CUSTO
    ========================================================= */
 
 function custo(produto){
@@ -318,7 +341,7 @@ function custo(produto){
         produto?.custo ??
         produto?.stock_price ??
         0
-    );
+    ) || 0;
 
 }
 
@@ -329,7 +352,8 @@ function custo(produto){
 
 async function carregarProdutos(){
 
-    const db = cliente();
+    const db =
+        cliente();
 
     if(!db){
 
@@ -348,6 +372,7 @@ async function carregarProdutos(){
 
     }
 
+
     try{
 
         const resposta =
@@ -361,23 +386,26 @@ async function carregarProdutos(){
                     }
                 );
 
+
         if(resposta.error){
 
             throw resposta.error;
 
         }
 
+
         produtos =
-            Array.isArray(
-                resposta.data
-            )
+            Array.isArray(resposta.data)
             ? resposta.data
             : [];
 
+
         renderizar();
+
 
         const ultima =
             $("lastUpdate");
+
 
         if(ultima){
 
@@ -387,6 +415,7 @@ async function carregarProdutos(){
                 );
 
         }
+
 
     }catch(error){
 
@@ -410,7 +439,7 @@ async function carregarProdutos(){
 
 
 /* =========================================================
-   RENDERIZAÇÃO GERAL
+   RENDERIZAÇÃO
    ========================================================= */
 
 function renderizar(){
@@ -435,12 +464,14 @@ function metricas(){
     const total =
         produtos.length;
 
+
     const estoque =
         produtos.reduce(
-            (soma, produto) =>
+            (soma,produto) =>
                 soma + quantidade(produto),
             0
         );
+
 
     const categoriasSet =
         new Set(
@@ -453,12 +484,15 @@ function metricas(){
                 .map(
                     categoria =>
                         String(categoria)
+                            .trim()
                             .toLowerCase()
                 )
         );
 
+
     const totalCategorias =
         categoriasSet.size;
+
 
     const semEstoque =
         produtos.filter(
@@ -466,23 +500,26 @@ function metricas(){
                 quantidade(produto) <= 0
         ).length;
 
+
     const valorVenda =
         produtos.reduce(
-            (soma, produto) =>
+            (soma,produto) =>
                 soma +
                 venda(produto) *
                 quantidade(produto),
             0
         );
 
+
     const valorCusto =
         produtos.reduce(
-            (soma, produto) =>
+            (soma,produto) =>
                 soma +
                 custo(produto) *
                 quantidade(produto),
             0
         );
+
 
     const ativos =
         produtos.filter(
@@ -568,8 +605,12 @@ function metricas(){
 
         const percentual =
             total > 0
-            ? (ativos / total) * 100
+            ? Math.min(
+                100,
+                (ativos / total) * 100
+            )
             : 0;
+
 
         $("stockProgress").style.width =
             `${percentual}%`;
@@ -590,8 +631,10 @@ function categorias(){
 
     if(!select) return;
 
+
     const atual =
         select.value;
+
 
     const lista =
         [
@@ -601,7 +644,12 @@ function categorias(){
                         produto =>
                             produto.categoria
                     )
-                    .filter(Boolean)
+                    .filter(
+                        categoria =>
+                            String(
+                                categoria || ""
+                            ).trim()
+                    )
             )
         ]
         .sort(
@@ -614,9 +662,11 @@ function categorias(){
 
 
     select.innerHTML = `
+
         <option value="">
             Todas categorias
         </option>
+
     `;
 
 
@@ -640,7 +690,13 @@ function categorias(){
     });
 
 
-    if(lista.includes(atual)){
+    if(
+        lista.some(
+            categoria =>
+                String(categoria) ===
+                String(atual)
+        )
+    ){
 
         select.value =
             atual;
@@ -651,7 +707,7 @@ function categorias(){
 
 
 /* =========================================================
-   FILTRO
+   LISTA FILTRADA
    ========================================================= */
 
 function listaFiltrada(){
@@ -700,7 +756,9 @@ function listaFiltrada(){
 
             const correspondeCategoria =
                 !categoria ||
-                produto.categoria === categoria;
+                String(
+                    produto.categoria || ""
+                ) === String(categoria);
 
 
             return (
@@ -724,6 +782,7 @@ function tabela(){
         $("productsTable");
 
     if(!tbody) return;
+
 
     const lista =
         listaFiltrada();
@@ -766,170 +825,174 @@ function tabela(){
 
     tbody.innerHTML =
         lista
-            .map(
-                produto => `
+            .map(produto => {
 
-                <tr>
+                const estoque =
+                    quantidade(produto);
 
-                    <td>
 
-                        <strong>
+                return `
+
+                    <tr>
+
+                        <td>
+
+                            <strong>
+                                ${escapeHTML(
+                                    produto.nome ||
+                                    "Sem nome"
+                                )}
+                            </strong>
+
+                        </td>
+
+
+                        <td>
+
+                            <span
+                                class="barcode-value"
+                            >
+
+                                <i class="
+                                    fa-solid
+                                    fa-barcode
+                                "></i>
+
+                                ${escapeHTML(
+                                    produto.codigo_barras ||
+                                    "—"
+                                )}
+
+                            </span>
+
+                        </td>
+
+
+                        <td>
                             ${escapeHTML(
-                                produto.nome ||
-                                "Sem nome"
-                            )}
-                        </strong>
-
-                    </td>
-
-
-                    <td>
-
-                        <span
-                            class="barcode-value"
-                        >
-
-                            <i class="
-                                fa-solid
-                                fa-barcode
-                            "></i>
-
-                            ${escapeHTML(
-                                produto.codigo_barras ||
+                                produto.tamanho ||
                                 "—"
                             )}
-
-                        </span>
-
-                    </td>
+                        </td>
 
 
-                    <td>
-                        ${escapeHTML(
-                            produto.tamanho ||
-                            "—"
-                        )}
-                    </td>
+                        <td>
+                            ${escapeHTML(
+                                produto.cor ||
+                                "—"
+                            )}
+                        </td>
 
 
-                    <td>
-                        ${escapeHTML(
-                            produto.cor ||
-                            "—"
-                        )}
-                    </td>
+                        <td>
+                            ${escapeHTML(
+                                produto.categoria ||
+                                "—"
+                            )}
+                        </td>
 
 
-                    <td>
-                        ${escapeHTML(
-                            produto.categoria ||
-                            "—"
-                        )}
-                    </td>
+                        <td>
+                            ${moeda(
+                                venda(produto)
+                            )}
+                        </td>
 
 
-                    <td>
-                        ${moeda(
-                            venda(produto)
-                        )}
-                    </td>
+                        <td>
+                            ${moeda(
+                                custo(produto)
+                            )}
+                        </td>
 
 
-                    <td>
-                        ${moeda(
-                            custo(produto)
-                        )}
-                    </td>
+                        <td>
+
+                            <span
+                                class="${
+                                    estoque > 0
+                                    ? "stock-ok"
+                                    : "stock-empty"
+                                }"
+                            >
+                                ${estoque}
+                            </span>
+
+                        </td>
 
 
-                    <td>
+                        <td>
 
-                        <span
-                            class="${
-                                quantidade(produto) > 0
-                                ? "stock-ok"
-                                : "stock-empty"
-                            }"
-                        >
-
-                            ${quantidade(produto)}
-
-                        </span>
-
-                    </td>
-
-
-                    <td>
-
-                        <div
-                            class="table-actions"
-                        >
-
-                            <button
-                                type="button"
-                                data-action="view"
-                                data-id="${escapeHTML(
-                                    produto.id
-                                )}"
-                                title="Visualizar"
+                            <div
+                                class="table-actions"
                             >
 
-                                <i class="
-                                    fa-solid
-                                    fa-eye
-                                "></i>
+                                <button
+                                    type="button"
+                                    data-action="view"
+                                    data-id="${escapeHTML(
+                                        produto.id
+                                    )}"
+                                    title="Visualizar"
+                                >
 
-                            </button>
+                                    <i class="
+                                        fa-solid
+                                        fa-eye
+                                    "></i>
 
-
-                            <button
-                                type="button"
-                                data-action="edit"
-                                data-id="${escapeHTML(
-                                    produto.id
-                                )}"
-                                title="Editar"
-                            >
-
-                                <i class="
-                                    fa-solid
-                                    fa-pen
-                                "></i>
-
-                            </button>
+                                </button>
 
 
-                            <button
-                                type="button"
-                                data-action="delete"
-                                data-id="${escapeHTML(
-                                    produto.id
-                                )}"
-                                title="Excluir"
-                            >
+                                <button
+                                    type="button"
+                                    data-action="edit"
+                                    data-id="${escapeHTML(
+                                        produto.id
+                                    )}"
+                                    title="Editar"
+                                >
 
-                                <i class="
-                                    fa-solid
-                                    fa-trash
-                                "></i>
+                                    <i class="
+                                        fa-solid
+                                        fa-pen
+                                    "></i>
 
-                            </button>
+                                </button>
 
-                        </div>
 
-                    </td>
+                                <button
+                                    type="button"
+                                    data-action="delete"
+                                    data-id="${escapeHTML(
+                                        produto.id
+                                    )}"
+                                    title="Excluir"
+                                >
 
-                </tr>
+                                    <i class="
+                                        fa-solid
+                                        fa-trash
+                                    "></i>
 
-            `
-            )
+                                </button>
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                `;
+
+            })
             .join("");
 
 }
 
 
 /* =========================================================
-   GRÁFICO POR CATEGORIA
+   GRÁFICO
    ========================================================= */
 
 function grafico(){
@@ -939,22 +1002,22 @@ function grafico(){
 
     if(!area) return;
 
+
     const dados = {};
 
 
-    produtos.forEach(
-        produto => {
+    produtos.forEach(produto => {
 
-            const categoria =
-                produto.categoria ||
-                "Sem categoria";
+        const categoria =
+            produto.categoria ||
+            "Sem categoria";
 
-            dados[categoria] =
-                (dados[categoria] || 0) +
-                quantidade(produto);
 
-        }
-    );
+        dados[categoria] =
+            (dados[categoria] || 0) +
+            quantidade(produto);
+
+    });
 
 
     const lista =
@@ -967,8 +1030,8 @@ function grafico(){
 
     const total =
         lista.reduce(
-            (soma,[,valor]) =>
-                soma + valor,
+            (soma,item) =>
+                soma + item[1],
             0
         );
 
@@ -1021,39 +1084,39 @@ function grafico(){
             .map(
                 ([categoria,valor]) => `
 
-                <div class="chart-row">
+                    <div class="chart-row">
 
-                    <div class="chart-label">
+                        <div class="chart-label">
 
-                        <span>
-                            ${escapeHTML(
-                                categoria
-                            )}
-                        </span>
+                            <span>
+                                ${escapeHTML(
+                                    categoria
+                                )}
+                            </span>
 
-                        <strong>
-                            ${valor}
-                        </strong>
+                            <strong>
+                                ${valor}
+                            </strong>
+
+                        </div>
+
+
+                        <div class="chart-bar">
+
+                            <i
+                                style="
+                                    width:${Math.max(
+                                        3,
+                                        (valor / maior) * 100
+                                    )}%
+                                "
+                            ></i>
+
+                        </div>
 
                     </div>
 
-
-                    <div class="chart-bar">
-
-                        <i
-                            style="
-                                width:${Math.max(
-                                    3,
-                                    (valor / maior) * 100
-                                )}%
-                            "
-                        ></i>
-
-                    </div>
-
-                </div>
-
-            `
+                `
             )
             .join("");
 
@@ -1061,74 +1124,84 @@ function grafico(){
 
 
 /* =========================================================
-   PRÓXIMA PARTE
-   =========================================================
-   
-   PARTE 2:
-   - Modal de produto
-   - Upload de imagem
-   - Salvar
-   - Editar
-   - Excluir
-   - Visualizar
-   - Leitor de código de barras
-   
-   ========================================================= */
-
-})();
-/* =========================================================
-   EMPIRE ERP — PRODUTOS
-   JS — PARTE 2/3
+   ABRIR PRODUTO
    ========================================================= */
 
 function abrirProduto(){
 
-    const form = $("productForm");
+    const form =
+        $("productForm");
+
 
     if(form){
+
         form.reset();
+
     }
 
-    const id = $("productId");
 
-    if(id){
-        id.value = "";
+    if($("productId")){
+
+        $("productId").value =
+            "";
+
     }
+
 
     if($("modalTitle")){
-        $("modalTitle").textContent = "Adicionar produto";
+
+        $("modalTitle").textContent =
+            "Adicionar produto";
+
     }
+
 
     if($("modalOverline")){
-        $("modalOverline").textContent = "NOVO CADASTRO";
+
+        $("modalOverline").textContent =
+            "NOVO CADASTRO";
+
     }
 
+
     if($("formMessage")){
-        $("formMessage").textContent = "";
+
+        $("formMessage").textContent =
+            "";
+
     }
+
 
     limparPreview();
 
-    $("productModal")?.classList.add("active");
+
+    $("productModal")
+        ?.classList.add("active");
+
 
     setTimeout(() => {
-        $("productBarcode")?.focus();
+
+        $("productBarcode")
+            ?.focus();
+
     },100);
 
 }
 
 
 /* =========================================================
-   EDITAR PRODUTO
+   EDITAR
    ========================================================= */
 
 function editarProduto(produto){
 
     if(!produto) return;
 
+
     const campos = {
 
-        productId: produto.id || "",
+        productId:
+            produto.id || "",
 
         productBarcode:
             produto.codigo_barras || "",
@@ -1159,61 +1232,91 @@ function editarProduto(produto){
 
     };
 
-    Object.entries(campos).forEach(([id,valor]) => {
 
-        const campo = $(id);
+    Object.entries(campos)
+        .forEach(
+            ([id,valor]) => {
 
-        if(campo){
-            campo.value = valor;
-        }
+                const campo =
+                    $(id);
 
-    });
+                if(campo){
+
+                    campo.value =
+                        valor;
+
+                }
+
+            }
+        );
+
 
     if($("modalTitle")){
+
         $("modalTitle").textContent =
             "Editar produto";
+
     }
+
 
     if($("modalOverline")){
+
         $("modalOverline").textContent =
             "EDIÇÃO";
+
     }
+
 
     if($("formMessage")){
-        $("formMessage").textContent = "";
+
+        $("formMessage").textContent =
+            "";
+
     }
+
 
     if(produto.imagem_url){
-        preview(produto.imagem_url);
+
+        preview(
+            produto.imagem_url
+        );
+
     }else{
+
         limparPreview();
+
     }
 
-    $("productModal")?.classList.add("active");
+
+    $("productModal")
+        ?.classList.add("active");
 
 }
 
 
 /* =========================================================
-   FECHAR MODAL
+   FECHAR PRODUTO
    ========================================================= */
 
 function fecharProduto(){
 
-    $("productModal")?.classList.remove("active");
+    $("productModal")
+        ?.classList.remove("active");
 
 }
 
 
 /* =========================================================
-   PREVIEW DA IMAGEM
+   PREVIEW
    ========================================================= */
 
 function limparPreview(){
 
-    const area = $("imagePreview");
+    const area =
+        $("imagePreview");
 
     if(!area) return;
+
 
     area.innerHTML = `
 
@@ -1230,9 +1333,11 @@ function limparPreview(){
 
 function preview(src){
 
-    const area = $("imagePreview");
+    const area =
+        $("imagePreview");
 
     if(!area || !src) return;
+
 
     area.innerHTML = `
 
@@ -1246,83 +1351,130 @@ function preview(src){
 }
 
 
+/* =========================================================
+   IMAGEM
+   ========================================================= */
+
 function imagemPreview(){
 
-    const input = $("productImage");
+    const input =
+        $("productImage");
 
     if(!input) return;
 
-    input.addEventListener("change",function(){
 
-        const arquivo = this.files?.[0];
+    input.addEventListener(
+        "change",
+        function(){
 
-        if(!arquivo){
+            const arquivo =
+                this.files?.[0];
 
-            limparPreview();
 
-            return;
+            if(!arquivo){
 
-        }
+                limparPreview();
 
-        if(!arquivo.type.startsWith("image/")){
+                return;
 
-            toast(
-                "Selecione uma imagem válida.",
-                true
+            }
+
+
+            if(
+                !arquivo.type ||
+                !arquivo.type.startsWith("image/")
+            ){
+
+                toast(
+                    "Selecione uma imagem válida.",
+                    true
+                );
+
+                this.value =
+                    "";
+
+                limparPreview();
+
+                return;
+
+            }
+
+
+            const leitor =
+                new FileReader();
+
+
+            leitor.onload =
+                event => {
+
+                    preview(
+                        event.target.result
+                    );
+
+                };
+
+
+            leitor.onerror =
+                () => {
+
+                    toast(
+                        "Não foi possível visualizar a imagem.",
+                        true
+                    );
+
+                };
+
+
+            leitor.readAsDataURL(
+                arquivo
             );
 
-            this.value = "";
-
-            limparPreview();
-
-            return;
-
         }
-
-        const leitor = new FileReader();
-
-        leitor.onload = function(event){
-
-            preview(event.target.result);
-
-        };
-
-        leitor.onerror = function(){
-
-            toast(
-                "Não foi possível visualizar a imagem.",
-                true
-            );
-
-        };
-
-        leitor.readAsDataURL(arquivo);
-
-    });
+    );
 
 }
 
 
 /* =========================================================
-   UPLOAD DA IMAGEM
+   UPLOAD IMAGEM
    ========================================================= */
 
-async function uploadImagem(arquivo,id){
+async function uploadImagem(
+    arquivo,
+    id
+){
 
-    if(!arquivo || !id) return null;
+    if(!arquivo || !id){
 
-    const db = cliente();
+        return null;
+
+    }
+
+
+    const db =
+        cliente();
+
 
     if(!db) return null;
 
+
     const extensao =
-        arquivo.name
-            .split(".")
-            .pop()
-            ?.toLowerCase() || "jpg";
+        (
+            arquivo.name
+                .split(".")
+                .pop() ||
+            "jpg"
+        )
+        .toLowerCase()
+        .replace(
+            /[^a-z0-9]/g,
+            ""
+        );
+
 
     const caminho =
         `produtos/${id}-${Date.now()}.${extensao}`;
+
 
     try{
 
@@ -1341,19 +1493,27 @@ async function uploadImagem(arquivo,id){
                     }
                 );
 
+
         if(envio.error){
+
             throw envio.error;
+
         }
+
 
         const resultado =
             db
                 .storage
                 .from("produtos")
-                .getPublicUrl(caminho);
+                .getPublicUrl(
+                    caminho
+                );
+
 
         return resultado
             ?.data
             ?.publicUrl || null;
+
 
     }catch(error){
 
@@ -1377,11 +1537,17 @@ async function salvarProduto(event){
 
     event.preventDefault();
 
+
     if(carregando){
+
         return;
+
     }
 
-    const db = cliente();
+
+    const db =
+        cliente();
+
 
     if(!db){
 
@@ -1394,38 +1560,55 @@ async function salvarProduto(event){
 
     }
 
+
     const id =
-        $("productId")?.value?.trim() || null;
+        $("productId")
+            ?.value
+            ?.trim() ||
+        null;
+
 
     const codigo =
         $("productBarcode")
             ?.value
-            ?.trim() || null;
+            ?.trim() ||
+        null;
+
 
     const sku =
         $("productSku")
             ?.value
-            ?.trim() || null;
+            ?.trim() ||
+        null;
+
 
     const nome =
         $("productName")
             ?.value
-            ?.trim() || "";
+            ?.trim() ||
+        "";
+
 
     const tamanho =
         $("productSize")
             ?.value
-            ?.trim() || "";
+            ?.trim() ||
+        "";
+
 
     const cor =
         $("productColor")
             ?.value
-            ?.trim() || "";
+            ?.trim() ||
+        "";
+
 
     const categoria =
         $("productCategory")
             ?.value
-            ?.trim() || "";
+            ?.trim() ||
+        "";
+
 
     const precoVenda =
         Number(
@@ -1433,11 +1616,13 @@ async function salvarProduto(event){
                 ?.value || 0
         );
 
+
     const precoCusto =
         Number(
             $("stockPrice")
                 ?.value || 0
         );
+
 
     const qtd =
         Number(
@@ -1447,7 +1632,7 @@ async function salvarProduto(event){
 
 
     /* =====================================================
-       VALIDAÇÃO
+       VALIDAÇÕES
        ===================================================== */
 
     if(!nome){
@@ -1457,11 +1642,13 @@ async function salvarProduto(event){
             true
         );
 
-        $("productName")?.focus();
+        $("productName")
+            ?.focus();
 
         return;
 
     }
+
 
     if(!tamanho){
 
@@ -1470,11 +1657,13 @@ async function salvarProduto(event){
             true
         );
 
-        $("productSize")?.focus();
+        $("productSize")
+            ?.focus();
 
         return;
 
     }
+
 
     if(!cor){
 
@@ -1483,11 +1672,13 @@ async function salvarProduto(event){
             true
         );
 
-        $("productColor")?.focus();
+        $("productColor")
+            ?.focus();
 
         return;
 
     }
+
 
     if(!categoria){
 
@@ -1496,11 +1687,13 @@ async function salvarProduto(event){
             true
         );
 
-        $("productCategory")?.focus();
+        $("productCategory")
+            ?.focus();
 
         return;
 
     }
+
 
     if(
         !Number.isFinite(precoVenda) ||
@@ -1516,6 +1709,7 @@ async function salvarProduto(event){
 
     }
 
+
     if(
         !Number.isFinite(precoCusto) ||
         precoCusto < 0
@@ -1529,6 +1723,7 @@ async function salvarProduto(event){
         return;
 
     }
+
 
     if(
         !Number.isFinite(qtd) ||
@@ -1546,26 +1741,38 @@ async function salvarProduto(event){
 
 
     /* =====================================================
-       VERIFICAR CÓDIGO DE BARRAS DUPLICADO
+       CÓDIGO DE BARRAS DUPLICADO
        ===================================================== */
 
     if(codigo){
 
+        const codigoNormalizado =
+            String(codigo)
+                .replace(/\s/g,"")
+                .trim();
+
+
         const duplicado =
             produtos.find(produto => {
 
-                const codigoExistente =
+                const existente =
                     String(
-                        produto.codigo_barras || ""
-                    ).trim();
+                        produto.codigo_barras ||
+                        ""
+                    )
+                    .replace(/\s/g,"")
+                    .trim();
+
 
                 return (
-                    codigoExistente === codigo &&
+                    existente ===
+                    codigoNormalizado &&
                     String(produto.id) !==
                     String(id)
                 );
 
             });
+
 
         if(duplicado){
 
@@ -1574,7 +1781,8 @@ async function salvarProduto(event){
                 true
             );
 
-            $("productBarcode")?.focus();
+            $("productBarcode")
+                ?.focus();
 
             return;
 
@@ -1585,33 +1793,45 @@ async function salvarProduto(event){
 
     const dados = {
 
-        codigo_barras: codigo,
+        codigo_barras:
+            codigo,
 
-        sku: sku,
+        sku:
+            sku,
 
-        nome: nome,
+        nome:
+            nome,
 
-        tamanho: tamanho,
+        tamanho:
+            tamanho,
 
-        cor: cor,
+        cor:
+            cor,
 
-        categoria: categoria,
+        categoria:
+            categoria,
 
-        preco_venda: precoVenda,
+        preco_venda:
+            precoVenda,
 
-        preco_custo: precoCusto,
+        preco_custo:
+            precoCusto,
 
-        quantidade: qtd
+        quantidade:
+            qtd
 
     };
 
 
-    carregando = true;
+    carregando =
+        true;
 
 
     if($("formMessage")){
+
         $("formMessage").textContent =
             "Salvando produto...";
+
     }
 
 
@@ -1621,7 +1841,7 @@ async function salvarProduto(event){
 
 
         /* =================================================
-           ATUALIZAÇÃO
+           EDITAR
            ================================================= */
 
         if(id){
@@ -1630,7 +1850,10 @@ async function salvarProduto(event){
                 await db
                     .from("produtos")
                     .update(dados)
-                    .eq("id",id)
+                    .eq(
+                        "id",
+                        id
+                    )
                     .select()
                     .single();
 
@@ -1638,7 +1861,7 @@ async function salvarProduto(event){
 
 
         /* =================================================
-           NOVO CADASTRO
+           NOVO
            ================================================= */
 
         else{
@@ -1654,7 +1877,9 @@ async function salvarProduto(event){
 
 
         if(resposta.error){
+
             throw resposta.error;
+
         }
 
 
@@ -1668,8 +1893,7 @@ async function salvarProduto(event){
 
         const arquivo =
             $("productImage")
-                ?.files
-                ?.[0];
+                ?.files?.[0];
 
 
         if(
@@ -1690,7 +1914,8 @@ async function salvarProduto(event){
                     await db
                         .from("produtos")
                         .update({
-                            imagem_url:url
+                            imagem_url:
+                                url
                         })
                         .eq(
                             "id",
@@ -1698,10 +1923,12 @@ async function salvarProduto(event){
                         );
 
 
-                if(imagemUpdate.error){
+                if(
+                    imagemUpdate.error
+                ){
 
                     console.warn(
-                        "Imagem salva, mas URL não foi registrada:",
+                        "Imagem enviada, mas URL não foi registrada.",
                         imagemUpdate.error
                     );
 
@@ -1713,12 +1940,13 @@ async function salvarProduto(event){
 
 
         /* =================================================
-           FINALIZAÇÃO
+           FINAL
            ================================================= */
 
         fecharProduto();
 
         bip(true);
+
 
         toast(
             id
@@ -1737,6 +1965,7 @@ async function salvarProduto(event){
             error
         );
 
+
         bip(false);
 
 
@@ -1750,6 +1979,7 @@ async function salvarProduto(event){
 
 
         toast(
+            error?.message ||
             "Não foi possível salvar o produto.",
             true
         );
@@ -1757,7 +1987,8 @@ async function salvarProduto(event){
 
     }finally{
 
-        carregando = false;
+        carregando =
+            false;
 
     }
 
@@ -1765,7 +1996,7 @@ async function salvarProduto(event){
 
 
 /* =========================================================
-   EXCLUIR PRODUTO
+   EXCLUIR
    ========================================================= */
 
 async function excluirProduto(id){
@@ -1777,7 +2008,12 @@ async function excluirProduto(id){
                 String(id)
         );
 
-    if(!produto) return;
+
+    if(!produto){
+
+        return;
+
+    }
 
 
     const confirmou =
@@ -1786,10 +2022,16 @@ async function excluirProduto(id){
         );
 
 
-    if(!confirmou) return;
+    if(!confirmou){
+
+        return;
+
+    }
 
 
-    const db = cliente();
+    const db =
+        cliente();
+
 
     if(!db){
 
@@ -1809,12 +2051,20 @@ async function excluirProduto(id){
             await db
                 .from("produtos")
                 .delete()
-                .eq("id",id);
+                .eq(
+                    "id",
+                    id
+                );
 
 
         if(resposta.error){
+
             throw resposta.error;
+
         }
+
+
+        bip(true);
 
 
         toast(
@@ -1832,6 +2082,10 @@ async function excluirProduto(id){
             error
         );
 
+
+        bip(false);
+
+
         toast(
             "Erro ao excluir o produto.",
             true
@@ -1843,7 +2097,7 @@ async function excluirProduto(id){
 
 
 /* =========================================================
-   VISUALIZAR PRODUTO
+   VISUALIZAR
    ========================================================= */
 
 function visualizar(produto){
@@ -1852,16 +2106,20 @@ function visualizar(produto){
 
 
     if($("viewCategory")){
+
         $("viewCategory").textContent =
             produto.categoria ||
             "PRODUTO";
+
     }
 
 
     if($("viewName")){
+
         $("viewName").textContent =
             produto.nome ||
             "Produto";
+
     }
 
 
@@ -1876,55 +2134,75 @@ function visualizar(produto){
 
 
     if($("viewBarcode")){
+
         $("viewBarcode").textContent =
             produto.codigo_barras ||
             "—";
+
     }
 
 
     if($("viewSku")){
+
         $("viewSku").textContent =
             produto.sku ||
             "—";
+
     }
 
 
     if($("viewSize")){
+
         $("viewSize").textContent =
             produto.tamanho ||
             "—";
+
     }
 
 
     if($("viewColor")){
+
         $("viewColor").textContent =
             produto.cor ||
             "—";
+
     }
 
 
     if($("viewCategoryText")){
+
         $("viewCategoryText").textContent =
             produto.categoria ||
             "—";
+
     }
 
 
     if($("viewSale")){
+
         $("viewSale").textContent =
-            moeda(venda(produto));
+            moeda(
+                venda(produto)
+            );
+
     }
 
 
     if($("viewCost")){
+
         $("viewCost").textContent =
-            moeda(custo(produto));
+            moeda(
+                custo(produto)
+            );
+
     }
 
 
     if($("viewStock")){
+
         $("viewStock").textContent =
             quantidade(produto);
+
     }
 
 
@@ -1964,7 +2242,10 @@ function visualizar(produto){
 
             imagem.innerHTML = `
 
-                <i class="fa-solid fa-box-open"></i>
+                <i class="
+                    fa-solid
+                    fa-box-open
+                "></i>
 
             `;
 
@@ -1992,13 +2273,14 @@ function fecharVisualizacao(){
 
 
 /* =========================================================
-   PESQUISA POR CÓDIGO
+   PROCURAR CÓDIGO
    ========================================================= */
 
 function procurarCodigo(codigo){
 
     const valor =
         String(codigo || "")
+            .replace(/\s/g,"")
             .trim();
 
 
@@ -2009,6 +2291,8 @@ function procurarCodigo(codigo){
             "error"
         );
 
+        bip(false);
+
         return;
 
     }
@@ -2018,8 +2302,11 @@ function procurarCodigo(codigo){
         produtos.find(produto => {
 
             return String(
-                produto.codigo_barras || ""
-            ).trim() === valor;
+                produto.codigo_barras ||
+                ""
+            )
+            .replace(/\s/g,"")
+            .trim() === valor;
 
         });
 
@@ -2033,10 +2320,21 @@ function procurarCodigo(codigo){
 
         bip(false);
 
+
         toast(
             `Código ${valor} não cadastrado.`,
             true
         );
+
+
+        setTimeout(() => {
+
+            statusScanner(
+                "Pronto"
+            );
+
+        },2000);
+
 
         return;
 
@@ -2088,8 +2386,13 @@ function configurarLeitor(){
         "keydown",
         event => {
 
-            if(event.key !== "Enter"){
+            if(
+                event.key !==
+                "Enter"
+            ){
+
                 return;
+
             }
 
 
@@ -2110,7 +2413,7 @@ function configurarLeitor(){
 
 
 /* =========================================================
-   CÂMERA — INÍCIO
+   CÂMERA
    ========================================================= */
 
 async function abrirCamera(){
@@ -2128,26 +2431,82 @@ async function abrirCamera(){
         $("cameraLoading");
 
 
-    if(!modal || !video){
+    if(
+        !modal ||
+        !video
+    ){
+
+        toast(
+            "Área da câmera não encontrada.",
+            true
+        );
+
         return;
+
     }
 
 
-    modal.classList.add("active");
+    if(
+        !window.isSecureContext &&
+        location.hostname !== "localhost"
+    ){
+
+        toast(
+            "A câmera precisa de HTTPS para funcionar no celular.",
+            true
+        );
+
+        if(status){
+
+            status.textContent =
+                "Abra o sistema por HTTPS.";
+
+        }
+
+        return;
+
+    }
+
+
+    modal.classList.add(
+        "active"
+    );
 
 
     if(loading){
-        loading.classList.remove("hidden");
+
+        loading.classList.remove(
+            "hidden"
+        );
+
     }
 
 
     if(status){
+
         status.textContent =
             "Solicitando acesso à câmera...";
+
     }
 
 
+    codigoProcessando =
+        false;
+
+
     try{
+
+        if(
+            !navigator.mediaDevices ||
+            !navigator.mediaDevices.getUserMedia
+        ){
+
+            throw new Error(
+                "Este navegador não permite acesso à câmera."
+            );
+
+        }
+
 
         if(
             !window.ZXing ||
@@ -2155,15 +2514,11 @@ async function abrirCamera(){
         ){
 
             throw new Error(
-                "Leitor de código de barras não carregado."
+                "Biblioteca de leitura de código de barras não carregada."
             );
 
         }
 
-
-        /* =============================================
-           LIMPA CÂMERA ANTERIOR
-           ============================================= */
 
         pararCamera();
 
@@ -2177,7 +2532,10 @@ async function abrirCamera(){
                 .listVideoInputDevices();
 
 
-        if(!dispositivos.length){
+        if(
+            !dispositivos ||
+            !dispositivos.length
+        ){
 
             throw new Error(
                 "Nenhuma câmera foi encontrada."
@@ -2186,15 +2544,17 @@ async function abrirCamera(){
         }
 
 
-        /* =============================================
-           PREFERIR CÂMERA TRASEIRA
-           ============================================= */
+        /* =================================================
+           CÂMERA TRASEIRA
+           ================================================= */
 
         let camera =
             dispositivos.find(
                 item =>
                     /back|rear|traseira|environment/i
-                    .test(item.label)
+                        .test(
+                            item.label || ""
+                        )
             );
 
 
@@ -2208,9 +2568,9 @@ async function abrirCamera(){
         }
 
 
-        /* =============================================
-           INICIAR LEITURA
-           ============================================= */
+        /* =================================================
+           LEITURA
+           ================================================= */
 
         cameraControls =
             await cameraReader
@@ -2219,18 +2579,31 @@ async function abrirCamera(){
                     video,
                     (resultado,erro) => {
 
-                        if(!resultado){
+                        if(
+                            !resultado ||
+                            codigoProcessando
+                        ){
+
                             return;
+
                         }
 
 
                         const codigo =
-                            resultado.getText();
+                            resultado
+                                .getText()
+                                ?.trim();
 
 
                         if(!codigo){
+
                             return;
+
                         }
+
+
+                        codigoProcessando =
+                            true;
 
 
                         if(status){
@@ -2244,20 +2617,30 @@ async function abrirCamera(){
                         bip(true);
 
 
-                        fecharCamera();
+                        setTimeout(() => {
 
+                            fecharCamera();
 
-                        procurarCodigo(
-                            codigo
-                        );
+                            procurarCodigo(
+                                codigo
+                            );
+
+                            setTimeout(() => {
+
+                                codigoProcessando =
+                                    false;
+
+                            },800);
+
+                        },100);
 
                     }
                 );
 
 
-        /* =============================================
-           PEGAR TRACK
-           ============================================= */
+        /* =================================================
+           TRACK DA CÂMERA
+           ================================================= */
 
         const stream =
             video.srcObject;
@@ -2274,7 +2657,11 @@ async function abrirCamera(){
 
 
         if(loading){
-            loading.classList.add("hidden");
+
+            loading.classList.add(
+                "hidden"
+            );
+
         }
 
 
@@ -2289,7 +2676,7 @@ async function abrirCamera(){
     }catch(error){
 
         console.error(
-            "Erro câmera:",
+            "Erro ao iniciar câmera:",
             error
         );
 
@@ -2298,7 +2685,11 @@ async function abrirCamera(){
 
 
         if(loading){
-            loading.classList.add("hidden");
+
+            loading.classList.add(
+                "hidden"
+            );
+
         }
 
 
@@ -2312,6 +2703,7 @@ async function abrirCamera(){
 
 
         toast(
+            error?.message ||
             "Não foi possível acessar a câmera.",
             true
         );
@@ -2345,7 +2737,8 @@ function pararCamera(){
     }
 
 
-    cameraControls = null;
+    cameraControls =
+        null;
 
 
     try{
@@ -2366,7 +2759,8 @@ function pararCamera(){
     }
 
 
-    cameraReader = null;
+    cameraReader =
+        null;
 
 
     if(cameraTrack){
@@ -2387,7 +2781,8 @@ function pararCamera(){
     }
 
 
-    cameraTrack = null;
+    cameraTrack =
+        null;
 
 
     const video =
@@ -2396,11 +2791,27 @@ function pararCamera(){
 
     if(video){
 
-        video.pause?.();
+        try{
 
-        video.srcObject = null;
+            video.pause();
+
+        }catch(error){}
+
+
+        video.srcObject =
+            null;
 
     }
+
+
+    flashAtivo =
+        false;
+
+
+    $("toggleFlash")
+        ?.classList.remove(
+            "active"
+        );
 
 }
 
@@ -2414,15 +2825,23 @@ function fecharCamera(){
     pararCamera();
 
 
-    flashAtivo = false;
-
-
-    $("toggleFlash")
-        ?.classList.remove("active");
-
-
     $("cameraScannerModal")
-        ?.classList.remove("active");
+        ?.classList.remove(
+            "active"
+        );
+
+
+    const loading =
+        $("cameraLoading");
+
+
+    if(loading){
+
+        loading.classList.add(
+            "hidden"
+        );
+
+    }
 
 }
 
@@ -2466,7 +2885,7 @@ async function lanterna(){
     }
 
 
-    flashAtivo =
+    const novoEstado =
         !flashAtivo;
 
 
@@ -2477,11 +2896,15 @@ async function lanterna(){
             advanced:[
                 {
                     torch:
-                        flashAtivo
+                        novoEstado
                 }
             ]
 
         });
+
+
+        flashAtivo =
+            novoEstado;
 
 
         $("toggleFlash")
@@ -2494,16 +2917,19 @@ async function lanterna(){
     }catch(error){
 
         console.error(
-            "Lanterna:",
+            "Erro na lanterna:",
             error
         );
 
 
-        flashAtivo = false;
+        flashAtivo =
+            false;
 
 
         $("toggleFlash")
-            ?.classList.remove("active");
+            ?.classList.remove(
+                "active"
+            );
 
 
         toast(
@@ -2514,14 +2940,10 @@ async function lanterna(){
     }
 
 }
-/* =========================================================
-   EMPIRE ERP — PRODUTOS
-   JS — PARTE 3/3
-   ========================================================= */
 
 
 /* =========================================================
-   EVENTOS DA PÁGINA
+   EVENTOS
    ========================================================= */
 
 function eventos(){
@@ -2591,7 +3013,7 @@ function eventos(){
 
 
     /* -----------------------------------------------------
-       FORMULÁRIO
+       FORM
        ----------------------------------------------------- */
 
     $("productForm")
@@ -2635,7 +3057,9 @@ function eventos(){
 
 
                 if(!botao){
+
                     return;
+
                 }
 
 
@@ -2652,7 +3076,9 @@ function eventos(){
 
 
                 if(!produto){
+
                     return;
+
                 }
 
 
@@ -2660,23 +3086,62 @@ function eventos(){
                     botao.dataset.action;
 
 
-                if(acao === "view"){
+                switch(acao){
 
-                    visualizar(produto);
+                    case "view":
+
+                        visualizar(
+                            produto
+                        );
+
+                        break;
+
+
+                    case "edit":
+
+                        editarProduto(
+                            produto
+                        );
+
+                        break;
+
+
+                    case "delete":
+
+                        excluirProduto(
+                            id
+                        );
+
+                        break;
 
                 }
 
-
-                if(acao === "edit"){
-
-                    editarProduto(produto);
-
-                }
+            }
+        );
 
 
-                if(acao === "delete"){
+    /* -----------------------------------------------------
+       LEITOR MANUAL
+       ----------------------------------------------------- */
 
-                    excluirProduto(id);
+    $("barcodeScanner")
+        ?.addEventListener(
+            "input",
+            event => {
+
+                const valor =
+                    event.target.value;
+
+
+                if(
+                    valor &&
+                    valor.length >= 8
+                ){
+
+                    /*
+                     * Não dispara automaticamente.
+                     * O leitor físico normalmente envia ENTER.
+                     */
 
                 }
 
@@ -2724,7 +3189,7 @@ function eventos(){
 
 
     /* -----------------------------------------------------
-       FOCO NO CÓDIGO DE BARRAS
+       FOCO CÓDIGO
        ----------------------------------------------------- */
 
     $("focusBarcode")
@@ -2784,7 +3249,6 @@ function eventos(){
                     "usuarioLogado"
                 );
 
-
                 sessionStorage.removeItem(
                     "usuarioLogado"
                 );
@@ -2805,8 +3269,13 @@ function eventos(){
         "keydown",
         event => {
 
-            if(event.key !== "Escape"){
+            if(
+                event.key !==
+                "Escape"
+            ){
+
                 return;
+
             }
 
 
@@ -2827,7 +3296,7 @@ function eventos(){
 
 
     /* -----------------------------------------------------
-       FECHAR MODAIS CLICANDO FORA
+       FECHAR PRODUTO FORA
        ----------------------------------------------------- */
 
     $("productModal")
@@ -2848,6 +3317,10 @@ function eventos(){
         );
 
 
+    /* -----------------------------------------------------
+       FECHAR VIEW FORA
+       ----------------------------------------------------- */
+
     $("viewModal")
         ?.addEventListener(
             "click",
@@ -2865,6 +3338,10 @@ function eventos(){
             }
         );
 
+
+    /* -----------------------------------------------------
+       FECHAR CÂMERA FORA
+       ----------------------------------------------------- */
 
     $("cameraScannerModal")
         ?.addEventListener(
@@ -2890,22 +3367,17 @@ function eventos(){
    INICIALIZAÇÃO
    ========================================================= */
 
-let sistemaIniciado = false;
-
-
-function iniciar(){
-
-    /*
-     * IMPORTANTE:
-     * impede que o sistema seja iniciado duas vezes.
-     */
+async function iniciar(){
 
     if(sistemaIniciado){
+
         return;
+
     }
 
 
-    sistemaIniciado = true;
+    sistemaIniciado =
+        true;
 
 
     /* -----------------------------------------------------
@@ -2915,10 +3387,15 @@ function iniciar(){
     relogio();
 
 
-    setInterval(
-        relogio,
-        1000
-    );
+    if(!intervaloRelogio){
+
+        intervaloRelogio =
+            setInterval(
+                relogio,
+                1000
+            );
+
+    }
 
 
     /* -----------------------------------------------------
@@ -2927,9 +3404,7 @@ function iniciar(){
 
     eventos();
 
-
     configurarLeitor();
-
 
     imagemPreview();
 
@@ -2938,7 +3413,7 @@ function iniciar(){
        PRODUTOS
        ----------------------------------------------------- */
 
-    carregarProdutos();
+    await carregarProdutos();
 
 }
 
@@ -2968,7 +3443,7 @@ if(
 
 
 /* =========================================================
-   LIMPEZA AO SAIR DA PÁGINA
+   LIMPEZA
    ========================================================= */
 
 window.addEventListener(
@@ -2977,12 +3452,24 @@ window.addEventListener(
 
         pararCamera();
 
+
+        if(intervaloRelogio){
+
+            clearInterval(
+                intervaloRelogio
+            );
+
+            intervaloRelogio =
+                null;
+
+        }
+
     }
 );
 
 
 /* =========================================================
-   VISIBILIDADE DA PÁGINA
+   VISIBILIDADE
    ========================================================= */
 
 document.addEventListener(
@@ -2994,12 +3481,7 @@ document.addEventListener(
             cameraReader
         ){
 
-            /*
-             * Se o usuário sair da página,
-             * desligamos a câmera.
-             */
-
-            pararCamera();
+            fecharCamera();
 
         }
 
@@ -3008,5 +3490,7 @@ document.addEventListener(
 
 
 /* =========================================================
-   FIM — EMPIRE ERP PRODUTOS
+   FIM
    ========================================================= */
+
+})();
