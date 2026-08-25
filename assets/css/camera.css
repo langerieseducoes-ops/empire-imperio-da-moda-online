@@ -1,0 +1,349 @@
+/* =========================================================
+   EMPIRE ERP
+   CAMERA.CSS
+   LEITOR DE CÓDIGO DE BARRAS
+   ========================================================= */
+
+.camera-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.camera-modal.active {
+    display: flex;
+}
+
+.camera-modal .modal-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,.88);
+    backdrop-filter: blur(12px);
+}
+
+.camera-scanner-card {
+    position: relative;
+    z-index: 2;
+    width: min(680px, 100%);
+    max-height: 94vh;
+    overflow: auto;
+    background:
+        linear-gradient(
+            145deg,
+            rgba(25,25,25,.98),
+            rgba(7,7,7,.98)
+        );
+    border: 1px solid rgba(212,175,55,.35);
+    border-radius: 22px;
+    padding: 26px;
+    box-shadow:
+        0 30px 100px rgba(0,0,0,.75),
+        0 0 40px rgba(212,175,55,.08);
+}
+
+.camera-scanner-card .close-modal {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    z-index: 10;
+    width: 40px;
+    height: 40px;
+    border: 1px solid rgba(255,255,255,.12);
+    border-radius: 50%;
+    background: rgba(255,255,255,.05);
+    color: #fff;
+    cursor: pointer;
+    transition: .25s ease;
+}
+
+.camera-scanner-card .close-modal:hover {
+    border-color: #d4af37;
+    color: #d4af37;
+    transform: rotate(90deg);
+}
+
+.camera-scanner-card .modal-header {
+    padding-right: 50px;
+    margin-bottom: 20px;
+}
+
+.camera-scanner-card .modal-header h2 {
+    margin: 5px 0;
+}
+
+.camera-scanner-card .modal-header p {
+    margin: 0;
+    color: #aaa;
+}
+
+/* =========================================================
+   ÁREA DA CÂMERA
+   ========================================================= */
+
+.camera-reader {
+    position: relative;
+    width: 100%;
+    min-height: 330px;
+    overflow: hidden;
+    border-radius: 18px;
+    background: #000;
+    border: 1px solid rgba(212,175,55,.25);
+}
+
+.camera-reader video {
+    display: block;
+    width: 100%;
+    height: 430px;
+    object-fit: cover;
+    background: #000;
+}
+
+/*
+   Espelha somente quando necessário.
+   Não usar scaleX(-1) por padrão,
+   pois código de barras deve ser lido
+   sem inverter a imagem.
+*/
+
+.camera-frame {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 78%;
+    height: 115px;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+}
+
+.camera-frame::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+        linear-gradient(
+            90deg,
+            rgba(212,175,55,.08),
+            transparent 30%,
+            transparent 70%,
+            rgba(212,175,55,.08)
+        );
+    border-radius: 10px;
+}
+
+.corner {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    border-color: #d4af37;
+    border-style: solid;
+    filter: drop-shadow(0 0 8px rgba(212,175,55,.7));
+}
+
+.corner.top-left {
+    top: 0;
+    left: 0;
+    border-width: 3px 0 0 3px;
+}
+
+.corner.top-right {
+    top: 0;
+    right: 0;
+    border-width: 3px 3px 0 0;
+}
+
+.corner.bottom-left {
+    bottom: 0;
+    left: 0;
+    border-width: 0 0 3px 3px;
+}
+
+.corner.bottom-right {
+    bottom: 0;
+    right: 0;
+    border-width: 0 3px 3px 0;
+}
+
+.scan-line {
+    position: absolute;
+    left: 4%;
+    right: 4%;
+    top: 50%;
+    height: 2px;
+    background: #d4af37;
+    box-shadow:
+        0 0 8px #d4af37,
+        0 0 18px rgba(212,175,55,.8);
+    animation: scanBarcode 2s ease-in-out infinite;
+}
+
+@keyframes scanBarcode {
+    0%,100% {
+        transform: translateY(-42px);
+        opacity: .65;
+    }
+
+    50% {
+        transform: translateY(42px);
+        opacity: 1;
+    }
+}
+
+/* =========================================================
+   CARREGAMENTO
+   ========================================================= */
+
+.camera-loading {
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    background: rgba(0,0,0,.72);
+    color: #fff;
+    transition: .25s ease;
+}
+
+.camera-loading.hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.camera-loading i {
+    font-size: 34px;
+    color: #d4af37;
+    animation: cameraPulse 1.3s infinite;
+}
+
+@keyframes cameraPulse {
+    0%,100% {
+        transform: scale(1);
+        opacity: .6;
+    }
+
+    50% {
+        transform: scale(1.15);
+        opacity: 1;
+    }
+}
+
+/* =========================================================
+   STATUS
+   ========================================================= */
+
+.camera-status {
+    margin-top: 14px;
+    padding: 13px 15px;
+    border-radius: 12px;
+    background: rgba(255,255,255,.045);
+    border: 1px solid rgba(255,255,255,.08);
+    color: #cfcfcf;
+    text-align: center;
+    font-size: 13px;
+}
+
+.camera-status.success {
+    color: #9ff0b0;
+    border-color: rgba(90,220,110,.3);
+}
+
+.camera-status.error {
+    color: #ff9d9d;
+    border-color: rgba(255,70,70,.3);
+}
+
+/* =========================================================
+   BOTÕES
+   ========================================================= */
+
+.camera-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 16px;
+}
+
+.camera-actions button {
+    flex: 1;
+    min-height: 46px;
+}
+
+.camera-light-button,
+.cancel-button {
+    border-radius: 12px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: .25s ease;
+}
+
+.camera-light-button {
+    border: 1px solid rgba(212,175,55,.35);
+    background: rgba(212,175,55,.08);
+    color: #d4af37;
+}
+
+.camera-light-button:hover,
+.camera-light-button.active {
+    background: rgba(212,175,55,.18);
+    border-color: #d4af37;
+}
+
+.cancel-button {
+    border: 1px solid rgba(255,255,255,.12);
+    background: rgba(255,255,255,.05);
+    color: #fff;
+}
+
+.cancel-button:hover {
+    background: rgba(255,255,255,.1);
+}
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 700px) {
+
+    .camera-modal {
+        padding: 0;
+    }
+
+    .camera-scanner-card {
+        width: 100%;
+        height: 100%;
+        max-height: 100%;
+        border-radius: 0;
+        padding: 18px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .camera-reader {
+        min-height: 0;
+        height: 58vh;
+    }
+
+    .camera-reader video {
+        height: 100%;
+    }
+
+    .camera-frame {
+        width: 88%;
+        height: 105px;
+    }
+
+    .camera-actions {
+        flex-direction: column;
+    }
+
+    .camera-actions button {
+        min-height: 50px;
+    }
+}
