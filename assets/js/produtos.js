@@ -1,31 +1,3 @@
-/* =========================================================
-   EMPIRE ERP
-   PRODUTOS.JS
-   Gestão completa de produtos
-   Supabase + Código de barras + ZXing/Câmera
-
-   FLUXO PRINCIPAL:
-
-   NOVO PRODUTO
-       ↓
-   abre cadastro
-       ↓
-   abre câmera automaticamente
-       ↓
-   lê código de barras
-       ↓
-   consulta Supabase
-       ↓
-   ┌───────────────────────────────┐
-   │ PRODUTO ENCONTRADO            │
-   │ → preenche todos os campos    │
-   │                               │
-   │ PRODUTO NÃO ENCONTRADO        │
-   │ → mantém código               │
-   │ → usuário continua cadastro   │
-   └───────────────────────────────┘
-========================================================= */
-
 (() => {
 
     "use strict";
