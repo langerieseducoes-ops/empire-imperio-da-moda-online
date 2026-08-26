@@ -1,71 +1,150 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<meta name="theme-color" content="#050505">
-<meta name="description" content="EMPIRE ERP - Gestão de Produtos">
+    <meta charset="UTF-8">
 
-<title>EMPIRE | Império da Moda Online</title>
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-<link rel="icon" href="../../assets/img/favicon.png">
+    <meta
+        name="theme-color"
+        content="#050505"
+    >
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <meta
+        name="description"
+        content="EMPIRE ERP - Gestão de Produtos"
+    >
 
-<link
-    href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap"
-    rel="stylesheet"
->
+    <title>EMPIRE | Império da Moda Online</title>
 
-<link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
->
+    <link
+        rel="icon"
+        href="../../assets/img/favicon.png"
+    >
 
-<link rel="stylesheet" href="../../assets/css/produtos.css">
-<link rel="stylesheet" href="../../assets/css/camera.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="../../assets/css/produtos.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="../../assets/css/camera.css"
+    >
 </head>
 
 <body>
 
-<div class="products-loader" id="productsLoader">
-    <div class="loader-logo">EMPIRE</div>
-    <div class="loader-subtitle">Império da Moda Online</div>
-    <div class="loader-line"><span></span></div>
+<!-- =====================================================
+     LOADER
+===================================================== -->
+
+<div
+    class="products-loader"
+    id="productsLoader"
+>
+
+    <div class="loader-logo">
+        EMPIRE
+    </div>
+
+    <div class="loader-subtitle">
+        Império da Moda Online
+    </div>
+
+    <div class="loader-line">
+        <span></span>
+    </div>
+
 </div>
 
+
+<!-- =====================================================
+     FUNDO
+===================================================== -->
+
 <div class="luxury-background">
+
     <span class="glow glow-one"></span>
     <span class="glow glow-two"></span>
     <span class="glow glow-three"></span>
+
 </div>
 
+
+<!-- =====================================================
+     LAYOUT
+===================================================== -->
+
 <div class="products-layout">
+
+
+<!-- =====================================================
+     SIDEBAR
+===================================================== -->
 
 <aside class="sidebar">
 
     <div class="brand">
-        <img src="../../assets/img/logo.png" alt="EMPIRE">
+
+        <img
+            src="../../assets/img/logo.png"
+            alt="EMPIRE"
+        >
 
         <div>
+
             <h2>EMPIRE</h2>
-            <span>Império da Moda Online</span>
+
+            <span>
+                Império da Moda Online
+            </span>
+
         </div>
+
     </div>
 
+
     <div class="profile">
-        <img src="../../assets/img/avatar.png" alt="Usuário">
+
+        <img
+            src="../../assets/img/avatar.png"
+            alt="Usuário"
+            onerror="this.style.display='none'"
+        >
 
         <div>
-            <strong id="profileName">Administrador</strong>
+
+            <strong id="profileName">
+                Administrador
+            </strong>
 
             <small>
                 <i class="fa-solid fa-circle"></i>
                 Online
             </small>
+
         </div>
+
     </div>
+
 
     <nav class="menu">
 
@@ -74,7 +153,10 @@
             <span>Tela Inicial</span>
         </a>
 
-        <a href="produtos.html" class="active">
+        <a
+            href="produtos.html"
+            class="active"
+        >
             <i class="fa-solid fa-box-open"></i>
             <span>Produtos</span>
         </a>
@@ -126,42 +208,83 @@
 
     </nav>
 
+
     <div class="sidebar-footer">
 
-        <strong>EMPIRE ERP</strong>
-        <span>Sistema de Gestão</span>
+        <strong>
+            EMPIRE ERP
+        </strong>
 
-        <button id="logoutButton" type="button">
+        <span>
+            Sistema de Gestão
+        </span>
+
+        <button
+            id="logoutButton"
+            type="button"
+        >
+
             <i class="fa-solid fa-right-from-bracket"></i>
+
             Sair do sistema
+
         </button>
 
     </div>
 
 </aside>
 
+
+<!-- =====================================================
+     CONTEÚDO
+===================================================== -->
+
 <main class="main-content">
+
+
+<!-- =====================================================
+     TOPBAR
+===================================================== -->
 
 <header class="topbar">
 
     <div>
-        <span class="overline">GESTÃO COMERCIAL</span>
 
-        <h1>Produtos</h1>
+        <span class="overline">
+            GESTÃO COMERCIAL
+        </span>
+
+        <h1>
+            Produtos
+        </h1>
 
         <p>
             Catálogo, estoque e valores comerciais.
         </p>
+
     </div>
+
 
     <div class="top-actions">
 
+
         <div class="clock">
+
             <i class="fa-solid fa-clock"></i>
-            <strong id="systemClock">00:00:00</strong>
+
+            <strong id="systemClock">
+                00:00:00
+            </strong>
+
         </div>
 
-        <div class="barcode-scanner" id="barcodeScannerBox">
+
+        <!-- LEITOR DE CÓDIGO -->
+
+        <div
+            class="barcode-scanner"
+            id="barcodeScannerBox"
+        >
 
             <i class="fa-solid fa-barcode"></i>
 
@@ -171,7 +294,6 @@
                 inputmode="numeric"
                 autocomplete="off"
                 placeholder="Bipar código..."
-                aria-label="Leitor de código de barras"
             >
 
             <button
@@ -179,127 +301,232 @@
                 type="button"
                 title="Abrir câmera"
             >
+
                 <i class="fa-solid fa-camera"></i>
+
             </button>
 
-            <span id="barcodeStatus">Pronto</span>
+            <span id="barcodeStatus">
+                Pronto
+            </span>
 
         </div>
+
 
         <button
             class="notification-button"
             id="notificationButton"
             type="button"
         >
+
             <i class="fa-solid fa-bell"></i>
-            <b id="notificationCount">0</b>
+
+            <b id="notificationCount">
+                0
+            </b>
+
         </button>
+
 
         <button
             class="gold-button"
             id="addProductButton"
             type="button"
         >
+
             <i class="fa-solid fa-plus"></i>
+
             Novo Produto
+
         </button>
 
     </div>
 
 </header>
 
+
+<!-- =====================================================
+     MÉTRICAS
+===================================================== -->
+
 <section class="metrics">
 
     <article class="metric">
+
         <div class="metric-icon">
             <i class="fa-solid fa-boxes-stacked"></i>
         </div>
 
         <div>
-            <span>Produtos cadastrados</span>
-            <strong id="totalProducts">0</strong>
+
+            <span>
+                Produtos cadastrados
+            </span>
+
+            <strong id="totalProducts">
+                0
+            </strong>
+
         </div>
+
     </article>
 
+
     <article class="metric">
+
         <div class="metric-icon">
             <i class="fa-solid fa-cubes"></i>
         </div>
 
         <div>
-            <span>Unidades em estoque</span>
-            <strong id="totalStock">0</strong>
+
+            <span>
+                Unidades em estoque
+            </span>
+
+            <strong id="totalStock">
+                0
+            </strong>
+
         </div>
+
     </article>
 
+
     <article class="metric">
+
         <div class="metric-icon">
             <i class="fa-solid fa-tags"></i>
         </div>
 
         <div>
-            <span>Categorias</span>
-            <strong id="totalCategories">0</strong>
+
+            <span>
+                Categorias
+            </span>
+
+            <strong id="totalCategories">
+                0
+            </strong>
+
         </div>
+
     </article>
 
+
     <article class="metric warning">
+
         <div class="metric-icon">
             <i class="fa-solid fa-triangle-exclamation"></i>
         </div>
 
         <div>
-            <span>Sem estoque</span>
-            <strong id="lowStock">0</strong>
+
+            <span>
+                Sem estoque
+            </span>
+
+            <strong id="lowStock">
+                0
+            </strong>
+
         </div>
+
     </article>
 
 </section>
 
+
+<!-- =====================================================
+     VALORES
+===================================================== -->
+
 <section class="financial-metrics">
 
     <article>
-        <span>VALOR DE VENDA EM ESTOQUE</span>
-        <strong id="stockValue">R$ 0,00</strong>
+
+        <span>
+            VALOR DE VENDA EM ESTOQUE
+        </span>
+
+        <strong id="stockValue">
+            R$ 0,00
+        </strong>
+
     </article>
 
-    <article>
-        <span>CUSTO EM ESTOQUE</span>
-        <strong id="costValue">R$ 0,00</strong>
-    </article>
 
     <article>
-        <span>MARGEM POTENCIAL</span>
-        <strong id="profitValue">R$ 0,00</strong>
+
+        <span>
+            CUSTO EM ESTOQUE
+        </span>
+
+        <strong id="costValue">
+            R$ 0,00
+        </strong>
+
     </article>
 
+
     <article>
-        <span>PRODUTOS ATIVOS</span>
+
+        <span>
+            MARGEM POTENCIAL
+        </span>
+
+        <strong id="profitValue">
+            R$ 0,00
+        </strong>
+
+    </article>
+
+
+    <article>
+
+        <span>
+            PRODUTOS ATIVOS
+        </span>
 
         <strong id="productCountLabel">
             0 produtos
         </strong>
 
         <div class="progress">
+
             <i id="stockProgress"></i>
+
         </div>
+
     </article>
 
 </section>
+
+
+<!-- =====================================================
+     PRODUTOS
+===================================================== -->
 
 <section class="product-panel">
 
     <div class="panel-header">
 
         <div>
-            <span class="overline">CATÁLOGO</span>
 
-            <h2>Produtos cadastrados</h2>
+            <span class="overline">
+                CATÁLOGO
+            </span>
+
+            <h2>
+                Produtos cadastrados
+            </h2>
 
             <small>
                 Gerencie seu catálogo comercial.
             </small>
+
         </div>
+
 
         <div class="filters">
 
@@ -315,20 +542,28 @@
 
             </label>
 
+
             <select id="categoryFilter">
-                <option value="">Todas categorias</option>
+
+                <option value="">
+                    Todas categorias
+                </option>
+
             </select>
 
         </div>
 
     </div>
 
+
     <div class="table-wrapper">
 
         <table>
 
             <thead>
+
                 <tr>
+
                     <th>Produto</th>
                     <th>Código</th>
                     <th>Tamanho</th>
@@ -338,13 +573,19 @@
                     <th>Custo</th>
                     <th>Estoque</th>
                     <th>Ações</th>
+
                 </tr>
+
             </thead>
 
             <tbody id="productsTable">
 
                 <tr>
-                    <td colspan="9" class="empty">
+
+                    <td
+                        colspan="9"
+                        class="empty"
+                    >
 
                         <i class="fa-solid fa-box-open"></i>
 
@@ -357,6 +598,7 @@
                         </span>
 
                     </td>
+
                 </tr>
 
             </tbody>
@@ -367,6 +609,11 @@
 
 </section>
 
+
+<!-- =====================================================
+     ANÁLISE
+===================================================== -->
+
 <section class="analytics-grid">
 
     <div class="chart-panel">
@@ -374,20 +621,39 @@
         <div class="panel-header">
 
             <div>
-                <span class="overline">ANÁLISE</span>
-                <h2>Estoque por categoria</h2>
+
+                <span class="overline">
+                    ANÁLISE
+                </span>
+
+                <h2>
+                    Estoque por categoria
+                </h2>
+
             </div>
 
             <div class="chart-total">
-                <span>Total</span>
-                <strong id="chartTotal">0 unidades</strong>
+
+                <span>
+                    Total
+                </span>
+
+                <strong id="chartTotal">
+                    0 unidades
+                </strong>
+
             </div>
 
         </div>
 
-        <div class="category-chart" id="categoryChart">
+
+        <div
+            class="category-chart"
+            id="categoryChart"
+        >
 
             <div class="empty">
+
                 <i class="fa-solid fa-chart-column"></i>
 
                 <strong>
@@ -397,15 +663,19 @@
                 <span>
                     Cadastre produtos para visualizar o estoque.
                 </span>
+
             </div>
 
         </div>
 
     </div>
 
+
     <div class="luxury-info">
 
-        <span class="overline">EMPIRE INSIGHT</span>
+        <span class="overline">
+            EMPIRE INSIGHT
+        </span>
 
         <h2>
             Gestão inteligente<br>
@@ -418,52 +688,92 @@
         </p>
 
         <div class="insight-line">
+
             <i class="fa-solid fa-barcode"></i>
-            <span>Leitura por código de barras</span>
+
+            <span>
+                Leitura por código de barras
+            </span>
+
         </div>
 
         <div class="insight-line">
+
             <i class="fa-solid fa-camera"></i>
-            <span>Scanner pela câmera</span>
+
+            <span>
+                Scanner pela câmera
+            </span>
+
         </div>
 
         <div class="insight-line">
+
             <i class="fa-solid fa-bolt"></i>
-            <span>BIP e pesquisa instantânea</span>
+
+            <span>
+                BIP e pesquisa instantânea
+            </span>
+
         </div>
 
     </div>
 
 </section>
 
+
+<!-- =====================================================
+     FOOTER
+===================================================== -->
+
 <footer class="main-footer">
 
     <div>
-        <strong>EMPIRE ERP</strong>
-        <span>Império da Moda Online</span>
+
+        <strong>
+            EMPIRE ERP
+        </strong>
+
+        <span>
+            Império da Moda Online
+        </span>
+
     </div>
 
     <div>
-        <span>Última atualização:</span>
-        <strong id="lastUpdate">Aguardando</strong>
+
+        <span>
+            Última atualização:
+        </span>
+
+        <strong id="lastUpdate">
+            Aguardando
+        </strong>
+
     </div>
 
 </footer>
 
 </main>
+
 </div>
 
 
-<!-- ======================================================
+<!-- =====================================================
      MODAL CÂMERA
-====================================================== -->
+===================================================== -->
 
-<div class="camera-modal modal" id="cameraScannerModal">
+<div
+    class="modal camera-modal"
+    id="cameraScannerModal"
+    aria-hidden="true"
+>
 
     <div
         class="modal-overlay"
         id="closeCameraScannerOverlay"
     ></div>
+
 
     <div class="modal-card camera-scanner-card">
 
@@ -471,9 +781,13 @@
             class="close-modal"
             id="closeCameraScanner"
             type="button"
+            aria-label="Fechar câmera"
         >
+
             <i class="fa-solid fa-xmark"></i>
+
         </button>
+
 
         <div class="modal-header">
 
@@ -491,6 +805,7 @@
 
         </div>
 
+
         <div class="camera-reader">
 
             <video
@@ -499,6 +814,7 @@
                 muted
                 playsinline
             ></video>
+
 
             <div class="camera-frame">
 
@@ -511,25 +827,30 @@
 
             </div>
 
+
             <div
                 class="camera-loading"
                 id="cameraLoading"
             >
+
                 <i class="fa-solid fa-camera"></i>
 
                 <span>
-                    Iniciando câmera...
+                    Preparando câmera...
                 </span>
+
             </div>
 
         </div>
+
 
         <div
             class="camera-status"
             id="cameraStatus"
         >
-            Preparando leitor...
+            Clique em iniciar câmera para começar.
         </div>
+
 
         <div class="camera-actions">
 
@@ -538,17 +859,37 @@
                 id="toggleFlash"
                 type="button"
             >
+
                 <i class="fa-solid fa-bolt"></i>
+
                 Lanterna
+
             </button>
+
+
+            <button
+                class="gold-button"
+                id="startCameraButton"
+                type="button"
+            >
+
+                <i class="fa-solid fa-camera"></i>
+
+                Iniciar câmera
+
+            </button>
+
 
             <button
                 class="cancel-button"
                 id="closeCameraButton"
                 type="button"
             >
+
                 <i class="fa-solid fa-xmark"></i>
+
                 Fechar
+
             </button>
 
         </div>
@@ -558,16 +899,20 @@
 </div>
 
 
-<!-- ======================================================
+<!-- =====================================================
      MODAL PRODUTO
-====================================================== -->
+===================================================== -->
 
-<div class="modal" id="productModal">
+<div
+    class="modal"
+    id="productModal"
+>
 
     <div
         class="modal-overlay"
         data-close-modal
     ></div>
+
 
     <div class="modal-card">
 
@@ -576,8 +921,11 @@
             id="closeModal"
             type="button"
         >
+
             <i class="fa-solid fa-xmark"></i>
+
         </button>
+
 
         <div class="modal-header">
 
@@ -598,9 +946,14 @@
 
         </div>
 
+
         <form id="productForm">
 
-            <input type="hidden" id="productId">
+            <input
+                type="hidden"
+                id="productId"
+            >
+
 
             <div class="form-grid">
 
@@ -625,12 +978,15 @@
                             id="focusBarcode"
                             type="button"
                         >
+
                             <i class="fa-solid fa-barcode"></i>
+
                         </button>
 
                     </div>
 
                 </div>
+
 
                 <div class="form-group">
 
@@ -646,6 +1002,7 @@
 
                 </div>
 
+
                 <div class="form-group">
 
                     <label for="productName">
@@ -655,11 +1012,11 @@
                     <input
                         id="productName"
                         type="text"
-                        placeholder="Ex.: Conjunto Premium"
                         required
                     >
 
                 </div>
+
 
                 <div class="form-group">
 
@@ -670,11 +1027,11 @@
                     <input
                         id="productSize"
                         type="text"
-                        placeholder="P, M, G, GG ou 38"
                         required
                     >
 
                 </div>
+
 
                 <div class="form-group">
 
@@ -685,11 +1042,11 @@
                     <input
                         id="productColor"
                         type="text"
-                        placeholder="Ex.: Preto"
                         required
                     >
 
                 </div>
+
 
                 <div class="form-group">
 
@@ -700,11 +1057,11 @@
                     <input
                         id="productCategory"
                         type="text"
-                        placeholder="Ex.: Conjuntos"
                         required
                     >
 
                 </div>
+
 
                 <div class="form-group">
 
@@ -722,6 +1079,7 @@
 
                 </div>
 
+
                 <div class="form-group">
 
                     <label for="stockPrice">
@@ -737,6 +1095,7 @@
                     >
 
                 </div>
+
 
                 <div class="form-group">
 
@@ -754,6 +1113,7 @@
 
                 </div>
 
+
                 <div class="form-group">
 
                     <label for="productImage">
@@ -768,6 +1128,7 @@
 
                 </div>
 
+
                 <div class="form-group full">
 
                     <label>
@@ -778,18 +1139,25 @@
                         class="image-preview"
                         id="imagePreview"
                     >
+
                         <i class="fa-solid fa-image"></i>
-                        <span>Prévia da imagem</span>
+
+                        <span>
+                            Prévia da imagem
+                        </span>
+
                     </div>
 
                 </div>
 
             </div>
 
+
             <div
                 class="form-message"
                 id="formMessage"
             ></div>
+
 
             <div class="modal-actions">
 
@@ -801,12 +1169,16 @@
                     Cancelar
                 </button>
 
+
                 <button
                     class="gold-button"
                     type="submit"
                 >
+
                     <i class="fa-solid fa-check"></i>
+
                     Salvar Produto
+
                 </button>
 
             </div>
@@ -814,19 +1186,24 @@
         </form>
 
     </div>
+
 </div>
 
 
-<!-- ======================================================
+<!-- =====================================================
      MODAL VISUALIZAÇÃO
-====================================================== -->
+===================================================== -->
 
-<div class="modal" id="viewModal">
+<div
+    class="modal"
+    id="viewModal"
+>
 
     <div
         class="modal-overlay"
         data-close-view
     ></div>
+
 
     <div class="modal-card view-card">
 
@@ -835,12 +1212,21 @@
             id="closeViewModal"
             type="button"
         >
+
             <i class="fa-solid fa-xmark"></i>
+
         </button>
 
-        <div class="view-image" id="viewImage">
+
+        <div
+            class="view-image"
+            id="viewImage"
+        >
+
             <i class="fa-solid fa-box-open"></i>
+
         </div>
+
 
         <div class="view-content">
 
@@ -851,11 +1237,14 @@
                 PRODUTO
             </span>
 
-            <h2 id="viewName">Produto</h2>
+            <h2 id="viewName">
+                Produto
+            </h2>
 
             <p id="viewDescription">
                 Informações comerciais e de estoque.
             </p>
+
 
             <div class="view-grid">
 
@@ -909,12 +1298,13 @@
         </div>
 
     </div>
+
 </div>
 
 
-<!-- ======================================================
+<!-- =====================================================
      NOTIFICAÇÕES
-====================================================== -->
+===================================================== -->
 
 <div
     class="notification-panel"
@@ -923,16 +1313,21 @@
 
     <div class="notification-header">
 
-        <h3>Notificações</h3>
+        <h3>
+            Notificações
+        </h3>
 
         <button
             id="closeNotifications"
             type="button"
         >
+
             <i class="fa-solid fa-xmark"></i>
+
         </button>
 
     </div>
+
 
     <div id="notificationList">
 
@@ -945,19 +1340,27 @@
 </div>
 
 
+<!-- =====================================================
+     TOAST
+===================================================== -->
+
 <div
     class="toast-container"
     id="toastContainer"
 ></div>
 
 
-<!-- ======================================================
+<!-- =====================================================
      SCRIPTS
-====================================================== -->
+===================================================== -->
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script
+    src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
+></script>
 
-<script src="https://unpkg.com/@zxing/browser@0.1.5/umd/index.min.js"></script>
+<script
+    src="https://unpkg.com/@zxing/browser@0.1.5/umd/index.min.js"
+></script>
 
 <script src="../../assets/js/supabase.js"></script>
 
