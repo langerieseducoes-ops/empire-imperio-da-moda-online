@@ -27,7 +27,10 @@
         href="../../assets/img/favicon.png"
     >
 
-    <!-- GOOGLE FONTS -->
+    <!-- =====================================================
+         FONTES
+    ====================================================== -->
+
     <link
         rel="preconnect"
         href="https://fonts.googleapis.com"
@@ -44,19 +47,24 @@
         rel="stylesheet"
     >
 
-    <!-- FONT AWESOME -->
+    <!-- =====================================================
+         FONT AWESOME
+    ====================================================== -->
+
     <link
         rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
     >
 
-    <!-- CSS PRODUTOS -->
+    <!-- =====================================================
+         CSS
+    ====================================================== -->
+
     <link
         rel="stylesheet"
         href="../../assets/css/produtos.css"
     >
 
-    <!-- CSS CÂMERA -->
     <link
         rel="stylesheet"
         href="../../assets/css/camera.css"
@@ -70,23 +78,27 @@
 
 <!-- =====================================================
      LOADER
-===================================================== -->
+====================================================== -->
 
 <div
     class="products-loader"
     id="productsLoader"
 >
 
-    <div class="loader-logo">
-        EMPIRE
-    </div>
+    <div class="loader-content">
 
-    <div class="loader-subtitle">
-        Império da Moda Online
-    </div>
+        <div class="loader-logo">
+            EMPIRE
+        </div>
 
-    <div class="loader-line">
-        <span></span>
+        <div class="loader-subtitle">
+            Império da Moda Online
+        </div>
+
+        <div class="loader-line">
+            <span></span>
+        </div>
+
     </div>
 
 </div>
@@ -94,7 +106,7 @@
 
 <!-- =====================================================
      FUNDO
-===================================================== -->
+====================================================== -->
 
 <div class="luxury-background">
 
@@ -107,7 +119,7 @@
 
 <!-- =====================================================
      LAYOUT
-===================================================== -->
+====================================================== -->
 
 <div class="products-layout">
 
@@ -150,6 +162,7 @@
             <img
                 src="../../assets/img/avatar.png"
                 alt="Usuário"
+                onerror="this.style.display='none'"
             >
 
             <div>
@@ -299,10 +312,11 @@
 
             </a>
 
+
         </nav>
 
 
-        <!-- RODAPÉ SIDEBAR -->
+        <!-- RODAPÉ -->
 
         <div class="sidebar-footer">
 
@@ -313,7 +327,6 @@
             <span>
                 Sistema de Gestão
             </span>
-
 
             <button
                 id="logoutButton"
@@ -328,11 +341,12 @@
 
         </div>
 
+
     </aside>
 
 
     <!-- =================================================
-         CONTEÚDO
+         CONTEÚDO PRINCIPAL
     ================================================== -->
 
     <main class="main-content">
@@ -345,7 +359,7 @@
         <header class="topbar">
 
 
-            <div>
+            <div class="page-heading">
 
                 <span class="overline">
                     GESTÃO COMERCIAL
@@ -378,7 +392,7 @@
                 </div>
 
 
-                <!-- LEITOR -->
+                <!-- LEITOR RÁPIDO -->
 
                 <div
                     class="barcode-scanner"
@@ -387,28 +401,25 @@
 
                     <i class="fa-solid fa-barcode"></i>
 
-
                     <input
                         id="barcodeScanner"
                         type="text"
                         inputmode="numeric"
                         autocomplete="off"
                         placeholder="Bipar código..."
-                        aria-label="Leitor de código de barras"
+                        aria-label="Bipar código de barras"
                     >
-
 
                     <button
                         id="openCameraScanner"
                         type="button"
-                        title="Ler código pela câmera"
-                        aria-label="Abrir câmera"
+                        title="Ler código de barras pela câmera"
+                        aria-label="Ler código de barras pela câmera"
                     >
 
                         <i class="fa-solid fa-camera"></i>
 
                     </button>
-
 
                     <span id="barcodeStatus">
                         Pronto
@@ -449,7 +460,9 @@
 
                 </button>
 
+
             </div>
+
 
         </header>
 
@@ -552,6 +565,7 @@
 
             </article>
 
+
         </section>
 
 
@@ -619,15 +633,18 @@
 
             </article>
 
+
         </section>
 
 
         <!-- =================================================
-             PRODUTOS
+             PAINEL DE PRODUTOS
         ================================================== -->
 
         <section class="product-panel">
 
+
+            <!-- CABEÇALHO -->
 
             <div class="panel-header">
 
@@ -648,6 +665,8 @@
 
                 </div>
 
+
+                <!-- FILTROS -->
 
                 <div class="filters">
 
@@ -674,15 +693,20 @@
 
                     </select>
 
+
                 </div>
+
 
             </div>
 
+
+            <!-- TABELA -->
 
             <div class="table-wrapper">
 
 
                 <table>
+
 
                     <thead>
 
@@ -754,9 +778,12 @@
 
                     </tbody>
 
+
                 </table>
 
+
             </div>
+
 
         </section>
 
@@ -772,6 +799,7 @@
 
 
                 <div class="panel-header">
+
 
                     <div>
 
@@ -798,6 +826,7 @@
 
                     </div>
 
+
                 </div>
 
 
@@ -822,6 +851,7 @@
 
                 </div>
 
+
             </div>
 
 
@@ -829,14 +859,17 @@
 
             <div class="luxury-info">
 
+
                 <span class="overline">
                     EMPIRE INSIGHT
                 </span>
+
 
                 <h2>
                     Gestão inteligente<br>
                     do seu catálogo.
                 </h2>
+
 
                 <p>
                     Controle produtos, códigos,
@@ -876,7 +909,9 @@
 
                 </div>
 
+
             </div>
+
 
         </section>
 
@@ -886,6 +921,7 @@
         ================================================== -->
 
         <footer class="main-footer">
+
 
             <div>
 
@@ -912,17 +948,19 @@
 
             </div>
 
+
         </footer>
 
 
     </main>
 
+
 </div>
 
 
 <!-- =====================================================
-     MODAL CÂMERA
-===================================================== -->
+     MODAL — LEITOR DE CÓDIGO DE BARRAS
+====================================================== -->
 
 <div
     class="modal camera-modal"
@@ -931,11 +969,15 @@
 >
 
 
+    <!-- OVERLAY -->
+
     <div
         class="modal-overlay"
         id="closeCameraScannerOverlay"
     ></div>
 
+
+    <!-- CARD -->
 
     <div
         class="modal-card camera-scanner-card"
@@ -963,22 +1005,29 @@
 
         <div class="modal-header">
 
+
             <span class="overline">
                 LEITOR ÓPTICO
             </span>
+
 
             <h2 id="cameraModalTitle">
                 Ler código de barras
             </h2>
 
+
             <p>
-                Aponte a câmera para o código de barras.
+                Aponte a câmera para o código de barras
+                do produto.
             </p>
+
 
         </div>
 
 
-        <!-- LEITOR -->
+        <!-- =================================================
+             CÂMERA
+        ================================================== -->
 
         <div class="camera-reader">
 
@@ -996,6 +1045,7 @@
 
             <div class="camera-frame">
 
+
                 <span class="corner top-left"></span>
 
                 <span class="corner top-right"></span>
@@ -1004,7 +1054,9 @@
 
                 <span class="corner bottom-right"></span>
 
+
                 <div class="scan-line"></div>
+
 
             </div>
 
@@ -1041,6 +1093,25 @@
         </div>
 
 
+        <!-- RESULTADO -->
+
+        <div
+            class="camera-result"
+            id="cameraResult"
+            hidden
+        >
+
+            <span>
+                Código detectado
+            </span>
+
+            <strong id="cameraBarcodeResult">
+                —
+            </strong>
+
+        </div>
+
+
         <!-- AÇÕES -->
 
         <div class="camera-actions">
@@ -1071,17 +1142,19 @@
 
             </button>
 
+
         </div>
 
 
     </div>
 
+
 </div>
 
 
 <!-- =====================================================
-     MODAL PRODUTO
-===================================================== -->
+     MODAL — PRODUTO
+====================================================== -->
 
 <div
     class="modal"
@@ -1097,18 +1170,20 @@
 
 
     <div
-        class="modal-card"
+        class="modal-card product-form-card"
         role="dialog"
         aria-modal="true"
         aria-labelledby="modalTitle"
     >
 
 
+        <!-- FECHAR -->
+
         <button
             class="close-modal"
             id="closeModal"
             type="button"
-            aria-label="Fechar"
+            aria-label="Fechar cadastro"
         >
 
             <i class="fa-solid fa-xmark"></i>
@@ -1116,7 +1191,10 @@
         </button>
 
 
+        <!-- CABEÇALHO -->
+
         <div class="modal-header">
+
 
             <span
                 class="overline"
@@ -1125,202 +1203,334 @@
                 NOVO CADASTRO
             </span>
 
+
             <h2 id="modalTitle">
                 Adicionar produto
             </h2>
+
 
             <p>
                 Cadastre as informações comerciais do produto.
             </p>
 
+
         </div>
 
 
-        <form id="productForm">
+        <!-- =================================================
+             FORMULÁRIO
+        ================================================== -->
 
+        <form
+            id="productForm"
+            autocomplete="off"
+        >
+
+
+            <!-- ID -->
 
             <input
                 type="hidden"
                 id="productId"
+                name="productId"
             >
 
 
             <div class="form-grid">
 
 
-                <!-- CÓDIGO -->
+                <!-- =================================================
+                     CÓDIGO DE BARRAS
+                ================================================== -->
 
-                <div class="form-group">
+                <div class="form-group barcode-form-group">
+
 
                     <label for="productBarcode">
+
+                        <i class="fa-solid fa-barcode"></i>
+
                         Código de barras
+
                     </label>
 
-                    <div class="input-with-button">
 
-                        <input
-                            id="productBarcode"
-                            type="text"
-                            inputmode="numeric"
-                            maxlength="32"
-                            placeholder="Ex.: 7891234567890"
-                            autocomplete="off"
-                        >
+                    <div class="barcode-input-area">
+
+
+                        <div class="input-with-button">
+
+
+                            <input
+                                id="productBarcode"
+                                name="barcode"
+                                type="text"
+                                inputmode="numeric"
+                                maxlength="32"
+                                placeholder="Digite ou leia o código..."
+                                autocomplete="off"
+                            >
+
+
+                            <button
+                                id="focusBarcode"
+                                type="button"
+                                title="Focar código de barras"
+                                aria-label="Focar código de barras"
+                            >
+
+                                <i class="fa-solid fa-barcode"></i>
+
+                            </button>
+
+
+                        </div>
+
+
+                        <!-- BOTÃO PRINCIPAL DA CÂMERA -->
 
                         <button
-                            id="focusBarcode"
+                            id="openProductBarcodeCamera"
+                            class="barcode-camera-button"
                             type="button"
-                            title="Focar código"
                         >
 
-                            <i class="fa-solid fa-barcode"></i>
+                            <i class="fa-solid fa-camera"></i>
+
+                            <span>
+                                Ler código de barras
+                            </span>
 
                         </button>
 
+
                     </div>
+
+
+                    <small class="field-hint">
+
+                        Use o leitor físico ou abra a câmera
+                        para escanear o código.
+
+                    </small>
+
 
                 </div>
 
 
-                <!-- SKU -->
+                <!-- =================================================
+                     SKU
+                ================================================== -->
 
                 <div class="form-group">
+
 
                     <label for="productSku">
                         SKU
                     </label>
 
+
                     <input
                         id="productSku"
+                        name="sku"
                         type="text"
+                        maxlength="80"
                         placeholder="Ex.: CONJ-PRETO-M"
                     >
+
 
                 </div>
 
 
-                <!-- NOME -->
+                <!-- =================================================
+                     NOME
+                ================================================== -->
 
                 <div class="form-group">
+
 
                     <label for="productName">
                         Nome do produto
                     </label>
 
+
                     <input
                         id="productName"
+                        name="name"
                         type="text"
+                        maxlength="150"
                         placeholder="Ex.: Conjunto Premium"
                         required
                     >
 
+
                 </div>
 
 
-                <!-- TAMANHO -->
+                <!-- =================================================
+                     TAMANHO
+                ================================================== -->
 
                 <div class="form-group">
+
 
                     <label for="productSize">
                         Tamanho
                     </label>
 
+
                     <input
                         id="productSize"
+                        name="size"
                         type="text"
+                        maxlength="30"
                         placeholder="P, M, G, GG ou 38"
                         required
                     >
 
+
                 </div>
 
 
-                <!-- COR -->
+                <!-- =================================================
+                     COR
+                ================================================== -->
 
                 <div class="form-group">
+
 
                     <label for="productColor">
                         Cor
                     </label>
 
+
                     <input
                         id="productColor"
+                        name="color"
                         type="text"
+                        maxlength="50"
                         placeholder="Ex.: Preto"
                         required
                     >
 
+
                 </div>
 
 
-                <!-- CATEGORIA -->
+                <!-- =================================================
+                     CATEGORIA
+                ================================================== -->
 
                 <div class="form-group">
+
 
                     <label for="productCategory">
                         Categoria
                     </label>
 
+
                     <input
                         id="productCategory"
+                        name="category"
                         type="text"
+                        maxlength="80"
                         placeholder="Ex.: Conjuntos"
                         required
                     >
 
+
                 </div>
 
 
-                <!-- VENDA -->
+                <!-- =================================================
+                     PREÇO DE VENDA
+                ================================================== -->
 
                 <div class="form-group">
+
 
                     <label for="salePrice">
                         Preço de venda
                     </label>
 
-                    <input
-                        id="salePrice"
-                        type="number"
-                        min="0"
-                        step="0.01"
-                        placeholder="0,00"
-                        required
-                    >
+
+                    <div class="money-input">
+
+
+                        <span>
+                            R$
+                        </span>
+
+
+                        <input
+                            id="salePrice"
+                            name="salePrice"
+                            type="number"
+                            min="0"
+                            step="0.01"
+                            placeholder="0,00"
+                            required
+                        >
+
+
+                    </div>
+
 
                 </div>
 
 
-                <!-- CUSTO -->
+                <!-- =================================================
+                     PREÇO DE CUSTO
+                ================================================== -->
 
                 <div class="form-group">
+
 
                     <label for="stockPrice">
                         Preço de custo
                     </label>
 
-                    <input
-                        id="stockPrice"
-                        type="number"
-                        min="0"
-                        step="0.01"
-                        placeholder="0,00"
-                        required
-                    >
+
+                    <div class="money-input">
+
+
+                        <span>
+                            R$
+                        </span>
+
+
+                        <input
+                            id="stockPrice"
+                            name="costPrice"
+                            type="number"
+                            min="0"
+                            step="0.01"
+                            placeholder="0,00"
+                            required
+                        >
+
+
+                    </div>
+
 
                 </div>
 
 
-                <!-- QUANTIDADE -->
+                <!-- =================================================
+                     QUANTIDADE
+                ================================================== -->
 
                 <div class="form-group">
+
 
                     <label for="productQuantity">
                         Quantidade em estoque
                     </label>
 
+
                     <input
                         id="productQuantity"
+                        name="quantity"
                         type="number"
                         min="0"
                         step="1"
@@ -1328,61 +1538,106 @@
                         required
                     >
 
+
                 </div>
 
 
-                <!-- IMAGEM -->
+                <!-- =================================================
+                     IMAGEM
+                ================================================== -->
 
                 <div class="form-group">
 
+
                     <label for="productImage">
+
+                        <i class="fa-solid fa-image"></i>
+
                         Imagem do produto
+
                     </label>
+
 
                     <input
                         id="productImage"
+                        name="image"
                         type="file"
-                        accept="image/*"
+                        accept="image/jpeg,image/png,image/webp,image/gif"
                     >
+
+
+                    <small class="field-hint">
+                        JPG, PNG ou WEBP.
+                    </small>
+
 
                 </div>
 
 
-                <!-- PREVIEW -->
+                <!-- =================================================
+                     PREVIEW PEQUENO
+                ================================================== -->
 
                 <div class="form-group full">
+
 
                     <label>
                         Pré-visualização
                     </label>
+
 
                     <div
                         class="image-preview"
                         id="imagePreview"
                     >
 
-                        <i class="fa-solid fa-image"></i>
 
-                        <span>
-                            Prévia da imagem
-                        </span>
+                        <div class="image-preview-empty">
+
+
+                            <i class="fa-solid fa-image"></i>
+
+
+                            <span>
+                                Prévia da imagem
+                            </span>
+
+
+                        </div>
+
+
+                        <img
+                            id="productImagePreview"
+                            src="../../assets/img/produto-sem-imagem.jpg"
+                            alt="Prévia do produto"
+                            hidden
+                        >
+
 
                     </div>
 
+
                 </div>
+
 
             </div>
 
 
-            <!-- MENSAGEM -->
+            <!-- =================================================
+                 MENSAGEM
+            ================================================== -->
 
             <div
                 class="form-message"
                 id="formMessage"
+                role="alert"
+                aria-live="polite"
             ></div>
 
 
-            <!-- AÇÕES -->
+            <!-- =================================================
+                 AÇÕES
+            ================================================== -->
 
             <div class="modal-actions">
 
@@ -1393,6 +1648,8 @@
                     type="button"
                 >
 
+                    <i class="fa-solid fa-xmark"></i>
+
                     Cancelar
 
                 </button>
@@ -1400,6 +1657,7 @@
 
                 <button
                     class="gold-button"
+                    id="saveProductButton"
                     type="submit"
                 >
 
@@ -1409,18 +1667,22 @@
 
                 </button>
 
+
             </div>
+
 
         </form>
 
+
     </div>
+
 
 </div>
 
 
 <!-- =====================================================
-     MODAL VISUALIZAÇÃO
-===================================================== -->
+     MODAL — VISUALIZAÇÃO
+====================================================== -->
 
 <div
     class="modal"
@@ -1454,15 +1716,26 @@
         </button>
 
 
+        <!-- IMAGEM PEQUENA -->
+
         <div
             class="view-image"
             id="viewImage"
         >
 
+            <img
+                id="viewProductImage"
+                src="../../assets/img/produto-sem-imagem.jpg"
+                alt="Produto"
+                hidden
+            >
+
             <i class="fa-solid fa-box-open"></i>
 
         </div>
 
+
+        <!-- CONTEÚDO -->
 
         <div class="view-content">
 
@@ -1604,18 +1877,22 @@
 
                 </div>
 
+
             </div>
+
 
         </div>
 
+
     </div>
+
 
 </div>
 
 
 <!-- =====================================================
      NOTIFICAÇÕES
-===================================================== -->
+====================================================== -->
 
 <div
     class="notification-panel"
@@ -1625,9 +1902,11 @@
 
     <div class="notification-header">
 
+
         <h3>
             Notificações
         </h3>
+
 
         <button
             id="closeNotifications"
@@ -1639,10 +1918,12 @@
 
         </button>
 
+
     </div>
 
 
     <div id="notificationList">
+
 
         <div class="notification-empty">
 
@@ -1650,14 +1931,16 @@
 
         </div>
 
+
     </div>
+
 
 </div>
 
 
 <!-- =====================================================
-     TOASTS
-===================================================== -->
+     TOAST
+====================================================== -->
 
 <div
     class="toast-container"
@@ -1666,23 +1949,45 @@
 
 
 <!-- =====================================================
-     JAVASCRIPT
-===================================================== -->
+     SCRIPTS
+====================================================== -->
 
 <!-- SUPABASE -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-<!-- ZXING -->
-<script src="https://unpkg.com/@zxing/browser@0.1.5/umd/zxing-browser.min.js"></script>
+<script
+    src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
+></script>
+
+
+<!-- ZXING
+     Leitor de códigos de barras pela câmera
+-->
+
+<script
+    src="https://unpkg.com/@zxing/browser@0.1.5/umd/zxing-browser.min.js"
+></script>
+
 
 <!-- CLIENTE SUPABASE -->
-<script src="../../assets/js/supabase.js"></script>
+
+<script
+    src="../../assets/js/supabase.js"
+></script>
+
 
 <!-- CÂMERA -->
-<script src="../../assets/js/camera.js"></script>
+
+<script
+    src="../../assets/js/camera.js"
+></script>
+
 
 <!-- PRODUTOS -->
-<script src="../../assets/js/produtos.js"></script>
+
+<script
+    src="../../assets/js/produtos.js"
+></script>
+
 
 </body>
 
