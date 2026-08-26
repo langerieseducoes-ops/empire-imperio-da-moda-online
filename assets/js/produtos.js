@@ -2,22 +2,22 @@
    EMPIRE ERP
    PRODUTOS.JS
    Gestão completa de produtos
-   Supabase + Storage + Código de barras + Câmera ZXing
+   Compatível com produtos.html atual
    ========================================================= */
 
 (() => {
-
     "use strict";
 
     /* =====================================================
-       PROTEÇÃO CONTRA DUPLA INICIALIZAÇÃO
+       PROTEÇÃO CONTRA DUPLA EXECUÇÃO
     ===================================================== */
 
-    if (window.EMPIRE_PRODUCTS_STARTED) {
+    if (window.EMPIRE_PRODUTOS_STARTED) {
+        console.warn("[EMPIRE] produtos.js já foi iniciado.");
         return;
     }
 
-    window.EMPIRE_PRODUCTS_STARTED = true;
+    window.EMPIRE_PRODUTOS_STARTED = true;
 
 
     /* =====================================================
@@ -25,32 +25,24 @@
     ===================================================== */
 
     const CONFIG = {
+        tabela: "produtos",
+        bucket: "produtos",
 
-        TABLE: "produtos",
+        estoque: {
+            baixo: 5,
+            medio: 15
+        },
 
-        BUCKET: "produtos",
+        imagemPadrao: "../../assets/img/produto-sem-imagem.jpg",
 
-        IMAGE_FOLDER: "produtos",
+        extensoesPermitidas: [
+            "image/jpeg",
+            "image/png",
+            "image/webp",
+            "image/gif"
+        ],
 
-        CAMERA_DELAY: 250,
-
-        SEARCH_DELAY: 180,
-
-        MAX_IMAGE_SIZE: 8 * 1024 * 1024,
-
-        /* -------------------------------------------------
-           NÍVEIS DE ESTOQUE
-
-           0              = vermelho
-           1 até 5        = vermelho
-           6 até 15       = amarelo
-           acima de 15    = verde
-        ------------------------------------------------- */
-
-        STOCK_LOW: 5,
-
-        STOCK_MEDIUM: 15
-
+        maxImagemMB: 5
     };
 
 
@@ -59,153 +51,142 @@
     ===================================================== */
 
     const state = {
+        produtos: [],
+        filtrados: [],
 
-        products: [],
+        produtoEditando: null,
 
-        filteredProducts: [],
+        imagemAtual: null,
+        novaImagem: null,
+        previewUrl: null,
 
-        editingProduct: null,
-
-        selectedImageFile: null,
-
-        selectedImagePreviewUrl: null,
-
-        currentViewProduct: null,
-
+        cameraAberta: false,
         cameraReader: null,
-
         cameraStream: null,
-
         cameraControls: null,
+        cameraTarget: "form",
 
-        cameraRunning: false,
+        flashLigado: false,
 
-        cameraFlashSupported: false,
+        carregando: false,
+        salvando: false,
 
-        cameraFlashEnabled: false,
+        initialized: false,
 
-        cameraTarget: "product",
-
-        searchTimer: null,
-
-        loading: false,
-
-        saving: false,
-
-        deleting: false,
-
-        initialized: false
-
+        searchTimer: null
     };
 
 
     /* =====================================================
-       ELEMENTOS
+       DOM
     ===================================================== */
 
     const $ = (id) => document.getElementById(id);
 
-    const elements = {};
+    const DOM = {};
 
 
-    function cacheElements() {
+    function cacheDOM() {
 
-        const ids = [
+        DOM.loader = $("productsLoader");
 
-            "productsLoader",
-            "profileName",
-            "systemClock",
-            "barcodeScanner",
-            "barcodeScannerBox",
-            "barcodeStatus",
+        DOM.profileName = $("profileName");
+        DOM.logoutButton = $("logoutButton");
 
-            "notificationButton",
-            "notificationCount",
-            "notificationPanel",
-            "closeNotifications",
-            "notificationList",
+        DOM.systemClock = $("systemClock");
 
-            "addProductButton",
+        DOM.barcodeScanner = $("barcodeScanner");
+        DOM.barcodeStatus = $("barcodeStatus");
+        DOM.openCameraScanner = $("openCameraScanner");
 
-            "totalProducts",
-            "totalStock",
-            "totalCategories",
-            "lowStock",
+        DOM.notificationButton = $("notificationButton");
+        DOM.notificationCount = $("notificationCount");
+        DOM.notificationPanel = $("notificationPanel");
+        DOM.closeNotifications = $("closeNotifications");
+        DOM.notificationList = $("notificationList");
 
-            "stockValue",
-            "costValue",
-            "profitValue",
-            "productCountLabel",
-            "stockProgress",
+        DOM.addProductButton = $("addProductButton");
 
-            "productSearch",
-            "categoryFilter",
-            "productsTable",
+        DOM.totalProducts = $("totalProducts");
+        DOM.totalStock = $("totalStock");
+        DOM.totalCategories = $("totalCategories");
+        DOM.lowStock = $("lowStock");
 
-            "chartTotal",
-            "categoryChart",
+        DOM.stockValue = $("stockValue");
+        DOM.costValue = $("costValue");
+        DOM.profitValue = $("profitValue");
+        DOM.productCountLabel = $("productCountLabel");
+        DOM.stockProgress = $("stockProgress");
 
-            "lastUpdate",
+        DOM.productSearch = $("productSearch");
+        DOM.categoryFilter = $("categoryFilter");
 
-            "cameraScannerModal",
-            "barcodeCamera",
-            "cameraLoading",
-            "cameraStatus",
-            "openCameraScanner",
-            "openProductCamera",
-            "closeCameraScanner",
-            "closeCameraButton",
-            "closeCameraScannerOverlay",
-            "toggleFlash",
+        DOM.productsTable = $("productsTable");
 
-            "productModal",
-            "closeModal",
-            "cancelProduct",
-            "productForm",
+        DOM.categoryChart = $("categoryChart");
+        DOM.chartTotal = $("chartTotal");
 
-            "productId",
-            "productBarcode",
-            "focusBarcode",
-            "productSku",
-            "productName",
-            "productSize",
-            "productColor",
-            "productCategory",
-            "salePrice",
-            "stockPrice",
-            "productQuantity",
-            "productImage",
-            "imagePreview",
-            "formMessage",
-            "saveProductButton",
+        DOM.lastUpdate = $("lastUpdate");
 
-            "viewModal",
-            "closeViewModal",
-            "viewImage",
-            "viewCategory",
-            "viewName",
-            "viewDescription",
-            "viewBarcode",
-            "viewSku",
-            "viewSize",
-            "viewColor",
-            "viewCategoryText",
-            "viewSale",
-            "viewCost",
-            "viewStock",
-            "viewStatus",
+        /* CAMERA */
 
-            "toastContainer",
-            "logoutButton"
+        DOM.cameraModal = $("cameraScannerModal");
+        DOM.cameraVideo = $("barcodeCamera");
+        DOM.cameraLoading = $("cameraLoading");
+        DOM.cameraStatus = $("cameraStatus");
 
-        ];
+        DOM.closeCameraScanner = $("closeCameraScanner");
+        DOM.closeCameraScannerOverlay = $("closeCameraScannerOverlay");
+        DOM.closeCameraButton = $("closeCameraButton");
+        DOM.toggleFlash = $("toggleFlash");
 
-        ids.forEach(id => {
+        /* PRODUCT MODAL */
 
-            elements[id] = $(id);
+        DOM.productModal = $("productModal");
+        DOM.closeModal = $("closeModal");
+        DOM.cancelProduct = $("cancelProduct");
 
-        });
+        DOM.productForm = $("productForm");
 
+        DOM.productId = $("productId");
+        DOM.productBarcode = $("productBarcode");
+        DOM.productSku = $("productSku");
+        DOM.productName = $("productName");
+        DOM.productSize = $("productSize");
+        DOM.productColor = $("productColor");
+        DOM.productCategory = $("productCategory");
+        DOM.salePrice = $("salePrice");
+        DOM.stockPrice = $("stockPrice");
+        DOM.productQuantity = $("productQuantity");
+        DOM.productImage = $("productImage");
+        DOM.imagePreview = $("imagePreview");
+
+        DOM.focusBarcode = $("focusBarcode");
+        DOM.openProductCamera = $("openProductCamera");
+
+        DOM.formMessage = $("formMessage");
+        DOM.saveProductButton = $("saveProductButton");
+
+        /* VIEW */
+
+        DOM.viewModal = $("viewModal");
+        DOM.closeViewModal = $("closeViewModal");
+
+        DOM.viewImage = $("viewImage");
+        DOM.viewCategory = $("viewCategory");
+        DOM.viewName = $("viewName");
+        DOM.viewDescription = $("viewDescription");
+        DOM.viewBarcode = $("viewBarcode");
+        DOM.viewSku = $("viewSku");
+        DOM.viewSize = $("viewSize");
+        DOM.viewColor = $("viewColor");
+        DOM.viewCategoryText = $("viewCategoryText");
+        DOM.viewSale = $("viewSale");
+        DOM.viewCost = $("viewCost");
+        DOM.viewStock = $("viewStock");
+        DOM.viewStatus = $("viewStatus");
+
+        DOM.toastContainer = $("toastContainer");
     }
 
 
@@ -219,26 +200,21 @@
             window.supabaseClient &&
             typeof window.supabaseClient.from === "function"
         ) {
-
             return window.supabaseClient;
-
         }
 
         if (
             window.supabase &&
             typeof window.supabase.from === "function"
         ) {
-
             return window.supabase;
-
         }
 
         console.error(
-            "[EMPIRE PRODUTOS] Cliente Supabase não encontrado."
+            "[EMPIRE] Cliente Supabase não encontrado."
         );
 
         return null;
-
     }
 
 
@@ -258,18 +234,6 @@
             .replace(/>/g, "&gt;")
             .replace(/"/g, "&quot;")
             .replace(/'/g, "&#039;");
-
-    }
-
-
-    function normalize(value) {
-
-        return String(value ?? "")
-            .normalize("NFD")
-            .replace(/[\u0300-\u036f]/g, "")
-            .toLowerCase()
-            .trim();
-
     }
 
 
@@ -278,7 +242,6 @@
         const n = Number(value);
 
         return Number.isFinite(n) ? n : 0;
-
     }
 
 
@@ -287,11 +250,18 @@
         const n = parseInt(value, 10);
 
         return Number.isFinite(n) ? n : 0;
-
     }
 
 
-    function currency(value) {
+    function normalizeText(value) {
+
+        return String(value ?? "")
+            .trim()
+            .toLowerCase();
+    }
+
+
+    function formatCurrency(value) {
 
         return number(value).toLocaleString(
             "pt-BR",
@@ -300,20 +270,16 @@
                 currency: "BRL"
             }
         );
-
     }
 
 
     function formatNumber(value) {
 
-        return number(value).toLocaleString(
-            "pt-BR"
-        );
-
+        return number(value).toLocaleString("pt-BR");
     }
 
 
-    function dateTime(value) {
+    function formatDate(value) {
 
         if (!value) {
             return "—";
@@ -332,97 +298,82 @@
                 timeStyle: "short"
             }
         );
-
     }
 
 
-    function generateFileName(file) {
+    function generateId() {
 
-        const extension = (
-            file.name.split(".").pop() || "jpg"
-        ).toLowerCase();
+        if (
+            window.crypto &&
+            typeof window.crypto.randomUUID === "function"
+        ) {
+            return window.crypto.randomUUID();
+        }
 
-        const id = (
-            typeof crypto !== "undefined" &&
-            crypto.randomUUID
-        )
-            ? crypto.randomUUID()
-            : `${Date.now()}-${Math.random()
-                .toString(36)
-                .slice(2)}`;
-
-        return `${id}.${extension}`;
-
+        return (
+            Date.now().toString(36) +
+            Math.random().toString(36).slice(2)
+        );
     }
 
 
-    function showToast(message, type = "success") {
+    function slugify(value) {
 
-        const container = elements.toastContainer;
+        return String(value || "")
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, "-")
+            .replace(/^-+|-+$/g, "");
+    }
 
-        if (!container) {
+
+    /* =====================================================
+       TOAST
+    ===================================================== */
+
+    function toast(
+        message,
+        type = "info",
+        duration = 3500
+    ) {
+
+        if (!DOM.toastContainer) {
+            console.log(message);
             return;
         }
 
-        const toast = document.createElement("div");
+        const item = document.createElement("div");
 
-        toast.className = `toast toast-${type}`;
+        item.className = `toast toast-${type}`;
 
-        toast.innerHTML = `
+        const icon = {
+            success: "fa-circle-check",
+            error: "fa-circle-exclamation",
+            warning: "fa-triangle-exclamation",
+            info: "fa-circle-info"
+        }[type] || "fa-circle-info";
 
-            <i class="fa-solid ${
-                type === "error"
-                    ? "fa-circle-exclamation"
-                    : type === "warning"
-                        ? "fa-triangle-exclamation"
-                        : "fa-circle-check"
-            }"></i>
-
-            <span>
-                ${escapeHTML(message)}
-            </span>
-
+        item.innerHTML = `
+            <i class="fa-solid ${icon}"></i>
+            <span>${escapeHTML(message)}</span>
         `;
 
-        container.appendChild(toast);
+        DOM.toastContainer.appendChild(item);
 
         requestAnimationFrame(() => {
-
-            toast.classList.add("show");
-
+            item.classList.add("show");
         });
 
         setTimeout(() => {
 
-            toast.classList.remove("show");
+            item.classList.remove("show");
 
             setTimeout(() => {
+                item.remove();
+            }, 300);
 
-                toast.remove();
-
-            }, 350);
-
-        }, 3500);
-
-    }
-
-
-    function setFormMessage(message, type = "") {
-
-        const el = elements.formMessage;
-
-        if (!el) {
-            return;
-        }
-
-        el.textContent = message || "";
-
-        el.className = "form-message";
-
-        if (type) {
-            el.classList.add(type);
-        }
-
+        }, duration);
     }
 
 
@@ -432,20 +383,19 @@
 
     function hideLoader() {
 
-        const loader = elements.productsLoader;
-
-        if (!loader) {
+        if (!DOM.loader) {
             return;
         }
 
-        loader.classList.add("hidden");
+        DOM.loader.classList.add("hidden");
 
         setTimeout(() => {
 
-            loader.style.display = "none";
+            if (DOM.loader) {
+                DOM.loader.style.display = "none";
+            }
 
-        }, 700);
-
+        }, 500);
     }
 
 
@@ -455,18 +405,19 @@
 
     function updateClock() {
 
-        const clock = elements.systemClock;
-
-        if (!clock) {
+        if (!DOM.systemClock) {
             return;
         }
 
         const now = new Date();
 
-        clock.textContent = now.toLocaleTimeString(
-            "pt-BR"
-        );
-
+        DOM.systemClock.textContent =
+            now.toLocaleTimeString(
+                "pt-BR",
+                {
+                    hour12: false
+                }
+            );
     }
 
 
@@ -474,8 +425,12 @@
 
         updateClock();
 
-        setInterval(updateClock, 1000);
+        if (window.EMPIRE_PRODUCT_CLOCK) {
+            return;
+        }
 
+        window.EMPIRE_PRODUCT_CLOCK =
+            setInterval(updateClock, 1000);
     }
 
 
@@ -483,107 +438,76 @@
        PERFIL
     ===================================================== */
 
-    function loadProfileName() {
+    async function loadProfile() {
 
-        const profile = elements.profileName;
+        const supabase = getSupabase();
 
-        if (!profile) {
+        if (!supabase) {
             return;
         }
 
         try {
 
-            const raw =
-                localStorage.getItem("empire_user") ||
-                localStorage.getItem("usuario") ||
-                localStorage.getItem("user");
+            const {
+                data: {
+                    user
+                } = {}
+            } = await supabase.auth.getUser();
 
-            if (!raw) {
+            if (!user) {
                 return;
             }
 
-            let data = raw;
+            if (
+                DOM.profileName &&
+                user.email
+            ) {
 
-            try {
-                data = JSON.parse(raw);
-            } catch {
-                /* texto simples */
-            }
-
-            if (typeof data === "string") {
-
-                profile.textContent = data;
-
-                return;
-
-            }
-
-            const name =
-                data?.nome ||
-                data?.usuario ||
-                data?.name ||
-                data?.email;
-
-            if (name) {
-                profile.textContent = name;
+                DOM.profileName.textContent =
+                    user.user_metadata?.nome ||
+                    user.user_metadata?.name ||
+                    user.email.split("@")[0] ||
+                    "Administrador";
             }
 
         } catch (error) {
 
             console.warn(
-                "[EMPIRE PRODUTOS] Perfil:",
+                "[EMPIRE] Não foi possível carregar perfil:",
                 error
             );
-
         }
-
     }
 
 
     /* =====================================================
-       ESTOQUE
+       LOGOUT
     ===================================================== */
 
-    function getStockLevel(quantity) {
+    async function logout() {
 
-        const qty = integer(quantity);
+        const supabase = getSupabase();
 
-        if (qty <= CONFIG.STOCK_LOW) {
-
-            return {
-                key: "low",
-                label: "Baixo",
-                color: "red",
-                icon: "fa-triangle-exclamation"
-            };
-
+        if (!supabase) {
+            return;
         }
 
-        if (qty <= CONFIG.STOCK_MEDIUM) {
+        try {
 
-            return {
-                key: "medium",
-                label: "Médio",
-                color: "yellow",
-                icon: "fa-minus"
-            };
+            await supabase.auth.signOut();
 
+            window.location.href =
+                "../../index.html";
+
+        } catch (error) {
+
+            console.error(error);
+
+            toast(
+                "Não foi possível sair do sistema.",
+                "error"
+            );
         }
-
-        return {
-            key: "high",
-            label: "Bom",
-            color: "green",
-            icon: "fa-check"
-        };
-
-    }
-
-
-    function stockClass(quantity) {
-
-        return `stock-${getStockLevel(quantity).key}`;
-
     }
 
 
@@ -597,23 +521,30 @@
 
         if (!supabase) {
 
-            showToast(
-                "Supabase não está configurado.",
-                "error"
+            hideLoader();
+
+            renderEmpty(
+                "Supabase não encontrado."
             );
 
             return;
-
         }
 
-        state.loading = true;
+        if (state.carregando) {
+            return;
+        }
 
-        renderLoadingTable();
+        state.carregando = true;
+
+        renderLoading();
 
         try {
 
-            const result = await supabase
-                .from(CONFIG.TABLE)
+            const {
+                data,
+                error
+            } = await supabase
+                .from(CONFIG.tabela)
                 .select(`
                     id,
                     codigo_barras,
@@ -637,25 +568,25 @@
                     }
                 );
 
-            if (result.error) {
-                throw result.error;
+            if (error) {
+                throw error;
             }
 
-            state.products = Array.isArray(result.data)
-                ? result.data
-                : [];
+            state.produtos =
+                Array.isArray(data)
+                    ? data
+                    : [];
 
-            state.filteredProducts = [
-                ...state.products
-            ];
+            state.produtos =
+                state.produtos.map(normalizeProduct);
 
-            populateCategories();
+            updateCategories();
+
+            applyFilters();
 
             updateMetrics();
 
-            renderProducts();
-
-            renderCategoryChart();
+            updateChart();
 
             updateNotifications();
 
@@ -664,83 +595,499 @@
         } catch (error) {
 
             console.error(
-                "[EMPIRE PRODUTOS] Erro ao carregar:",
+                "[EMPIRE] Erro ao carregar produtos:",
                 error
             );
 
-            state.products = [];
-
-            state.filteredProducts = [];
-
-            renderEmptyTable(
-                "Não foi possível carregar os produtos.",
-                "Verifique a conexão com o Supabase."
+            renderEmpty(
+                "Não foi possível carregar os produtos."
             );
 
-            showToast(
-                getErrorMessage(error),
+            toast(
+                "Erro ao carregar produtos.",
                 "error"
             );
 
         } finally {
 
-            state.loading = false;
+            state.carregando = false;
 
             hideLoader();
-
         }
-
     }
 
 
     /* =====================================================
-       MENSAGEM DE ERRO
+       NORMALIZAR PRODUTO
     ===================================================== */
 
-    function getErrorMessage(error) {
+    function normalizeProduct(product) {
 
-        if (!error) {
-            return "Ocorreu um erro inesperado.";
-        }
+        return {
+            ...product,
 
-        if (error.code === "23505") {
+            id: product.id || "",
 
-            return "Este código de barras ou SKU já está cadastrado.";
+            codigo_barras:
+                String(
+                    product.codigo_barras ?? ""
+                ).trim(),
 
-        }
+            sku:
+                String(
+                    product.sku ?? ""
+                ).trim(),
 
-        if (error.code === "42501") {
+            nome:
+                String(
+                    product.nome ?? ""
+                ).trim(),
 
-            return "Você não possui permissão para executar esta ação.";
+            tamanho:
+                String(
+                    product.tamanho ?? ""
+                ).trim(),
 
-        }
+            cor:
+                String(
+                    product.cor ?? ""
+                ).trim(),
 
-        return (
-            error.message ||
-            "Não foi possível concluir a operação."
-        );
+            categoria:
+                String(
+                    product.categoria ?? ""
+                ).trim(),
 
+            preco_venda:
+                number(product.preco_venda),
+
+            preco_custo:
+                number(product.preco_custo),
+
+            quantidade:
+                integer(product.quantidade),
+
+            imagem_url:
+                String(
+                    product.imagem_url ?? ""
+                ).trim(),
+
+            ativo:
+                product.ativo !== false
+        };
     }
 
 
     /* =====================================================
-       LOADING TABLE
+       FILTROS
     ===================================================== */
 
-    function renderLoadingTable() {
+    function applyFilters() {
 
-        const table = elements.productsTable;
+        const search =
+            normalizeText(
+                DOM.productSearch?.value
+            );
 
-        if (!table) {
+        const category =
+            normalizeText(
+                DOM.categoryFilter?.value
+            );
+
+        state.filtrados =
+            state.produtos.filter(product => {
+
+                if (!product.ativo) {
+                    return false;
+                }
+
+                const matchesSearch =
+                    !search ||
+                    normalizeText(product.nome)
+                        .includes(search) ||
+                    normalizeText(product.sku)
+                        .includes(search) ||
+                    normalizeText(product.codigo_barras)
+                        .includes(search) ||
+                    normalizeText(product.categoria)
+                        .includes(search) ||
+                    normalizeText(product.cor)
+                        .includes(search) ||
+                    normalizeText(product.tamanho)
+                        .includes(search);
+
+                const matchesCategory =
+                    !category ||
+                    normalizeText(product.categoria) === category;
+
+                return (
+                    matchesSearch &&
+                    matchesCategory
+                );
+            });
+
+        renderProducts();
+    }
+
+
+    /* =====================================================
+       CATEGORIAS
+    ===================================================== */
+
+    function updateCategories() {
+
+        if (!DOM.categoryFilter) {
             return;
         }
 
-        table.innerHTML = `
+        const current =
+            DOM.categoryFilter.value;
 
+        const categories =
+            [...new Set(
+                state.produtos
+                    .filter(p => p.ativo)
+                    .map(p => p.categoria)
+                    .filter(Boolean)
+            )]
+                .sort((a, b) =>
+                    a.localeCompare(
+                        b,
+                        "pt-BR"
+                    )
+                );
+
+        DOM.categoryFilter.innerHTML = `
+            <option value="">
+                Todas categorias
+            </option>
+        `;
+
+        categories.forEach(category => {
+
+            const option =
+                document.createElement("option");
+
+            option.value = category;
+
+            option.textContent = category;
+
+            DOM.categoryFilter.appendChild(option);
+        });
+
+        if (
+            categories.includes(current)
+        ) {
+            DOM.categoryFilter.value =
+                current;
+        }
+    }
+
+
+    /* =====================================================
+       ESTOQUE
+    ===================================================== */
+
+    function getStockLevel(quantity) {
+
+        quantity = integer(quantity);
+
+        if (quantity <= 0) {
+
+            return {
+                key: "empty",
+                label: "Sem estoque",
+                className: "stock-empty",
+                icon: "fa-circle-xmark"
+            };
+        }
+
+        if (
+            quantity <=
+            CONFIG.estoque.baixo
+        ) {
+
+            return {
+                key: "low",
+                label: "Estoque baixo",
+                className: "stock-low",
+                icon: "fa-triangle-exclamation"
+            };
+        }
+
+        if (
+            quantity <=
+            CONFIG.estoque.medio
+        ) {
+
+            return {
+                key: "medium",
+                label: "Estoque médio",
+                className: "stock-medium",
+                icon: "fa-circle-exclamation"
+            };
+        }
+
+        return {
+            key: "good",
+            label: "Estoque bom",
+            className: "stock-good",
+            icon: "fa-circle-check"
+        };
+    }
+
+
+    function stockHTML(quantity) {
+
+        const stock =
+            getStockLevel(quantity);
+
+        return `
+            <div
+                class="stock-indicator ${stock.className}"
+                data-stock-level="${stock.key}"
+            >
+                <span class="stock-dot"></span>
+
+                <strong>
+                    ${formatNumber(quantity)}
+                </strong>
+
+                <small>
+                    ${escapeHTML(stock.label)}
+                </small>
+            </div>
+        `;
+    }
+
+
+    /* =====================================================
+       IMAGEM DO PRODUTO
+       IMPORTANTE:
+       Cada linha usa SOMENTE product.imagem_url
+    ===================================================== */
+
+    function getProductImage(product) {
+
+        const url =
+            String(
+                product.imagem_url || ""
+            ).trim();
+
+        return url || CONFIG.imagemPadrao;
+    }
+
+
+    function productImageHTML(product) {
+
+        const image =
+            getProductImage(product);
+
+        const name =
+            escapeHTML(
+                product.nome ||
+                "Produto"
+            );
+
+        return `
+            <div class="product-cell-image">
+                <img
+                    src="${escapeHTML(image)}"
+                    alt="${name}"
+                    loading="lazy"
+                    decoding="async"
+                    onerror="
+                        this.onerror=null;
+                        this.src='${CONFIG.imagemPadrao}';
+                    "
+                >
+            </div>
+        `;
+    }
+
+
+    /* =====================================================
+       RENDER TABELA
+    ===================================================== */
+
+    function renderProducts() {
+
+        if (!DOM.productsTable) {
+            return;
+        }
+
+        if (!state.filtrados.length) {
+
+            renderEmpty(
+                state.produtos.length
+                    ? "Nenhum produto encontrado."
+                    : "Nenhum produto cadastrado."
+            );
+
+            return;
+        }
+
+        DOM.productsTable.innerHTML =
+            state.filtrados
+                .map(productRowHTML)
+                .join("");
+    }
+
+
+    function productRowHTML(product) {
+
+        const id =
+            escapeHTML(product.id);
+
+        const name =
+            escapeHTML(product.nome);
+
+        const sku =
+            escapeHTML(product.sku || "—");
+
+        const barcode =
+            escapeHTML(
+                product.codigo_barras ||
+                "—"
+            );
+
+        const size =
+            escapeHTML(
+                product.tamanho ||
+                "—"
+            );
+
+        const color =
+            escapeHTML(
+                product.cor ||
+                "—"
+            );
+
+        const category =
+            escapeHTML(
+                product.categoria ||
+                "—"
+            );
+
+        return `
+            <tr
+                data-product-id="${id}"
+                class="product-row"
+            >
+
+                <td>
+                    <div class="product-info-cell">
+
+                        ${productImageHTML(product)}
+
+                        <div class="product-info-text">
+
+                            <strong>
+                                ${name}
+                            </strong>
+
+                            <small>
+                                ${sku}
+                            </small>
+
+                        </div>
+
+                    </div>
+                </td>
+
+                <td>
+                    <span class="barcode-value">
+                        ${barcode}
+                    </span>
+                </td>
+
+                <td>
+                    ${size}
+                </td>
+
+                <td>
+                    ${color}
+                </td>
+
+                <td>
+                    <span class="category-badge">
+                        ${category}
+                    </span>
+                </td>
+
+                <td>
+                    <strong>
+                        ${formatCurrency(
+                            product.preco_venda
+                        )}
+                    </strong>
+                </td>
+
+                <td>
+                    ${formatCurrency(
+                        product.preco_custo
+                    )}
+                </td>
+
+                <td>
+                    ${stockHTML(
+                        product.quantidade
+                    )}
+                </td>
+
+                <td>
+                    <div class="product-actions">
+
+                        <button
+                            type="button"
+                            class="table-action view-action"
+                            data-action="view"
+                            data-id="${id}"
+                            title="Visualizar"
+                        >
+                            <i class="fa-solid fa-eye"></i>
+                        </button>
+
+                        <button
+                            type="button"
+                            class="table-action edit-action"
+                            data-action="edit"
+                            data-id="${id}"
+                            title="Editar"
+                        >
+                            <i class="fa-solid fa-pen"></i>
+                        </button>
+
+                        <button
+                            type="button"
+                            class="table-action delete-action"
+                            data-action="delete"
+                            data-id="${id}"
+                            title="Excluir"
+                        >
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+
+                    </div>
+                </td>
+
+            </tr>
+        `;
+    }
+
+
+    function renderLoading() {
+
+        if (!DOM.productsTable) {
+            return;
+        }
+
+        DOM.productsTable.innerHTML = `
             <tr>
-
-                <td colspan="9" class="empty loading-row">
-
+                <td
+                    colspan="9"
+                    class="empty loading-state"
+                >
                     <i class="fa-solid fa-spinner fa-spin"></i>
 
                     <strong>
@@ -748,278 +1095,42 @@
                     </strong>
 
                     <span>
-                        Aguarde um momento.
+                        Aguarde enquanto o catálogo é carregado.
                     </span>
-
                 </td>
-
             </tr>
-
         `;
-
     }
 
 
-    /* =====================================================
-       EMPTY TABLE
-    ===================================================== */
+    function renderEmpty(message) {
 
-    function renderEmptyTable(
-        title = "Nenhum produto cadastrado",
-        description = "Cadastre seu primeiro produto."
-    ) {
-
-        const table = elements.productsTable;
-
-        if (!table) {
+        if (!DOM.productsTable) {
             return;
         }
 
-        table.innerHTML = `
-
+        DOM.productsTable.innerHTML = `
             <tr>
-
-                <td colspan="9" class="empty">
-
+                <td
+                    colspan="9"
+                    class="empty"
+                >
                     <i class="fa-solid fa-box-open"></i>
 
                     <strong>
-                        ${escapeHTML(title)}
+                        ${escapeHTML(message)}
                     </strong>
 
                     <span>
-                        ${escapeHTML(description)}
+                        ${
+                            state.produtos.length
+                                ? "Tente alterar sua pesquisa ou categoria."
+                                : "Cadastre seu primeiro produto."
+                        }
                     </span>
-
                 </td>
-
             </tr>
-
         `;
-
-    }
-
-
-    /* =====================================================
-       RENDER PRODUTOS
-    ===================================================== */
-
-    function renderProducts() {
-
-        const table = elements.productsTable;
-
-        if (!table) {
-            return;
-        }
-
-        if (!state.filteredProducts.length) {
-
-            renderEmptyTable(
-                state.products.length
-                    ? "Nenhum resultado encontrado"
-                    : "Nenhum produto cadastrado",
-                state.products.length
-                    ? "Tente alterar os filtros de pesquisa."
-                    : "Cadastre seu primeiro produto."
-            );
-
-            return;
-
-        }
-
-        table.innerHTML = state.filteredProducts
-            .map(product => productRow(product))
-            .join("");
-
-    }
-
-
-    /* =====================================================
-       LINHA DO PRODUTO
-    ===================================================== */
-
-    function productRow(product) {
-
-        const quantity = integer(
-            product.quantidade
-        );
-
-        const level = getStockLevel(
-            quantity
-        );
-
-        const image = product.imagem_url
-            ? `
-                <img
-                    class="product-table-image"
-                    src="${escapeHTML(product.imagem_url)}"
-                    alt="${escapeHTML(product.nome)}"
-                    loading="lazy"
-                    onerror="this.onerror=null;this.src='../../assets/img/produto-sem-imagem.jpg';"
-                >
-            `
-            : `
-                <div class="product-table-placeholder">
-
-                    <i class="fa-solid fa-box-open"></i>
-
-                </div>
-            `;
-
-        return `
-
-            <tr
-                data-product-id="${escapeHTML(product.id)}"
-            >
-
-                <td class="product-cell">
-
-                    <div class="product-item">
-
-                        <div class="product-image-small">
-
-                            ${image}
-
-                        </div>
-
-                        <div class="product-info">
-
-                            <strong>
-                                ${escapeHTML(product.nome || "Sem nome")}
-                            </strong>
-
-                            <small>
-                                ${escapeHTML(product.ativo === false ? "Inativo" : "Ativo")}
-                            </small>
-
-                        </div>
-
-                    </div>
-
-                </td>
-
-
-                <td>
-
-                    <span class="barcode-value">
-
-                        ${escapeHTML(
-                            product.codigo_barras || "—"
-                        )}
-
-                    </span>
-
-                </td>
-
-
-                <td>
-                    ${escapeHTML(product.tamanho || "—")}
-                </td>
-
-
-                <td>
-                    ${escapeHTML(product.cor || "—")}
-                </td>
-
-
-                <td>
-
-                    <span class="category-badge">
-
-                        ${escapeHTML(
-                            product.categoria || "Sem categoria"
-                        )}
-
-                    </span>
-
-                </td>
-
-
-                <td class="price-cell">
-
-                    ${currency(product.preco_venda)}
-
-                </td>
-
-
-                <td class="price-cell cost">
-
-                    ${currency(product.preco_custo)}
-
-                </td>
-
-
-                <td>
-
-                    <div
-                        class="stock-badge ${stockClass(quantity)}"
-                        title="Estoque ${level.label}"
-                    >
-
-                        <i class="fa-solid ${level.icon}"></i>
-
-                        <strong>
-                            ${formatNumber(quantity)}
-                        </strong>
-
-                    </div>
-
-                </td>
-
-
-                <td>
-
-                    <div class="product-actions">
-
-                        <button
-                            type="button"
-                            class="action-button action-view"
-                            data-action="view"
-                            data-id="${escapeHTML(product.id)}"
-                            title="Visualizar"
-                            aria-label="Visualizar produto"
-                        >
-
-                            <i class="fa-solid fa-eye"></i>
-
-                        </button>
-
-
-                        <button
-                            type="button"
-                            class="action-button action-edit"
-                            data-action="edit"
-                            data-id="${escapeHTML(product.id)}"
-                            title="Editar"
-                            aria-label="Editar produto"
-                        >
-
-                            <i class="fa-solid fa-pen"></i>
-
-                        </button>
-
-
-                        <button
-                            type="button"
-                            class="action-button action-delete"
-                            data-action="delete"
-                            data-id="${escapeHTML(product.id)}"
-                            title="Excluir"
-                            aria-label="Excluir produto"
-                        >
-
-                            <i class="fa-solid fa-trash"></i>
-
-                        </button>
-
-                    </div>
-
-                </td>
-
-            </tr>
-
-        `;
-
     }
 
 
@@ -1029,355 +1140,165 @@
 
     function updateMetrics() {
 
-        const products = state.products;
+        const products =
+            state.produtos.filter(
+                p => p.ativo
+            );
 
         const totalProducts =
             products.length;
 
         const totalStock =
             products.reduce(
-                (sum, product) =>
-                    sum + integer(product.quantidade),
+                (sum, p) =>
+                    sum + integer(p.quantidade),
                 0
             );
 
-        const categories = new Set(
-            products
-                .map(product =>
-                    normalize(product.categoria)
-                )
-                .filter(Boolean)
-        );
+        const categories =
+            new Set(
+                products
+                    .map(p => p.categoria)
+                    .filter(Boolean)
+            );
 
-        const noStock =
+        const withoutStock =
             products.filter(
-                product =>
-                    integer(product.quantidade) <= 0
+                p =>
+                    integer(p.quantidade) <= 0
             ).length;
 
         const stockValue =
             products.reduce(
-                (sum, product) =>
+                (sum, p) =>
                     sum +
                     (
-                        number(product.preco_venda) *
-                        integer(product.quantidade)
+                        number(p.preco_venda) *
+                        integer(p.quantidade)
                     ),
                 0
             );
 
         const costValue =
             products.reduce(
-                (sum, product) =>
+                (sum, p) =>
                     sum +
                     (
-                        number(product.preco_custo) *
-                        integer(product.quantidade)
+                        number(p.preco_custo) *
+                        integer(p.quantidade)
                     ),
                 0
             );
 
-        const profitValue =
-            stockValue - costValue;
+        const profit =
+            stockValue -
+            costValue;
 
-        const active =
-            products.filter(
-                product =>
-                    product.ativo !== false
-            ).length;
-
-        setText(
-            elements.totalProducts,
-            formatNumber(totalProducts)
-        );
-
-        setText(
-            elements.totalStock,
-            formatNumber(totalStock)
-        );
-
-        setText(
-            elements.totalCategories,
-            formatNumber(categories.size)
-        );
-
-        setText(
-            elements.lowStock,
-            formatNumber(noStock)
-        );
-
-        setText(
-            elements.stockValue,
-            currency(stockValue)
-        );
-
-        setText(
-            elements.costValue,
-            currency(costValue)
-        );
-
-        setText(
-            elements.profitValue,
-            currency(profitValue)
-        );
-
-        setText(
-            elements.productCountLabel,
-            `${formatNumber(active)} ${
-                active === 1
-                    ? "produto"
-                    : "produtos"
-            }`
-        );
-
-        if (elements.stockProgress) {
-
-            const percentage =
-                totalProducts > 0
-                    ? Math.min(
-                        100,
-                        (
-                            active /
-                            totalProducts
-                        ) * 100
-                    )
-                    : 0;
-
-            elements.stockProgress.style.width =
-                `${percentage}%`;
-
+        if (DOM.totalProducts) {
+            DOM.totalProducts.textContent =
+                formatNumber(totalProducts);
         }
 
-    }
-
-
-    function setText(element, value) {
-
-        if (element) {
-            element.textContent = value;
+        if (DOM.totalStock) {
+            DOM.totalStock.textContent =
+                formatNumber(totalStock);
         }
 
+        if (DOM.totalCategories) {
+            DOM.totalCategories.textContent =
+                formatNumber(categories.size);
+        }
+
+        if (DOM.lowStock) {
+            DOM.lowStock.textContent =
+                formatNumber(withoutStock);
+        }
+
+        if (DOM.stockValue) {
+            DOM.stockValue.textContent =
+                formatCurrency(stockValue);
+        }
+
+        if (DOM.costValue) {
+            DOM.costValue.textContent =
+                formatCurrency(costValue);
+        }
+
+        if (DOM.profitValue) {
+            DOM.profitValue.textContent =
+                formatCurrency(profit);
+        }
+
+        if (DOM.productCountLabel) {
+            DOM.productCountLabel.textContent =
+                `${formatNumber(totalProducts)} produtos`;
+        }
+
+        updateProgress(products);
     }
 
 
     /* =====================================================
-       CATEGORIAS
+       PROGRESSO
     ===================================================== */
 
-    function populateCategories() {
+    function updateProgress(products) {
 
-        const select =
-            elements.categoryFilter;
-
-        if (!select) {
+        if (!DOM.stockProgress) {
             return;
         }
 
-        const current =
-            select.value;
+        if (!products.length) {
 
-        const categories = [
-            ...new Set(
-                state.products
-                    .map(product =>
-                        String(
-                            product.categoria || ""
-                        ).trim()
-                    )
-                    .filter(Boolean)
-            )
-        ].sort(
-            (a, b) =>
-                normalize(a).localeCompare(
-                    normalize(b)
-                )
-        );
+            DOM.stockProgress.style.width =
+                "0%";
 
-        select.innerHTML = `
-
-            <option value="">
-                Todas categorias
-            </option>
-
-            ${categories
-                .map(category => `
-
-                    <option
-                        value="${escapeHTML(category)}"
-                    >
-                        ${escapeHTML(category)}
-                    </option>
-
-                `)
-                .join("")}
-
-        `;
-
-        if (
-            categories.some(
-                category =>
-                    category === current
-            )
-        ) {
-
-            select.value = current;
-
+            return;
         }
 
-    }
+        const good =
+            products.filter(
+                p =>
+                    integer(p.quantidade) >
+                    CONFIG.estoque.medio
+            ).length;
 
-
-    /* =====================================================
-       PESQUISA
-    ===================================================== */
-
-    function applyFilters() {
-
-        const search =
-            normalize(
-                elements.productSearch?.value
+        const percentage =
+            Math.round(
+                (good / products.length) *
+                100
             );
 
-        const category =
-            normalize(
-                elements.categoryFilter?.value
-            );
-
-        state.filteredProducts =
-            state.products.filter(product => {
-
-                const matchesSearch =
-                    !search ||
-                    [
-                        product.nome,
-                        product.sku,
-                        product.codigo_barras,
-                        product.categoria,
-                        product.cor,
-                        product.tamanho
-                    ]
-                        .map(normalize)
-                        .some(
-                            value =>
-                                value.includes(search)
-                        );
-
-                const matchesCategory =
-                    !category ||
-                    normalize(
-                        product.categoria
-                    ) === category;
-
-                return (
-                    matchesSearch &&
-                    matchesCategory
-                );
-
-            });
-
-        renderProducts();
-
-    }
-
-
-    function setupSearch() {
-
-        if (elements.productSearch) {
-
-            elements.productSearch.addEventListener(
-                "input",
-                () => {
-
-                    clearTimeout(
-                        state.searchTimer
-                    );
-
-                    state.searchTimer =
-                        setTimeout(
-                            applyFilters,
-                            CONFIG.SEARCH_DELAY
-                        );
-
-                }
-            );
-
-        }
-
-        if (elements.categoryFilter) {
-
-            elements.categoryFilter.addEventListener(
-                "change",
-                applyFilters
-            );
-
-        }
-
+        DOM.stockProgress.style.width =
+            `${percentage}%`;
     }
 
 
     /* =====================================================
        GRÁFICO POR CATEGORIA
+       COR:
+       vermelho = pouco
+       amarelo = médio
+       verde = bom
     ===================================================== */
 
-    function renderCategoryChart() {
+    function updateChart() {
 
-        const chart =
-            elements.categoryChart;
-
-        if (!chart) {
+        if (!DOM.categoryChart) {
             return;
         }
 
-        const grouped = {};
-
-        state.products.forEach(product => {
-
-            const category =
-                String(
-                    product.categoria ||
-                    "Sem categoria"
-                ).trim();
-
-            const key =
-                category || "Sem categoria";
-
-            if (!grouped[key]) {
-                grouped[key] = 0;
-            }
-
-            grouped[key] += integer(
-                product.quantidade
+        const products =
+            state.produtos.filter(
+                p => p.ativo
             );
 
-        });
+        if (!products.length) {
 
-        const entries =
-            Object.entries(grouped)
-                .sort(
-                    (a, b) =>
-                        b[1] - a[1]
-                );
+            DOM.chartTotal.textContent =
+                "0 unidades";
 
-        const total =
-            entries.reduce(
-                (sum, [, value]) =>
-                    sum + value,
-                0
-            );
-
-        setText(
-            elements.chartTotal,
-            `${formatNumber(total)} ${
-                total === 1
-                    ? "unidade"
-                    : "unidades"
-            }`
-        );
-
-        if (!entries.length) {
-
-            chart.innerHTML = `
-
+            DOM.categoryChart.innerHTML = `
                 <div class="empty">
 
                     <i class="fa-solid fa-chart-column"></i>
@@ -1391,94 +1312,112 @@
                     </span>
 
                 </div>
-
             `;
 
             return;
+        }
 
+        const map =
+            new Map();
+
+        products.forEach(product => {
+
+            const category =
+                product.categoria ||
+                "Sem categoria";
+
+            if (!map.has(category)) {
+                map.set(category, 0);
+            }
+
+            map.set(
+                category,
+                map.get(category) +
+                integer(product.quantidade)
+            );
+        });
+
+        const data =
+            [...map.entries()]
+                .sort(
+                    (a, b) =>
+                        b[1] - a[1]
+                );
+
+        const total =
+            data.reduce(
+                (sum, item) =>
+                    sum + item[1],
+                0
+            );
+
+        if (DOM.chartTotal) {
+            DOM.chartTotal.textContent =
+                `${formatNumber(total)} unidades`;
         }
 
         const max =
             Math.max(
-                ...entries.map(
-                    ([, value]) =>
-                        value
+                ...data.map(
+                    item => item[1]
                 ),
                 1
             );
 
-        chart.innerHTML = `
+        DOM.categoryChart.innerHTML =
+            data.map(
+                ([category, quantity]) => {
 
-            <div class="stock-chart-list">
+                    const level =
+                        getStockLevel(quantity);
 
-                ${entries
-                    .map(
-                        ([category, quantity]) => {
+                    const percentage =
+                        Math.max(
+                            4,
+                            Math.round(
+                                (
+                                    quantity /
+                                    max
+                                ) *
+                                100
+                            )
+                        );
 
-                            const percent =
-                                Math.max(
-                                    4,
-                                    Math.min(
-                                        100,
-                                        (
-                                            quantity /
-                                            max
-                                        ) * 100
-                                    )
-                                );
+                    return `
+                        <div
+                            class="chart-item ${level.className}"
+                            data-stock-level="${level.key}"
+                        >
 
-                            const level =
-                                getStockLevel(
-                                    quantity
-                                );
+                            <div class="chart-label">
 
-                            return `
+                                <span>
+                                    ${escapeHTML(category)}
+                                </span>
 
-                                <div
-                                    class="chart-row chart-${level.key}"
-                                >
+                                <strong>
+                                    ${formatNumber(quantity)}
+                                </strong>
 
-                                    <div class="chart-label">
+                            </div>
 
-                                        <span>
-                                            ${escapeHTML(category)}
-                                        </span>
+                            <div class="chart-bar">
 
-                                        <strong>
-                                            ${formatNumber(quantity)}
-                                        </strong>
+                                <i
+                                    style="width:${percentage}%"
+                                ></i>
 
-                                    </div>
+                            </div>
 
+                            <small>
+                                ${escapeHTML(level.label)}
+                            </small>
 
-                                    <div class="chart-track">
-
-                                        <div
-                                            class="chart-bar stock-${level.key}"
-                                            style="width:${percent}%"
-                                        ></div>
-
-                                    </div>
-
-
-                                    <small class="chart-level">
-
-                                        ${level.label}
-
-                                    </small>
-
-                                </div>
-
-                            `;
-
-                        }
-                    )
-                    .join("")}
-
-            </div>
-
-        `;
-
+                        </div>
+                    `;
+                }
+            )
+            .join("");
     }
 
 
@@ -1490,56 +1429,42 @@
 
         const notifications = [];
 
-        state.products.forEach(product => {
+        state.produtos
+            .filter(p => p.ativo)
+            .forEach(product => {
 
-            const quantity =
-                integer(product.quantidade);
+                const quantity =
+                    integer(product.quantidade);
 
-            if (quantity <= 0) {
+                if (quantity <= 0) {
 
-                notifications.push({
+                    notifications.push({
+                        type: "error",
+                        icon: "fa-circle-xmark",
+                        title: "Sem estoque",
+                        text:
+                            `${product.nome} está sem estoque.`
+                    });
 
-                    type: "danger",
+                    return;
+                }
 
-                    title: "Sem estoque",
+                if (
+                    quantity <=
+                    CONFIG.estoque.baixo
+                ) {
 
-                    text:
-                        `${product.nome} está sem estoque.`,
-
-                    productId:
-                        product.id
-
-                });
-
-                return;
-
-            }
-
-            if (
-                quantity <=
-                CONFIG.STOCK_LOW
-            ) {
-
-                notifications.push({
-
-                    type: "warning",
-
-                    title: "Estoque baixo",
-
-                    text:
-                        `${product.nome} possui apenas ${quantity} unidade(s).`,
-
-                    productId:
-                        product.id
-
-                });
-
-            }
-
-        });
+                    notifications.push({
+                        type: "warning",
+                        icon: "fa-triangle-exclamation",
+                        title: "Estoque baixo",
+                        text:
+                            `${product.nome}: ${quantity} unidade(s).`
+                    });
+                }
+            });
 
         return notifications;
-
     }
 
 
@@ -1548,53 +1473,36 @@
         const notifications =
             getNotifications();
 
-        setText(
-            elements.notificationCount,
-            formatNumber(
-                notifications.length
-            )
-        );
+        if (DOM.notificationCount) {
 
-        const list =
-            elements.notificationList;
+            DOM.notificationCount.textContent =
+                notifications.length;
+        }
 
-        if (!list) {
+        if (!DOM.notificationList) {
             return;
         }
 
         if (!notifications.length) {
 
-            list.innerHTML = `
-
+            DOM.notificationList.innerHTML = `
                 <div class="notification-empty">
-
                     Nenhuma notificação no momento.
-
                 </div>
-
             `;
 
             return;
-
         }
 
-        list.innerHTML =
+        DOM.notificationList.innerHTML =
             notifications
                 .slice(0, 20)
                 .map(item => `
-
-                    <div
-                        class="notification-item notification-${item.type}"
-                        data-product-id="${escapeHTML(item.productId)}"
-                    >
+                    <div class="notification-item ${item.type}">
 
                         <div class="notification-icon">
 
-                            <i class="fa-solid ${
-                                item.type === "danger"
-                                    ? "fa-circle-xmark"
-                                    : "fa-triangle-exclamation"
-                            }"></i>
+                            <i class="fa-solid ${item.icon}"></i>
 
                         </div>
 
@@ -1611,24 +1519,53 @@
                         </div>
 
                     </div>
-
                 `)
                 .join("");
-
     }
 
 
     function toggleNotifications() {
 
-        const panel =
-            elements.notificationPanel;
-
-        if (!panel) {
+        if (!DOM.notificationPanel) {
             return;
         }
 
-        panel.classList.toggle("active");
+        DOM.notificationPanel.classList.toggle(
+            "open"
+        );
+    }
 
+
+    function closeNotifications() {
+
+        if (!DOM.notificationPanel) {
+            return;
+        }
+
+        DOM.notificationPanel.classList.remove(
+            "open"
+        );
+    }
+
+
+    /* =====================================================
+       ÚLTIMA ATUALIZAÇÃO
+    ===================================================== */
+
+    function updateLastUpdate() {
+
+        if (!DOM.lastUpdate) {
+            return;
+        }
+
+        DOM.lastUpdate.textContent =
+            new Date().toLocaleString(
+                "pt-BR",
+                {
+                    dateStyle: "short",
+                    timeStyle: "short"
+                }
+            );
     }
 
 
@@ -1638,63 +1575,163 @@
 
     function openProductModal(product = null) {
 
-        const modal =
-            elements.productModal;
+        state.produtoEditando =
+            product || null;
+
+        state.imagemAtual =
+            product?.imagem_url || null;
+
+        state.novaImagem = null;
+
+        clearImagePreview();
+
+        clearFormMessage();
+
+        if (DOM.productForm) {
+            DOM.productForm.reset();
+        }
+
+        if (product) {
+
+            if (DOM.modalOverline) {
+                DOM.modalOverline.textContent =
+                    "EDIÇÃO DE PRODUTO";
+            }
+
+            if (DOM.modalTitle) {
+                DOM.modalTitle.textContent =
+                    "Editar produto";
+            }
+
+            fillProductForm(product);
+
+        } else {
+
+            if (DOM.modalOverline) {
+                DOM.modalOverline.textContent =
+                    "NOVO CADASTRO";
+            }
+
+            if (DOM.modalTitle) {
+                DOM.modalTitle.textContent =
+                    "Adicionar produto";
+            }
+
+            if (DOM.productId) {
+                DOM.productId.value = "";
+            }
+
+            showImagePreview(
+                CONFIG.imagemPadrao
+            );
+        }
+
+        showModal(DOM.productModal);
+
+        setTimeout(() => {
+
+            if (
+                DOM.productBarcode &&
+                !product
+            ) {
+                DOM.productBarcode.focus();
+            }
+
+        }, 150);
+    }
+
+
+    function fillProductForm(product) {
+
+        if (DOM.productId) {
+            DOM.productId.value =
+                product.id || "";
+        }
+
+        if (DOM.productBarcode) {
+            DOM.productBarcode.value =
+                product.codigo_barras || "";
+        }
+
+        if (DOM.productSku) {
+            DOM.productSku.value =
+                product.sku || "";
+        }
+
+        if (DOM.productName) {
+            DOM.productName.value =
+                product.nome || "";
+        }
+
+        if (DOM.productSize) {
+            DOM.productSize.value =
+                product.tamanho || "";
+        }
+
+        if (DOM.productColor) {
+            DOM.productColor.value =
+                product.cor || "";
+        }
+
+        if (DOM.productCategory) {
+            DOM.productCategory.value =
+                product.categoria || "";
+        }
+
+        if (DOM.salePrice) {
+            DOM.salePrice.value =
+                product.preco_venda ?? 0;
+        }
+
+        if (DOM.stockPrice) {
+            DOM.stockPrice.value =
+                product.preco_custo ?? 0;
+        }
+
+        if (DOM.productQuantity) {
+            DOM.productQuantity.value =
+                product.quantidade ?? 0;
+        }
+
+        if (product.imagem_url) {
+
+            showImagePreview(
+                product.imagem_url
+            );
+
+        } else {
+
+            showImagePreview(
+                CONFIG.imagemPadrao
+            );
+        }
+    }
+
+
+    function closeProductModal() {
+
+        hideModal(DOM.productModal);
+
+        state.produtoEditando = null;
+        state.imagemAtual = null;
+        state.novaImagem = null;
+
+        clearImagePreview();
+        clearFormMessage();
+    }
+
+
+    /* =====================================================
+       MODAIS
+    ===================================================== */
+
+    function showModal(modal) {
 
         if (!modal) {
             return;
         }
 
-        state.editingProduct =
-            product || null;
-
-        state.selectedImageFile = null;
-
-        clearSelectedImagePreview();
-
-        resetFormMessage();
-
-        if (product) {
-
-            fillProductForm(product);
-
-            setText(
-                elements.modalOverline,
-                "EDIÇÃO DE PRODUTO"
-            );
-
-            setText(
-                elements.modalTitle,
-                "Editar produto"
-            );
-
-            setButtonText(
-                elements.saveProductButton,
-                "Salvar alterações"
-            );
-
-        } else {
-
-            resetProductForm();
-
-            setText(
-                elements.modalOverline,
-                "NOVO CADASTRO"
-            );
-
-            setText(
-                elements.modalTitle,
-                "Adicionar produto"
-            );
-
-            setButtonText(
-                elements.saveProductButton,
-                "Salvar produto"
-            );
-
-        }
-
-        modal.classList.add("active");
+        modal.classList.add("open");
 
         modal.setAttribute(
             "aria-hidden",
@@ -1704,370 +1741,80 @@
         document.body.classList.add(
             "modal-open"
         );
-
-        setTimeout(() => {
-
-            if (
-                !product &&
-                elements.productBarcode
-            ) {
-
-                elements.productBarcode.focus();
-
-            }
-
-        }, 250);
-
     }
 
 
-    function closeProductModal() {
-
-        const modal =
-            elements.productModal;
+    function hideModal(modal) {
 
         if (!modal) {
             return;
         }
 
-        modal.classList.remove("active");
+        modal.classList.remove("open");
 
         modal.setAttribute(
             "aria-hidden",
             "true"
         );
 
-        document.body.classList.remove(
-            "modal-open"
-        );
-
-        state.editingProduct = null;
-
-        state.selectedImageFile = null;
-
-        clearSelectedImagePreview();
-
-    }
-
-
-    function resetProductForm() {
-
-        const form =
-            elements.productForm;
-
-        if (form) {
-            form.reset();
-        }
-
-        setValue(
-            elements.productId,
-            ""
-        );
-
-        setValue(
-            elements.productBarcode,
-            ""
-        );
-
-        setValue(
-            elements.productSku,
-            ""
-        );
-
-        setValue(
-            elements.productName,
-            ""
-        );
-
-        setValue(
-            elements.productSize,
-            ""
-        );
-
-        setValue(
-            elements.productColor,
-            ""
-        );
-
-        setValue(
-            elements.productCategory,
-            ""
-        );
-
-        setValue(
-            elements.salePrice,
-            ""
-        );
-
-        setValue(
-            elements.stockPrice,
-            ""
-        );
-
-        setValue(
-            elements.productQuantity,
-            ""
-        );
-
-        setPreviewPlaceholder();
-
-        resetFormMessage();
-
-    }
-
-
-    function fillProductForm(product) {
-
-        setValue(
-            elements.productId,
-            product.id
-        );
-
-        setValue(
-            elements.productBarcode,
-            product.codigo_barras || ""
-        );
-
-        setValue(
-            elements.productSku,
-            product.sku || ""
-        );
-
-        setValue(
-            elements.productName,
-            product.nome || ""
-        );
-
-        setValue(
-            elements.productSize,
-            product.tamanho || ""
-        );
-
-        setValue(
-            elements.productColor,
-            product.cor || ""
-        );
-
-        setValue(
-            elements.productCategory,
-            product.categoria || ""
-        );
-
-        setValue(
-            elements.salePrice,
-            number(product.preco_venda)
-        );
-
-        setValue(
-            elements.stockPrice,
-            number(product.preco_custo)
-        );
-
-        setValue(
-            elements.productQuantity,
-            integer(product.quantidade)
-        );
-
-        if (product.imagem_url) {
-
-            setImagePreview(
-                product.imagem_url,
-                product.nome
+        if (
+            !document.querySelector(
+                ".modal.open"
+            )
+        ) {
+            document.body.classList.remove(
+                "modal-open"
             );
-
-        } else {
-
-            setPreviewPlaceholder();
-
         }
-
-    }
-
-
-    function setValue(element, value) {
-
-        if (element) {
-            element.value =
-                value === null ||
-                value === undefined
-                    ? ""
-                    : value;
-        }
-
-    }
-
-
-    function setButtonText(element, text) {
-
-        if (!element) {
-            return;
-        }
-
-        const icon =
-            element.querySelector("i");
-
-        if (icon) {
-
-            element.innerHTML = "";
-
-            element.appendChild(icon);
-
-            element.appendChild(
-                document.createTextNode(
-                    ` ${text}`
-                )
-            );
-
-        } else {
-
-            element.textContent =
-                text;
-
-        }
-
-    }
-
-
-    function resetFormMessage() {
-
-        setFormMessage("");
-
     }
 
 
     /* =====================================================
-       IMAGEM
+       FORM MESSAGE
     ===================================================== */
 
-    function setupImageInput() {
-
-        const input =
-            elements.productImage;
-
-        if (!input) {
-            return;
-        }
-
-        input.addEventListener(
-            "change",
-            event => {
-
-                const file =
-                    event.target.files?.[0];
-
-                if (!file) {
-
-                    state.selectedImageFile =
-                        null;
-
-                    if (
-                        state.editingProduct?.imagem_url
-                    ) {
-
-                        setImagePreview(
-                            state.editingProduct.imagem_url,
-                            state.editingProduct.nome
-                        );
-
-                    } else {
-
-                        setPreviewPlaceholder();
-
-                    }
-
-                    return;
-
-                }
-
-                if (
-                    !file.type.startsWith(
-                        "image/"
-                    )
-                ) {
-
-                    input.value = "";
-
-                    showToast(
-                        "Selecione um arquivo de imagem válido.",
-                        "error"
-                    );
-
-                    return;
-
-                }
-
-                if (
-                    file.size >
-                    CONFIG.MAX_IMAGE_SIZE
-                ) {
-
-                    input.value = "";
-
-                    showToast(
-                        "A imagem deve ter no máximo 8 MB.",
-                        "error"
-                    );
-
-                    return;
-
-                }
-
-                state.selectedImageFile =
-                    file;
-
-                const url =
-                    URL.createObjectURL(file);
-
-                state.selectedImagePreviewUrl =
-                    url;
-
-                setImagePreview(
-                    url,
-                    file.name
-                );
-
-            }
-        );
-
-    }
-
-
-    function setImagePreview(
-        src,
-        alt = "Imagem do produto"
+    function showFormMessage(
+        message,
+        type = "error"
     ) {
 
-        const preview =
-            elements.imagePreview;
-
-        if (!preview) {
+        if (!DOM.formMessage) {
             return;
         }
 
-        preview.innerHTML = `
+        DOM.formMessage.textContent =
+            message;
 
-            <img
-                src="${escapeHTML(src)}"
-                alt="${escapeHTML(alt)}"
-                class="product-form-preview-image"
-            >
-
-        `;
-
+        DOM.formMessage.className =
+            `form-message ${type}`;
     }
 
 
-    function setPreviewPlaceholder() {
+    function clearFormMessage() {
 
-        const preview =
-            elements.imagePreview;
-
-        if (!preview) {
+        if (!DOM.formMessage) {
             return;
         }
 
-        preview.innerHTML = `
+        DOM.formMessage.textContent = "";
 
+        DOM.formMessage.className =
+            "form-message";
+    }
+
+
+    /* =====================================================
+       PREVIEW DA IMAGEM
+       Sempre pequena.
+    ===================================================== */
+
+    function clearImagePreview() {
+
+        if (!DOM.imagePreview) {
+            return;
+        }
+
+        DOM.imagePreview.innerHTML = `
             <div class="image-preview-placeholder">
 
                 <i class="fa-solid fa-image"></i>
@@ -2077,38 +1824,111 @@
                 </span>
 
             </div>
-
         `;
-
     }
 
 
-    function clearSelectedImagePreview() {
+    function showImagePreview(url) {
 
-        if (
-            state.selectedImagePreviewUrl
-        ) {
-
-            try {
-
-                URL.revokeObjectURL(
-                    state.selectedImagePreviewUrl
-                );
-
-            } catch {
-                /* ignorar */
-            }
-
+        if (!DOM.imagePreview) {
+            return;
         }
 
-        state.selectedImagePreviewUrl =
-            null;
+        if (!url) {
 
+            clearImagePreview();
+
+            return;
+        }
+
+        DOM.imagePreview.innerHTML = `
+            <div class="preview-image-wrapper">
+
+                <img
+                    src="${escapeHTML(url)}"
+                    alt="Pré-visualização do produto"
+                    class="preview-product-image"
+                    onerror="
+                        this.onerror=null;
+                        this.src='${CONFIG.imagemPadrao}';
+                    "
+                >
+
+                <span class="preview-image-name">
+                    Imagem selecionada
+                </span>
+
+            </div>
+        `;
+    }
+
+
+    /* =====================================================
+       SELEÇÃO DE IMAGEM
+    ===================================================== */
+
+    function handleImageSelection(event) {
+
+        const file =
+            event.target.files?.[0];
+
+        if (!file) {
+            return;
+        }
+
+        if (
+            !CONFIG.extensoesPermitidas
+                .includes(file.type)
+        ) {
+
+            toast(
+                "Formato de imagem não permitido.",
+                "error"
+            );
+
+            event.target.value = "";
+
+            return;
+        }
+
+        const maxBytes =
+            CONFIG.maxImagemMB *
+            1024 *
+            1024;
+
+        if (file.size > maxBytes) {
+
+            toast(
+                `A imagem deve ter no máximo ${CONFIG.maxImagemMB} MB.`,
+                "error"
+            );
+
+            event.target.value = "";
+
+            return;
+        }
+
+        state.novaImagem = file;
+
+        if (state.previewUrl) {
+
+            URL.revokeObjectURL(
+                state.previewUrl
+            );
+        }
+
+        state.previewUrl =
+            URL.createObjectURL(file);
+
+        showImagePreview(
+            state.previewUrl
+        );
     }
 
 
     /* =====================================================
        UPLOAD DA IMAGEM
+       Cada produto recebe seu próprio nome.
     ===================================================== */
 
     async function uploadProductImage(
@@ -2116,47 +1936,241 @@
         productId
     ) {
 
-        const supabase =
-            getSupabase();
+        const supabase = getSupabase();
 
-        if (!supabase || !file) {
+        if (!supabase) {
+            throw new Error(
+                "Supabase não configurado."
+            );
+        }
+
+        if (!file) {
             return null;
         }
 
-        const fileName =
-            generateFileName(file);
+        const extension =
+            getFileExtension(file.name);
+
+        const safeId =
+            productId ||
+            generateId();
+
+        const filename =
+            `${safeId}-${Date.now()}${extension}`;
 
         const path =
-            `${CONFIG.IMAGE_FOLDER}/${productId}/${fileName}`;
+            `produtos/${filename}`;
 
-        const upload =
-            await supabase
-                .storage
-                .from(CONFIG.BUCKET)
-                .upload(
-                    path,
-                    file,
-                    {
-                        cacheControl: "3600",
-                        upsert: false,
-                        contentType:
-                            file.type
-                    }
-                );
+        const {
+            error: uploadError
+        } = await supabase
+            .storage
+            .from(CONFIG.bucket)
+            .upload(
+                path,
+                file,
+                {
+                    cacheControl: "3600",
+                    upsert: false,
+                    contentType: file.type
+                }
+            );
 
-        if (upload.error) {
-            throw upload.error;
+        if (uploadError) {
+            throw uploadError;
         }
 
-        const publicUrl =
-            supabase
+        const {
+            data
+        } = supabase
+            .storage
+            .from(CONFIG.bucket)
+            .getPublicUrl(path);
+
+        return data?.publicUrl || null;
+    }
+
+
+    function getFileExtension(filename) {
+
+        const match =
+            String(filename || "")
+                .match(/\.[^./\\]+$/);
+
+        if (!match) {
+            return ".jpg";
+        }
+
+        return match[0]
+            .toLowerCase();
+    }
+
+
+    /* =====================================================
+       EXCLUSÃO DA IMAGEM ANTIGA
+       Somente quando houver nova imagem.
+    ===================================================== */
+
+    async function deleteOldImageIfOwned(
+        imageUrl
+    ) {
+
+        const supabase = getSupabase();
+
+        if (
+            !supabase ||
+            !imageUrl
+        ) {
+            return;
+        }
+
+        try {
+
+            const url =
+                new URL(imageUrl);
+
+            const marker =
+                `/storage/v1/object/public/${CONFIG.bucket}/`;
+
+            const index =
+                url.pathname.indexOf(marker);
+
+            if (index === -1) {
+                return;
+            }
+
+            const path =
+                decodeURIComponent(
+                    url.pathname.slice(
+                        index + marker.length
+                    )
+                );
+
+            if (!path) {
+                return;
+            }
+
+            await supabase
                 .storage
-                .from(CONFIG.BUCKET)
-                .getPublicUrl(path);
+                .from(CONFIG.bucket)
+                .remove([path]);
 
-        return publicUrl?.data?.publicUrl ||
-            null;
+        } catch (error) {
 
+            console.warn(
+                "[EMPIRE] Não foi possível remover imagem antiga:",
+                error
+            );
+        }
+    }
+
+
+    /* =====================================================
+       VALIDAR FORMULÁRIO
+    ===================================================== */
+
+    function validateForm() {
+
+        const name =
+            DOM.productName?.value.trim();
+
+        const size =
+            DOM.productSize?.value.trim();
+
+        const color =
+            DOM.productColor?.value.trim();
+
+        const category =
+            DOM.productCategory?.value.trim();
+
+        const sale =
+            number(
+                DOM.salePrice?.value
+            );
+
+        const cost =
+            number(
+                DOM.stockPrice?.value
+            );
+
+        const quantity =
+            integer(
+                DOM.productQuantity?.value
+            );
+
+        if (!name) {
+            return "Informe o nome do produto.";
+        }
+
+        if (!size) {
+            return "Informe o tamanho.";
+        }
+
+        if (!color) {
+            return "Informe a cor.";
+        }
+
+        if (!category) {
+            return "Informe a categoria.";
+        }
+
+        if (sale < 0) {
+            return "O preço de venda não pode ser negativo.";
+        }
+
+        if (cost < 0) {
+            return "O preço de custo não pode ser negativo.";
+        }
+
+        if (quantity < 0) {
+            return "A quantidade não pode ser negativa.";
+        }
+
+        return null;
+    }
+
+
+    /* =====================================================
+       VERIFICAR CÓDIGO DUPLICADO
+    ===================================================== */
+
+    async function barcodeExists(
+        barcode,
+        currentId = null
+    ) {
+
+        if (!barcode) {
+            return false;
+        }
+
+        const supabase =
+            getSupabase();
+
+        if (!supabase) {
+            return false;
+        }
+
+        const {
+            data,
+            error
+        } = await supabase
+            .from(CONFIG.tabela)
+            .select("id")
+            .eq(
+                "codigo_barras",
+                barcode
+            )
+            .limit(10);
+
+        if (error) {
+            throw error;
+        }
+
+        return (data || []).some(
+            row =>
+                String(row.id) !==
+                String(currentId || "")
+        );
     }
 
 
@@ -2164,13 +2178,26 @@
        SALVAR PRODUTO
     ===================================================== */
 
-    async function saveProduct(
-        event
-    ) {
+    async function saveProduct(event) {
 
         event.preventDefault();
 
-        if (state.saving) {
+        if (state.salvando) {
+            return;
+        }
+
+        clearFormMessage();
+
+        const validation =
+            validateForm();
+
+        if (validation) {
+
+            showFormMessage(
+                validation,
+                "error"
+            );
+
             return;
         }
 
@@ -2179,263 +2206,143 @@
 
         if (!supabase) {
 
-            setFormMessage(
-                "Cliente Supabase não encontrado.",
+            showFormMessage(
+                "Supabase não está disponível.",
                 "error"
             );
 
             return;
-
         }
 
-        const name =
-            String(
-                elements.productName?.value || ""
-            ).trim();
+        state.salvando = true;
 
-        const size =
-            String(
-                elements.productSize?.value || ""
-            ).trim();
-
-        const color =
-            String(
-                elements.productColor?.value || ""
-            ).trim();
-
-        const category =
-            String(
-                elements.productCategory?.value || ""
-            ).trim();
-
-        const barcode =
-            String(
-                elements.productBarcode?.value || ""
-            )
-                .replace(/\D/g, "")
-                .trim();
-
-        const sku =
-            String(
-                elements.productSku?.value || ""
-            ).trim();
-
-        const sale =
-            number(
-                elements.salePrice?.value
-            );
-
-        const cost =
-            number(
-                elements.stockPrice?.value
-            );
-
-        const quantity =
-            integer(
-                elements.productQuantity?.value
-            );
-
-        if (!name) {
-
-            setFormMessage(
-                "Informe o nome do produto.",
-                "error"
-            );
-
-            elements.productName?.focus();
-
-            return;
-
-        }
-
-        if (!size) {
-
-            setFormMessage(
-                "Informe o tamanho.",
-                "error"
-            );
-
-            elements.productSize?.focus();
-
-            return;
-
-        }
-
-        if (!color) {
-
-            setFormMessage(
-                "Informe a cor.",
-                "error"
-            );
-
-            elements.productColor?.focus();
-
-            return;
-
-        }
-
-        if (!category) {
-
-            setFormMessage(
-                "Informe a categoria.",
-                "error"
-            );
-
-            elements.productCategory?.focus();
-
-            return;
-
-        }
-
-        if (sale < 0 || cost < 0) {
-
-            setFormMessage(
-                "Os valores não podem ser negativos.",
-                "error"
-            );
-
-            return;
-
-        }
-
-        if (quantity < 0) {
-
-            setFormMessage(
-                "A quantidade não pode ser negativa.",
-                "error"
-            );
-
-            return;
-
-        }
-
-        state.saving = true;
-
-        setFormMessage(
-            "Salvando produto..."
-        );
-
-        if (elements.saveProductButton) {
-
-            elements.saveProductButton.disabled =
-                true;
-
-            elements.saveProductButton.classList.add(
-                "loading"
-            );
-
-        }
+        setSaveButtonLoading(true);
 
         try {
 
-            const existing =
-                state.editingProduct;
-
-            const payload = {
-
-                codigo_barras:
-                    barcode || null,
-
-                sku:
-                    sku || null,
-
-                nome:
-                    name,
-
-                tamanho:
-                    size,
-
-                cor:
-                    color,
-
-                categoria:
-                    category,
-
-                preco_venda:
-                    sale,
-
-                preco_custo:
-                    cost,
-
-                quantidade:
-                    quantity,
-
-                ativo:
-                    existing?.ativo !== false
-
-            };
-
-            let productId =
-                existing?.id ||
+            const id =
+                DOM.productId?.value.trim() ||
                 null;
 
-            let savedProduct = null;
+            const barcode =
+                DOM.productBarcode?.value
+                    .trim() || null;
 
-            if (existing) {
+            const sku =
+                DOM.productSku?.value
+                    .trim() || null;
 
-                const result =
-                    await supabase
-                        .from(CONFIG.TABLE)
-                        .update(payload)
-                        .eq(
-                            "id",
-                            existing.id
-                        )
-                        .select()
-                        .single();
+            const name =
+                DOM.productName?.value
+                    .trim();
 
-                if (result.error) {
-                    throw result.error;
-                }
+            const size =
+                DOM.productSize?.value
+                    .trim();
 
-                savedProduct =
-                    result.data;
+            const color =
+                DOM.productColor?.value
+                    .trim();
 
-            } else {
+            const category =
+                DOM.productCategory?.value
+                    .trim();
 
-                const result =
-                    await supabase
-                        .from(CONFIG.TABLE)
-                        .insert(payload)
-                        .select()
-                        .single();
-
-                if (result.error) {
-                    throw result.error;
-                }
-
-                savedProduct =
-                    result.data;
-
-                productId =
-                    savedProduct.id;
-
-            }
-
-            /* ---------------------------------------------
-               IMAGEM
-            --------------------------------------------- */
-
-            if (
-                state.selectedImageFile &&
-                productId
-            ) {
-
-                setFormMessage(
-                    "Produto salvo. Enviando imagem..."
+            const sale =
+                number(
+                    DOM.salePrice?.value
                 );
 
-                const imageUrl =
-                    await uploadProductImage(
-                        state.selectedImageFile,
-                        productId
+            const cost =
+                number(
+                    DOM.stockPrice?.value
+                );
+
+            const quantity =
+                integer(
+                    DOM.productQuantity?.value
+                );
+
+            if (barcode) {
+
+                const duplicate =
+                    await barcodeExists(
+                        barcode,
+                        id
                     );
 
-                if (imageUrl) {
+                if (duplicate) {
 
-                    const imageResult =
-                        await supabase
-                            .from(CONFIG.TABLE)
+                    showFormMessage(
+                        "Este código de barras já está cadastrado em outro produto.",
+                        "error"
+                    );
+
+                    state.salvando = false;
+
+                    setSaveButtonLoading(false);
+
+                    return;
+                }
+            }
+
+            let productId =
+                id;
+
+            /* =================================================
+               PRIMEIRO CADASTRO
+               Criamos o produto antes para obter o UUID.
+            ================================================== */
+
+            if (!productId) {
+
+                const {
+                    data,
+                    error
+                } = await supabase
+                    .from(CONFIG.tabela)
+                    .insert({
+                        codigo_barras: barcode,
+                        sku: sku,
+                        nome: name,
+                        tamanho: size,
+                        cor: color,
+                        categoria: category,
+                        preco_venda: sale,
+                        preco_custo: cost,
+                        quantidade: quantity,
+                        imagem_url: null,
+                        ativo: true
+                    })
+                    .select()
+                    .single();
+
+                if (error) {
+                    throw error;
+                }
+
+                productId =
+                    data.id;
+
+                /* =============================================
+                   UPLOAD DE IMAGEM NOVA
+                ============================================= */
+
+                if (state.novaImagem) {
+
+                    const imageUrl =
+                        await uploadProductImage(
+                            state.novaImagem,
+                            productId
+                        );
+
+                    if (imageUrl) {
+
+                        const {
+                            error:
+                            imageUpdateError
+                        } = await supabase
+                            .from(CONFIG.tabela)
                             .update({
                                 imagem_url:
                                     imageUrl
@@ -2445,21 +2352,78 @@
                                 productId
                             );
 
-                    if (imageResult.error) {
-                        throw imageResult.error;
+                        if (imageUpdateError) {
+                            throw imageUpdateError;
+                        }
                     }
-
-                    savedProduct.imagem_url =
-                        imageUrl;
-
                 }
 
+            } else {
+
+                /* =================================================
+                   EDIÇÃO
+                ================================================= */
+
+                let imageUrl =
+                    state.imagemAtual ||
+                    null;
+
+                if (state.novaImagem) {
+
+                    imageUrl =
+                        await uploadProductImage(
+                            state.novaImagem,
+                            productId
+                        );
+                }
+
+                const {
+                    error
+                } = await supabase
+                    .from(CONFIG.tabela)
+                    .update({
+                        codigo_barras: barcode,
+                        sku: sku,
+                        nome: name,
+                        tamanho: size,
+                        cor: color,
+                        categoria: category,
+                        preco_venda: sale,
+                        preco_custo: cost,
+                        quantidade: quantity,
+                        imagem_url: imageUrl
+                    })
+                    .eq(
+                        "id",
+                        productId
+                    );
+
+                if (error) {
+                    throw error;
+                }
+
+                /* =============================================
+                   APAGA SOMENTE A IMAGEM ANTIGA DESTE PRODUTO
+                   E SOMENTE SE UMA NOVA FOI ENVIADA
+                ============================================= */
+
+                if (
+                    state.novaImagem &&
+                    state.imagemAtual &&
+                    state.imagemAtual !== imageUrl
+                ) {
+
+                    await deleteOldImageIfOwned(
+                        state.imagemAtual
+                    );
+                }
             }
 
-            showToast(
-                existing
+            toast(
+                id
                     ? "Produto atualizado com sucesso."
-                    : "Produto cadastrado com sucesso."
+                    : "Produto cadastrado com sucesso.",
+                "success"
             );
 
             closeProductModal();
@@ -2469,44 +2433,86 @@
         } catch (error) {
 
             console.error(
-                "[EMPIRE PRODUTOS] Salvar:",
+                "[EMPIRE] Erro ao salvar produto:",
                 error
             );
 
-            setFormMessage(
-                getErrorMessage(error),
+            let message =
+                "Não foi possível salvar o produto.";
+
+            if (
+                error?.code === "23505"
+            ) {
+                message =
+                    "Este código de barras já está cadastrado.";
+            }
+
+            if (error?.message) {
+
+                if (
+                    error.message
+                        .toLowerCase()
+                        .includes("duplicate")
+                ) {
+                    message =
+                        "Este código de barras já está cadastrado.";
+                }
+            }
+
+            showFormMessage(
+                message,
                 "error"
             );
 
-            showToast(
-                getErrorMessage(error),
+            toast(
+                message,
                 "error"
             );
 
         } finally {
 
-            state.saving = false;
+            state.salvando = false;
 
-            if (
-                elements.saveProductButton
-            ) {
-
-                elements.saveProductButton.disabled =
-                    false;
-
-                elements.saveProductButton.classList.remove(
-                    "loading"
-                );
-
-            }
-
+            setSaveButtonLoading(false);
         }
-
     }
 
 
     /* =====================================================
-       VISUALIZAÇÃO
+       BOTÃO SALVAR
+    ===================================================== */
+
+    function setSaveButtonLoading(loading) {
+
+        if (!DOM.saveProductButton) {
+            return;
+        }
+
+        if (loading) {
+
+            DOM.saveProductButton.disabled =
+                true;
+
+            DOM.saveProductButton.innerHTML = `
+                <i class="fa-solid fa-spinner fa-spin"></i>
+                Salvando...
+            `;
+
+        } else {
+
+            DOM.saveProductButton.disabled =
+                false;
+
+            DOM.saveProductButton.innerHTML = `
+                <i class="fa-solid fa-check"></i>
+                Salvar Produto
+            `;
+        }
+    }
+
+
+    /* =====================================================
+       VISUALIZAR PRODUTO
     ===================================================== */
 
     function openViewModal(product) {
@@ -2515,185 +2521,179 @@
             return;
         }
 
-        state.currentViewProduct =
-            product;
+        if (DOM.viewCategory) {
+            DOM.viewCategory.textContent =
+                product.categoria ||
+                "PRODUTO";
+        }
 
-        setText(
-            elements.viewCategory,
-            product.categoria ||
-            "PRODUTO"
-        );
+        if (DOM.viewName) {
+            DOM.viewName.textContent =
+                product.nome ||
+                "Produto";
+        }
 
-        setText(
-            elements.viewName,
-            product.nome ||
-            "Produto"
-        );
+        if (DOM.viewDescription) {
 
-        setText(
-            elements.viewDescription,
-            `${product.tamanho || "—"} • ${
-                product.cor || "—"
-            }`
-        );
+            DOM.viewDescription.textContent =
+                `${product.tamanho || "—"} • ${product.cor || "—"}`;
+        }
 
-        setText(
-            elements.viewBarcode,
-            product.codigo_barras ||
-            "—"
-        );
+        if (DOM.viewBarcode) {
+            DOM.viewBarcode.textContent =
+                product.codigo_barras ||
+                "—";
+        }
 
-        setText(
-            elements.viewSku,
-            product.sku ||
-            "—"
-        );
+        if (DOM.viewSku) {
+            DOM.viewSku.textContent =
+                product.sku ||
+                "—";
+        }
 
-        setText(
-            elements.viewSize,
-            product.tamanho ||
-            "—"
-        );
+        if (DOM.viewSize) {
+            DOM.viewSize.textContent =
+                product.tamanho ||
+                "—";
+        }
 
-        setText(
-            elements.viewColor,
-            product.cor ||
-            "—"
-        );
+        if (DOM.viewColor) {
+            DOM.viewColor.textContent =
+                product.cor ||
+                "—";
+        }
 
-        setText(
-            elements.viewCategoryText,
-            product.categoria ||
-            "—"
-        );
+        if (DOM.viewCategoryText) {
+            DOM.viewCategoryText.textContent =
+                product.categoria ||
+                "—";
+        }
 
-        setText(
-            elements.viewSale,
-            currency(
-                product.preco_venda
-            )
-        );
+        if (DOM.viewSale) {
+            DOM.viewSale.textContent =
+                formatCurrency(
+                    product.preco_venda
+                );
+        }
 
-        setText(
-            elements.viewCost,
-            currency(
-                product.preco_custo
-            )
-        );
+        if (DOM.viewCost) {
+            DOM.viewCost.textContent =
+                formatCurrency(
+                    product.preco_custo
+                );
+        }
 
-        setText(
-            elements.viewStock,
-            formatNumber(
-                product.quantidade
-            )
-        );
+        if (DOM.viewStock) {
 
-        const level =
-            getStockLevel(
-                product.quantidade
-            );
+            DOM.viewStock.textContent =
+                formatNumber(
+                    product.quantidade
+                );
 
-        if (elements.viewStatus) {
+            const level =
+                getStockLevel(
+                    product.quantidade
+                );
 
-            elements.viewStatus.textContent =
+            DOM.viewStock.className =
+                `stock-${level.key}`;
+        }
+
+        if (DOM.viewStatus) {
+
+            const level =
+                getStockLevel(
+                    product.quantidade
+                );
+
+            DOM.viewStatus.textContent =
                 level.label;
 
-            elements.viewStatus.className =
-                `status-${level.key}`;
-
+            DOM.viewStatus.className =
+                level.className;
         }
 
-        renderViewImage(product);
+        if (DOM.viewImage) {
 
-        const modal =
-            elements.viewModal;
-
-        if (!modal) {
-            return;
-        }
-
-        modal.classList.add("active");
-
-        modal.setAttribute(
-            "aria-hidden",
-            "false"
-        );
-
-        document.body.classList.add(
-            "modal-open"
-        );
-
-    }
-
-
-    function renderViewImage(product) {
-
-        const container =
-            elements.viewImage;
-
-        if (!container) {
-            return;
-        }
-
-        if (product.imagem_url) {
-
-            container.innerHTML = `
-
+            DOM.viewImage.innerHTML = `
                 <img
-                    src="${escapeHTML(product.imagem_url)}"
-                    alt="${escapeHTML(product.nome || "Produto")}"
-                    loading="lazy"
-                    onerror="this.onerror=null;this.parentElement.innerHTML='<i class=&quot;fa-solid fa-box-open&quot;></i>';"
+                    src="${escapeHTML(
+                        getProductImage(product)
+                    )}"
+                    alt="${escapeHTML(
+                        product.nome
+                    )}"
+                    onerror="
+                        this.onerror=null;
+                        this.src='${CONFIG.imagemPadrao}';
+                    "
                 >
-
             `;
-
-        } else {
-
-            container.innerHTML = `
-
-                <i class="fa-solid fa-box-open"></i>
-
-            `;
-
         }
 
+        showModal(
+            DOM.viewModal
+        );
     }
 
 
     function closeViewModal() {
 
-        const modal =
-            elements.viewModal;
-
-        if (!modal) {
-            return;
-        }
-
-        modal.classList.remove("active");
-
-        modal.setAttribute(
-            "aria-hidden",
-            "true"
+        hideModal(
+            DOM.viewModal
         );
-
-        document.body.classList.remove(
-            "modal-open"
-        );
-
-        state.currentViewProduct =
-            null;
-
     }
 
 
     /* =====================================================
-       EXCLUSÃO
+       OBTER PRODUTO PELO ID
     ===================================================== */
 
-    async function deleteProduct(product) {
+    function getProductById(id) {
 
-        if (!product || state.deleting) {
+        return state.produtos.find(
+            product =>
+                String(product.id) ===
+                String(id)
+        );
+    }
+
+
+    /* =====================================================
+       EDITAR
+    ===================================================== */
+
+    function editProduct(id) {
+
+        const product =
+            getProductById(id);
+
+        if (!product) {
+
+            toast(
+                "Produto não encontrado.",
+                "error"
+            );
+
+            return;
+        }
+
+        openProductModal(
+            product
+        );
+    }
+
+
+    /* =====================================================
+       EXCLUIR
+    ===================================================== */
+
+    async function deleteProduct(id) {
+
+        const product =
+            getProductById(id);
+
+        if (!product) {
             return;
         }
 
@@ -2710,52 +2710,34 @@
             getSupabase();
 
         if (!supabase) {
-
-            showToast(
-                "Supabase não está configurado.",
-                "error"
-            );
-
             return;
-
         }
-
-        state.deleting = true;
 
         try {
 
-            /*
-             * A imagem NÃO é compartilhada entre produtos.
-             * Cada produto possui sua própria pasta:
-             *
-             * produtos/{id}/arquivo
-             *
-             * Então podemos apagar apenas a pasta daquele produto.
-             */
-
-            if (product.id) {
-
-                await deleteProductImages(
-                    product.id
+            const {
+                error
+            } = await supabase
+                .from(CONFIG.tabela)
+                .delete()
+                .eq(
+                    "id",
+                    id
                 );
 
+            if (error) {
+                throw error;
             }
 
-            const result =
-                await supabase
-                    .from(CONFIG.TABLE)
-                    .delete()
-                    .eq(
-                        "id",
-                        product.id
-                    );
+            /*
+             * A imagem não é apagada automaticamente
+             * aqui para evitar risco de apagar arquivo
+             * pertencente a outro registro.
+             */
 
-            if (result.error) {
-                throw result.error;
-            }
-
-            showToast(
-                "Produto excluído com sucesso."
+            toast(
+                "Produto excluído com sucesso.",
+                "success"
             );
 
             await loadProducts();
@@ -2763,982 +2745,23 @@
         } catch (error) {
 
             console.error(
-                "[EMPIRE PRODUTOS] Excluir:",
+                "[EMPIRE] Erro ao excluir:",
                 error
             );
 
-            showToast(
-                getErrorMessage(error),
+            toast(
+                "Não foi possível excluir o produto.",
                 "error"
             );
-
-        } finally {
-
-            state.deleting = false;
-
         }
-
-    }
-
-
-    async function deleteProductImages(
-        productId
-    ) {
-
-        const supabase =
-            getSupabase();
-
-        if (!supabase) {
-            return;
-        }
-
-        const folder =
-            `${CONFIG.IMAGE_FOLDER}/${productId}`;
-
-        const list =
-            await supabase
-                .storage
-                .from(CONFIG.BUCKET)
-                .list(
-                    folder,
-                    {
-                        limit: 100
-                    }
-                );
-
-        if (list.error) {
-
-            console.warn(
-                "[EMPIRE PRODUTOS] Não foi possível listar imagens:",
-                list.error
-            );
-
-            return;
-
-        }
-
-        const files =
-            (list.data || [])
-                .filter(
-                    item =>
-                        item?.name
-                )
-                .map(
-                    item =>
-                        `${folder}/${item.name}`
-                );
-
-        if (!files.length) {
-            return;
-        }
-
-        const remove =
-            await supabase
-                .storage
-                .from(CONFIG.BUCKET)
-                .remove(files);
-
-        if (remove.error) {
-
-            console.warn(
-                "[EMPIRE PRODUTOS] Não foi possível remover imagem:",
-                remove.error
-            );
-
-        }
-
     }
 
 
     /* =====================================================
-       CÓDIGO DE BARRAS
+       EVENTOS DA TABELA
     ===================================================== */
 
-    function cleanBarcode(value) {
-
-        return String(value ?? "")
-            .replace(/\D/g, "")
-            .slice(0, 32);
-
-    }
-
-
-    function setBarcode(value) {
-
-        const code =
-            cleanBarcode(value);
-
-        if (elements.productBarcode) {
-
-            elements.productBarcode.value =
-                code;
-
-            elements.productBarcode.dispatchEvent(
-                new Event(
-                    "input",
-                    {
-                        bubbles: true
-                    }
-                )
-            );
-
-        }
-
-        if (elements.barcodeScanner) {
-
-            elements.barcodeScanner.value =
-                code;
-
-        }
-
-    }
-
-
-    /* =====================================================
-       LEITOR FÍSICO
-    ===================================================== */
-
-    function setupPhysicalBarcodeScanner() {
-
-        const input =
-            elements.barcodeScanner;
-
-        if (!input) {
-            return;
-        }
-
-        input.addEventListener(
-            "keydown",
-            event => {
-
-                if (
-                    event.key !== "Enter"
-                ) {
-                    return;
-                }
-
-                event.preventDefault();
-
-                const code =
-                    cleanBarcode(
-                        input.value
-                    );
-
-                if (!code) {
-                    return;
-                }
-
-                handleBarcodeScanned(
-                    code,
-                    "physical"
-                );
-
-            }
-        );
-
-        input.addEventListener(
-            "input",
-            () => {
-
-                input.value =
-                    cleanBarcode(
-                        input.value
-                    );
-
-            }
-        );
-
-    }
-
-
-    async function handleBarcodeScanned(
-        code,
-        source = "scanner"
-    ) {
-
-        const barcode =
-            cleanBarcode(code);
-
-        if (!barcode) {
-            return;
-        }
-
-        setBarcode(barcode);
-
-        setBarcodeStatus(
-            source === "camera"
-                ? "Código lido"
-                : "Código recebido"
-        );
-
-        /*
-         * Se o cadastro estiver aberto,
-         * o código simplesmente preenche o campo.
-         */
-
-        if (
-            elements.productModal?.classList.contains(
-                "active"
-            )
-        ) {
-
-            showToast(
-                `Código ${barcode} preenchido.`
-            );
-
-            return;
-
-        }
-
-        /*
-         * Se estiver fora do cadastro,
-         * procurar o produto.
-         */
-
-        const product =
-            state.products.find(
-                item =>
-                    cleanBarcode(
-                        item.codigo_barras
-                    ) === barcode
-            );
-
-        if (product) {
-
-            showToast(
-                `Produto encontrado: ${product.nome}`
-            );
-
-            openViewModal(product);
-
-            return;
-
-        }
-
-        /*
-         * Se não encontrou,
-         * abre novo cadastro já com o código.
-         */
-
-        openProductModal();
-
-        setBarcode(barcode);
-
-        showToast(
-            "Código não cadastrado. Novo produto aberto."
-        );
-
-    }
-
-
-    function setBarcodeStatus(
-        text
-    ) {
-
-        setText(
-            elements.barcodeStatus,
-            text
-        );
-
-    }
-
-
-    /* =====================================================
-       CÂMERA ZXING
-    ===================================================== */
-
-    function isZXingAvailable() {
-
-        return Boolean(
-            window.ZXingBrowser &&
-            typeof window.ZXingBrowser.BrowserMultiFormatReader ===
-                "function"
-        );
-
-    }
-
-
-    async function openCamera(
-        target = "product"
-    ) {
-
-        const modal =
-            elements.cameraScannerModal;
-
-        if (!modal) {
-
-            showToast(
-                "Modal da câmera não encontrado.",
-                "error"
-            );
-
-            return;
-
-        }
-
-        state.cameraTarget =
-            target;
-
-        modal.classList.add("active");
-
-        modal.setAttribute(
-            "aria-hidden",
-            "false"
-        );
-
-        document.body.classList.add(
-            "modal-open"
-        );
-
-        setCameraLoading(
-            true,
-            "Iniciando câmera..."
-        );
-
-        setCameraStatus(
-            "Solicitando acesso à câmera..."
-        );
-
-        if (!isZXingAvailable()) {
-
-            setCameraLoading(
-                false,
-                "Leitor indisponível"
-            );
-
-            setCameraStatus(
-                "Biblioteca de leitura não foi carregada."
-            );
-
-            showToast(
-                "ZXing não foi carregado.",
-                "error"
-            );
-
-            return;
-
-        }
-
-        await stopCamera();
-
-        try {
-
-            /*
-             * Verificação explícita da câmera.
-             */
-
-            if (
-                !navigator.mediaDevices ||
-                !navigator.mediaDevices.getUserMedia
-            ) {
-
-                throw new Error(
-                    "Este navegador não permite acesso à câmera."
-                );
-
-            }
-
-            /*
-             * Solicita a câmera primeiro.
-             * Isso é importante em celular.
-             */
-
-            const stream =
-                await navigator.mediaDevices.getUserMedia({
-
-                    video: {
-                        facingMode: {
-                            ideal: "environment"
-                        },
-
-                        width: {
-                            ideal: 1280
-                        },
-
-                        height: {
-                            ideal: 720
-                        }
-                    },
-
-                    audio: false
-
-                });
-
-            state.cameraStream =
-                stream;
-
-            const video =
-                elements.barcodeCamera;
-
-            if (!video) {
-
-                throw new Error(
-                    "Elemento de vídeo da câmera não encontrado."
-                );
-
-            }
-
-            video.srcObject =
-                stream;
-
-            video.setAttribute(
-                "playsinline",
-                ""
-            );
-
-            video.muted =
-                true;
-
-            await video.play();
-
-            configureFlash(stream);
-
-            setCameraLoading(
-                false
-            );
-
-            setCameraStatus(
-                "Posicione o código de barras dentro da área."
-            );
-
-            /*
-             * Agora inicia o ZXing usando o vídeo.
-             */
-
-            const reader =
-                new window.ZXingBrowser.BrowserMultiFormatReader();
-
-            state.cameraReader =
-                reader;
-
-            state.cameraRunning =
-                true;
-
-            const controls =
-                await reader.decodeFromVideoElement(
-                    video,
-                    (result, error) => {
-
-                        if (result) {
-
-                            const text =
-                                result.getText();
-
-                            const barcode =
-                                cleanBarcode(text);
-
-                            if (barcode) {
-
-                                handleCameraResult(
-                                    barcode
-                                );
-
-                            }
-
-                        }
-
-                        /*
-                         * Erros normais de leitura são
-                         * ignorados enquanto procura.
-                         */
-
-                    }
-                );
-
-            state.cameraControls =
-                controls;
-
-        } catch (error) {
-
-            console.error(
-                "[EMPIRE PRODUTOS] Câmera:",
-                error
-            );
-
-            state.cameraRunning =
-                false;
-
-            setCameraLoading(
-                false
-            );
-
-            let message =
-                "Não foi possível iniciar a câmera.";
-
-            if (
-                error?.name ===
-                "NotAllowedError"
-            ) {
-
-                message =
-                    "Permita o acesso à câmera nas configurações do navegador.";
-
-            } else if (
-                error?.name ===
-                "NotFoundError"
-            ) {
-
-                message =
-                    "Nenhuma câmera foi encontrada neste dispositivo.";
-
-            } else if (
-                error?.name ===
-                "NotReadableError"
-            ) {
-
-                message =
-                    "A câmera está sendo usada por outro aplicativo.";
-
-            } else if (
-                error?.name ===
-                "SecurityError"
-            ) {
-
-                message =
-                    "O navegador bloqueou a câmera por segurança. Use HTTPS.";
-
-            } else if (
-                error?.message
-            ) {
-
-                message =
-                    error.message;
-
-            }
-
-            setCameraStatus(
-                message
-            );
-
-            showToast(
-                message,
-                "error"
-            );
-
-        }
-
-    }
-
-
-    async function handleCameraResult(
-        barcode
-    ) {
-
-        if (!state.cameraRunning) {
-            return;
-        }
-
-        state.cameraRunning =
-            false;
-
-        setCameraStatus(
-            `Código detectado: ${barcode}`
-        );
-
-        setCameraLoading(
-            false
-        );
-
-        setBarcode(barcode);
-
-        /*
-         * Dá tempo para o usuário ver
-         * que o código foi encontrado.
-         */
-
-        await new Promise(
-            resolve =>
-                setTimeout(
-                    resolve,
-                    CONFIG.CAMERA_DELAY
-                )
-        );
-
-        await stopCamera();
-
-        closeCamera();
-
-        if (
-            state.cameraTarget ===
-            "product"
-        ) {
-
-            /*
-             * Câmera aberta pelo botão
-             * dentro do cadastro.
-             *
-             * O código fica no campo
-             * productBarcode.
-             */
-
-            if (
-                elements.productModal?.classList.contains(
-                    "active"
-                )
-            ) {
-
-                elements.productBarcode?.focus();
-
-                showToast(
-                    "Código de barras preenchido no cadastro."
-                );
-
-            } else {
-
-                await handleBarcodeScanned(
-                    barcode,
-                    "camera"
-                );
-
-            }
-
-        } else {
-
-            await handleBarcodeScanned(
-                barcode,
-                "camera"
-            );
-
-        }
-
-    }
-
-
-    function setCameraLoading(
-        visible,
-        text = "Iniciando câmera..."
-    ) {
-
-        const loading =
-            elements.cameraLoading;
-
-        if (!loading) {
-            return;
-        }
-
-        loading.style.display =
-            visible
-                ? "flex"
-                : "none";
-
-        const span =
-            loading.querySelector("span");
-
-        if (span) {
-            span.textContent =
-                text;
-        }
-
-    }
-
-
-    function setCameraStatus(
-        text
-    ) {
-
-        setText(
-            elements.cameraStatus,
-            text
-        );
-
-    }
-
-
-    /* =====================================================
-       FLASH
-    ===================================================== */
-
-    function configureFlash(
-        stream
-    ) {
-
-        state.cameraFlashSupported =
-            false;
-
-        state.cameraFlashEnabled =
-            false;
-
-        const track =
-            stream?.getVideoTracks?.()[0];
-
-        if (!track) {
-            return;
-        }
-
-        const capabilities =
-            track.getCapabilities?.();
-
-        if (
-            capabilities &&
-            capabilities.torch
-        ) {
-
-            state.cameraFlashSupported =
-                true;
-
-        }
-
-        updateFlashButton();
-
-    }
-
-
-    async function toggleFlash() {
-
-        const stream =
-            state.cameraStream;
-
-        const track =
-            stream?.getVideoTracks?.()[0];
-
-        if (
-            !track ||
-            !state.cameraFlashSupported
-        ) {
-
-            showToast(
-                "A lanterna não é compatível com esta câmera.",
-                "warning"
-            );
-
-            return;
-
-        }
-
-        state.cameraFlashEnabled =
-            !state.cameraFlashEnabled;
-
-        try {
-
-            await track.applyConstraints({
-
-                advanced: [
-                    {
-                        torch:
-                            state.cameraFlashEnabled
-                    }
-                ]
-
-            });
-
-            updateFlashButton();
-
-        } catch (error) {
-
-            state.cameraFlashEnabled =
-                false;
-
-            updateFlashButton();
-
-            console.warn(
-                "[EMPIRE PRODUTOS] Flash:",
-                error
-            );
-
-            showToast(
-                "Não foi possível controlar a lanterna.",
-                "warning"
-            );
-
-        }
-
-    }
-
-
-    function updateFlashButton() {
-
-        const button =
-            elements.toggleFlash;
-
-        if (!button) {
-            return;
-        }
-
-        button.disabled =
-            !state.cameraFlashSupported;
-
-        button.classList.toggle(
-            "active",
-            state.cameraFlashEnabled
-        );
-
-        if (
-            state.cameraFlashSupported
-        ) {
-
-            button.innerHTML = `
-
-                <i class="fa-solid fa-bolt"></i>
-
-                ${state.cameraFlashEnabled
-                    ? "Desligar lanterna"
-                    : "Lanterna"}
-
-            `;
-
-        } else {
-
-            button.innerHTML = `
-
-                <i class="fa-solid fa-bolt"></i>
-
-                Lanterna
-
-            `;
-
-        }
-
-    }
-
-
-    /* =====================================================
-       FECHAR CÂMERA
-    ===================================================== */
-
-    async function stopCamera() {
-
-        state.cameraRunning =
-            false;
-
-        try {
-
-            if (
-                state.cameraControls &&
-                typeof state.cameraControls.stop ===
-                    "function"
-            ) {
-
-                state.cameraControls.stop();
-
-            }
-
-        } catch (error) {
-
-            console.warn(
-                "[EMPIRE PRODUTOS] Stop controls:",
-                error
-            );
-
-        }
-
-        state.cameraControls =
-            null;
-
-        try {
-
-            if (
-                state.cameraReader &&
-                typeof state.cameraReader.reset ===
-                    "function"
-            ) {
-
-                state.cameraReader.reset();
-
-            }
-
-        } catch (error) {
-
-            console.warn(
-                "[EMPIRE PRODUTOS] Reset ZXing:",
-                error
-            );
-
-        }
-
-        state.cameraReader =
-            null;
-
-        const video =
-            elements.barcodeCamera;
-
-        if (video) {
-
-            try {
-                video.pause();
-            } catch {
-                /* ignorar */
-            }
-
-            video.srcObject =
-                null;
-
-        }
-
-        if (state.cameraStream) {
-
-            state.cameraStream
-                .getTracks()
-                .forEach(track => {
-
-                    try {
-                        track.stop();
-                    } catch {
-                        /* ignorar */
-                    }
-
-                });
-
-        }
-
-        state.cameraStream =
-            null;
-
-        state.cameraFlashSupported =
-            false;
-
-        state.cameraFlashEnabled =
-            false;
-
-        updateFlashButton();
-
-    }
-
-
-    async function closeCamera() {
-
-        await stopCamera();
-
-        const modal =
-            elements.cameraScannerModal;
-
-        if (!modal) {
-            return;
-        }
-
-        modal.classList.remove(
-            "active"
-        );
-
-        modal.setAttribute(
-            "aria-hidden",
-            "true"
-        );
-
-        document.body.classList.remove(
-            "modal-open"
-        );
-
-    }
-
-
-    /* =====================================================
-       AÇÕES DA TABELA
-    ===================================================== */
-
-    function findProduct(id) {
-
-        return state.products.find(
-            product =>
-                String(product.id) ===
-                String(id)
-        );
-
-    }
-
-
-    function handleTableAction(
-        event
-    ) {
+    function handleTableClick(event) {
 
         const button =
             event.target.closest(
@@ -3755,271 +2778,43 @@
         const id =
             button.dataset.id;
 
-        const product =
-            findProduct(id);
-
-        if (!product) {
-
-            showToast(
-                "Produto não encontrado.",
-                "error"
-            );
-
+        if (!id) {
             return;
-
         }
 
         if (action === "view") {
-
-            openViewModal(product);
-
+            openViewModal(
+                getProductById(id)
+            );
         }
 
         if (action === "edit") {
-
-            openProductModal(product);
-
+            editProduct(id);
         }
 
         if (action === "delete") {
-
-            deleteProduct(product);
-
+            deleteProduct(id);
         }
-
     }
 
 
     /* =====================================================
-       EVENTOS
+       CÓDIGO DE BARRAS — LEITOR FÍSICO
     ===================================================== */
 
-    function setupEvents() {
+    function setupBarcodeInput() {
 
-        /*
-         * Novo produto
-         */
+        if (!DOM.barcodeScanner) {
+            return;
+        }
 
-        elements.addProductButton?.addEventListener(
-            "click",
-            () => openProductModal()
-        );
-
-
-        /*
-         * Fechar produto
-         */
-
-        elements.closeModal?.addEventListener(
-            "click",
-            closeProductModal
-        );
-
-        elements.cancelProduct?.addEventListener(
-            "click",
-            closeProductModal
-        );
-
-
-        /*
-         * Overlay produto
-         */
-
-        document.querySelector(
-            "[data-close-modal]"
-        )?.addEventListener(
-            "click",
-            closeProductModal
-        );
-
-
-        /*
-         * Formulário
-         */
-
-        elements.productForm?.addEventListener(
-            "submit",
-            saveProduct
-        );
-
-
-        /*
-         * Tabela
-         */
-
-        elements.productsTable?.addEventListener(
-            "click",
-            handleTableAction
-        );
-
-
-        /*
-         * Visualização
-         */
-
-        elements.closeViewModal?.addEventListener(
-            "click",
-            closeViewModal
-        );
-
-        document.querySelector(
-            "[data-close-view]"
-        )?.addEventListener(
-            "click",
-            closeViewModal
-        );
-
-
-        /*
-         * Notificações
-         */
-
-        elements.notificationButton?.addEventListener(
-            "click",
-            toggleNotifications
-        );
-
-        elements.closeNotifications?.addEventListener(
-            "click",
-            () => {
-
-                elements.notificationPanel
-                    ?.classList.remove(
-                        "active"
-                    );
-
-            }
-        );
-
-
-        /*
-         * Logout
-         */
-
-        elements.logoutButton?.addEventListener(
-            "click",
-            handleLogout
-        );
-
-
-        /*
-         * Câmera da barra superior
-         */
-
-        elements.openCameraScanner?.addEventListener(
-            "click",
-            () => openCamera("search")
-        );
-
-
-        /*
-         * Câmera dentro do cadastro
-         *
-         * ESTE É O BOTÃO:
-         * "Ler código"
-         */
-
-        elements.openProductCamera?.addEventListener(
-            "click",
-            () => {
-
-                /*
-                 * Garante que o cadastro esteja
-                 * aberto antes de iniciar a câmera.
-                 */
-
-                if (
-                    !elements.productModal?.classList.contains(
-                        "active"
-                    )
-                ) {
-
-                    openProductModal();
-
-                }
-
-                state.cameraTarget =
-                    "product";
-
-                openCamera(
-                    "product"
-                );
-
-            }
-        );
-
-
-        /*
-         * Fechar câmera
-         */
-
-        elements.closeCameraScanner?.addEventListener(
-            "click",
-            closeCamera
-        );
-
-        elements.closeCameraButton?.addEventListener(
-            "click",
-            closeCamera
-        );
-
-        elements.closeCameraScannerOverlay?.addEventListener(
-            "click",
-            closeCamera
-        );
-
-
-        /*
-         * Flash
-         */
-
-        elements.toggleFlash?.addEventListener(
-            "click",
-            toggleFlash
-        );
-
-
-        /*
-         * Focar código
-         */
-
-        elements.focusBarcode?.addEventListener(
-            "click",
-            () => {
-
-                elements.productBarcode?.focus();
-
-            }
-        );
-
-
-        /*
-         * Código do cadastro
-         */
-
-        elements.productBarcode?.addEventListener(
-            "input",
-            event => {
-
-                event.target.value =
-                    cleanBarcode(
-                        event.target.value
-                    );
-
-            }
-        );
-
-
-        /*
-         * Enter no código do cadastro
-         */
-
-        elements.productBarcode?.addEventListener(
+        DOM.barcodeScanner.addEventListener(
             "keydown",
-            event => {
+            async event => {
 
                 if (
-                    event.key !== "Enter"
+                    event.key !==
+                    "Enter"
                 ) {
                     return;
                 }
@@ -4027,519 +2822,1105 @@
                 event.preventDefault();
 
                 const code =
-                    cleanBarcode(
-                        event.target.value
-                    );
+                    DOM.barcodeScanner.value
+                        .trim();
 
-                if (code) {
-
-                    handleBarcodeScanned(
-                        code,
-                        "physical"
-                    );
-
-                }
-
-            }
-        );
-
-
-        /*
-         * ESC
-         */
-
-        document.addEventListener(
-            "keydown",
-            async event => {
-
-                if (
-                    event.key !== "Escape"
-                ) {
+                if (!code) {
                     return;
                 }
 
-                if (
-                    elements.cameraScannerModal?.classList.contains(
-                        "active"
-                    )
-                ) {
-
-                    await closeCamera();
-
-                    return;
-
-                }
-
-                if (
-                    elements.productModal?.classList.contains(
-                        "active"
-                    )
-                ) {
-
-                    closeProductModal();
-
-                    return;
-
-                }
-
-                if (
-                    elements.viewModal?.classList.contains(
-                        "active"
-                    )
-                ) {
-
-                    closeViewModal();
-
-                }
-
+                await processBarcode(
+                    code,
+                    "top"
+                );
             }
         );
 
-
-        /*
-         * Quando a página perde visibilidade,
-         * encerra a câmera.
-         */
-
-        document.addEventListener(
-            "visibilitychange",
-            async () => {
-
-                if (
-                    document.hidden &&
-                    state.cameraRunning
-                ) {
-
-                    await stopCamera();
-
-                }
-
-            }
-        );
-
-
-        /*
-         * Antes de sair da página.
-         */
-
-        window.addEventListener(
-            "beforeunload",
+        DOM.barcodeScanner.addEventListener(
+            "input",
             () => {
 
-                stopCamera();
+                if (
+                    DOM.barcodeStatus
+                ) {
 
+                    DOM.barcodeStatus.textContent =
+                        DOM.barcodeScanner.value
+                            ? "Lendo..."
+                            : "Pronto";
+                }
             }
         );
-
     }
 
 
     /* =====================================================
-       LOGOUT
+       PROCESSAR CÓDIGO
     ===================================================== */
 
-    function handleLogout() {
+    async function processBarcode(
+        barcode,
+        source = "camera"
+    ) {
 
-        const confirmed =
-            window.confirm(
-                "Deseja sair do sistema?"
+        const code =
+            String(barcode || "")
+                .replace(/\D/g, "")
+                .trim();
+
+        if (!code) {
+            return;
+        }
+
+        if (
+            source === "top" &&
+            DOM.barcodeScanner
+        ) {
+
+            DOM.barcodeScanner.value =
+                code;
+        }
+
+        if (DOM.barcodeStatus) {
+
+            DOM.barcodeStatus.textContent =
+                "Buscando...";
+        }
+
+        const product =
+            state.produtos.find(
+                p =>
+                    String(
+                        p.codigo_barras || ""
+                    ) === code
             );
 
-        if (!confirmed) {
+        if (product) {
+
+            if (DOM.barcodeStatus) {
+                DOM.barcodeStatus.textContent =
+                    "Encontrado";
+            }
+
+            toast(
+                `Produto encontrado: ${product.nome}`,
+                "success"
+            );
+
+            openViewModal(
+                product
+            );
+
+            return product;
+        }
+
+        if (DOM.barcodeStatus) {
+            DOM.barcodeStatus.textContent =
+                "Novo código";
+        }
+
+        /*
+         * Se estiver no cadastro, preenche o campo.
+         */
+
+        if (
+            state.cameraTarget ===
+            "form"
+        ) {
+
+            if (DOM.productBarcode) {
+
+                DOM.productBarcode.value =
+                    code;
+
+                DOM.productBarcode.focus();
+
+                toast(
+                    "Código de barras preenchido.",
+                    "success"
+                );
+            }
+
+            return null;
+        }
+
+        toast(
+            "Nenhum produto encontrado para este código.",
+            "warning"
+        );
+
+        return null;
+    }
+
+
+    /* =====================================================
+       CÂMERA
+    ===================================================== */
+
+    function isZXingAvailable() {
+
+        return Boolean(
+            window.ZXingBrowser
+        );
+    }
+
+
+    async function openCamera(
+        target = "form"
+    ) {
+
+        if (!DOM.cameraModal) {
+            return;
+        }
+
+        state.cameraTarget =
+            target;
+
+        state.cameraAberta =
+            true;
+
+        showModal(
+            DOM.cameraModal
+        );
+
+        setCameraStatus(
+            "Iniciando câmera..."
+        );
+
+        setCameraLoading(
+            true
+        );
+
+        if (!isZXingAvailable()) {
+
+            setCameraLoading(
+                false
+            );
+
+            setCameraStatus(
+                "Leitor de câmera não carregado."
+            );
+
+            toast(
+                "Biblioteca da câmera não foi carregada.",
+                "error"
+            );
+
             return;
         }
 
         try {
 
-            localStorage.removeItem(
-                "empire_user"
+            await stopCamera();
+
+            const constraints = {
+                audio: false,
+                video: {
+                    facingMode: {
+                        ideal: "environment"
+                    },
+                    width: {
+                        ideal: 1280
+                    },
+                    height: {
+                        ideal: 720
+                    }
+                }
+            };
+
+            const stream =
+                await navigator.mediaDevices
+                    .getUserMedia(
+                        constraints
+                    );
+
+            state.cameraStream =
+                stream;
+
+            if (DOM.cameraVideo) {
+
+                DOM.cameraVideo.srcObject =
+                    stream;
+
+                await DOM.cameraVideo.play();
+            }
+
+            setupZXingReader();
+
+            setCameraLoading(
+                false
             );
 
-            localStorage.removeItem(
-                "usuario"
+            setCameraStatus(
+                "Aponte a câmera para o código de barras."
             );
 
-            localStorage.removeItem(
-                "user"
+        } catch (error) {
+
+            console.error(
+                "[EMPIRE] Erro ao abrir câmera:",
+                error
             );
 
-            localStorage.removeItem(
-                "supabase.auth.token"
+            setCameraLoading(
+                false
             );
 
-        } catch {
-            /* ignorar */
+            let message =
+                "Não foi possível acessar a câmera.";
+
+            if (
+                error?.name ===
+                "NotAllowedError"
+            ) {
+
+                message =
+                    "Permita o acesso à câmera para usar o leitor.";
+
+            } else if (
+                error?.name ===
+                "NotFoundError"
+            ) {
+
+                message =
+                    "Nenhuma câmera foi encontrada.";
+
+            } else if (
+                error?.name ===
+                "NotReadableError"
+            ) {
+
+                message =
+                    "A câmera está sendo usada por outro aplicativo.";
+
+            } else if (
+                !window.isSecureContext
+            ) {
+
+                message =
+                    "A câmera precisa de HTTPS ou localhost.";
+            }
+
+            setCameraStatus(
+                message
+            );
+
+            toast(
+                message,
+                "error",
+                5000
+            );
         }
-
-        window.location.href =
-            "../../index.html";
-
     }
 
 
     /* =====================================================
-       ÚLTIMA ATUALIZAÇÃO
+       ZXING
     ===================================================== */
 
-    function updateLastUpdate() {
+    function setupZXingReader() {
 
-        if (!elements.lastUpdate) {
+        if (!isZXingAvailable()) {
             return;
         }
 
-        elements.lastUpdate.textContent =
-            new Date().toLocaleString(
-                "pt-BR",
-                {
-                    dateStyle: "short",
-                    timeStyle: "short"
+        try {
+
+            if (
+                state.cameraControls &&
+                typeof state.cameraControls.stop ===
+                "function"
+            ) {
+
+                state.cameraControls.stop();
+
+                state.cameraControls =
+                    null;
+            }
+
+            const reader =
+                new ZXingBrowser.BrowserMultiFormatReader();
+
+            state.cameraReader =
+                reader;
+
+            const formats =
+                [
+                    ZXingBrowser.BarcodeFormat
+                        ?.EAN_13,
+
+                    ZXingBrowser.BarcodeFormat
+                        ?.EAN_8,
+
+                    ZXingBrowser.BarcodeFormat
+                        ?.UPC_A,
+
+                    ZXingBrowser.BarcodeFormat
+                        ?.UPC_E,
+
+                    ZXingBrowser.BarcodeFormat
+                        ?.CODE_128,
+
+                    ZXingBrowser.BarcodeFormat
+                        ?.CODE_39,
+
+                    ZXingBrowser.BarcodeFormat
+                        ?.ITF,
+
+                    ZXingBrowser.BarcodeFormat
+                        ?.CODABAR
+                ]
+                .filter(Boolean);
+
+            let started = false;
+
+            /*
+             * Algumas versões do ZXing aceitam
+             * hints e outras não.
+             */
+
+            try {
+
+                if (
+                    typeof reader.decodeFromStream ===
+                    "function" &&
+                    state.cameraStream
+                ) {
+
+                    reader.decodeFromStream(
+                        state.cameraStream,
+                        DOM.cameraVideo,
+                        result => {
+
+                            if (!result) {
+                                return;
+                            }
+
+                            const text =
+                                result.getText?.() ||
+                                result.text ||
+                                "";
+
+                            if (text) {
+                                onBarcodeDetected(
+                                    text
+                                );
+                            }
+                        }
+                    );
+
+                    started = true;
                 }
+
+            } catch (streamError) {
+
+                console.warn(
+                    "[EMPIRE] decodeFromStream falhou:",
+                    streamError
+                );
+            }
+
+            if (started) {
+                return;
+            }
+
+            /*
+             * Fallback para decodeFromVideoDevice.
+             */
+
+            if (
+                typeof reader.decodeFromVideoDevice ===
+                "function"
+            ) {
+
+                state.cameraControls =
+                    reader.decodeFromVideoDevice(
+                        undefined,
+                        DOM.cameraVideo,
+                        result => {
+
+                            if (!result) {
+                                return;
+                            }
+
+                            const text =
+                                result.getText?.() ||
+                                result.text ||
+                                "";
+
+                            if (text) {
+                                onBarcodeDetected(
+                                    text
+                                );
+                            }
+                        }
+                    );
+            }
+
+        } catch (error) {
+
+            console.error(
+                "[EMPIRE] Erro ZXing:",
+                error
             );
 
+            setCameraStatus(
+                "Não foi possível iniciar o leitor."
+            );
+        }
     }
 
 
     /* =====================================================
-       ESTILOS AUXILIARES PARA IMAGEM
-       Evita imagem gigante caso o CSS antigo
-       esteja causando problemas.
+       CÓDIGO DETECTADO
     ===================================================== */
 
-    function injectImageSafetyStyles() {
+    let lastDetectedCode = "";
+    let lastDetectedTime = 0;
+
+
+    async function onBarcodeDetected(
+        value
+    ) {
+
+        const code =
+            String(value || "")
+                .replace(/\D/g, "")
+                .trim();
+
+        if (!code) {
+            return;
+        }
+
+        const now =
+            Date.now();
+
+        /*
+         * Evita o mesmo código ser detectado
+         * dezenas de vezes seguidas.
+         */
 
         if (
-            document.getElementById(
-                "empireProductsImageSafety"
-            )
+            code === lastDetectedCode &&
+            now - lastDetectedTime < 2500
         ) {
             return;
         }
 
-        const style =
-            document.createElement("style");
+        lastDetectedCode =
+            code;
 
-        style.id =
-            "empireProductsImageSafety";
+        lastDetectedTime =
+            now;
 
-        style.textContent = `
-
-            /* ---------------------------------------------
-               IMAGEM DA TABELA
-               Pequena e nunca gigante
-            --------------------------------------------- */
-
-            .product-image-small {
-                width: 52px !important;
-                height: 52px !important;
-                min-width: 52px !important;
-                max-width: 52px !important;
-
-                border-radius: 10px;
-
-                overflow: hidden;
-
-                display: flex;
-                align-items: center;
-                justify-content: center;
-
-                flex-shrink: 0;
-            }
-
-
-            .product-table-image {
-                width: 100% !important;
-                height: 100% !important;
-
-                max-width: 52px !important;
-                max-height: 52px !important;
-
-                object-fit: cover !important;
-
-                display: block;
-            }
-
-
-            .product-table-placeholder {
-                width: 52px;
-                height: 52px;
-
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
-
-
-            .product-table-placeholder i {
-                font-size: 20px;
-            }
-
-
-            .product-item {
-                display: flex;
-                align-items: center;
-                gap: 12px;
-            }
-
-
-            .product-info {
-                min-width: 0;
-            }
-
-
-            .product-info strong,
-            .product-info small {
-                display: block;
-
-                overflow: hidden;
-                text-overflow: ellipsis;
-                white-space: nowrap;
-            }
-
-
-            /* ---------------------------------------------
-               PREVIEW DO FORMULÁRIO
-            --------------------------------------------- */
-
-            .product-form-preview-image {
-                display: block;
-
-                width: 120px !important;
-                height: 120px !important;
-
-                max-width: 120px !important;
-                max-height: 120px !important;
-
-                object-fit: cover !important;
-
-                border-radius: 14px;
-
-                margin: 0 auto;
-            }
-
-
-            .image-preview {
-                min-height: 150px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                overflow: hidden;
-            }
-
-
-            /* ---------------------------------------------
-               IMAGEM DO MODAL DE VISUALIZAÇÃO
-            --------------------------------------------- */
-
-            .view-image img {
-                width: 180px !important;
-                height: 180px !important;
-
-                max-width: 180px !important;
-                max-height: 180px !important;
-
-                object-fit: cover !important;
-
-                border-radius: 16px;
-            }
-
-
-            /* ---------------------------------------------
-               ESTOQUE
-            --------------------------------------------- */
-
-            .stock-badge {
-                display: inline-flex;
-
-                align-items: center;
-                justify-content: center;
-
-                gap: 7px;
-
-                min-width: 70px;
-
-                padding: 7px 10px;
-
-                border-radius: 999px;
-
-                font-weight: 700;
-            }
-
-
-            .stock-badge.stock-low {
-                color: #ff6464;
-            }
-
-
-            .stock-badge.stock-medium {
-                color: #e8bd42;
-            }
-
-
-            .stock-badge.stock-high {
-                color: #54d98b;
-            }
-
-
-            /* ---------------------------------------------
-               GRÁFICO
-            --------------------------------------------- */
-
-            .stock-chart-list {
-                width: 100%;
-                display: flex;
-                flex-direction: column;
-                gap: 16px;
-            }
-
-
-            .chart-row {
-                width: 100%;
-            }
-
-
-            .chart-label {
-                display: flex;
-                justify-content: space-between;
-                gap: 15px;
-                margin-bottom: 7px;
-            }
-
-
-            .chart-track {
-                width: 100%;
-                height: 9px;
-
-                border-radius: 999px;
-
-                overflow: hidden;
-            }
-
-
-            .chart-bar {
-                height: 100%;
-
-                border-radius: 999px;
-
-                min-width: 4px;
-            }
-
-
-            .chart-row.chart-low .chart-bar,
-            .chart-bar.stock-low {
-                background: #d94b4b;
-            }
-
-
-            .chart-row.chart-medium .chart-bar,
-            .chart-bar.stock-medium {
-                background: #d9b33f;
-            }
-
-
-            .chart-row.chart-high .chart-bar,
-            .chart-bar.stock-high {
-                background: #4bc982;
-            }
-
-
-            .chart-level {
-                display: block;
-                margin-top: 5px;
-            }
-
-
-            /* ---------------------------------------------
-               STATUS DO MODAL
-            --------------------------------------------- */
-
-            .status-low {
-                color: #d94b4b !important;
-            }
-
-
-            .status-medium {
-                color: #d9b33f !important;
-            }
-
-
-            .status-high {
-                color: #4bc982 !important;
-            }
-
-
-            /* ---------------------------------------------
-               MODAIS
-            --------------------------------------------- */
-
-            body.modal-open {
-                overflow: hidden;
-            }
-
-
-            .modal.active {
-                opacity: 1;
-                visibility: visible;
-                pointer-events: auto;
-            }
-
-
-            /* ---------------------------------------------
-               CAMERA
-            --------------------------------------------- */
-
-            .camera-reader {
-                position: relative;
-                overflow: hidden;
-            }
-
-
-            .camera-reader video {
-                display: block;
-
-                width: 100% !important;
-                height: 100% !important;
-
-                object-fit: cover !important;
-
-                background: #000;
-            }
-
-
-            .camera-loading {
-                position: absolute;
-                inset: 0;
-
-                display: flex;
-                flex-direction: column;
-
-                align-items: center;
-                justify-content: center;
-
-                gap: 10px;
-            }
-
-
-            .camera-status {
-                min-height: 24px;
-            }
-
-
-            /* ---------------------------------------------
-               BOTÃO FLASH
-            --------------------------------------------- */
-
-            #toggleFlash:disabled {
-                opacity: .45;
-                cursor: not-allowed;
-            }
-
-        `;
-
-        document.head.appendChild(
-            style
+        setCameraStatus(
+            `Código detectado: ${code}`
         );
 
+        if (state.cameraTarget === "form") {
+
+            if (DOM.productBarcode) {
+
+                DOM.productBarcode.value =
+                    code;
+            }
+
+            toast(
+                "Código de barras lido com sucesso.",
+                "success"
+            );
+
+            setTimeout(() => {
+                closeCamera();
+            }, 500);
+
+            return;
+        }
+
+        await processBarcode(
+            code,
+            "camera"
+        );
     }
+
+
+    /* =====================================================
+       CAMERA STATUS
+    ===================================================== */
+
+    function setCameraStatus(message) {
+
+        if (!DOM.cameraStatus) {
+            return;
+        }
+
+        DOM.cameraStatus.textContent =
+            message;
+    }
+
+
+    function setCameraLoading(loading) {
+
+        if (!DOM.cameraLoading) {
+            return;
+        }
+
+        DOM.cameraLoading.style.display =
+            loading
+                ? ""
+                : "none";
+    }
+
+
+    /* =====================================================
+       PARAR CÂMERA
+    ===================================================== */
+
+    async function stopCamera() {
+
+        try {
+
+            if (
+                state.cameraControls &&
+                typeof state.cameraControls.stop ===
+                "function"
+            ) {
+
+                state.cameraControls.stop();
+            }
+
+        } catch (error) {
+
+            console.warn(
+                "[EMPIRE] Erro ao parar ZXing:",
+                error
+            );
+        }
+
+        state.cameraControls =
+            null;
+
+        try {
+
+            if (
+                state.cameraReader &&
+                typeof state.cameraReader.reset ===
+                "function"
+            ) {
+
+                state.cameraReader.reset();
+            }
+
+        } catch (error) {
+
+            console.warn(
+                "[EMPIRE] Erro ao resetar leitor:",
+                error
+            );
+        }
+
+        state.cameraReader =
+            null;
+
+        if (state.cameraStream) {
+
+            state.cameraStream
+                .getTracks()
+                .forEach(track => {
+
+                    try {
+                        track.stop();
+                    } catch (_) {}
+
+                });
+        }
+
+        state.cameraStream =
+            null;
+
+        if (DOM.cameraVideo) {
+
+            DOM.cameraVideo.pause();
+
+            DOM.cameraVideo.srcObject =
+                null;
+        }
+
+        state.flashLigado =
+            false;
+    }
+
+
+    /* =====================================================
+       FECHAR CÂMERA
+    ===================================================== */
+
+    async function closeCamera() {
+
+        await stopCamera();
+
+        state.cameraAberta =
+            false;
+
+        hideModal(
+            DOM.cameraModal
+        );
+
+        setCameraLoading(
+            false
+        );
+
+        setCameraStatus(
+            "Posicione o código de barras dentro da área de leitura."
+        );
+    }
+
+
+    /* =====================================================
+       LANTERNA
+    ===================================================== */
+
+    async function toggleFlash() {
+
+        const track =
+            state.cameraStream
+                ?.getVideoTracks?.()[0];
+
+        if (!track) {
+
+            toast(
+                "Câmera ainda não está disponível.",
+                "warning"
+            );
+
+            return;
+        }
+
+        const capabilities =
+            track.getCapabilities?.();
+
+        if (
+            !capabilities ||
+            !capabilities.torch
+        ) {
+
+            toast(
+                "A câmera deste dispositivo não possui lanterna controlável.",
+                "warning"
+            );
+
+            return;
+        }
+
+        state.flashLigado =
+            !state.flashLigado;
+
+        try {
+
+            await track.applyConstraints({
+                advanced: [
+                    {
+                        torch:
+                            state.flashLigado
+                    }
+                ]
+            });
+
+        } catch (error) {
+
+            console.error(
+                error
+            );
+
+            state.flashLigado =
+                !state.flashLigado;
+
+            toast(
+                "Não foi possível controlar a lanterna.",
+                "error"
+            );
+        }
+    }
+
+
+    /* =====================================================
+       FOCO NO CÓDIGO
+    ===================================================== */
+
+    function focusBarcode() {
+
+        if (!DOM.productBarcode) {
+            return;
+        }
+
+        DOM.productBarcode.focus();
+
+        DOM.productBarcode.select();
+    }
+
+
+    /* =====================================================
+       EVENTOS
+    ===================================================== */
+
+    function bindEvents() {
+
+        /* NOVO */
+
+        DOM.addProductButton
+            ?.addEventListener(
+                "click",
+                () => openProductModal()
+            );
+
+
+        /* PRODUTO */
+
+        DOM.productForm
+            ?.addEventListener(
+                "submit",
+                saveProduct
+            );
+
+
+        DOM.cancelProduct
+            ?.addEventListener(
+                "click",
+                closeProductModal
+            );
+
+
+        DOM.closeModal
+            ?.addEventListener(
+                "click",
+                closeProductModal
+            );
+
+
+        /* IMAGEM */
+
+        DOM.productImage
+            ?.addEventListener(
+                "change",
+                handleImageSelection
+            );
+
+
+        /* CAMERA DO CADASTRO */
+
+        DOM.openProductCamera
+            ?.addEventListener(
+                "click",
+                () => {
+
+                    state.cameraTarget =
+                        "form";
+
+                    openCamera(
+                        "form"
+                    );
+                }
+            );
+
+
+        /* CAMERA DO TOPO */
+
+        DOM.openCameraScanner
+            ?.addEventListener(
+                "click",
+                () => {
+
+                    state.cameraTarget =
+                        "top";
+
+                    openCamera(
+                        "top"
+                    );
+                }
+            );
+
+
+        /* FECHAR CAMERA */
+
+        DOM.closeCameraScanner
+            ?.addEventListener(
+                "click",
+                closeCamera
+            );
+
+
+        DOM.closeCameraButton
+            ?.addEventListener(
+                "click",
+                closeCamera
+            );
+
+
+        DOM.closeCameraScannerOverlay
+            ?.addEventListener(
+                "click",
+                closeCamera
+            );
+
+
+        /* LANTERNA */
+
+        DOM.toggleFlash
+            ?.addEventListener(
+                "click",
+                toggleFlash
+            );
+
+
+        /* FOCO */
+
+        DOM.focusBarcode
+            ?.addEventListener(
+                "click",
+                focusBarcode
+            );
+
+
+        /* PESQUISA */
+
+        DOM.productSearch
+            ?.addEventListener(
+                "input",
+                () => {
+
+                    clearTimeout(
+                        state.searchTimer
+                    );
+
+                    state.searchTimer =
+                        setTimeout(
+                            applyFilters,
+                            120
+                        );
+                }
+            );
+
+
+        /* CATEGORIA */
+
+        DOM.categoryFilter
+            ?.addEventListener(
+                "change",
+                applyFilters
+            );
+
+
+        /* TABELA */
+
+        DOM.productsTable
+            ?.addEventListener(
+                "click",
+                handleTableClick
+            );
+
+
+        /* VIEW */
+
+        DOM.closeViewModal
+            ?.addEventListener(
+                "click",
+                closeViewModal
+            );
+
+
+        /* OVERLAY VIEW */
+
+        DOM.viewModal
+            ?.querySelector(
+                "[data-close-view]"
+            )
+            ?.addEventListener(
+                "click",
+                closeViewModal
+            );
+
+
+        /* NOTIFICAÇÕES */
+
+        DOM.notificationButton
+            ?.addEventListener(
+                "click",
+                toggleNotifications
+            );
+
+
+        DOM.closeNotifications
+            ?.addEventListener(
+                "click",
+                closeNotifications
+            );
+
+
+        /* LOGOUT */
+
+        DOM.logoutButton
+            ?.addEventListener(
+                "click",
+                logout
+            );
+
+
+        /* LEITOR FÍSICO */
+
+        setupBarcodeInput();
+
+
+        /* ESC */
+
+        document.addEventListener(
+            "keydown",
+            event => {
+
+                if (
+                    event.key !==
+                    "Escape"
+                ) {
+                    return;
+                }
+
+                if (
+                    state.cameraAberta
+                ) {
+
+                    closeCamera();
+
+                    return;
+                }
+
+                if (
+                    DOM.viewModal
+                        ?.classList.contains("open")
+                ) {
+
+                    closeViewModal();
+
+                    return;
+                }
+
+                if (
+                    DOM.productModal
+                        ?.classList.contains("open")
+                ) {
+
+                    closeProductModal();
+
+                    return;
+                }
+
+                closeNotifications();
+            }
+        );
+
+
+        /* FECHAR NOTIFICAÇÕES AO CLICAR FORA */
+
+        document.addEventListener(
+            "click",
+            event => {
+
+                if (
+                    !DOM.notificationPanel ||
+                    !DOM.notificationPanel.classList.contains("open")
+                ) {
+                    return;
+                }
+
+                if (
+                    DOM.notificationPanel.contains(
+                        event.target
+                    ) ||
+                    DOM.notificationButton?.contains(
+                        event.target
+                    )
+                ) {
+                    return;
+                }
+
+                closeNotifications();
+            }
+        );
+    }
+
+
+    /* =====================================================
+       CORRIGIR MODAL OVERLAY
+    ===================================================== */
+
+    function setupModalOverlays() {
+
+        DOM.productModal
+            ?.querySelector(
+                "[data-close-modal]"
+            )
+            ?.addEventListener(
+                "click",
+                closeProductModal
+            );
+    }
+
+
+    /* =====================================================
+       SEGURANÇA DE CÂMERA
+    ===================================================== */
+
+    function checkCameraSupport() {
+
+        if (
+            !navigator.mediaDevices ||
+            !navigator.mediaDevices.getUserMedia
+        ) {
+
+            if (DOM.openProductCamera) {
+
+                DOM.openProductCamera.title =
+                    "Câmera não disponível neste navegador";
+            }
+
+            if (DOM.openCameraScanner) {
+
+                DOM.openCameraScanner.title =
+                    "Câmera não disponível neste navegador";
+            }
+
+            return false;
+        }
+
+        return true;
+    }
+
+
+    /* =====================================================
+       EXPOR FUNÇÕES
+       Útil para integração futura.
+    ===================================================== */
+
+    window.EMPIREProdutos = {
+
+        reload:
+            loadProducts,
+
+        openNew:
+            () => openProductModal(),
+
+        openCamera:
+            () => openCamera("form"),
+
+        closeCamera,
+
+        getProducts:
+            () => [...state.produtos],
+
+        getProduct:
+            getProductById,
+
+        refresh:
+            loadProducts
+    };
 
 
     /* =====================================================
@@ -4555,26 +3936,32 @@
         state.initialized =
             true;
 
-        cacheElements();
-
-        injectImageSafetyStyles();
-
-        loadProfileName();
+        cacheDOM();
 
         startClock();
 
-        setupEvents();
+        bindEvents();
 
-        setupSearch();
+        setupModalOverlays();
 
-        setupPhysicalBarcodeScanner();
+        checkCameraSupport();
 
-        setupImageInput();
-
-        updateFlashButton();
+        await loadProfile();
 
         await loadProducts();
 
+        /*
+         * Garante que o loader nunca fique preso.
+         */
+
+        setTimeout(
+            hideLoader,
+            300
+        );
+
+        console.log(
+            "[EMPIRE] Produtos iniciado com sucesso."
+        );
     }
 
 
@@ -4598,39 +3985,6 @@
     } else {
 
         init();
-
     }
-
-
-    /* =====================================================
-       API GLOBAL
-       Útil para outros arquivos, se necessário.
-    ===================================================== */
-
-    window.EMPIRE_PRODUCTS = {
-
-        reload:
-            loadProducts,
-
-        openNew:
-            () =>
-                openProductModal(),
-
-        openCamera:
-            () =>
-                openCamera("product"),
-
-        closeCamera:
-            closeCamera,
-
-        getProducts:
-            () =>
-                [...state.products],
-
-        getStockLevel:
-            getStockLevel
-
-    };
-
 
 })();
