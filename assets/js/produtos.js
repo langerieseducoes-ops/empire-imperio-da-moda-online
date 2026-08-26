@@ -2,723 +2,1426 @@
    EMPIRE ERP
    PRODUTOS.JS
    Gestão completa de produtos
-   ========================================================= */
+   Supabase + Código de barras + Câmera
+========================================================= */
 
 (() => {
 
     "use strict";
 
     /* =====================================================
-       ESTADO
-       ===================================================== */
+       PROTEÇÃO CONTRA DUPLA INICIALIZAÇÃO
+    ===================================================== */
 
-    let produtos = [];
-    let carregando = false;
-    let sistemaIniciado = false;
-    let intervaloRelogio = null;
+    if (window.EMPIRE_PRODUCTS_STARTED) {
+        console.warn("EMPIRE Produtos já foi iniciado.");
+        return;
+    }
+
+    window.EMPIRE_PRODUCTS_STARTED = true;
 
 
     /* =====================================================
-       ATALHO DOM
-       ===================================================== */
+       CONFIGURAÇÃO
+    ===================================================== */
+
+    const TABLE_NAME = "produtos";
+    const STORAGE_BUCKET = "produtos";
+
+    let supabaseClient = null;
+
+    let products = [];
+    let editingProductId = null;
+    let selectedImageFile = null;
+    let currentImageUrl = "";
+
+    let barcodeLookupTimer = null;
+    let lastBarcodeLookup = "";
+    let loadingProducts = false;
+
+
+    /* =====================================================
+       DOM
+    ===================================================== */
 
     const $ = (id) => document.getElementById(id);
 
 
+    const elements = {
+
+        loader: $("productsLoader"),
+
+        profileName: $("profileName"),
+
+        clock: $("systemClock"),
+
+        barcodeScanner: $("barcodeScanner"),
+        barcodeStatus: $("barcodeStatus"),
+
+        openCameraScanner: $("openCameraScanner"),
+
+        totalProducts: $("totalProducts"),
+        totalStock: $("totalStock"),
+        totalCategories: $("totalCategories"),
+        lowStock: $("lowStock"),
+
+        stockValue: $("stockValue"),
+        costValue: $("costValue"),
+        profitValue: $("profitValue"),
+
+        productCountLabel: $("productCountLabel"),
+        stockProgress: $("stockProgress"),
+
+        productSearch: $("productSearch"),
+        categoryFilter: $("categoryFilter"),
+
+        productsTable: $("productsTable"),
+
+        chartTotal: $("chartTotal"),
+        categoryChart: $("categoryChart"),
+
+        lastUpdate: $("lastUpdate"),
+
+        addProductButton: $("addProductButton"),
+
+        productModal: $("productModal"),
+        closeModal: $("closeModal"),
+        cancelProduct: $("cancelProduct"),
+
+        productForm: $("productForm"),
+
+        productId: $("productId"),
+
+        productBarcode: $("productBarcode"),
+        productSku: $("productSku"),
+        productName: $("productName"),
+        productSize: $("productSize"),
+        productColor: $("productColor"),
+        productCategory: $("productCategory"),
+
+        salePrice: $("salePrice"),
+        stockPrice: $("stockPrice"),
+        productQuantity: $("productQuantity"),
+
+        productImage: $("productImage"),
+        imagePreview: $("imagePreview"),
+
+        formMessage: $("formMessage"),
+
+        focusBarcode: $("focusBarcode"),
+
+        modalOverline: $("modalOverline"),
+        modalTitle: $("modalTitle"),
+
+        viewModal: $("viewModal"),
+        closeViewModal: $("closeViewModal"),
+
+        viewImage: $("viewImage"),
+        viewCategory: $("viewCategory"),
+        viewName: $("viewName"),
+        viewDescription: $("viewDescription"),
+
+        viewBarcode: $("viewBarcode"),
+        viewSku: $("viewSku"),
+        viewSize: $("viewSize"),
+        viewColor: $("viewColor"),
+        viewCategoryText: $("viewCategoryText"),
+
+        viewSale: $("viewSale"),
+        viewCost: $("viewCost"),
+        viewStock: $("viewStock"),
+        viewStatus: $("viewStatus"),
+
+        notificationButton: $("notificationButton"),
+        notificationCount: $("notificationCount"),
+        notificationPanel: $("notificationPanel"),
+        closeNotifications: $("closeNotifications"),
+        notificationList: $("notificationList"),
+
+        toastContainer: $("toastContainer"),
+
+        logoutButton: $("logoutButton")
+    };
+
+
+    /* =====================================================
+       INICIALIZAÇÃO
+    ===================================================== */
+
+    document.addEventListener("DOMContentLoaded", init);
+
+
+    async function init() {
+
+        try {
+
+            hideLoader();
+
+            startClock();
+
+            setupSupabase();
+
+            setupEvents();
+
+            setupCameraIntegration();
+
+            await loadProfile();
+
+            await loadProducts();
+
+            updateLastUpdate();
+
+        } catch (error) {
+
+            console.error("Erro ao iniciar Produtos:", error);
+
+            showToast(
+                "Não foi possível carregar os produtos.",
+                "error"
+            );
+
+        }
+
+    }
+
+
     /* =====================================================
        SUPABASE
-       ===================================================== */
+    ===================================================== */
 
-    function getSupabase() {
+    function setupSupabase() {
 
-        if (
-            window.supabaseClient &&
-            typeof window.supabaseClient.from === "function"
-        ) {
-            return window.supabaseClient;
+        if (window.supabaseClient) {
+
+            supabaseClient = window.supabaseClient;
+
+            return;
         }
 
-        if (
-            window.supabase &&
-            typeof window.supabase.from === "function"
-        ) {
-            return window.supabase;
+
+        if (window.SupabaseClient) {
+
+            supabaseClient = window.SupabaseClient;
+
+            return;
         }
 
-        return null;
+
+        /*
+         * Compatibilidade caso o supabase.js
+         * tenha criado outro nome.
+         */
+
+        if (
+            window.empireSupabase &&
+            typeof window.empireSupabase.from === "function"
+        ) {
+
+            supabaseClient = window.empireSupabase;
+
+            return;
+        }
+
+
+        console.error(
+            "Cliente Supabase não encontrado."
+        );
+
     }
 
 
     /* =====================================================
-       UTILIDADES
-       ===================================================== */
+       EVENTOS
+    ===================================================== */
 
-    function numero(valor) {
+    function setupEvents() {
 
-        if (
-            valor === null ||
-            valor === undefined ||
-            valor === ""
-        ) {
-            return 0;
-        }
+        /* Novo produto */
 
-        const n = Number(
-            String(valor)
-                .replace(",", ".")
+        elements.addProductButton?.addEventListener(
+            "click",
+            () => openProductModal()
         );
 
-        return Number.isFinite(n) ? n : 0;
+
+        /* Fechar modal */
+
+        elements.closeModal?.addEventListener(
+            "click",
+            closeProductModal
+        );
+
+
+        elements.cancelProduct?.addEventListener(
+            "click",
+            closeProductModal
+        );
+
+
+        /* Overlay */
+
+        document.querySelectorAll(
+            "[data-close-modal]"
+        ).forEach((overlay) => {
+
+            overlay.addEventListener(
+                "click",
+                closeProductModal
+            );
+
+        });
+
+
+        /* Formulário */
+
+        elements.productForm?.addEventListener(
+            "submit",
+            handleProductSubmit
+        );
+
+
+        /* Pesquisa */
+
+        elements.productSearch?.addEventListener(
+            "input",
+            renderProducts
+        );
+
+
+        /* Categoria */
+
+        elements.categoryFilter?.addEventListener(
+            "change",
+            renderProducts
+        );
+
+
+        /* Código do formulário */
+
+        elements.productBarcode?.addEventListener(
+            "input",
+            handleProductBarcodeInput
+        );
+
+
+        elements.productBarcode?.addEventListener(
+            "change",
+            handleProductBarcodeChange
+        );
+
+
+        elements.productBarcode?.addEventListener(
+            "blur",
+            handleProductBarcodeChange
+        );
+
+
+        /* Campo de bip */
+
+        elements.barcodeScanner?.addEventListener(
+            "keydown",
+            handleScannerKeydown
+        );
+
+
+        elements.barcodeScanner?.addEventListener(
+            "change",
+            handleScannerChange
+        );
+
+
+        elements.barcodeScanner?.addEventListener(
+            "input",
+            handleScannerInput
+        );
+
+
+        /* Botão focar código */
+
+        elements.focusBarcode?.addEventListener(
+            "click",
+            () => {
+
+                elements.productBarcode?.focus();
+
+            }
+        );
+
+
+        /* Imagem */
+
+        elements.productImage?.addEventListener(
+            "change",
+            handleImageChange
+        );
+
+
+        /* Visualização */
+
+        elements.closeViewModal?.addEventListener(
+            "click",
+            closeViewModal
+        );
+
+
+        document.querySelectorAll(
+            "[data-close-view]"
+        ).forEach((overlay) => {
+
+            overlay.addEventListener(
+                "click",
+                closeViewModal
+            );
+
+        });
+
+
+        /* Notificações */
+
+        elements.notificationButton?.addEventListener(
+            "click",
+            toggleNotifications
+        );
+
+
+        elements.closeNotifications?.addEventListener(
+            "click",
+            closeNotifications
+        );
+
+
+        /* Logout */
+
+        elements.logoutButton?.addEventListener(
+            "click",
+            handleLogout
+        );
+
+
+        /* ESC */
+
+        document.addEventListener(
+            "keydown",
+            handleGlobalKeydown
+        );
+
     }
 
 
-    function moeda(valor) {
+    /* =====================================================
+       INTEGRAÇÃO COM CÂMERA
+    ===================================================== */
 
-        return numero(valor).toLocaleString(
-            "pt-BR",
-            {
-                style: "currency",
-                currency: "BRL"
+    function setupCameraIntegration() {
+
+        /*
+         * O camera.js pode disparar este evento quando
+         * terminar uma leitura.
+         *
+         * Também deixamos compatibilidade com diferentes
+         * nomes de eventos.
+         */
+
+        document.addEventListener(
+            "empire:barcode",
+            (event) => {
+
+                const code =
+                    event?.detail?.code ||
+                    event?.detail?.barcode ||
+                    "";
+
+                if (code) {
+
+                    processScannedBarcode(code);
+
+                }
+
+            }
+        );
+
+
+        document.addEventListener(
+            "barcodeScanned",
+            (event) => {
+
+                const code =
+                    event?.detail?.code ||
+                    event?.detail?.barcode ||
+                    event?.detail ||
+                    "";
+
+                if (typeof code === "string" && code) {
+
+                    processScannedBarcode(code);
+
+                }
+
+            }
+        );
+
+
+        /*
+         * Compatibilidade caso camera.js altere
+         * diretamente o campo principal.
+         */
+
+        elements.barcodeScanner?.addEventListener(
+            "input",
+            () => {
+
+                const value =
+                    normalizeBarcode(
+                        elements.barcodeScanner.value
+                    );
+
+                if (!value) return;
+
+                /*
+                 * Não procura a cada tecla.
+                 */
+
+                clearTimeout(barcodeLookupTimer);
+
+                barcodeLookupTimer =
+                    setTimeout(() => {
+
+                        if (value.length >= 4) {
+
+                            lookupProductByBarcode(
+                                value,
+                                false
+                            );
+
+                        }
+
+                    }, 500);
+
             }
         );
 
     }
 
 
-    function escapeHTML(valor) {
-
-        return String(valor ?? "")
-            .replace(/&/g, "&amp;")
-            .replace(/</g, "&lt;")
-            .replace(/>/g, "&gt;")
-            .replace(/"/g, "&quot;")
-            .replace(/'/g, "&#039;");
-
-    }
-
-
-    function texto(valor) {
-
-        return String(valor ?? "").trim();
-
-    }
-
-
-    function quantidade(produto) {
-
-        return numero(
-            produto?.quantidade ??
-            produto?.estoque ??
-            0
-        );
-
-    }
-
-
-    function precoVenda(produto) {
-
-        return numero(
-            produto?.preco_venda ??
-            produto?.valor_venda ??
-            produto?.sale_price ??
-            0
-        );
-
-    }
-
-
-    function precoCusto(produto) {
-
-        return numero(
-            produto?.preco_custo ??
-            produto?.custo ??
-            produto?.stock_price ??
-            0
-        );
-
-    }
-
-
     /* =====================================================
-       TOAST
-       ===================================================== */
+       CÓDIGO DE BARRAS
+    ===================================================== */
 
-    function mostrarToast(
-        mensagem,
-        erro = false
-    ) {
+    function normalizeBarcode(value) {
 
-        const container =
-            $("toastContainer");
+        return String(value || "")
+            .trim()
+            .replace(/\s+/g, "")
+            .replace(/[^\dA-Za-z_-]/g, "");
 
-        if (!container) {
+    }
 
-            console.warn(mensagem);
+
+    function handleScannerKeydown(event) {
+
+        /*
+         * Leitores físicos normalmente enviam ENTER
+         * depois do código.
+         */
+
+        if (event.key === "Enter") {
+
+            event.preventDefault();
+
+            processScannedBarcode(
+                elements.barcodeScanner.value
+            );
+
+        }
+
+    }
+
+
+    function handleScannerChange() {
+
+        const code =
+            normalizeBarcode(
+                elements.barcodeScanner.value
+            );
+
+        if (code) {
+
+            processScannedBarcode(code);
+
+        }
+
+    }
+
+
+    function handleScannerInput() {
+
+        const code =
+            normalizeBarcode(
+                elements.barcodeScanner.value
+            );
+
+        if (!code) {
+
+            setBarcodeStatus("Pronto");
 
             return;
 
         }
 
-        const toast =
-            document.createElement("div");
+        /*
+         * Evita consultar o Supabase em todas as teclas.
+         */
 
-        toast.className =
-            erro
-                ? "toast error"
-                : "toast";
+        clearTimeout(barcodeLookupTimer);
 
-        toast.innerHTML = `
-            <i class="fa-solid ${
-                erro
-                    ? "fa-circle-exclamation"
-                    : "fa-circle-check"
-            }"></i>
+        barcodeLookupTimer =
+            setTimeout(() => {
 
-            <span>
-                ${escapeHTML(mensagem)}
-            </span>
-        `;
+                if (code.length >= 4) {
 
-        container.appendChild(toast);
+                    lookupProductByBarcode(
+                        code,
+                        false
+                    );
+
+                }
+
+            }, 700);
+
+    }
+
+
+    async function processScannedBarcode(rawCode) {
+
+        const code =
+            normalizeBarcode(rawCode);
+
+        if (!code) return;
+
+
+        if (code === lastBarcodeLookup) {
+
+            return;
+
+        }
+
+        lastBarcodeLookup = code;
+
+
+        if (elements.barcodeScanner) {
+
+            elements.barcodeScanner.value = code;
+
+        }
+
+
+        setBarcodeStatus(
+            "Consultando..."
+        );
+
+
+        /*
+         * Se o modal de novo produto estiver aberto,
+         * preencher o campo do cadastro.
+         */
+
+        if (
+            elements.productModal &&
+            elements.productModal.classList.contains("active")
+        ) {
+
+            if (elements.productBarcode) {
+
+                elements.productBarcode.value = code;
+
+                setFormMessage(
+                    "Código lido. Consultando produto...",
+                    "info"
+                );
+
+            }
+
+        }
+
+
+        await lookupProductByBarcode(
+            code,
+            true
+        );
+
+
+        /*
+         * Permite que o mesmo código seja lido novamente
+         * depois de algum tempo.
+         */
 
         setTimeout(() => {
 
-            toast.classList.add("hide");
+            lastBarcodeLookup = "";
 
-            setTimeout(() => {
-
-                toast.remove();
-
-            }, 300);
-
-        }, 3000);
+        }, 1200);
 
     }
 
 
-    /* =====================================================
-       RELÓGIO
-       ===================================================== */
+    async function lookupProductByBarcode(
+        code,
+        openResult = true
+    ) {
 
-    function atualizarRelogio() {
+        if (!supabaseClient) {
 
-        const elemento =
-            $("systemClock");
-
-        if (!elemento) return;
-
-        elemento.textContent =
-            new Date().toLocaleTimeString(
-                "pt-BR"
+            setBarcodeStatus(
+                "Supabase indisponível"
             );
 
-    }
+            return null;
+
+        }
 
 
-    /* =====================================================
-       LOADER
-       ===================================================== */
+        code = normalizeBarcode(code);
 
-    function esconderLoader() {
+        if (!code) return null;
 
-        const loader =
-            $("productsLoader");
-
-        if (!loader) return;
-
-        loader.classList.add("hidden");
-
-    }
-
-
-    /* =====================================================
-       PERFIL
-       ===================================================== */
-
-    function carregarPerfil() {
-
-        const elemento =
-            $("profileName");
-
-        if (!elemento) return;
 
         try {
 
-            const dados =
-                localStorage.getItem(
-                    "usuarioLogado"
-                ) ||
-                sessionStorage.getItem(
-                    "usuarioLogado"
+            const { data, error } =
+                await supabaseClient
+                    .from(TABLE_NAME)
+                    .select("*")
+                    .eq("codigo_barras", code)
+                    .maybeSingle();
+
+
+            if (error) {
+
+                console.error(
+                    "Erro ao consultar código:",
+                    error
                 );
 
-            if (!dados) return;
+                setBarcodeStatus(
+                    "Erro na consulta"
+                );
 
-            let usuario;
-
-            try {
-
-                usuario =
-                    JSON.parse(dados);
-
-            } catch {
-
-                usuario = {
-                    nome: dados
-                };
+                return null;
 
             }
 
-            const nome =
-                usuario?.nome ||
-                usuario?.usuario ||
-                usuario?.email;
 
-            if (nome) {
+            if (!data) {
 
-                elemento.textContent =
-                    nome;
+                setBarcodeStatus(
+                    "Código não cadastrado"
+                );
+
+
+                /*
+                 * Se estamos dentro do cadastro,
+                 * mantém o código e deixa o usuário
+                 * continuar criando.
+                 */
+
+                if (
+                    elements.productModal &&
+                    elements.productModal.classList.contains("active")
+                ) {
+
+                    if (elements.productBarcode) {
+
+                        elements.productBarcode.value = code;
+
+                    }
+
+                    setFormMessage(
+                        "Código não cadastrado. Você pode criar um novo produto com este código.",
+                        "info"
+                    );
+
+                } else if (openResult) {
+
+                    /*
+                     * Se veio do leitor principal,
+                     * abrir novo cadastro já com o código.
+                     */
+
+                    openProductModal();
+
+                    if (elements.productBarcode) {
+
+                        elements.productBarcode.value = code;
+
+                    }
+
+                    setFormMessage(
+                        "Código não cadastrado. Preencha os dados para criar o produto.",
+                        "info"
+                    );
+
+                }
+
+                return null;
 
             }
 
-        } catch (erro) {
 
-            console.warn(
-                "Erro ao carregar perfil:",
-                erro
+            setBarcodeStatus(
+                "Produto encontrado"
             );
 
+
+            /*
+             * Produto encontrado.
+             */
+
+            if (
+                elements.productModal &&
+                elements.productModal.classList.contains("active")
+            ) {
+
+                fillProductForm(data);
+
+                setFormMessage(
+                    "Produto encontrado. Dados preenchidos automaticamente.",
+                    "success"
+                );
+
+            } else if (openResult) {
+
+                openViewModal(data);
+
+            }
+
+
+            return data;
+
+        } catch (error) {
+
+            console.error(
+                "Erro ao buscar produto:",
+                error
+            );
+
+            setBarcodeStatus(
+                "Erro"
+            );
+
+            return null;
+
         }
+
+    }
+
+
+    /* =====================================================
+       CÓDIGO NO NOVO PRODUTO
+    ===================================================== */
+
+    function handleProductBarcodeInput() {
+
+        const code =
+            normalizeBarcode(
+                elements.productBarcode?.value
+            );
+
+
+        if (!code) {
+
+            return;
+
+        }
+
+
+        clearTimeout(barcodeLookupTimer);
+
+        barcodeLookupTimer =
+            setTimeout(() => {
+
+                if (code.length >= 4) {
+
+                    lookupProductByBarcode(
+                        code,
+                        false
+                    );
+
+                }
+
+            }, 800);
+
+    }
+
+
+    function handleProductBarcodeChange() {
+
+        const code =
+            normalizeBarcode(
+                elements.productBarcode?.value
+            );
+
+        if (!code) return;
+
+
+        lookupProductByBarcode(
+            code,
+            false
+        );
 
     }
 
 
     /* =====================================================
        CARREGAR PRODUTOS
-       ===================================================== */
+    ===================================================== */
 
-    async function carregarProdutos() {
+    async function loadProducts() {
 
-        const db =
-            getSupabase();
+        if (loadingProducts) return;
 
-        if (!db) {
+        loadingProducts = true;
 
-            esconderLoader();
 
-            mostrarToast(
-                "Supabase não foi inicializado.",
-                true
+        try {
+
+            if (!supabaseClient) {
+
+                renderEmptyTable(
+                    "Cliente Supabase não encontrado."
+                );
+
+                return;
+
+            }
+
+
+            const { data, error } =
+                await supabaseClient
+                    .from(TABLE_NAME)
+                    .select("*")
+                    .order("criado_em", {
+                        ascending: false
+                    });
+
+
+            if (error) {
+
+                throw error;
+
+            }
+
+
+            products =
+                Array.isArray(data)
+                    ? data
+                    : [];
+
+
+            populateCategoryFilter();
+
+            renderProducts();
+
+            updateMetrics();
+
+            updateNotifications();
+
+        } catch (error) {
+
+            console.error(
+                "Erro ao carregar produtos:",
+                error
+            );
+
+
+            products = [];
+
+            renderEmptyTable(
+                "Não foi possível carregar os produtos."
+            );
+
+
+            showToast(
+                "Erro ao carregar produtos.",
+                "error"
+            );
+
+        } finally {
+
+            loadingProducts = false;
+
+        }
+
+    }
+
+
+    /* =====================================================
+       RENDER TABELA
+    ===================================================== */
+
+    function renderProducts() {
+
+        if (!elements.productsTable) return;
+
+
+        const search =
+            String(
+                elements.productSearch?.value || ""
+            )
+                .trim()
+                .toLowerCase();
+
+
+        const category =
+            String(
+                elements.categoryFilter?.value || ""
+            )
+                .trim()
+                .toLowerCase();
+
+
+        let filtered =
+            products.filter((product) => {
+
+                const text = [
+
+                    product.nome,
+                    product.sku,
+                    product.codigo_barras,
+                    product.tamanho,
+                    product.cor,
+                    product.categoria
+
+                ]
+                    .filter(Boolean)
+                    .join(" ")
+                    .toLowerCase();
+
+
+                const matchesSearch =
+                    !search ||
+                    text.includes(search);
+
+
+                const matchesCategory =
+                    !category ||
+                    String(
+                        product.categoria || ""
+                    )
+                        .toLowerCase() === category;
+
+
+                return (
+                    matchesSearch &&
+                    matchesCategory
+                );
+
+            });
+
+
+        if (!filtered.length) {
+
+            renderEmptyTable(
+                products.length
+                    ? "Nenhum produto corresponde à pesquisa."
+                    : "Nenhum produto cadastrado."
             );
 
             return;
 
         }
 
-        try {
 
-            const resposta =
-                await db
-                    .from("produtos")
-                    .select("*")
-                    .order(
-                        "criado_em",
-                        {
-                            ascending: false
-                        }
-                    );
-
-            /*
-             * Algumas versões da tabela podem usar
-             * created_at em vez de criado_em.
-             */
-
-            if (
-                resposta.error &&
-                /criado_em/i.test(
-                    resposta.error.message || ""
+        elements.productsTable.innerHTML =
+            filtered
+                .map(
+                    (product) =>
+                        createProductRow(product)
                 )
-            ) {
+                .join("");
 
-                const segundaTentativa =
-                    await db
-                        .from("produtos")
-                        .select("*")
-                        .order(
-                            "created_at",
-                            {
-                                ascending: false
-                            }
-                        );
 
-                if (segundaTentativa.error) {
-
-                    throw segundaTentativa.error;
-
-                }
-
-                produtos =
-                    Array.isArray(
-                        segundaTentativa.data
-                    )
-                        ? segundaTentativa.data
-                        : [];
-
-            } else {
-
-                if (resposta.error) {
-
-                    throw resposta.error;
-
-                }
-
-                produtos =
-                    Array.isArray(
-                        resposta.data
-                    )
-                        ? resposta.data
-                        : [];
-
-            }
-
-            renderizarTudo();
-
-            atualizarNotificacoes();
-
-            atualizarUltimaAtualizacao();
-
-        } catch (erro) {
-
-            console.error(
-                "Erro ao carregar produtos:",
-                erro
-            );
-
-            produtos = [];
-
-            renderizarTudo();
-
-            mostrarToast(
-                "Não foi possível carregar os produtos.",
-                true
-            );
-
-        } finally {
-
-            esconderLoader();
-
-        }
+        attachProductRowEvents();
 
     }
 
 
-    /* =====================================================
-       ÚLTIMA ATUALIZAÇÃO
-       ===================================================== */
+    function createProductRow(product) {
 
-    function atualizarUltimaAtualizacao() {
-
-        const elemento =
-            $("lastUpdate");
-
-        if (!elemento) return;
-
-        elemento.textContent =
-            new Date().toLocaleString(
-                "pt-BR"
+        const id =
+            escapeHtml(
+                String(product.id || "")
             );
+
+
+        const name =
+            escapeHtml(
+                product.nome || "Sem nome"
+            );
+
+
+        const barcode =
+            escapeHtml(
+                product.codigo_barras || "—"
+            );
+
+
+        const sku =
+            escapeHtml(
+                product.sku || "—"
+            );
+
+
+        const size =
+            escapeHtml(
+                product.tamanho || "—"
+            );
+
+
+        const color =
+            escapeHtml(
+                product.cor || "—"
+            );
+
+
+        const category =
+            escapeHtml(
+                product.categoria || "—"
+            );
+
+
+        const sale =
+            formatCurrency(
+                product.venda
+            );
+
+
+        const cost =
+            formatCurrency(
+                product.custo
+            );
+
+
+        const quantity =
+            Number(product.quantidade || 0);
+
+
+        const stockClass =
+            quantity <= 0
+                ? "stock-empty"
+                : quantity <= 5
+                    ? "stock-low"
+                    : "stock-ok";
+
+
+        const image =
+            product.imagem
+                ? `
+                    <img
+                        class="product-thumb"
+                        src="${escapeHtml(product.imagem)}"
+                        alt="${name}"
+                        loading="lazy"
+                    >
+                `
+                : `
+                    <div class="product-thumb placeholder">
+                        <i class="fa-solid fa-box-open"></i>
+                    </div>
+                `;
+
+
+        return `
+
+            <tr data-product-id="${id}">
+
+                <td>
+
+                    <div class="product-cell">
+
+                        ${image}
+
+                        <div>
+
+                            <strong>
+                                ${name}
+                            </strong>
+
+                            <small>
+                                ${escapeHtml(
+                                    product.sku || "Sem SKU"
+                                )}
+                            </small>
+
+                        </div>
+
+                    </div>
+
+                </td>
+
+
+                <td>
+
+                    <span class="barcode-cell">
+                        ${barcode}
+                    </span>
+
+                </td>
+
+
+                <td>
+                    ${size}
+                </td>
+
+
+                <td>
+                    ${color}
+                </td>
+
+
+                <td>
+                    ${category}
+                </td>
+
+
+                <td>
+                    <strong>
+                        ${sale}
+                    </strong>
+                </td>
+
+
+                <td>
+                    ${cost}
+                </td>
+
+
+                <td>
+
+                    <span class="stock-badge ${stockClass}">
+                        ${quantity}
+                    </span>
+
+                </td>
+
+
+                <td>
+
+                    <div class="table-actions">
+
+                        <button
+                            type="button"
+                            class="action-button view-product"
+                            data-id="${id}"
+                            title="Visualizar"
+                        >
+                            <i class="fa-solid fa-eye"></i>
+                        </button>
+
+
+                        <button
+                            type="button"
+                            class="action-button edit-product"
+                            data-id="${id}"
+                            title="Editar"
+                        >
+                            <i class="fa-solid fa-pen"></i>
+                        </button>
+
+
+                        <button
+                            type="button"
+                            class="action-button delete-product"
+                            data-id="${id}"
+                            title="Excluir"
+                        >
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+
+                    </div>
+
+                </td>
+
+            </tr>
+
+        `;
 
     }
 
 
-    /* =====================================================
-       RENDERIZAÇÃO GERAL
-       ===================================================== */
+    function renderEmptyTable(message) {
 
-    function renderizarTudo() {
+        if (!elements.productsTable) return;
 
-        atualizarMetricas();
 
-        atualizarCategorias();
+        elements.productsTable.innerHTML = `
 
-        renderizarTabela();
+            <tr>
 
-        renderizarGrafico();
+                <td
+                    colspan="9"
+                    class="empty"
+                >
+
+                    <i class="fa-solid fa-box-open"></i>
+
+                    <strong>
+                        ${escapeHtml(message)}
+                    </strong>
+
+                    <span>
+                        Cadastre ou pesquise um produto.
+                    </span>
+
+                </td>
+
+            </tr>
+
+        `;
 
     }
 
 
-    /* =====================================================
-       MÉTRICAS
-       ===================================================== */
+    function attachProductRowEvents() {
 
-    function atualizarMetricas() {
+        document
+            .querySelectorAll(".view-product")
+            .forEach((button) => {
 
-        const totalProdutos =
-            produtos.length;
+                button.addEventListener(
+                    "click",
+                    () => {
 
-        const totalEstoque =
-            produtos.reduce(
-                (total, produto) => {
+                        const product =
+                            findProduct(
+                                button.dataset.id
+                            );
 
-                    return total +
-                        quantidade(produto);
+                        if (product) {
 
-                },
-                0
-            );
+                            openViewModal(product);
 
-        const categorias =
-            new Set();
+                        }
 
-        produtos.forEach(produto => {
-
-            const categoria =
-                texto(
-                    produto?.categoria
-                ).toLowerCase();
-
-            if (categoria) {
-
-                categorias.add(
-                    categoria
+                    }
                 );
 
-            }
-
-        });
-
-        const semEstoque =
-            produtos.filter(
-                produto =>
-                    quantidade(produto) <= 0
-            ).length;
-
-        const valorVenda =
-            produtos.reduce(
-                (total, produto) => {
-
-                    return total +
-                        (
-                            precoVenda(produto) *
-                            quantidade(produto)
-                        );
-
-                },
-                0
-            );
-
-        const valorCusto =
-            produtos.reduce(
-                (total, produto) => {
-
-                    return total +
-                        (
-                            precoCusto(produto) *
-                            quantidade(produto)
-                        );
-
-                },
-                0
-            );
-
-        const produtosAtivos =
-            produtos.filter(
-                produto =>
-                    quantidade(produto) > 0
-            ).length;
+            });
 
 
-        if ($("totalProducts")) {
+        document
+            .querySelectorAll(".edit-product")
+            .forEach((button) => {
 
-            $("totalProducts").textContent =
-                totalProdutos.toLocaleString(
-                    "pt-BR"
+                button.addEventListener(
+                    "click",
+                    () => {
+
+                        const product =
+                            findProduct(
+                                button.dataset.id
+                            );
+
+                        if (product) {
+
+                            openProductModal(product);
+
+                        }
+
+                    }
                 );
 
-        }
+            });
 
 
-        if ($("totalStock")) {
+        document
+            .querySelectorAll(".delete-product")
+            .forEach((button) => {
 
-            $("totalStock").textContent =
-                totalEstoque.toLocaleString(
-                    "pt-BR"
+                button.addEventListener(
+                    "click",
+                    () => {
+
+                        const product =
+                            findProduct(
+                                button.dataset.id
+                            );
+
+                        if (product) {
+
+                            deleteProduct(product);
+
+                        }
+
+                    }
                 );
 
-        }
-
-
-        if ($("totalCategories")) {
-
-            $("totalCategories").textContent =
-                categorias.size.toLocaleString(
-                    "pt-BR"
-                );
-
-        }
-
-
-        if ($("lowStock")) {
-
-            $("lowStock").textContent =
-                semEstoque.toLocaleString(
-                    "pt-BR"
-                );
-
-        }
-
-
-        if ($("stockValue")) {
-
-            $("stockValue").textContent =
-                moeda(valorVenda);
-
-        }
-
-
-        if ($("costValue")) {
-
-            $("costValue").textContent =
-                moeda(valorCusto);
-
-        }
-
-
-        if ($("profitValue")) {
-
-            $("profitValue").textContent =
-                moeda(
-                    valorVenda -
-                    valorCusto
-                );
-
-        }
-
-
-        if ($("productCountLabel")) {
-
-            $("productCountLabel").textContent =
-                `${produtosAtivos} ${
-                    produtosAtivos === 1
-                        ? "produto ativo"
-                        : "produtos ativos"
-                }`;
-
-        }
-
-
-        if ($("stockProgress")) {
-
-            const percentual =
-                totalProdutos > 0
-                    ? (
-                        produtosAtivos /
-                        totalProdutos
-                    ) * 100
-                    : 0;
-
-            $("stockProgress").style.width =
-                `${Math.min(
-                    100,
-                    Math.max(
-                        0,
-                        percentual
-                    )
-                )}%`;
-
-        }
+            });
 
     }
 
 
     /* =====================================================
        CATEGORIAS
-       ===================================================== */
+    ===================================================== */
 
-    function atualizarCategorias() {
+    function populateCategoryFilter() {
 
-        const select =
-            $("categoryFilter");
+        if (!elements.categoryFilter) return;
 
-        if (!select) return;
 
-        const categoriaAtual =
-            select.value;
+        const current =
+            elements.categoryFilter.value;
 
-        const mapa =
-            new Map();
 
-        produtos.forEach(produto => {
-
-            const categoria =
-                texto(
-                    produto?.categoria
+        const categories =
+            [
+                ...new Set(
+                    products
+                        .map(
+                            (product) =>
+                                String(
+                                    product.categoria || ""
+                                ).trim()
+                        )
+                        .filter(Boolean)
+                )
+            ]
+                .sort(
+                    (a, b) =>
+                        a.localeCompare(
+                            b,
+                            "pt-BR"
+                        )
                 );
 
-            if (!categoria) return;
 
-            const chave =
-                categoria.toLowerCase();
+        elements.categoryFilter.innerHTML = `
 
-            if (!mapa.has(chave)) {
-
-                mapa.set(
-                    chave,
-                    categoria
-                );
-
-            }
-
-        });
-
-        const categorias =
-            Array.from(
-                mapa.values()
-            ).sort(
-                (a, b) =>
-                    a.localeCompare(
-                        b,
-                        "pt-BR"
-                    )
-            );
-
-        select.innerHTML = `
             <option value="">
                 Todas categorias
             </option>
+
+            ${categories
+                .map(
+                    (category) => `
+                        <option
+                            value="${escapeHtml(category)}"
+                        >
+                            ${escapeHtml(category)}
+                        </option>
+                    `
+                )
+                .join("")}
+
         `;
 
-        categorias.forEach(categoria => {
 
-            const option =
-                document.createElement(
-                    "option"
-                );
+        if (
+            categories.includes(current)
+        ) {
 
-            option.value =
-                categoria;
-
-            option.textContent =
-                categoria;
-
-            select.appendChild(
-                option
-            );
-
-        });
-
-        const existe =
-            categorias.some(
-                categoria =>
-                    categoria ===
-                    categoriaAtual
-            );
-
-        if (existe) {
-
-            select.value =
-                categoriaAtual;
+            elements.categoryFilter.value =
+                current;
 
         }
 
@@ -726,324 +1429,247 @@
 
 
     /* =====================================================
-       FILTRO
-       ===================================================== */
+       MÉTRICAS
+    ===================================================== */
 
-    function obterProdutosFiltrados() {
+    function updateMetrics() {
 
-        const busca =
-            texto(
-                $("productSearch")?.value
-            ).toLowerCase();
+        const totalProducts =
+            products.length;
 
-        const categoria =
-            texto(
-                $("categoryFilter")?.value
+
+        const totalStock =
+            products.reduce(
+                (total, product) =>
+                    total +
+                    Number(
+                        product.quantidade || 0
+                    ),
+                0
             );
 
-        return produtos.filter(produto => {
 
-            const conteudo = [
-
-                produto?.nome,
-                produto?.codigo_barras,
-                produto?.sku,
-                produto?.tamanho,
-                produto?.cor,
-                produto?.categoria
-
-            ]
-                .map(texto)
-                .join(" ")
-                .toLowerCase();
-
-            const correspondeBusca =
-                !busca ||
-                conteudo.includes(
-                    busca
-                );
-
-            const correspondeCategoria =
-                !categoria ||
-                texto(
-                    produto?.categoria
-                ) === categoria;
-
-            return (
-                correspondeBusca &&
-                correspondeCategoria
+        const categories =
+            new Set(
+                products
+                    .map(
+                        (product) =>
+                            String(
+                                product.categoria || ""
+                            ).trim()
+                    )
+                    .filter(Boolean)
             );
 
-        });
 
-    }
+        const noStock =
+            products.filter(
+                (product) =>
+                    Number(
+                        product.quantidade || 0
+                    ) <= 0
+            ).length;
 
 
-    /* =====================================================
-       TABELA
-       ===================================================== */
+        const stockValue =
+            products.reduce(
+                (total, product) =>
+                    total +
+                    (
+                        Number(
+                            product.venda || 0
+                        ) *
+                        Number(
+                            product.quantidade || 0
+                        )
+                    ),
+                0
+            );
 
-    function renderizarTabela() {
 
-        const tbody =
-            $("productsTable");
+        const costValue =
+            products.reduce(
+                (total, product) =>
+                    total +
+                    (
+                        Number(
+                            product.custo || 0
+                        ) *
+                        Number(
+                            product.quantidade || 0
+                        )
+                    ),
+                0
+            );
 
-        if (!tbody) return;
 
-        const lista =
-            obterProdutosFiltrados();
+        const profit =
+            stockValue - costValue;
 
-        if (!lista.length) {
 
-            tbody.innerHTML = `
-                <tr>
-                    <td
-                        colspan="9"
-                        class="empty"
-                    >
-                        <i class="fa-solid fa-box-open"></i>
+        setText(
+            elements.totalProducts,
+            totalProducts
+        );
 
-                        <strong>
-                            Nenhum produto encontrado
-                        </strong>
 
-                        <span>
-                            Cadastre ou pesquise outro produto.
-                        </span>
-                    </td>
-                </tr>
-            `;
+        setText(
+            elements.totalStock,
+            totalStock
+        );
 
-            return;
+
+        setText(
+            elements.totalCategories,
+            categories.size
+        );
+
+
+        setText(
+            elements.lowStock,
+            noStock
+        );
+
+
+        setText(
+            elements.stockValue,
+            formatCurrency(stockValue)
+        );
+
+
+        setText(
+            elements.costValue,
+            formatCurrency(costValue)
+        );
+
+
+        setText(
+            elements.profitValue,
+            formatCurrency(profit)
+        );
+
+
+        setText(
+            elements.productCountLabel,
+            `${totalProducts} ${
+                totalProducts === 1
+                    ? "produto"
+                    : "produtos"
+            }`
+        );
+
+
+        /*
+         * Progresso dos produtos ativos.
+         */
+
+        if (elements.stockProgress) {
+
+            const active =
+                products.filter(
+                    (product) =>
+                        Number(
+                            product.quantidade || 0
+                        ) > 0
+                ).length;
+
+
+            const percentage =
+                totalProducts > 0
+                    ? (
+                        active /
+                        totalProducts
+                    ) * 100
+                    : 0;
+
+
+            elements.stockProgress.style.width =
+                `${Math.min(
+                    100,
+                    Math.max(
+                        0,
+                        percentage
+                    )
+                )}%`;
 
         }
 
-        tbody.innerHTML =
-            lista
-                .map(produto => {
 
-                    const estoque =
-                        quantidade(produto);
-
-                    const id =
-                        escapeHTML(
-                            produto?.id
-                        );
-
-                    const nome =
-                        escapeHTML(
-                            produto?.nome ||
-                            "Sem nome"
-                        );
-
-                    const codigo =
-                        escapeHTML(
-                            produto?.codigo_barras ||
-                            "—"
-                        );
-
-                    const sku =
-                        escapeHTML(
-                            produto?.sku ||
-                            ""
-                        );
-
-                    const tamanho =
-                        escapeHTML(
-                            produto?.tamanho ||
-                            "—"
-                        );
-
-                    const cor =
-                        escapeHTML(
-                            produto?.cor ||
-                            "—"
-                        );
-
-                    const categoria =
-                        escapeHTML(
-                            produto?.categoria ||
-                            "—"
-                        );
-
-                    return `
-                        <tr>
-
-                            <td>
-                                <strong>
-                                    ${nome}
-                                </strong>
-
-                                ${
-                                    sku
-                                        ? `
-                                            <small>
-                                                SKU:
-                                                ${sku}
-                                            </small>
-                                          `
-                                        : ""
-                                }
-                            </td>
-
-                            <td>
-
-                                <span class="barcode-value">
-
-                                    <i class="fa-solid fa-barcode"></i>
-
-                                    ${codigo}
-
-                                </span>
-
-                            </td>
-
-                            <td>
-                                ${tamanho}
-                            </td>
-
-                            <td>
-                                ${cor}
-                            </td>
-
-                            <td>
-                                ${categoria}
-                            </td>
-
-                            <td>
-                                ${moeda(
-                                    precoVenda(
-                                        produto
-                                    )
-                                )}
-                            </td>
-
-                            <td>
-                                ${moeda(
-                                    precoCusto(
-                                        produto
-                                    )
-                                )}
-                            </td>
-
-                            <td>
-
-                                <span class="${
-                                    estoque > 0
-                                        ? "stock-ok"
-                                        : "stock-empty"
-                                }">
-
-                                    ${estoque.toLocaleString(
-                                        "pt-BR"
-                                    )}
-
-                                </span>
-
-                            </td>
-
-                            <td>
-
-                                <div class="table-actions">
-
-                                    <button
-                                        type="button"
-                                        data-action="view"
-                                        data-id="${id}"
-                                        title="Visualizar"
-                                    >
-                                        <i class="fa-solid fa-eye"></i>
-                                    </button>
-
-                                    <button
-                                        type="button"
-                                        data-action="edit"
-                                        data-id="${id}"
-                                        title="Editar"
-                                    >
-                                        <i class="fa-solid fa-pen"></i>
-                                    </button>
-
-                                    <button
-                                        type="button"
-                                        data-action="delete"
-                                        data-id="${id}"
-                                        title="Excluir"
-                                    >
-                                        <i class="fa-solid fa-trash"></i>
-                                    </button>
-
-                                </div>
-
-                            </td>
-
-                        </tr>
-                    `;
-
-                })
-                .join("");
+        updateCategoryChart();
 
     }
 
 
     /* =====================================================
-       GRÁFICO
-       ===================================================== */
+       GRÁFICO POR CATEGORIA
+    ===================================================== */
 
-    function renderizarGrafico() {
+    function updateCategoryChart() {
 
-        const area =
-            $("categoryChart");
+        if (!elements.categoryChart) return;
 
-        if (!area) return;
 
-        const dados = {};
+        const categoryMap = {};
 
-        produtos.forEach(produto => {
 
-            const categoria =
-                texto(
-                    produto?.categoria
-                ) ||
-                "Sem categoria";
+        products.forEach((product) => {
 
-            if (!dados[categoria]) {
+            const category =
+                String(
+                    product.categoria ||
+                    "Sem categoria"
+                ).trim();
 
-                dados[categoria] = 0;
+
+            const quantity =
+                Number(
+                    product.quantidade || 0
+                );
+
+
+            if (!categoryMap[category]) {
+
+                categoryMap[category] = 0;
 
             }
 
-            dados[categoria] +=
-                quantidade(produto);
+
+            categoryMap[category] +=
+                quantity;
 
         });
 
-        const lista =
-            Object.entries(dados)
+
+        const entries =
+            Object.entries(categoryMap)
                 .sort(
                     (a, b) =>
                         b[1] - a[1]
                 );
 
+
         const total =
-            lista.reduce(
-                (soma, item) =>
-                    soma + item[1],
+            entries.reduce(
+                (sum, [, value]) =>
+                    sum + value,
                 0
             );
 
-        if ($("chartTotal")) {
 
-            $("chartTotal").textContent =
-                `${total.toLocaleString(
-                    "pt-BR"
-                )} unidades`;
+        setText(
+            elements.chartTotal,
+            `${total} ${
+                total === 1
+                    ? "unidade"
+                    : "unidades"
+            }`
+        );
 
-        }
 
-        if (!lista.length) {
+        if (!entries.length) {
 
-            area.innerHTML = `
+            elements.categoryChart.innerHTML = `
+
                 <div class="empty">
 
                     <i class="fa-solid fa-chart-column"></i>
@@ -1057,63 +1683,62 @@
                     </span>
 
                 </div>
+
             `;
 
             return;
 
         }
 
-        const maior =
+
+        const max =
             Math.max(
-                1,
-                ...lista.map(
-                    item => item[1]
-                )
+                ...entries.map(
+                    ([, value]) =>
+                        value
+                ),
+                1
             );
 
-        area.innerHTML =
-            lista
-                .slice(0, 8)
-                .map(
-                    ([categoria, valor]) => {
 
-                        const largura =
-                            Math.max(
-                                4,
-                                (
-                                    valor /
-                                    maior
-                                ) * 100
-                            );
+        elements.categoryChart.innerHTML =
+            entries
+                .map(
+                    ([category, quantity]) => {
+
+                        const percentage =
+                            (
+                                quantity /
+                                max
+                            ) * 100;
+
 
                         return `
-                            <div class="chart-row">
 
-                                <div class="chart-label">
+                            <div class="category-bar">
+
+                                <div class="category-bar-header">
 
                                     <span>
-                                        ${escapeHTML(
-                                            categoria
-                                        )}
+                                        ${escapeHtml(category)}
                                     </span>
 
                                     <strong>
-                                        ${valor.toLocaleString(
-                                            "pt-BR"
-                                        )}
+                                        ${quantity}
                                     </strong>
 
                                 </div>
 
-                                <div class="chart-bar">
+                                <div class="category-bar-track">
 
                                     <i
-                                        style="width:${largura}%"
+                                        style="width:${percentage}%"
                                     ></i>
 
                                 </div>
 
                             </div>
+
                         `;
 
                     }
@@ -1124,677 +1749,465 @@
 
 
     /* =====================================================
-       LIMPAR PREVIEW
-       ===================================================== */
+       MODAL NOVO / EDITAR
+    ===================================================== */
 
-    function limparPreview() {
+    function openProductModal(product = null) {
 
-        const area =
-            $("imagePreview");
+        if (!elements.productModal) return;
 
-        if (!area) return;
 
-        area.innerHTML = `
-            <i class="fa-solid fa-image"></i>
+        editingProductId =
+            product?.id || null;
 
-            <span>
-                Prévia da imagem
-            </span>
-        `;
+
+        selectedImageFile = null;
+
+        currentImageUrl =
+            product?.imagem || "";
+
+
+        clearFormMessage();
+
+
+        if (product) {
+
+            setText(
+                elements.modalOverline,
+                "EDIÇÃO"
+            );
+
+
+            setText(
+                elements.modalTitle,
+                "Editar produto"
+            );
+
+
+            fillProductForm(product);
+
+        } else {
+
+            setText(
+                elements.modalOverline,
+                "NOVO CADASTRO"
+            );
+
+
+            setText(
+                elements.modalTitle,
+                "Adicionar produto"
+            );
+
+
+            resetProductForm();
+
+        }
+
+
+        showModal(
+            elements.productModal
+        );
+
+
+        setTimeout(() => {
+
+            elements.productBarcode?.focus();
+
+        }, 200);
 
     }
 
 
-    /* =====================================================
-       PREVIEW DA IMAGEM
-       ===================================================== */
+    function closeProductModal() {
 
-    function mostrarPreview(src) {
+        hideModal(
+            elements.productModal
+        );
 
-        const area =
-            $("imagePreview");
+        editingProductId = null;
 
-        if (!area || !src) return;
-
-        area.innerHTML = `
-            <img
-                src="${escapeHTML(src)}"
-                alt="Prévia do produto"
-            >
-        `;
+        selectedImageFile = null;
 
     }
 
 
-    /* =====================================================
-       IMAGEM
-       ===================================================== */
+    function resetProductForm() {
 
-    function configurarImagem() {
+        elements.productForm?.reset();
 
-        const input =
-            $("productImage");
 
-        if (!input) return;
+        if (elements.productId) {
 
-        input.addEventListener(
-            "change",
-            () => {
+            elements.productId.value = "";
 
-                const arquivo =
-                    input.files?.[0];
+        }
 
-                if (!arquivo) {
 
-                    limparPreview();
+        currentImageUrl = "";
 
-                    return;
 
-                }
+        renderImagePreview("");
 
-                if (
-                    !arquivo.type.startsWith(
-                        "image/"
-                    )
-                ) {
+        clearFormMessage();
 
-                    input.value = "";
+    }
 
-                    limparPreview();
 
-                    mostrarToast(
-                        "Selecione uma imagem válida.",
-                        true
-                    );
+    function fillProductForm(product) {
 
-                    return;
+        if (!product) return;
 
-                }
 
-                const leitor =
-                    new FileReader();
+        editingProductId =
+            product.id || null;
 
-                leitor.onload =
-                    evento => {
 
-                        mostrarPreview(
-                            evento.target.result
-                        );
+        setValue(
+            elements.productId,
+            product.id
+        );
 
-                    };
 
-                leitor.onerror =
-                    () => {
+        setValue(
+            elements.productBarcode,
+            product.codigo_barras
+        );
 
-                        mostrarToast(
-                            "Não foi possível ler a imagem.",
-                            true
-                        );
 
-                    };
+        setValue(
+            elements.productSku,
+            product.sku
+        );
 
-                leitor.readAsDataURL(
-                    arquivo
-                );
 
-            }
+        setValue(
+            elements.productName,
+            product.nome
+        );
+
+
+        setValue(
+            elements.productSize,
+            product.tamanho
+        );
+
+
+        setValue(
+            elements.productColor,
+            product.cor
+        );
+
+
+        setValue(
+            elements.productCategory,
+            product.categoria
+        );
+
+
+        setValue(
+            elements.salePrice,
+            product.venda
+        );
+
+
+        setValue(
+            elements.stockPrice,
+            product.custo
+        );
+
+
+        setValue(
+            elements.productQuantity,
+            product.quantidade
+        );
+
+
+        currentImageUrl =
+            product.imagem || "";
+
+
+        renderImagePreview(
+            currentImageUrl
         );
 
     }
 
 
     /* =====================================================
-       ABRIR NOVO PRODUTO
-       ===================================================== */
+       IMAGEM
+    ===================================================== */
 
-    function novoProduto() {
+    function handleImageChange(event) {
 
-        const form =
-            $("productForm");
+        const file =
+            event.target.files?.[0];
 
-        if (form) {
 
-            form.reset();
+        if (!file) {
 
-        }
+            selectedImageFile = null;
 
-        if ($("productId")) {
-
-            $("productId").value = "";
-
-        }
-
-        if ($("modalTitle")) {
-
-            $("modalTitle").textContent =
-                "Adicionar produto";
-
-        }
-
-        if ($("modalOverline")) {
-
-            $("modalOverline").textContent =
-                "NOVO CADASTRO";
-
-        }
-
-        if ($("formMessage")) {
-
-            $("formMessage").textContent =
-                "";
-
-        }
-
-        limparPreview();
-
-        $("productModal")
-            ?.classList.add(
-                "active"
+            renderImagePreview(
+                currentImageUrl
             );
 
-        setTimeout(() => {
+            return;
 
-            $("productBarcode")
-                ?.focus();
+        }
 
-        }, 150);
+
+        if (!file.type.startsWith("image/")) {
+
+            showToast(
+                "Selecione uma imagem válida.",
+                "error"
+            );
+
+            event.target.value = "";
+
+            return;
+
+        }
+
+
+        /*
+         * Limite razoável para evitar uploads
+         * gigantescos.
+         */
+
+        if (
+            file.size >
+            8 * 1024 * 1024
+        ) {
+
+            showToast(
+                "A imagem deve ter no máximo 8 MB.",
+                "error"
+            );
+
+            event.target.value = "";
+
+            return;
+
+        }
+
+
+        selectedImageFile = file;
+
+
+        const objectUrl =
+            URL.createObjectURL(file);
+
+
+        renderImagePreview(
+            objectUrl,
+            true
+        );
 
     }
 
 
-    /* =====================================================
-       EDITAR PRODUTO
-       ===================================================== */
+    function renderImagePreview(
+        imageUrl,
+        temporary = false
+    ) {
 
-    function editarProduto(produto) {
+        if (!elements.imagePreview) return;
 
-        if (!produto) return;
 
-        const valores = {
+        if (!imageUrl) {
 
-            productId:
-                produto?.id || "",
+            elements.imagePreview.innerHTML = `
 
-            productBarcode:
-                produto?.codigo_barras || "",
+                <i class="fa-solid fa-image"></i>
 
-            productSku:
-                produto?.sku || "",
+                <span>
+                    Prévia da imagem
+                </span>
 
-            productName:
-                produto?.nome || "",
+            `;
 
-            productSize:
-                produto?.tamanho || "",
-
-            productColor:
-                produto?.cor || "",
-
-            productCategory:
-                produto?.categoria || "",
-
-            salePrice:
-                precoVenda(produto),
-
-            stockPrice:
-                precoCusto(produto),
-
-            productQuantity:
-                quantidade(produto)
-
-        };
-
-        Object.entries(valores)
-            .forEach(
-                ([id, valor]) => {
-
-                    const campo =
-                        $(id);
-
-                    if (campo) {
-
-                        campo.value =
-                            valor;
-
-                    }
-
-                }
-            );
-
-        if ($("productImage")) {
-
-            $("productImage").value =
-                "";
+            return;
 
         }
 
-        if (produto?.imagem_url) {
 
-            mostrarPreview(
-                produto.imagem_url
-            );
+        elements.imagePreview.innerHTML = `
+
+            <img
+                src="${escapeHtml(imageUrl)}"
+                alt="Pré-visualização"
+            >
+
+        `;
+
+
+        if (temporary) {
+
+            elements.imagePreview.dataset.temporary =
+                "true";
 
         } else {
 
-            limparPreview();
+            delete elements.imagePreview.dataset.temporary;
 
         }
-
-        if ($("modalTitle")) {
-
-            $("modalTitle").textContent =
-                "Editar produto";
-
-        }
-
-        if ($("modalOverline")) {
-
-            $("modalOverline").textContent =
-                "EDIÇÃO";
-
-        }
-
-        if ($("formMessage")) {
-
-            $("formMessage").textContent =
-                "";
-
-        }
-
-        $("productModal")
-            ?.classList.add(
-                "active"
-            );
-
-    }
-
-
-    /* =====================================================
-       FECHAR MODAL PRODUTO
-       ===================================================== */
-
-    function fecharProduto() {
-
-        $("productModal")
-            ?.classList.remove(
-                "active"
-            );
-
-    }
-
-
-    /* =====================================================
-       UPLOAD DA IMAGEM
-       ===================================================== */
-
-    async function enviarImagem(
-        arquivo,
-        produtoId
-    ) {
-
-        if (
-            !arquivo ||
-            !produtoId
-        ) {
-
-            return null;
-
-        }
-
-        const db =
-            getSupabase();
-
-        if (
-            !db ||
-            !db.storage
-        ) {
-
-            return null;
-
-        }
-
-        try {
-
-            const extensao =
-                (
-                    arquivo.name
-                        .split(".")
-                        .pop() ||
-                    "jpg"
-                )
-                    .toLowerCase()
-                    .replace(
-                        /[^a-z0-9]/g,
-                        ""
-                    ) ||
-                    "jpg";
-
-            const caminho =
-                `produtos/${produtoId}-${Date.now()}.${extensao}`;
-
-            const upload =
-                await db
-                    .storage
-                    .from("produtos")
-                    .upload(
-                        caminho,
-                        arquivo,
-                        {
-                            upsert: true,
-                            contentType:
-                                arquivo.type ||
-                                "image/jpeg"
-                        }
-                    );
-
-            if (upload.error) {
-
-                throw upload.error;
-
-            }
-
-            const resultado =
-                db
-                    .storage
-                    .from("produtos")
-                    .getPublicUrl(
-                        caminho
-                    );
-
-            return (
-                resultado
-                    ?.data
-                    ?.publicUrl ||
-                null
-            );
-
-        } catch (erro) {
-
-            console.error(
-                "Erro no upload da imagem:",
-                erro
-            );
-
-            return null;
-
-        }
-
-    }
-
-
-    /* =====================================================
-       VALIDAR FORMULÁRIO
-       ===================================================== */
-
-    function validarFormulario() {
-
-        const nome =
-            texto(
-                $("productName")?.value
-            );
-
-        const tamanho =
-            texto(
-                $("productSize")?.value
-            );
-
-        const cor =
-            texto(
-                $("productColor")?.value
-            );
-
-        const categoria =
-            texto(
-                $("productCategory")?.value
-            );
-
-        const venda =
-            numero(
-                $("salePrice")?.value
-            );
-
-        const custo =
-            numero(
-                $("stockPrice")?.value
-            );
-
-        const quantidadeAtual =
-            numero(
-                $("productQuantity")?.value
-            );
-
-
-        if (!nome) {
-
-            mostrarToast(
-                "Informe o nome do produto.",
-                true
-            );
-
-            $("productName")?.focus();
-
-            return false;
-
-        }
-
-
-        if (!tamanho) {
-
-            mostrarToast(
-                "Informe o tamanho do produto.",
-                true
-            );
-
-            $("productSize")?.focus();
-
-            return false;
-
-        }
-
-
-        if (!cor) {
-
-            mostrarToast(
-                "Informe a cor do produto.",
-                true
-            );
-
-            $("productColor")?.focus();
-
-            return false;
-
-        }
-
-
-        if (!categoria) {
-
-            mostrarToast(
-                "Informe a categoria do produto.",
-                true
-            );
-
-            $("productCategory")?.focus();
-
-            return false;
-
-        }
-
-
-        if (
-            !Number.isFinite(venda) ||
-            venda < 0
-        ) {
-
-            mostrarToast(
-                "Preço de venda inválido.",
-                true
-            );
-
-            $("salePrice")?.focus();
-
-            return false;
-
-        }
-
-
-        if (
-            !Number.isFinite(custo) ||
-            custo < 0
-        ) {
-
-            mostrarToast(
-                "Preço de custo inválido.",
-                true
-            );
-
-            $("stockPrice")?.focus();
-
-            return false;
-
-        }
-
-
-        if (
-            !Number.isFinite(
-                quantidadeAtual
-            ) ||
-            quantidadeAtual < 0
-        ) {
-
-            mostrarToast(
-                "Quantidade em estoque inválida.",
-                true
-            );
-
-            $("productQuantity")?.focus();
-
-            return false;
-
-        }
-
-
-        return true;
 
     }
 
 
     /* =====================================================
        SALVAR PRODUTO
-       ===================================================== */
+    ===================================================== */
 
-    async function salvarProduto(event) {
+    async function handleProductSubmit(event) {
 
         event.preventDefault();
 
-        if (carregando) return;
 
-        const db =
-            getSupabase();
+        if (!supabaseClient) {
 
-        if (!db) {
-
-            mostrarToast(
-                "Supabase não está disponível.",
-                true
+            setFormMessage(
+                "Cliente Supabase não encontrado.",
+                "error"
             );
 
             return;
 
         }
 
-        if (!validarFormulario()) {
+
+        const formData =
+            collectProductForm();
+
+
+        if (!formData.nome) {
+
+            setFormMessage(
+                "Informe o nome do produto.",
+                "error"
+            );
+
+            elements.productName?.focus();
 
             return;
 
         }
 
-        const id =
-            texto(
-                $("productId")?.value
-            ) || null;
 
-        const codigo =
-            texto(
-                $("productBarcode")?.value
-            ) || null;
+        if (!formData.tamanho) {
 
-        const sku =
-            texto(
-                $("productSku")?.value
-            ) || null;
-
-        const nome =
-            texto(
-                $("productName")?.value
+            setFormMessage(
+                "Informe o tamanho.",
+                "error"
             );
 
-        const tamanho =
-            texto(
-                $("productSize")?.value
+            return;
+
+        }
+
+
+        if (!formData.cor) {
+
+            setFormMessage(
+                "Informe a cor.",
+                "error"
             );
 
-        const cor =
-            texto(
-                $("productColor")?.value
+            return;
+
+        }
+
+
+        if (!formData.categoria) {
+
+            setFormMessage(
+                "Informe a categoria.",
+                "error"
             );
 
-        const categoria =
-            texto(
-                $("productCategory")?.value
+            return;
+
+        }
+
+
+        const sale =
+            Number(formData.venda);
+
+
+        const cost =
+            Number(formData.custo);
+
+
+        const quantity =
+            Number(formData.quantidade);
+
+
+        if (
+            !Number.isFinite(sale) ||
+            sale < 0
+        ) {
+
+            setFormMessage(
+                "Informe um preço de venda válido.",
+                "error"
             );
 
-        const venda =
-            numero(
-                $("salePrice")?.value
+            return;
+
+        }
+
+
+        if (
+            !Number.isFinite(cost) ||
+            cost < 0
+        ) {
+
+            setFormMessage(
+                "Informe um preço de custo válido.",
+                "error"
             );
 
-        const custo =
-            numero(
-                $("stockPrice")?.value
+            return;
+
+        }
+
+
+        if (
+            !Number.isInteger(quantity) ||
+            quantity < 0
+        ) {
+
+            setFormMessage(
+                "Informe uma quantidade válida.",
+                "error"
             );
 
-        const quantidadeAtual =
-            numero(
-                $("productQuantity")?.value
-            );
+            return;
+
+        }
 
 
-        /* =================================================
-           VERIFICAR CÓDIGO DUPLICADO
-           ================================================= */
+        /*
+         * Evitar código de barras duplicado.
+         */
 
-        if (codigo) {
+        if (formData.codigo_barras) {
 
-            const duplicado =
-                produtos.find(
-                    produto => {
-
-                        const codigoExistente =
-                            texto(
-                                produto?.codigo_barras
-                            );
-
-                        return (
-                            codigoExistente ===
-                            codigo &&
-                            String(
-                                produto?.id
-                            ) !==
-                            String(id)
-                        );
-
-                    }
+            const duplicate =
+                await findBarcodeDuplicate(
+                    formData.codigo_barras,
+                    editingProductId
                 );
 
-            if (duplicado) {
 
-                mostrarToast(
-                    "Este código de barras já está cadastrado.",
-                    true
+            if (duplicate) {
+
+                setFormMessage(
+                    "Este código de barras já está cadastrado em outro produto.",
+                    "error"
                 );
-
-                $("productBarcode")
-                    ?.focus();
 
                 return;
 
@@ -1803,251 +2216,452 @@
         }
 
 
-        const dados = {
-
-            codigo_barras:
-                codigo,
-
-            sku:
-                sku,
-
-            nome:
-                nome,
-
-            tamanho:
-                tamanho,
-
-            cor:
-                cor,
-
-            categoria:
-                categoria,
-
-            preco_venda:
-                venda,
-
-            preco_custo:
-                custo,
-
-            quantidade:
-                quantidadeAtual
-
-        };
-
-
-        carregando = true;
-
-        if ($("formMessage")) {
-
-            $("formMessage").textContent =
-                id
-                    ? "Atualizando produto..."
-                    : "Salvando produto...";
-
-        }
-
         try {
 
-            let resposta;
+            setFormMessage(
+                "Salvando produto...",
+                "info"
+            );
 
-            if (id) {
 
-                resposta =
-                    await db
-                        .from("produtos")
-                        .update(dados)
-                        .eq("id", id)
+            let imageUrl =
+                currentImageUrl || null;
+
+
+            /*
+             * Upload da imagem.
+             */
+
+            if (selectedImageFile) {
+
+                imageUrl =
+                    await uploadProductImage(
+                        selectedImageFile,
+                        editingProductId
+                    );
+
+            }
+
+
+            const payload = {
+
+                codigo_barras:
+                    formData.codigo_barras || null,
+
+                sku:
+                    formData.sku || null,
+
+                nome:
+                    formData.nome,
+
+                tamanho:
+                    formData.tamanho,
+
+                cor:
+                    formData.cor,
+
+                categoria:
+                    formData.categoria,
+
+                venda:
+                    sale,
+
+                custo:
+                    cost,
+
+                quantidade:
+                    quantity,
+
+                imagem:
+                    imageUrl
+
+            };
+
+
+            let result;
+
+
+            if (editingProductId) {
+
+                result =
+                    await supabaseClient
+                        .from(TABLE_NAME)
+                        .update({
+                            ...payload,
+                            atualizado_em:
+                                new Date().toISOString()
+                        })
+                        .eq(
+                            "id",
+                            editingProductId
+                        )
                         .select()
                         .single();
 
             } else {
 
-                resposta =
-                    await db
-                        .from("produtos")
-                        .insert(dados)
+                result =
+                    await supabaseClient
+                        .from(TABLE_NAME)
+                        .insert(payload)
                         .select()
                         .single();
 
             }
 
-            if (resposta.error) {
 
-                throw resposta.error;
+            if (result.error) {
 
-            }
-
-            let produtoSalvo =
-                resposta.data;
-
-
-            /* =============================================
-               IMAGEM
-               ============================================= */
-
-            const arquivo =
-                $("productImage")
-                    ?.files
-                    ?.[0];
-
-            if (
-                arquivo &&
-                produtoSalvo?.id
-            ) {
-
-                const imagemURL =
-                    await enviarImagem(
-                        arquivo,
-                        produtoSalvo.id
-                    );
-
-                if (imagemURL) {
-
-                    const atualizarImagem =
-                        await db
-                            .from("produtos")
-                            .update({
-                                imagem_url:
-                                    imagemURL
-                            })
-                            .eq(
-                                "id",
-                                produtoSalvo.id
-                            )
-                            .select()
-                            .single();
-
-                    if (
-                        !atualizarImagem.error &&
-                        atualizarImagem.data
-                    ) {
-
-                        produtoSalvo =
-                            atualizarImagem.data;
-
-                    }
-
-                } else {
-
-                    mostrarToast(
-                        "Produto salvo, mas a imagem não foi enviada.",
-                        true
-                    );
-
-                }
+                throw result.error;
 
             }
 
 
-            fecharProduto();
-
-            mostrarToast(
-                id
-                    ? "Produto atualizado com sucesso."
-                    : "Produto cadastrado com sucesso."
-            );
-
-            await carregarProdutos();
+            const savedProduct =
+                result.data;
 
 
-        } catch (erro) {
+            if (editingProductId) {
+
+                showToast(
+                    "Produto atualizado com sucesso.",
+                    "success"
+                );
+
+            } else {
+
+                showToast(
+                    "Produto cadastrado com sucesso.",
+                    "success"
+                );
+
+            }
+
+
+            closeProductModal();
+
+
+            await loadProducts();
+
+
+            /*
+             * Depois de salvar, seleciona o produto
+             * recém-salvo na visualização.
+             */
+
+            if (savedProduct) {
+
+                openViewModal(
+                    savedProduct
+                );
+
+            }
+
+
+        } catch (error) {
 
             console.error(
                 "Erro ao salvar produto:",
-                erro
+                error
             );
 
-            if ($("formMessage")) {
 
-                $("formMessage").textContent =
-                    erro?.message ||
-                    "Erro ao salvar produto.";
+            const message =
+                getSupabaseErrorMessage(
+                    error
+                );
 
-            }
 
-            mostrarToast(
-                "Não foi possível salvar o produto.",
-                true
+            setFormMessage(
+                message,
+                "error"
             );
 
-        } finally {
 
-            carregando = false;
+            showToast(
+                message,
+                "error"
+            );
 
         }
 
     }
 
 
+    function collectProductForm() {
+
+        return {
+
+            codigo_barras:
+                normalizeBarcode(
+                    elements.productBarcode?.value
+                ),
+
+            sku:
+                String(
+                    elements.productSku?.value || ""
+                ).trim(),
+
+            nome:
+                String(
+                    elements.productName?.value || ""
+                ).trim(),
+
+            tamanho:
+                String(
+                    elements.productSize?.value || ""
+                ).trim(),
+
+            cor:
+                String(
+                    elements.productColor?.value || ""
+                ).trim(),
+
+            categoria:
+                String(
+                    elements.productCategory?.value || ""
+                ).trim(),
+
+            venda:
+                parseNumber(
+                    elements.salePrice?.value
+                ),
+
+            custo:
+                parseNumber(
+                    elements.stockPrice?.value
+                ),
+
+            quantidade:
+                parseInteger(
+                    elements.productQuantity?.value
+                )
+
+        };
+
+    }
+
+
     /* =====================================================
-       EXCLUIR PRODUTO
-       ===================================================== */
+       DUPLICIDADE
+    ===================================================== */
 
-    async function excluirProduto(id) {
-
-        const produto =
-            produtos.find(
-                item =>
-                    String(item?.id) ===
-                    String(id)
-            );
-
-        if (!produto) return;
-
-        const confirmou =
-            window.confirm(
-                `Deseja realmente excluir "${produto.nome || "este produto"}"?\n\nEsta ação não poderá ser desfeita.`
-            );
-
-        if (!confirmou) return;
-
-        const db =
-            getSupabase();
-
-        if (!db) {
-
-            mostrarToast(
-                "Supabase não está disponível.",
-                true
-            );
-
-            return;
-
-        }
+    async function findBarcodeDuplicate(
+        barcode,
+        currentId
+    ) {
 
         try {
 
-            const resposta =
-                await db
-                    .from("produtos")
-                    .delete()
+            const { data, error } =
+                await supabaseClient
+                    .from(TABLE_NAME)
+                    .select("id,nome,codigo_barras")
                     .eq(
-                        "id",
-                        id
-                    );
+                        "codigo_barras",
+                        barcode
+                    )
+                    .maybeSingle();
 
-            if (resposta.error) {
 
-                throw resposta.error;
+            if (error) {
+
+                console.error(
+                    "Erro ao verificar código:",
+                    error
+                );
+
+                return null;
 
             }
 
-            mostrarToast(
-                "Produto excluído com sucesso."
+
+            if (!data) return null;
+
+
+            if (
+                currentId &&
+                String(data.id) ===
+                String(currentId)
+            ) {
+
+                return null;
+
+            }
+
+
+            return data;
+
+        } catch (error) {
+
+            console.error(error);
+
+            return null;
+
+        }
+
+    }
+
+
+    /* =====================================================
+       UPLOAD
+    ===================================================== */
+
+    async function uploadProductImage(
+        file,
+        productId
+    ) {
+
+        if (!supabaseClient) {
+
+            throw new Error(
+                "Supabase não está disponível."
             );
 
-            await carregarProdutos();
+        }
 
-        } catch (erro) {
+
+        const extension =
+            getFileExtension(
+                file.name
+            );
+
+
+        const safeId =
+            productId ||
+            cryptoRandomId();
+
+
+        const fileName =
+            `${safeId}-${Date.now()}.${extension}`;
+
+
+        const path =
+            `produtos/${fileName}`;
+
+
+        const { error } =
+            await supabaseClient
+                .storage
+                .from(STORAGE_BUCKET)
+                .upload(
+                    path,
+                    file,
+                    {
+                        cacheControl: "3600",
+                        upsert: false,
+                        contentType: file.type
+                    }
+                );
+
+
+        if (error) {
+
+            throw error;
+
+        }
+
+
+        const { data } =
+            supabaseClient
+                .storage
+                .from(STORAGE_BUCKET)
+                .getPublicUrl(path);
+
+
+        return data?.publicUrl || "";
+
+    }
+
+
+    /* =====================================================
+       EXCLUIR
+    ===================================================== */
+
+    async function deleteProduct(product) {
+
+        if (!product?.id) return;
+
+
+        const name =
+            product.nome ||
+            "este produto";
+
+
+        const confirmed =
+            window.confirm(
+                `Deseja realmente excluir "${name}"?\n\nEsta ação não poderá ser desfeita.`
+            );
+
+
+        if (!confirmed) return;
+
+
+        try {
+
+            showToast(
+                "Excluindo produto...",
+                "info"
+            );
+
+
+            const { error } =
+                await supabaseClient
+                    .from(TABLE_NAME)
+                    .delete()
+                    .eq(
+                        "id",
+                        product.id
+                    );
+
+
+            if (error) {
+
+                throw error;
+
+            }
+
+
+            /*
+             * Remove referência local da tela.
+             * O banco continua sendo o Supabase.
+             */
+
+            products =
+                products.filter(
+                    (item) =>
+                        String(item.id) !==
+                        String(product.id)
+                );
+
+
+            renderProducts();
+
+            updateMetrics();
+
+            updateNotifications();
+
+            updateLastUpdate();
+
+
+            showToast(
+                "Produto excluído com sucesso.",
+                "success"
+            );
+
+        } catch (error) {
 
             console.error(
-                "Erro ao excluir produto:",
-                erro
+                "Erro ao excluir:",
+                error
             );
 
-            mostrarToast(
-                "Não foi possível excluir o produto.",
-                true
+
+            showToast(
+                getSupabaseErrorMessage(
+                    error
+                ),
+                "error"
             );
 
         }
@@ -2056,152 +2670,126 @@
 
 
     /* =====================================================
-       VISUALIZAR PRODUTO
-       ===================================================== */
+       VISUALIZAÇÃO COMPLETA
+    ===================================================== */
 
-    function visualizarProduto(produto) {
+    function openViewModal(product) {
 
-        if (!produto) return;
-
-
-        if ($("viewCategory")) {
-
-            $("viewCategory").textContent =
-                produto?.categoria ||
-                "PRODUTO";
-
-        }
+        if (!elements.viewModal) return;
 
 
-        if ($("viewName")) {
-
-            $("viewName").textContent =
-                produto?.nome ||
-                "Produto";
-
-        }
+        setText(
+            elements.viewCategory,
+            product.categoria ||
+            "PRODUTO"
+        );
 
 
-        if ($("viewDescription")) {
-
-            $("viewDescription").textContent =
-                produto?.sku
-                    ? `SKU: ${produto.sku}`
-                    : "Informações comerciais e de estoque.";
-
-        }
+        setText(
+            elements.viewName,
+            product.nome ||
+            "Produto"
+        );
 
 
-        if ($("viewBarcode")) {
-
-            $("viewBarcode").textContent =
-                produto?.codigo_barras ||
-                "—";
-
-        }
+        setText(
+            elements.viewDescription,
+            "Informações comerciais e de estoque."
+        );
 
 
-        if ($("viewSku")) {
-
-            $("viewSku").textContent =
-                produto?.sku ||
-                "—";
-
-        }
+        setText(
+            elements.viewBarcode,
+            product.codigo_barras ||
+            "—"
+        );
 
 
-        if ($("viewSize")) {
-
-            $("viewSize").textContent =
-                produto?.tamanho ||
-                "—";
-
-        }
+        setText(
+            elements.viewSku,
+            product.sku ||
+            "—"
+        );
 
 
-        if ($("viewColor")) {
-
-            $("viewColor").textContent =
-                produto?.cor ||
-                "—";
-
-        }
+        setText(
+            elements.viewSize,
+            product.tamanho ||
+            "—"
+        );
 
 
-        if ($("viewCategoryText")) {
-
-            $("viewCategoryText").textContent =
-                produto?.categoria ||
-                "—";
-
-        }
+        setText(
+            elements.viewColor,
+            product.cor ||
+            "—"
+        );
 
 
-        if ($("viewSale")) {
-
-            $("viewSale").textContent =
-                moeda(
-                    precoVenda(produto)
-                );
-
-        }
+        setText(
+            elements.viewCategoryText,
+            product.categoria ||
+            "—"
+        );
 
 
-        if ($("viewCost")) {
-
-            $("viewCost").textContent =
-                moeda(
-                    precoCusto(produto)
-                );
-
-        }
+        setText(
+            elements.viewSale,
+            formatCurrency(
+                product.venda
+            )
+        );
 
 
-        if ($("viewStock")) {
-
-            $("viewStock").textContent =
-                quantidade(
-                    produto
-                ).toLocaleString(
-                    "pt-BR"
-                );
-
-        }
+        setText(
+            elements.viewCost,
+            formatCurrency(
+                product.custo
+            )
+        );
 
 
-        if ($("viewStatus")) {
-
-            $("viewStatus").textContent =
-                quantidade(produto) > 0
-                    ? "Disponível"
-                    : "Sem estoque";
-
-        }
+        const quantity =
+            Number(
+                product.quantidade || 0
+            );
 
 
-        const imagem =
-            $("viewImage");
+        setText(
+            elements.viewStock,
+            quantity
+        );
 
-        if (imagem) {
 
-            if (produto?.imagem_url) {
+        setText(
+            elements.viewStatus,
+            getStockStatus(
+                quantity
+            )
+        );
 
-                imagem.innerHTML = `
+
+        if (elements.viewImage) {
+
+            if (product.imagem) {
+
+                elements.viewImage.innerHTML = `
+
                     <img
-                        src="${escapeHTML(
-                            produto.imagem_url
-                        )}"
-                        alt="${escapeHTML(
-                            produto.nome ||
-                            "Produto"
+                        src="${escapeHtml(product.imagem)}"
+                        alt="${escapeHtml(
+                            product.nome || "Produto"
                         )}"
                     >
+
                 `;
 
             } else {
 
-                imagem.innerHTML = `
+                elements.viewImage.innerHTML = `
+
                     <i class="fa-solid fa-box-open"></i>
+
                 `;
 
             }
@@ -2209,227 +2797,104 @@
         }
 
 
-        $("viewModal")
-            ?.classList.add(
-                "active"
-            );
-
-    }
-
-
-    /* =====================================================
-       FECHAR VISUALIZAÇÃO
-       ===================================================== */
-
-    function fecharVisualizacao() {
-
-        $("viewModal")
-            ?.classList.remove(
-                "active"
-            );
-
-    }
-
-
-    /* =====================================================
-       CÓDIGO DE BARRAS
-       ===================================================== */
-
-    function procurarCodigo(codigo) {
-
-        const valor =
-            texto(codigo);
-
-        if (!valor) {
-
-            mostrarToast(
-                "Informe um código de barras.",
-                true
-            );
-
-            return;
-
-        }
-
-        const produto =
-            produtos.find(
-                produto =>
-                    texto(
-                        produto?.codigo_barras
-                    ) === valor
-            );
-
-        if (!produto) {
-
-            mostrarToast(
-                `Código ${valor} não encontrado.`,
-                true
-            );
-
-            const status =
-                $("barcodeStatus");
-
-            if (status) {
-
-                status.textContent =
-                    "Não encontrado";
-
-            }
-
-            setTimeout(() => {
-
-                if (status) {
-
-                    status.textContent =
-                        "Pronto";
-
-                }
-
-            }, 2500);
-
-            return;
-
-        }
-
-
-        const status =
-            $("barcodeStatus");
-
-        if (status) {
-
-            status.textContent =
-                "Produto encontrado";
-
-        }
-
-
-        visualizarProduto(
-            produto
+        showModal(
+            elements.viewModal
         );
 
-        mostrarToast(
-            `${produto.nome || "Produto"} encontrado.`
-        );
-
-        setTimeout(() => {
-
-            if (status) {
-
-                status.textContent =
-                    "Pronto";
-
-            }
-
-        }, 2000);
-
     }
 
 
-    /* =====================================================
-       LEITOR DE CÓDIGO / PISTOLA
-       ===================================================== */
+    function closeViewModal() {
 
-    function configurarLeitor() {
-
-        const input =
-            $("barcodeScanner");
-
-        if (!input) return;
-
-        input.addEventListener(
-            "keydown",
-            event => {
-
-                if (
-                    event.key !==
-                    "Enter"
-                ) {
-
-                    return;
-
-                }
-
-                event.preventDefault();
-
-                const codigo =
-                    texto(
-                        input.value
-                    );
-
-                if (codigo) {
-
-                    procurarCodigo(
-                        codigo
-                    );
-
-                }
-
-                input.select();
-
-            }
+        hideModal(
+            elements.viewModal
         );
 
     }
 
 
     /* =====================================================
-       RECEBER CÓDIGO DA CÂMERA
-       ===================================================== */
+       ESTOQUE
+    ===================================================== */
 
-    window.EMPIREBarcodeDetected =
-        function(codigo) {
+    function getStockStatus(quantity) {
 
-            procurarCodigo(
-                codigo
-            );
+        if (quantity <= 0) {
 
-        };
+            return "Sem estoque";
+
+        }
+
+
+        if (quantity <= 5) {
+
+            return "Estoque baixo";
+
+        }
+
+
+        return "Em estoque";
+
+    }
 
 
     /* =====================================================
        NOTIFICAÇÕES
-       ===================================================== */
+    ===================================================== */
 
-    function atualizarNotificacoes() {
+    function updateNotifications() {
 
-        const lista =
-            $("notificationList");
+        if (!elements.notificationList) return;
 
-        const contador =
-            $("notificationCount");
 
-        if (!lista) return;
-
-        const semEstoque =
-            produtos.filter(
-                produto =>
-                    quantidade(produto) <= 0
+        const noStock =
+            products.filter(
+                (product) =>
+                    Number(
+                        product.quantidade || 0
+                    ) <= 0
             );
 
 
-        if (contador) {
+        const lowStock =
+            products.filter(
+                (product) => {
 
-            contador.textContent =
-                semEstoque.length;
+                    const quantity =
+                        Number(
+                            product.quantidade || 0
+                        );
 
-            contador.style.display =
-                semEstoque.length
-                    ? ""
-                    : "none";
+                    return (
+                        quantity > 0 &&
+                        quantity <= 5
+                    );
 
-        }
+                }
+            );
 
 
-        if (!semEstoque.length) {
+        const totalNotifications =
+            noStock.length +
+            lowStock.length;
 
-            lista.innerHTML = `
+
+        setText(
+            elements.notificationCount,
+            totalNotifications
+        );
+
+
+        if (!totalNotifications) {
+
+            elements.notificationList.innerHTML = `
+
                 <div class="notification-empty">
-
-                    <i class="fa-solid fa-circle-check"></i>
 
                     Nenhuma notificação no momento.
 
                 </div>
+
             `;
 
             return;
@@ -2437,104 +2902,158 @@
         }
 
 
-        lista.innerHTML =
-            semEstoque
-                .slice(0, 10)
-                .map(
-                    produto => `
-                        <div class="notification-item">
+        const notifications = [];
 
-                            <i class="fa-solid fa-triangle-exclamation"></i>
 
-                            <div>
+        noStock.forEach((product) => {
 
-                                <strong>
-                                    ${escapeHTML(
-                                        produto?.nome ||
-                                        "Produto"
-                                    )}
-                                </strong>
+            notifications.push(`
 
-                                <span>
-                                    Produto sem estoque.
-                                </span>
+                <div class="notification-item">
 
-                            </div>
+                    <i class="fa-solid fa-circle-exclamation"></i>
 
-                        </div>
-                    `
-                )
-                .join("");
+                    <div>
+
+                        <strong>
+                            Sem estoque
+                        </strong>
+
+                        <span>
+                            ${escapeHtml(
+                                product.nome ||
+                                "Produto"
+                            )}
+                        </span>
+
+                    </div>
+
+                </div>
+
+            `);
+
+        });
+
+
+        lowStock.forEach((product) => {
+
+            notifications.push(`
+
+                <div class="notification-item">
+
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+
+                    <div>
+
+                        <strong>
+                            Estoque baixo
+                        </strong>
+
+                        <span>
+                            ${escapeHtml(
+                                product.nome ||
+                                "Produto"
+                            )} — ${
+                                Number(
+                                    product.quantidade ||
+                                    0
+                                )
+                            } unidade(s)
+                        </span>
+
+                    </div>
+
+                </div>
+
+            `);
+
+        });
+
+
+        elements.notificationList.innerHTML =
+            notifications.join("");
+
+    }
+
+
+    function toggleNotifications() {
+
+        elements.notificationPanel
+            ?.classList.toggle("active");
+
+    }
+
+
+    function closeNotifications() {
+
+        elements.notificationPanel
+            ?.classList.remove("active");
 
     }
 
 
     /* =====================================================
-       NOTIFICAÇÕES
-       ===================================================== */
+       PERFIL
+    ===================================================== */
 
-    function abrirNotificacoes() {
+    async function loadProfile() {
 
-        atualizarNotificacoes();
+        /*
+         * Não interrompe a página se o perfil
+         * não estiver disponível.
+         */
 
-        $("notificationPanel")
-            ?.classList.toggle(
-                "active"
-            );
+        try {
+
+            const profile =
+                JSON.parse(
+                    sessionStorage.getItem(
+                        "empire_user"
+                    ) || "null"
+                );
+
+
+            if (
+                profile &&
+                elements.profileName
+            ) {
+
+                elements.profileName.textContent =
+                    profile.nome ||
+                    profile.usuario ||
+                    "Administrador";
+
+            }
+
+        } catch {
+
+            /*
+             * Sessão opcional.
+             */
+
+        }
 
     }
 
 
     /* =====================================================
        LOGOUT
-       ===================================================== */
+    ===================================================== */
 
-    async function logout() {
+    function handleLogout() {
 
-        const db =
-            getSupabase();
-
-        try {
-
-            if (
-                db &&
-                typeof db.auth?.signOut ===
-                "function"
-            ) {
-
-                await db.auth.signOut();
-
-            }
-
-        } catch (erro) {
-
-            console.warn(
-                "Erro ao sair do Supabase:",
-                erro
-            );
-
-        }
-
+        /*
+         * Não dependemos de localStorage para os produtos.
+         * Apenas encerramos a sessão do navegador.
+         */
 
         try {
-
-            localStorage.removeItem(
-                "usuarioLogado"
-            );
 
             sessionStorage.removeItem(
-                "usuarioLogado"
+                "empire_user"
             );
 
-        } catch (erro) {
-
-            console.warn(
-                "Erro ao limpar sessão:",
-                erro
-            );
-
-        }
-
+        } catch {}
 
         window.location.href =
             "../../index.html";
@@ -2543,273 +3062,38 @@
 
 
     /* =====================================================
-       EVENTOS
-       ===================================================== */
+       RELÓGIO
+    ===================================================== */
 
-    function configurarEventos() {
+    function startClock() {
 
-        /* -------------------------------------------------
-           NOVO PRODUTO
-           ------------------------------------------------- */
+        updateClock();
 
-        $("addProductButton")
-            ?.addEventListener(
-                "click",
-                novoProduto
-            );
 
-
-        /* -------------------------------------------------
-           FECHAR PRODUTO
-           ------------------------------------------------- */
-
-        $("closeModal")
-            ?.addEventListener(
-                "click",
-                fecharProduto
-            );
-
-        $("cancelProduct")
-            ?.addEventListener(
-                "click",
-                fecharProduto
-            );
-
-
-        document
-            .querySelectorAll(
-                "[data-close-modal]"
-            )
-            .forEach(
-                elemento => {
-
-                    elemento.addEventListener(
-                        "click",
-                        fecharProduto
-                    );
-
-                }
-            );
-
-
-        /* -------------------------------------------------
-           FORMULÁRIO
-           ------------------------------------------------- */
-
-        $("productForm")
-            ?.addEventListener(
-                "submit",
-                salvarProduto
-            );
-
-
-        /* -------------------------------------------------
-           PESQUISA
-           ------------------------------------------------- */
-
-        $("productSearch")
-            ?.addEventListener(
-                "input",
-                renderizarTabela
-            );
-
-        $("categoryFilter")
-            ?.addEventListener(
-                "change",
-                renderizarTabela
-            );
-
-
-        /* -------------------------------------------------
-           TABELA
-           ------------------------------------------------- */
-
-        $("productsTable")
-            ?.addEventListener(
-                "click",
-                event => {
-
-                    const botao =
-                        event.target.closest(
-                            "[data-action]"
-                        );
-
-                    if (!botao) return;
-
-                    const id =
-                        botao.dataset.id;
-
-                    const produto =
-                        produtos.find(
-                            item =>
-                                String(
-                                    item?.id
-                                ) ===
-                                String(id)
-                        );
-
-                    if (!produto) return;
-
-                    const acao =
-                        botao.dataset.action;
-
-
-                    if (
-                        acao ===
-                        "view"
-                    ) {
-
-                        visualizarProduto(
-                            produto
-                        );
-
-                    }
-
-
-                    if (
-                        acao ===
-                        "edit"
-                    ) {
-
-                        editarProduto(
-                            produto
-                        );
-
-                    }
-
-
-                    if (
-                        acao ===
-                        "delete"
-                    ) {
-
-                        excluirProduto(
-                            id
-                        );
-
-                    }
-
-                }
-            );
-
-
-        /* -------------------------------------------------
-           NOTIFICAÇÕES
-           ------------------------------------------------- */
-
-        $("notificationButton")
-            ?.addEventListener(
-                "click",
-                abrirNotificacoes
-            );
-
-
-        $("closeNotifications")
-            ?.addEventListener(
-                "click",
-                () => {
-
-                    $("notificationPanel")
-                        ?.classList.remove(
-                            "active"
-                        );
-
-                }
-            );
-
-
-        /* -------------------------------------------------
-           FOCO NO CÓDIGO
-           ------------------------------------------------- */
-
-        $("focusBarcode")
-            ?.addEventListener(
-                "click",
-                () => {
-
-                    $("productBarcode")
-                        ?.focus();
-
-                }
-            );
-
-
-        /* -------------------------------------------------
-           LOGOUT
-           ------------------------------------------------- */
-
-        $("logoutButton")
-            ?.addEventListener(
-                "click",
-                logout
-            );
-
-
-        /* -------------------------------------------------
-           ESC
-           ------------------------------------------------- */
-
-        document.addEventListener(
-            "keydown",
-            event => {
-
-                if (
-                    event.key !==
-                    "Escape"
-                ) {
-
-                    return;
-
-                }
-
-                fecharProduto();
-
-                fecharVisualizacao();
-
-                $("notificationPanel")
-                    ?.classList.remove(
-                        "active"
-                    );
-
-
-                /*
-                 * A câmera será fechada
-                 * pelo camera.js.
-                 */
-
-                if (
-                    typeof window
-                        .EMPIRECloseCamera ===
-                    "function"
-                ) {
-
-                    window
-                        .EMPIRECloseCamera();
-
-                }
-
-            }
+        setInterval(
+            updateClock,
+            1000
         );
 
+    }
 
-        /* -------------------------------------------------
-           ENTER NO CÓDIGO DO PRODUTO
-           ------------------------------------------------- */
 
-        $("productBarcode")
-            ?.addEventListener(
-                "keydown",
-                event => {
+    function updateClock() {
 
-                    if (
-                        event.key ===
-                        "Enter"
-                    ) {
+        if (!elements.clock) return;
 
-                        event.preventDefault();
 
-                    }
+        const now =
+            new Date();
 
+
+        elements.clock.textContent =
+            now.toLocaleTimeString(
+                "pt-BR",
+                {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    second: "2-digit"
                 }
             );
 
@@ -2817,128 +3101,528 @@
 
 
     /* =====================================================
-       INICIALIZAÇÃO
-       ===================================================== */
+       MODAL
+    ===================================================== */
 
-    async function iniciar() {
+    function showModal(modal) {
 
-        if (sistemaIniciado) {
+        if (!modal) return;
+
+
+        modal.classList.add("active");
+
+        modal.setAttribute(
+            "aria-hidden",
+            "false"
+        );
+
+
+        document.body.classList.add(
+            "modal-open"
+        );
+
+    }
+
+
+    function hideModal(modal) {
+
+        if (!modal) return;
+
+
+        modal.classList.remove("active");
+
+        modal.setAttribute(
+            "aria-hidden",
+            "true"
+        );
+
+
+        /*
+         * Só remove o bloqueio se não houver
+         * outro modal aberto.
+         */
+
+        const anotherModal =
+            document.querySelector(
+                ".modal.active"
+            );
+
+
+        if (!anotherModal) {
+
+            document.body.classList.remove(
+                "modal-open"
+            );
+
+        }
+
+    }
+
+
+    /* =====================================================
+       TECLA ESC
+    ===================================================== */
+
+    function handleGlobalKeydown(event) {
+
+        if (event.key !== "Escape") return;
+
+
+        if (
+            elements.viewModal?.classList.contains(
+                "active"
+            )
+        ) {
+
+            closeViewModal();
 
             return;
 
         }
 
-        sistemaIniciado = true;
+
+        if (
+            elements.productModal?.classList.contains(
+                "active"
+            )
+        ) {
+
+            closeProductModal();
+
+            return;
+
+        }
 
 
-        /* -------------------------------------------------
-           RELÓGIO
-           ------------------------------------------------- */
+        closeNotifications();
 
-        atualizarRelogio();
+    }
 
-        intervaloRelogio =
-            setInterval(
-                atualizarRelogio,
-                1000
+
+    /* =====================================================
+       TOAST
+    ===================================================== */
+
+    function showToast(
+        message,
+        type = "info"
+    ) {
+
+        if (!elements.toastContainer) {
+
+            console.log(
+                `[${type}]`,
+                message
+            );
+
+            return;
+
+        }
+
+
+        const toast =
+            document.createElement(
+                "div"
             );
 
 
-        /* -------------------------------------------------
-           PERFIL
-           ------------------------------------------------- */
-
-        carregarPerfil();
+        toast.className =
+            `toast toast-${type}`;
 
 
-        /* -------------------------------------------------
-           EVENTOS
-           ------------------------------------------------- */
-
-        configurarEventos();
-
-        configurarLeitor();
-
-        configurarImagem();
+        const icon =
+            type === "success"
+                ? "fa-check"
+                : type === "error"
+                    ? "fa-xmark"
+                    : "fa-info";
 
 
-        /* -------------------------------------------------
-           PRODUTOS
-           ------------------------------------------------- */
+        toast.innerHTML = `
 
-        await carregarProdutos();
+            <i class="fa-solid ${icon}"></i>
+
+            <span>
+                ${escapeHtml(message)}
+            </span>
+
+        `;
+
+
+        elements.toastContainer.appendChild(
+            toast
+        );
+
+
+        requestAnimationFrame(() => {
+
+            toast.classList.add(
+                "show"
+            );
+
+        });
+
+
+        setTimeout(() => {
+
+            toast.classList.remove(
+                "show"
+            );
+
+
+            setTimeout(() => {
+
+                toast.remove();
+
+            }, 300);
+
+        }, 3500);
 
     }
 
 
     /* =====================================================
-       DOM READY
-       ===================================================== */
+       MENSAGEM DO FORMULÁRIO
+    ===================================================== */
 
-    if (
-        document.readyState ===
-        "loading"
+    function setFormMessage(
+        message,
+        type = "info"
     ) {
 
-        document.addEventListener(
-            "DOMContentLoaded",
-            iniciar,
+        if (!elements.formMessage) return;
+
+
+        elements.formMessage.textContent =
+            message;
+
+
+        elements.formMessage.className =
+            `form-message ${type}`;
+
+    }
+
+
+    function clearFormMessage() {
+
+        if (!elements.formMessage) return;
+
+
+        elements.formMessage.textContent = "";
+
+        elements.formMessage.className =
+            "form-message";
+
+    }
+
+
+    /* =====================================================
+       UTILITÁRIOS
+    ===================================================== */
+
+    function findProduct(id) {
+
+        return products.find(
+            (product) =>
+                String(product.id) ===
+                String(id)
+        );
+
+    }
+
+
+    function parseNumber(value) {
+
+        if (
+            value === null ||
+            value === undefined ||
+            value === ""
+        ) {
+
+            return 0;
+
+        }
+
+
+        const normalized =
+            String(value)
+                .replace(/\./g, "")
+                .replace(",", ".");
+
+
+        const number =
+            Number(normalized);
+
+
+        return Number.isFinite(number)
+            ? number
+            : 0;
+
+    }
+
+
+    function parseInteger(value) {
+
+        const number =
+            Number.parseInt(
+                String(value || "0"),
+                10
+            );
+
+
+        return Number.isFinite(number)
+            ? number
+            : 0;
+
+    }
+
+
+    function formatCurrency(value) {
+
+        const number =
+            Number(value || 0);
+
+
+        return number.toLocaleString(
+            "pt-BR",
             {
-                once: true
+                style: "currency",
+                currency: "BRL"
             }
         );
 
-    } else {
+    }
 
-        iniciar();
+
+    function setText(
+        element,
+        value
+    ) {
+
+        if (!element) return;
+
+
+        element.textContent =
+            value ?? "";
+
+    }
+
+
+    function setValue(
+        element,
+        value
+    ) {
+
+        if (!element) return;
+
+
+        element.value =
+            value ?? "";
+
+    }
+
+
+    function escapeHtml(value) {
+
+        return String(value ?? "")
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+
+    }
+
+
+    function getFileExtension(filename) {
+
+        const parts =
+            String(filename || "")
+                .split(".");
+
+
+        const extension =
+            parts.length > 1
+                ? parts.pop()
+                : "jpg";
+
+
+        return extension
+            .toLowerCase()
+            .replace(
+                /[^a-z0-9]/g,
+                ""
+            ) || "jpg";
+
+    }
+
+
+    function cryptoRandomId() {
+
+        if (
+            window.crypto &&
+            typeof window.crypto.randomUUID ===
+                "function"
+        ) {
+
+            return window.crypto.randomUUID();
+
+        }
+
+
+        return (
+            Date.now().toString(36) +
+            Math.random()
+                .toString(36)
+                .slice(2)
+        );
+
+    }
+
+
+    function getSupabaseErrorMessage(error) {
+
+        if (!error) {
+
+            return "Não foi possível concluir a operação.";
+
+        }
+
+
+        if (
+            error.code === "23505"
+        ) {
+
+            return "Já existe um produto com este código ou SKU.";
+
+        }
+
+
+        if (
+            error.code === "42501"
+        ) {
+
+            return "Sem permissão para realizar esta operação no Supabase.";
+
+        }
+
+
+        if (
+            error.message
+        ) {
+
+            return error.message;
+
+        }
+
+
+        return "Não foi possível concluir a operação.";
+
+    }
+
+
+    function updateLastUpdate() {
+
+        if (!elements.lastUpdate) return;
+
+
+        elements.lastUpdate.textContent =
+            new Date().toLocaleString(
+                "pt-BR",
+                {
+                    dateStyle: "short",
+                    timeStyle: "medium"
+                }
+            );
+
+    }
+
+
+    function setBarcodeStatus(
+        message
+    ) {
+
+        if (!elements.barcodeStatus) return;
+
+
+        elements.barcodeStatus.textContent =
+            message;
+
+    }
+
+
+    function hideLoader() {
+
+        if (!elements.loader) return;
+
+
+        /*
+         * Pequeno tempo apenas para a animação
+         * visual da página.
+         */
+
+        setTimeout(() => {
+
+            elements.loader.classList.add(
+                "hidden"
+            );
+
+        }, 400);
 
     }
 
 
     /* =====================================================
-       LIMPEZA
-       ===================================================== */
+       API PÚBLICA
+       Permite que camera.js ou outros módulos
+       comuniquem com produtos.js.
+    ===================================================== */
 
-    window.addEventListener(
-        "beforeunload",
-        () => {
+    window.EMPIRE_PRODUCTS = {
 
-            if (intervaloRelogio) {
+        getProducts: () => [...products],
 
-                clearInterval(
-                    intervaloRelogio
-                );
+        findById: (id) =>
+            findProduct(id),
 
-                intervaloRelogio = null;
+        findByBarcode:
+            (barcode) =>
+                products.find(
+                    (product) =>
+                        normalizeBarcode(
+                            product.codigo_barras
+                        ) ===
+                        normalizeBarcode(
+                            barcode
+                        )
+                ),
 
-            }
+        openNew: () =>
+            openProductModal(),
 
-        }
-    );
+        openEdit:
+            (product) =>
+                openProductModal(product),
 
+        openView:
+            (product) =>
+                openViewModal(product),
 
-    /* =====================================================
-       API GLOBAL
-       ===================================================== */
+        scanBarcode:
+            (barcode) =>
+                processScannedBarcode(
+                    barcode
+                ),
 
-    window.EMPIREProdutos = {
-
-        recarregar:
-            carregarProdutos,
-
-        novo:
-            novoProduto,
-
-        editar:
-            editarProduto,
-
-        visualizar:
-            visualizarProduto,
-
-        procurarCodigo:
-            procurarCodigo
+        reload:
+            () =>
+                loadProducts()
 
     };
 
+
+    console.log(
+        "EMPIRE Produtos iniciado."
+    );
 
 })();
