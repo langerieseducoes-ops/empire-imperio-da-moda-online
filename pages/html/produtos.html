@@ -2,12 +2,17 @@
 <html lang="pt-BR">
 
 <head>
-
     <meta charset="UTF-8">
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-    <meta name="theme-color" content="#050505">
+    <meta
+        name="theme-color"
+        content="#050505"
+    >
 
     <meta
         name="description"
@@ -21,9 +26,10 @@
         href="../../assets/img/favicon.png"
     >
 
-    <!-- FONTES -->
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        rel="preconnect"
+        href="https://fonts.googleapis.com"
+    >
 
     <link
         rel="preconnect"
@@ -36,100 +42,74 @@
         rel="stylesheet"
     >
 
-    <!-- FONT AWESOME -->
-
     <link
         rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
     >
-
-    <!-- CSS -->
 
     <link
         rel="stylesheet"
         href="../../assets/css/produtos.css"
     >
 
+    <link
+        rel="stylesheet"
+        href="../../assets/css/camera.css"
+    >
 </head>
 
 <body>
-
-<!-- =========================================================
-     BACKGROUND
-========================================================= -->
-
-<div class="luxury-background">
-
-    <span class="bg-orb orb-1"></span>
-    <span class="bg-orb orb-2"></span>
-    <span class="bg-orb orb-3"></span>
-
-    <div class="background-grid"></div>
-
-</div>
-
-
-<!-- =========================================================
-     LOADER
-========================================================= -->
 
 <div
     class="products-loader"
     id="productsLoader"
 >
-
     <div class="loader-content">
-
         <div class="loader-logo">
             EMPIRE
         </div>
 
         <div class="loader-subtitle">
-            IMPÉRIO DA MODA ONLINE
+            Império da Moda Online
         </div>
 
         <div class="loader-line">
             <span></span>
         </div>
-
-        <small>
-            Inicializando gestão de produtos
-        </small>
-
     </div>
-
 </div>
 
 
-<!-- =========================================================
-     LAYOUT
-========================================================= -->
+<div class="luxury-background">
+    <span class="glow glow-one"></span>
+    <span class="glow glow-two"></span>
+    <span class="glow glow-three"></span>
+</div>
+
 
 <div class="products-layout">
 
 
-    <!-- =====================================================
-         SIDEBAR
-    ====================================================== -->
+    <!-- SIDEBAR -->
 
     <aside class="sidebar">
 
         <div class="brand">
 
-            <div class="brand-logo">
-
-                <img
-                    src="../../assets/img/logo.png"
-                    alt="EMPIRE"
-                >
-
-            </div>
+            <img
+                src="../../assets/img/logo.png"
+                alt="EMPIRE"
+            >
 
             <div class="brand-text">
 
-                <h2>EMPIRE</h2>
+                <h2>
+                    EMPIRE
+                </h2>
 
-                <span>Império da Moda Online</span>
+                <span>
+                    Império da Moda Online
+                </span>
 
             </div>
 
@@ -143,10 +123,7 @@
                 <img
                     src="../../assets/img/avatar.png"
                     alt="Usuário"
-                    onerror="this.style.display='none'; this.parentElement.classList.add('fallback')"
                 >
-
-                <i class="fa-solid fa-user"></i>
 
             </div>
 
@@ -157,11 +134,8 @@
                 </strong>
 
                 <small>
-
                     <i class="fa-solid fa-circle"></i>
-
-                    Sistema online
-
+                    Online
                 </small>
 
             </div>
@@ -176,7 +150,10 @@
                 <span>Tela Inicial</span>
             </a>
 
-            <a href="produtos.html" class="active">
+            <a
+                href="produtos.html"
+                class="active"
+            >
                 <i class="fa-solid fa-box-open"></i>
                 <span>Produtos</span>
             </a>
@@ -231,24 +208,25 @@
 
         <div class="sidebar-footer">
 
-            <div>
+            <div class="sidebar-footer-brand">
 
-                <strong>EMPIRE ERP</strong>
+                <strong>
+                    EMPIRE ERP
+                </strong>
 
-                <span>Sistema de Gestão</span>
+                <span>
+                    Sistema de Gestão
+                </span>
 
             </div>
 
             <button
                 id="logoutButton"
-                class="logout-button"
                 type="button"
+                class="logout-button"
             >
-
                 <i class="fa-solid fa-right-from-bracket"></i>
-
                 <span>Sair do sistema</span>
-
             </button>
 
         </div>
@@ -256,9 +234,7 @@
     </aside>
 
 
-    <!-- =====================================================
-         MAIN
-    ====================================================== -->
+    <!-- MAIN -->
 
     <main class="main-content">
 
@@ -278,7 +254,7 @@
                 </h1>
 
                 <p>
-                    Catálogo, estoque, valores e controle comercial.
+                    Catálogo, estoque e inteligência comercial.
                 </p>
 
             </div>
@@ -286,12 +262,9 @@
 
             <div class="top-actions">
 
-
-                <!-- RELÓGIO -->
-
                 <div class="clock">
 
-                    <i class="fa-regular fa-clock"></i>
+                    <i class="fa-solid fa-clock"></i>
 
                     <strong id="systemClock">
                         00:00:00
@@ -299,8 +272,6 @@
 
                 </div>
 
-
-                <!-- BARRAS -->
 
                 <div
                     class="barcode-scanner"
@@ -320,25 +291,21 @@
                     <button
                         id="openCameraScanner"
                         type="button"
-                        title="Abrir câmera"
+                        title="Ler código pela câmera"
                     >
-
                         <i class="fa-solid fa-camera"></i>
-
                     </button>
 
                     <span id="barcodeStatus">
-                        PRONTO
+                        Pronto
                     </span>
 
                 </div>
 
 
-                <!-- NOTIFICAÇÕES -->
-
                 <button
-                    id="notificationButton"
                     class="notification-button"
+                    id="notificationButton"
                     type="button"
                 >
 
@@ -350,29 +317,43 @@
 
                 </button>
 
-
-                <!-- NOVO PRODUTO -->
-
-                <button
-                    id="addProductButton"
-                    class="gold-button"
-                    type="button"
-                >
-
-                    <i class="fa-solid fa-plus"></i>
-
-                    <span>Novo Produto</span>
-
-                </button>
-
             </div>
 
         </header>
 
 
-        <!-- =================================================
-             MÉTRICAS
-        ================================================== -->
+        <!-- STATUS -->
+
+        <section class="system-status">
+
+            <div class="status-left">
+
+                <span class="status-dot"></span>
+
+                <strong>
+                    Catálogo conectado
+                </strong>
+
+                <span id="catalogStatus">
+                    Sincronizando produtos...
+                </span>
+
+            </div>
+
+            <div class="status-right">
+
+                <i class="fa-solid fa-shield-halved"></i>
+
+                <span>
+                    Dados protegidos
+                </span>
+
+            </div>
+
+        </section>
+
+
+        <!-- METRICS -->
 
         <section class="metrics">
 
@@ -384,9 +365,17 @@
 
                 <div class="metric-content">
 
-                    <span>Produtos cadastrados</span>
+                    <span>
+                        Produtos cadastrados
+                    </span>
 
-                    <strong id="totalProducts">0</strong>
+                    <strong id="totalProducts">
+                        0
+                    </strong>
+
+                    <small>
+                        Itens no catálogo
+                    </small>
 
                 </div>
 
@@ -401,9 +390,17 @@
 
                 <div class="metric-content">
 
-                    <span>Unidades em estoque</span>
+                    <span>
+                        Unidades em estoque
+                    </span>
 
-                    <strong id="totalStock">0</strong>
+                    <strong id="totalStock">
+                        0
+                    </strong>
+
+                    <small>
+                        Quantidade disponível
+                    </small>
 
                 </div>
 
@@ -418,9 +415,17 @@
 
                 <div class="metric-content">
 
-                    <span>Categorias</span>
+                    <span>
+                        Categorias
+                    </span>
 
-                    <strong id="totalCategories">0</strong>
+                    <strong id="totalCategories">
+                        0
+                    </strong>
+
+                    <small>
+                        Segmentos cadastrados
+                    </small>
 
                 </div>
 
@@ -429,7 +434,7 @@
 
             <article
                 class="metric warning"
-                id="stockWarningMetric"
+                id="stockAlertMetric"
             >
 
                 <div class="metric-icon">
@@ -438,9 +443,17 @@
 
                 <div class="metric-content">
 
-                    <span>Estoque crítico</span>
+                    <span>
+                        Estoque em alerta
+                    </span>
 
-                    <strong id="lowStock">0</strong>
+                    <strong id="lowStock">
+                        0
+                    </strong>
+
+                    <small>
+                        Produtos que exigem atenção
+                    </small>
 
                 </div>
 
@@ -449,67 +462,83 @@
         </section>
 
 
-        <!-- =================================================
-             FINANCEIRO
-        ================================================== -->
+        <!-- FINANCEIRO -->
 
         <section class="financial-metrics">
 
             <article class="financial-card">
 
-                <div class="financial-label">
-                    VALOR DE VENDA EM ESTOQUE
+                <div class="financial-card-top">
+                    <span>
+                        VALOR DE VENDA EM ESTOQUE
+                    </span>
+
+                    <i class="fa-solid fa-chart-line"></i>
                 </div>
 
                 <strong id="stockValue">
                     R$ 0,00
                 </strong>
 
-                <span>
+                <small>
                     Potencial bruto do catálogo
-                </span>
+                </small>
 
             </article>
 
 
             <article class="financial-card">
 
-                <div class="financial-label">
-                    CUSTO EM ESTOQUE
+                <div class="financial-card-top">
+                    <span>
+                        CUSTO EM ESTOQUE
+                    </span>
+
+                    <i class="fa-solid fa-wallet"></i>
                 </div>
 
                 <strong id="costValue">
                     R$ 0,00
                 </strong>
 
-                <span>
+                <small>
                     Capital aplicado em estoque
-                </span>
-
-            </article>
-
-
-            <article class="financial-card highlight">
-
-                <div class="financial-label">
-                    MARGEM POTENCIAL
-                </div>
-
-                <strong id="profitValue">
-                    R$ 0,00
-                </strong>
-
-                <span>
-                    Resultado potencial
-                </span>
+                </small>
 
             </article>
 
 
             <article class="financial-card">
 
-                <div class="financial-label">
-                    PRODUTOS ATIVOS
+                <div class="financial-card-top">
+                    <span>
+                        MARGEM POTENCIAL
+                    </span>
+
+                    <i class="fa-solid fa-arrow-trend-up"></i>
+                </div>
+
+                <strong id="profitValue">
+                    R$ 0,00
+                </strong>
+
+                <small>
+                    Venda estimada menos custo
+                </small>
+
+            </article>
+
+
+            <article class="financial-card">
+
+                <div class="financial-card-top">
+
+                    <span>
+                        PRODUTOS ATIVOS
+                    </span>
+
+                    <i class="fa-solid fa-circle-check"></i>
+
                 </div>
 
                 <strong id="productCountLabel">
@@ -517,23 +546,15 @@
                 </strong>
 
                 <div class="progress">
-
                     <i id="stockProgress"></i>
-
                 </div>
-
-                <span id="activePercentage">
-                    0% do catálogo ativo
-                </span>
 
             </article>
 
         </section>
 
 
-        <!-- =================================================
-             PRODUTOS
-        ================================================== -->
+        <!-- CATÁLOGO -->
 
         <section class="product-panel">
 
@@ -550,7 +571,7 @@
                     </h2>
 
                     <small>
-                        Gerencie seu catálogo comercial com precisão.
+                        Visualização completa do seu catálogo comercial.
                     </small>
 
                 </div>
@@ -593,21 +614,49 @@
 
                         <tr>
 
-                            <th>Produto</th>
-                            <th>Código</th>
-                            <th>Tamanho</th>
-                            <th>Cor</th>
-                            <th>Categoria</th>
-                            <th>Venda</th>
-                            <th>Custo</th>
-                            <th>Estoque</th>
-                            <th>Ações</th>
+                            <th>
+                                Produto
+                            </th>
+
+                            <th>
+                                Código
+                            </th>
+
+                            <th>
+                                Tamanho
+                            </th>
+
+                            <th>
+                                Cor
+                            </th>
+
+                            <th>
+                                Categoria
+                            </th>
+
+                            <th>
+                                Venda
+                            </th>
+
+                            <th>
+                                Custo
+                            </th>
+
+                            <th>
+                                Estoque
+                            </th>
+
+                            <th>
+                                Situação
+                            </th>
 
                         </tr>
 
                     </thead>
 
-                    <tbody id="productsTable"></tbody>
+                    <tbody id="productsTable">
+
+                    </tbody>
 
                 </table>
 
@@ -616,33 +665,38 @@
         </section>
 
 
-        <!-- =================================================
-             ANALYTICS
-        ================================================== -->
+        <!-- ANALYTICS -->
 
         <section class="analytics-grid">
 
 
+            <!-- GRÁFICO -->
+
             <div class="chart-panel">
 
-                <div class="panel-header">
+                <div class="panel-header chart-header">
 
                     <div>
 
                         <span class="overline">
-                            ANÁLISE DE ESTOQUE
+                            ANÁLISE OPERACIONAL
                         </span>
 
                         <h2>
-                            Distribuição por categoria
+                            Distribuição do estoque
                         </h2>
 
+                        <small>
+                            Comparativo de unidades por categoria.
+                        </small>
+
                     </div>
+
 
                     <div class="chart-total">
 
                         <span>
-                            Total
+                            TOTAL
                         </span>
 
                         <strong id="chartTotal">
@@ -656,20 +710,20 @@
 
                 <div class="chart-legend">
 
-                    <span>
-                        <i class="legend-dot critical"></i>
-                        Crítico
-                    </span>
+                    <div>
+                        <span class="legend-dot green"></span>
+                        Estoque saudável
+                    </div>
 
-                    <span>
-                        <i class="legend-dot attention"></i>
-                        Atenção
-                    </span>
+                    <div>
+                        <span class="legend-dot yellow"></span>
+                        Estoque intermediário
+                    </div>
 
-                    <span>
-                        <i class="legend-dot normal"></i>
-                        Normal
-                    </span>
+                    <div>
+                        <span class="legend-dot red"></span>
+                        Estoque baixo
+                    </div>
 
                 </div>
 
@@ -682,70 +736,114 @@
             </div>
 
 
-            <div class="luxury-info">
+            <!-- RESUMO -->
 
-                <span class="overline">
-                    EMPIRE INSIGHT
-                </span>
+            <aside class="stock-overview">
 
-                <h2>
-                    Controle profissional<br>
-                    do seu catálogo.
-                </h2>
+                <div class="overview-header">
 
-                <p>
-                    Acompanhe estoque, produtos, códigos de barras,
-                    valores e movimentações em uma única central.
-                </p>
+                    <div>
 
+                        <span class="overline">
+                            STATUS DO ESTOQUE
+                        </span>
 
-                <div class="insight-line">
+                        <h3>
+                            Visão executiva
+                        </h3>
 
-                    <i class="fa-solid fa-barcode"></i>
+                    </div>
 
-                    <span>
-                        Leitura por código de barras
-                    </span>
+                    <i class="fa-solid fa-chart-pie"></i>
 
                 </div>
 
 
-                <div class="insight-line">
+                <div class="stock-levels">
 
-                    <i class="fa-solid fa-camera"></i>
+                    <div class="stock-level">
 
-                    <span>
-                        Scanner pela câmera
-                    </span>
+                        <div class="stock-level-icon green">
+                            <i class="fa-solid fa-check"></i>
+                        </div>
+
+                        <div>
+
+                            <span>
+                                Saudável
+                            </span>
+
+                            <strong id="healthyStockCount">
+                                0 produtos
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="stock-level">
+
+                        <div class="stock-level-icon yellow">
+                            <i class="fa-solid fa-minus"></i>
+                        </div>
+
+                        <div>
+
+                            <span>
+                                Intermediário
+                            </span>
+
+                            <strong id="mediumStockCount">
+                                0 produtos
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="stock-level">
+
+                        <div class="stock-level-icon red">
+                            <i class="fa-solid fa-exclamation"></i>
+                        </div>
+
+                        <div>
+
+                            <span>
+                                Baixo
+                            </span>
+
+                            <strong id="criticalStockCount">
+                                0 produtos
+                            </strong>
+
+                        </div>
+
+                    </div>
 
                 </div>
 
 
-                <div class="insight-line">
-
-                    <i class="fa-solid fa-chart-column"></i>
+                <div class="overview-footer">
 
                     <span>
-                        Análise visual do estoque
+                        Última sincronização
                     </span>
+
+                    <strong id="lastUpdate">
+                        Aguardando
+                    </strong>
 
                 </div>
 
-
-                <div class="insight-line">
-
-                    <i class="fa-solid fa-shield-halved"></i>
-
-                    <span>
-                        Controle seguro dos registros
-                    </span>
-
-                </div>
-
-            </div>
+            </aside>
 
         </section>
 
+
+        <!-- FOOTER -->
 
         <footer class="main-footer">
 
@@ -764,11 +862,11 @@
             <div>
 
                 <span>
-                    Última atualização:
+                    Sistema operacional:
                 </span>
 
-                <strong id="lastUpdate">
-                    Aguardando
+                <strong>
+                    Produtos
                 </strong>
 
             </div>
@@ -780,9 +878,7 @@
 </div>
 
 
-<!-- =========================================================
-     MODAL CÂMERA
-========================================================= -->
+<!-- CAMERA -->
 
 <div
     class="modal camera-modal"
@@ -795,19 +891,17 @@
         id="closeCameraScannerOverlay"
     ></div>
 
-
-    <div class="modal-card camera-scanner-card">
+    <div
+        class="modal-card camera-scanner-card"
+    >
 
         <button
-            id="closeCameraScanner"
             class="close-modal"
+            id="closeCameraScanner"
             type="button"
         >
-
             <i class="fa-solid fa-xmark"></i>
-
         </button>
-
 
         <div class="modal-header">
 
@@ -825,7 +919,6 @@
 
         </div>
 
-
         <div class="camera-reader">
 
             <video
@@ -833,6 +926,7 @@
                 autoplay
                 muted
                 playsinline
+                webkit-playsinline
             ></video>
 
             <div class="camera-frame">
@@ -846,10 +940,9 @@
 
             </div>
 
-
             <div
-                id="cameraLoading"
                 class="camera-loading"
+                id="cameraLoading"
             >
 
                 <i class="fa-solid fa-camera"></i>
@@ -862,20 +955,18 @@
 
         </div>
 
-
         <div
-            id="cameraStatus"
             class="camera-status"
+            id="cameraStatus"
         >
-            Posicione o código de barras dentro da área.
+            Posicione o código de barras dentro da área de leitura.
         </div>
-
 
         <div class="camera-actions">
 
             <button
-                id="toggleFlash"
                 class="camera-light-button"
+                id="toggleFlash"
                 type="button"
             >
 
@@ -885,10 +976,9 @@
 
             </button>
 
-
             <button
-                id="closeCameraButton"
                 class="cancel-button"
+                id="closeCameraButton"
                 type="button"
             >
 
@@ -905,356 +995,11 @@
 </div>
 
 
-<!-- =========================================================
-     MODAL PRODUTO
-========================================================= -->
+<!-- VISUALIZAÇÃO DO PRODUTO -->
 
 <div
-    class="modal product-modal"
-    id="productModal"
-    aria-hidden="true"
->
-
-    <div
-        class="modal-overlay"
-        data-close-modal
-    ></div>
-
-
-    <div class="modal-card product-modal-card">
-
-        <button
-            id="closeModal"
-            class="close-modal"
-            type="button"
-        >
-
-            <i class="fa-solid fa-xmark"></i>
-
-        </button>
-
-
-        <div class="modal-header">
-
-            <span
-                id="modalOverline"
-                class="overline"
-            >
-                NOVO CADASTRO
-            </span>
-
-            <h2 id="modalTitle">
-                Adicionar produto
-            </h2>
-
-            <p>
-                Preencha os dados comerciais do produto.
-            </p>
-
-        </div>
-
-
-        <form id="productForm">
-
-            <input
-                id="productId"
-                type="hidden"
-            >
-
-
-            <div class="form-grid">
-
-
-                <div class="form-group full">
-
-                    <label>
-                        Código de barras
-                    </label>
-
-                    <div class="barcode-input-area">
-
-                        <div class="input-with-button">
-
-                            <input
-                                id="productBarcode"
-                                type="text"
-                                inputmode="numeric"
-                                maxlength="32"
-                                autocomplete="off"
-                                placeholder="Digite ou bip o código"
-                            >
-
-                            <button
-                                id="focusBarcode"
-                                type="button"
-                            >
-
-                                <i class="fa-solid fa-barcode"></i>
-
-                            </button>
-
-                        </div>
-
-
-                        <button
-                            id="openProductCamera"
-                            class="barcode-camera-button"
-                            type="button"
-                        >
-
-                            <i class="fa-solid fa-camera"></i>
-
-                            Ler código
-
-                        </button>
-
-                    </div>
-
-                    <small class="field-help">
-                        Você pode utilizar leitor físico ou câmera.
-                    </small>
-
-                </div>
-
-
-                <div class="form-group">
-
-                    <label for="productSku">
-                        SKU
-                    </label>
-
-                    <input
-                        id="productSku"
-                        type="text"
-                        placeholder="Ex.: CONJ-PRETO-M"
-                    >
-
-                </div>
-
-
-                <div class="form-group">
-
-                    <label for="productName">
-                        Nome do produto
-                    </label>
-
-                    <input
-                        id="productName"
-                        type="text"
-                        required
-                        placeholder="Nome comercial"
-                    >
-
-                </div>
-
-
-                <div class="form-group">
-
-                    <label for="productSize">
-                        Tamanho
-                    </label>
-
-                    <input
-                        id="productSize"
-                        type="text"
-                        required
-                        placeholder="P, M, G, GG..."
-                    >
-
-                </div>
-
-
-                <div class="form-group">
-
-                    <label for="productColor">
-                        Cor
-                    </label>
-
-                    <input
-                        id="productColor"
-                        type="text"
-                        required
-                        placeholder="Ex.: Preto"
-                    >
-
-                </div>
-
-
-                <div class="form-group">
-
-                    <label for="productCategory">
-                        Categoria
-                    </label>
-
-                    <input
-                        id="productCategory"
-                        type="text"
-                        required
-                        placeholder="Ex.: Conjuntos"
-                    >
-
-                </div>
-
-
-                <div class="form-group">
-
-                    <label for="salePrice">
-                        Preço de venda
-                    </label>
-
-                    <div class="money-input">
-
-                        <span>R$</span>
-
-                        <input
-                            id="salePrice"
-                            type="number"
-                            min="0"
-                            step="0.01"
-                            required
-                        >
-
-                    </div>
-
-                </div>
-
-
-                <div class="form-group">
-
-                    <label for="stockPrice">
-                        Preço de custo
-                    </label>
-
-                    <div class="money-input">
-
-                        <span>R$</span>
-
-                        <input
-                            id="stockPrice"
-                            type="number"
-                            min="0"
-                            step="0.01"
-                            required
-                        >
-
-                    </div>
-
-                </div>
-
-
-                <div class="form-group">
-
-                    <label for="productQuantity">
-                        Quantidade
-                    </label>
-
-                    <input
-                        id="productQuantity"
-                        type="number"
-                        min="0"
-                        step="1"
-                        required
-                    >
-
-                </div>
-
-
-                <div class="form-group">
-
-                    <label for="productImage">
-                        Imagem do produto
-                    </label>
-
-                    <input
-                        id="productImage"
-                        type="file"
-                        accept="image/jpeg,image/png,image/webp,image/gif"
-                    >
-
-                    <small class="field-help">
-                        A imagem atual será mantida caso nenhuma nova seja selecionada.
-                    </small>
-
-                </div>
-
-
-                <div class="form-group full">
-
-                    <label>
-                        Pré-visualização
-                    </label>
-
-                    <div
-                        id="imagePreview"
-                        class="image-preview"
-                    >
-
-                        <div class="image-preview-placeholder">
-
-                            <i class="fa-solid fa-image"></i>
-
-                            <span>
-                                Nenhuma imagem selecionada
-                            </span>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-
-            <div
-                id="formMessage"
-                class="form-message"
-            ></div>
-
-
-            <div class="modal-actions">
-
-                <button
-                    id="cancelProduct"
-                    class="cancel-button"
-                    type="button"
-                >
-
-                    <i class="fa-solid fa-xmark"></i>
-
-                    Cancelar
-
-                </button>
-
-
-                <button
-                    id="saveProductButton"
-                    class="gold-button"
-                    type="submit"
-                >
-
-                    <i class="fa-solid fa-check"></i>
-
-                    Salvar Produto
-
-                </button>
-
-            </div>
-
-        </form>
-
-    </div>
-
-</div>
-
-
-<!-- =========================================================
-     MODAL VISUALIZAÇÃO
-========================================================= -->
-
-<div
-    id="viewModal"
     class="modal view-product-modal"
+    id="viewModal"
     aria-hidden="true"
 >
 
@@ -1263,35 +1008,30 @@
         data-close-view
     ></div>
 
-
     <div class="modal-card view-card">
 
         <button
-            id="closeViewModal"
             class="close-modal"
+            id="closeViewModal"
             type="button"
         >
-
             <i class="fa-solid fa-xmark"></i>
-
         </button>
 
 
         <div
-            id="viewImage"
             class="view-image"
+            id="viewImage"
         >
-
             <i class="fa-solid fa-box-open"></i>
-
         </div>
 
 
         <div class="view-content">
 
             <span
-                id="viewCategory"
                 class="overline"
+                id="viewCategory"
             >
                 PRODUTO
             </span>
@@ -1361,13 +1101,11 @@
 </div>
 
 
-<!-- =========================================================
-     NOTIFICAÇÕES
-========================================================= -->
+<!-- NOTIFICAÇÕES -->
 
 <div
-    id="notificationPanel"
     class="notification-panel"
+    id="notificationPanel"
 >
 
     <div class="notification-header">
@@ -1380,9 +1118,7 @@
             id="closeNotifications"
             type="button"
         >
-
             <i class="fa-solid fa-xmark"></i>
-
         </button>
 
     </div>
@@ -1395,20 +1131,18 @@
 <!-- TOAST -->
 
 <div
-    id="toastContainer"
     class="toast-container"
+    id="toastContainer"
 ></div>
 
-
-<!-- =========================================================
-     SCRIPTS
-========================================================= -->
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script src="https://unpkg.com/@zxing/browser@0.1.5/umd/zxing-browser.min.js"></script>
 
 <script src="../../assets/js/supabase.js"></script>
+
+<script src="../../assets/js/camera.js"></script>
 
 <script src="../../assets/js/produtos.js"></script>
 
