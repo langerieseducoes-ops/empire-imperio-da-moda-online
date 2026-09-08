@@ -1,1694 +1,987 @@
 /* =========================================================
    EMPIRE ERP
    CAMERA.JS
-   LEITOR DE CÓDIGO DE BARRAS
-   VERSÃO COMPLETA
-   Compatível com os IDs do produtos.html
-   ========================================================= */
+   Leitor óptico de códigos de barras
 
-(() => {
+   Compatível com:
+   - câmera do celular
+   - câmera do computador
+   - leitor físico USB/Bluetooth
+   - ZXing Browser 0.1.5
+
+   IMPORTANTE:
+   Este arquivo é o único responsável pela câmera.
+========================================================= */
+
+(function () {
 
     "use strict";
 
-    /* =====================================================
-       ESTADO
-    ===================================================== */
+    const Camera = {
 
-    let leitor = null;
-    let controles = null;
-    let stream = null;
-    let track = null;
+        reader: null,
+        controls: null,
+        stream: null,
+        track: null,
 
-    let cameraAberta = false;
-    let flashAtivo = false;
-    let lendoCodigo = false;
-    let inicializando = false;
+        video: null,
+        modal: null,
+        status: null,
 
+        target: null,
 
-    /* =====================================================
-       ATALHO
-    ===================================================== */
+        starting: false,
+        running: false,
+        detected: false,
 
-    const $ = id => document.getElementById(id);
+        torchEnabled: false,
 
+        callbacks: {
+            onResult: null,
+            onError: null,
+            onClose: null
+        },
 
-    /* =====================================================
-       ELEMENTOS
-    ===================================================== */
+        /* =====================================================
+           INICIALIZAÇÃO
+        ===================================================== */
 
-    function elementos() {
+        init(options = {}) {
 
-        return {
+            this.video =
+                document.getElementById(
+                    options.videoId || "barcodeCamera"
+                );
 
-            modal: $("cameraScannerModal"),
+            this.modal =
+                document.getElementById(
+                    options.modalId || "cameraModal"
+                );
 
-            video: $("barcodeCamera"),
+            this.status =
+                document.getElementById(
+                    options.statusId || "cameraStatus"
+                );
 
-            loading: $("cameraLoading"),
+            if (!this.video) {
 
-            status: $("cameraStatus"),
+                console.warn(
+                    "EMPIRE Camera: elemento #barcodeCamera não encontrado."
+                );
 
-            toggleFlash: $("toggleFlash"),
-
-            inputBarcode: $("barcodeScanner"),
-
-            statusScanner: $("barcodeStatus")
-
-        };
-
-    }
-
-
-    /* =====================================================
-       TOAST
-    ===================================================== */
-
-    function toast(mensagem, erro = false) {
-
-        const container =
-            $("toastContainer");
-
-        if (!container) {
-
-            console.log(mensagem);
-
-            return;
-
-        }
-
-        const elemento =
-            document.createElement("div");
-
-        elemento.className =
-            "toast" +
-            (erro ? " error" : "");
-
-        elemento.innerHTML = `
-
-            <i class="fa-solid ${
-                erro
-                    ? "fa-circle-exclamation"
-                    : "fa-circle-check"
-            }"></i>
-
-            <span></span>
-
-        `;
-
-        const texto =
-            elemento.querySelector("span");
-
-        if (texto) {
-
-            texto.textContent =
-                mensagem;
-
-        }
-
-        container.appendChild(elemento);
-
-        setTimeout(() => {
-
-            elemento.classList.add("hide");
-
-            setTimeout(() => {
-
-                elemento.remove();
-
-            }, 300);
-
-        }, 3000);
-
-    }
-
-
-    /* =====================================================
-       SOM
-    ===================================================== */
-
-    function bip(sucesso = true) {
-
-        try {
-
-            const AudioContext =
-                window.AudioContext ||
-                window.webkitAudioContext;
-
-            if (!AudioContext) {
-                return;
+                return false;
             }
 
-            const contexto =
-                new AudioContext();
+            /*
+             * Impede o navegador de tentar controlar
+             * o vídeo de maneira indevida.
+             */
 
-            const oscilador =
-                contexto.createOscillator();
+            this.video.muted = true;
+            this.video.autoplay = true;
+            this.video.playsInline = true;
 
-            const ganho =
-                contexto.createGain();
-
-            oscilador.type =
-                "sine";
-
-            oscilador.frequency.value =
-                sucesso
-                    ? 1200
-                    : 400;
-
-            ganho.gain.setValueAtTime(
-                0.0001,
-                contexto.currentTime
+            this.video.setAttribute(
+                "autoplay",
+                ""
             );
 
-            ganho.gain.exponentialRampToValueAtTime(
-                0.2,
-                contexto.currentTime + 0.01
+            this.video.setAttribute(
+                "playsinline",
+                ""
             );
 
-            ganho.gain.exponentialRampToValueAtTime(
-                0.0001,
-                contexto.currentTime +
-                (sucesso ? 0.12 : 0.2)
-            );
-
-            oscilador.connect(
-                ganho
-            );
-
-            ganho.connect(
-                contexto.destination
-            );
-
-            oscilador.start();
-
-            oscilador.stop(
-                contexto.currentTime +
-                (sucesso ? 0.12 : 0.2)
-            );
-
-            setTimeout(() => {
-
-                try {
-
-                    contexto.close();
-
-                } catch (e) {}
-
-            }, 500);
-
-        } catch (erro) {
-
-            console.warn(
-                "Som do scanner indisponível:",
-                erro
-            );
-
-        }
-
-    }
-
-
-    /* =====================================================
-       STATUS DA CÂMERA
-    ===================================================== */
-
-    function statusCamera(
-        mensagem,
-        erro = false
-    ) {
-
-        const { status } =
-            elementos();
-
-        if (status) {
-
-            status.textContent =
-                mensagem;
-
-            status.classList.toggle(
-                "error",
-                erro
-            );
-
-        }
-
-    }
-
-
-    /* =====================================================
-       STATUS DO LEITOR PRINCIPAL
-    ===================================================== */
-
-    function statusLeitor(
-        mensagem,
-        tipo = ""
-    ) {
-
-        const box =
-            $("barcodeScannerBox");
-
-        const status =
-            $("barcodeStatus");
-
-        if (!box || !status) {
-            return;
-        }
-
-        box.classList.remove(
-            "success",
-            "error"
-        );
-
-        if (tipo) {
-
-            box.classList.add(
-                tipo
-            );
-
-        }
-
-        status.textContent =
-            mensagem;
-
-    }
-
-
-    /* =====================================================
-       VERIFICAR HTTPS
-    ===================================================== */
-
-    function cameraPermitida() {
-
-        if (
-            window.isSecureContext ||
-            location.hostname === "localhost" ||
-            location.hostname === "127.0.0.1"
-        ) {
+            this.bindEvents();
 
             return true;
+        },
 
-        }
+        /* =====================================================
+           EVENTOS
+        ===================================================== */
 
-        return false;
+        bindEvents() {
 
-    }
+            const closeButtons = [
 
+                document.getElementById(
+                    "closeCamera"
+                ),
 
-    /* =====================================================
-       VERIFICAR SUPORTE
-    ===================================================== */
+                document.getElementById(
+                    "closeCameraModal"
+                ),
 
-    function suporteCamera() {
+                document.getElementById(
+                    "cancelCamera"
+                )
 
-        if (
-            !navigator.mediaDevices ||
-            typeof navigator.mediaDevices.getUserMedia !==
-            "function"
-        ) {
+            ];
 
-            return false;
+            closeButtons.forEach(button => {
 
-        }
-
-        return true;
-
-    }
-
-
-    /* =====================================================
-       ABRIR MODAL
-    ===================================================== */
-
-    function mostrarModal() {
-
-        const { modal } =
-            elementos();
-
-        if (!modal) {
-            return;
-        }
-
-        modal.classList.add(
-            "active"
-        );
-
-        modal.setAttribute(
-            "aria-hidden",
-            "false"
-        );
-
-        document.body.classList.add(
-            "camera-open"
-        );
-
-    }
-
-
-    /* =====================================================
-       FECHAR MODAL
-    ===================================================== */
-
-    function esconderModal() {
-
-        const { modal } =
-            elementos();
-
-        if (!modal) {
-            return;
-        }
-
-        modal.classList.remove(
-            "active"
-        );
-
-        modal.setAttribute(
-            "aria-hidden",
-            "true"
-        );
-
-        document.body.classList.remove(
-            "camera-open"
-        );
-
-    }
-
-
-    /* =====================================================
-       LOADING
-    ===================================================== */
-
-    function mostrarLoading(
-        mostrar,
-        mensagem = "Iniciando câmera..."
-    ) {
-
-        const { loading } =
-            elementos();
-
-        if (!loading) {
-            return;
-        }
-
-        const span =
-            loading.querySelector("span");
-
-        if (span) {
-
-            span.textContent =
-                mensagem;
-
-        }
-
-        loading.classList.toggle(
-            "hidden",
-            !mostrar
-        );
-
-    }
-
-
-    /* =====================================================
-       ENCONTRAR CÂMERA TRASEIRA
-    ===================================================== */
-
-    async function encontrarCamera() {
-
-        let dispositivos = [];
-
-        try {
-
-            dispositivos =
-                await navigator.mediaDevices
-                    .enumerateDevices();
-
-        } catch (erro) {
-
-            console.warn(
-                "Não foi possível listar dispositivos:",
-                erro
-            );
-
-        }
-
-        const cameras =
-            dispositivos.filter(
-                dispositivo =>
-                    dispositivo.kind ===
-                    "videoinput"
-            );
-
-        if (!cameras.length) {
-
-            return null;
-
-        }
-
-
-        /* =================================================
-           TENTA ENCONTRAR CÂMERA TRASEIRA
-        ================================================= */
-
-        const traseira =
-            cameras.find(
-                camera =>
-                    /back|rear|environment|traseira/i
-                        .test(
-                            camera.label || ""
-                        )
-            );
-
-        if (traseira) {
-
-            return traseira;
-
-        }
-
-
-        /* =================================================
-           SE NÃO ENCONTRAR, USA A ÚLTIMA
-        ================================================= */
-
-        return cameras[
-            cameras.length - 1
-        ];
-
-    }
-
-
-    /* =====================================================
-       SOLICITAR CÂMERA
-    ===================================================== */
-
-    async function solicitarCamera() {
-
-        const { video } =
-            elementos();
-
-        if (!video) {
-
-            throw new Error(
-                "Elemento de vídeo da câmera não encontrado."
-            );
-
-        }
-
-        /*
-         * Primeiro solicitamos explicitamente
-         * a câmera traseira.
-         */
-
-        let configuracao = {
-
-            audio: false,
-
-            video: {
-
-                facingMode: {
-                    ideal: "environment"
-                },
-
-                width: {
-                    ideal: 1280
-                },
-
-                height: {
-                    ideal: 720
-                }
-
-            }
-
-        };
-
-
-        try {
-
-            stream =
-                await navigator.mediaDevices
-                    .getUserMedia(
-                        configuracao
-                    );
-
-        } catch (primeiroErro) {
-
-            console.warn(
-                "Câmera traseira não abriu:",
-                primeiroErro
-            );
-
-
-            /*
-             * Segunda tentativa:
-             * qualquer câmera disponível.
-             */
-
-            configuracao = {
-
-                audio: false,
-
-                video: true
-
-            };
-
-            stream =
-                await navigator.mediaDevices
-                    .getUserMedia(
-                        configuracao
-                    );
-
-        }
-
-
-        if (!stream) {
-
-            throw new Error(
-                "Não foi possível obter o vídeo da câmera."
-            );
-
-        }
-
-
-        video.srcObject =
-            stream;
-
-        video.muted =
-            true;
-
-        video.playsInline =
-            true;
-
-        video.autoplay =
-            true;
-
-
-        try {
-
-            await video.play();
-
-        } catch (erro) {
-
-            console.warn(
-                "Vídeo aguardando reprodução:",
-                erro
-            );
-
-        }
-
-
-        const tracks =
-            stream.getVideoTracks();
-
-        track =
-            tracks?.[0] || null;
-
-        cameraAberta =
-            true;
-
-
-        return stream;
-
-    }
-
-
-    /* =====================================================
-       INICIAR ZXING
-    ===================================================== */
-
-    async function iniciarZXing() {
-
-        const { video } =
-            elementos();
-
-        if (!video) {
-
-            throw new Error(
-                "Vídeo da câmera não encontrado."
-            );
-
-        }
-
-
-        /*
-         * O pacote carregado no HTML:
-         *
-         * @zxing/browser
-         *
-         * pode disponibilizar o objeto
-         * ZXingBrowser.
-         */
-
-        const ZXingAPI =
-            window.ZXingBrowser ||
-            window.ZXing;
-
-
-        if (!ZXingAPI) {
-
-            throw new Error(
-                "Biblioteca ZXing não foi carregada."
-            );
-
-        }
-
-
-        const Leitor =
-            ZXingAPI.BrowserMultiFormatReader ||
-            ZXingAPI.BrowserMultiFormatReader;
-
-
-        if (!Leitor) {
-
-            throw new Error(
-                "Leitor ZXing não está disponível."
-            );
-
-        }
-
-
-        leitor =
-            new Leitor();
-
-
-        /*
-         * Tenta encontrar a câmera atual.
-         */
-
-        let deviceId = undefined;
-
-        try {
-
-            const camera =
-                await encontrarCamera();
-
-            if (camera) {
-
-                deviceId =
-                    camera.deviceId;
-
-            }
-
-        } catch (erro) {
-
-            console.warn(
-                "Não foi possível escolher câmera:",
-                erro
-            );
-
-        }
-
-
-        /*
-         * Começa a leitura contínua.
-         */
-
-        controles =
-            await leitor.decodeFromVideoDevice(
-                deviceId,
-                video,
-                (resultado, erro) => {
-
-                    if (!resultado) {
-                        return;
-                    }
-
-                    processarCodigo(
-                        resultado.getText()
-                    );
-
-                }
-            );
-
-
-        /*
-         * Recupera o stream criado
-         * pelo ZXing caso necessário.
-         */
-
-        if (!stream) {
-
-            stream =
-                video.srcObject;
-
-        }
-
-
-        if (stream) {
-
-            const tracks =
-                stream.getVideoTracks();
-
-            track =
-                tracks?.[0] || null;
-
-        }
-
-    }
-
-
-    /* =====================================================
-       PROCESSAR CÓDIGO
-    ===================================================== */
-
-    function processarCodigo(codigo) {
-
-        if (lendoCodigo) {
-            return;
-        }
-
-        const valor =
-            String(
-                codigo ?? ""
-            ).trim();
-
-
-        if (!valor) {
-            return;
-        }
-
-
-        lendoCodigo =
-            true;
-
-
-        statusCamera(
-            `Código encontrado: ${valor}`
-        );
-
-        statusLeitor(
-            "Código encontrado",
-            "success"
-        );
-
-        bip(true);
-
-
-        /*
-         * Coloca o código no campo
-         * principal de bipagem.
-         */
-
-        const input =
-            $("barcodeScanner");
-
-        if (input) {
-
-            input.value =
-                valor;
-
-        }
-
-
-        /*
-         * Também coloca no campo
-         * do formulário se ele existir.
-         */
-
-        const campoProduto =
-            $("productBarcode");
-
-        if (campoProduto) {
-
-            campoProduto.value =
-                valor;
-
-        }
-
-
-        /*
-         * Dispara evento para o produtos.js.
-         */
-
-        document.dispatchEvent(
-            new CustomEvent(
-                "empire:barcode",
-                {
-                    detail: {
-                        codigo: valor
-                    }
-                }
-            )
-        );
-
-
-        /*
-         * Dá um pequeno tempo para
-         * o usuário visualizar o resultado.
-         */
-
-        setTimeout(() => {
-
-            fecharCamera();
-
-        }, 500);
-
-    }
-
-
-    /* =====================================================
-       ABRIR CÂMERA
-    ===================================================== */
-
-    async function abrirCamera() {
-
-        if (inicializando) {
-            return;
-        }
-
-        inicializando =
-            true;
-
-
-        const {
-            video
-        } = elementos();
-
-
-        /*
-         * ABRE A TELA PRIMEIRO.
-         *
-         * Assim o usuário vê a tela
-         * da câmera antes da solicitação.
-         */
-
-        mostrarModal();
-
-
-        mostrarLoading(
-            true,
-            "Solicitando acesso à câmera..."
-        );
-
-
-        statusCamera(
-            "Solicitando acesso à câmera..."
-        );
-
-
-        /*
-         * HTTPS
-         */
-
-        if (!cameraPermitida()) {
-
-            mostrarLoading(
-                false
-            );
-
-            statusCamera(
-                "A câmera precisa de HTTPS.",
-                true
-            );
-
-            toast(
-                "Abra o sistema pelo endereço HTTPS do GitHub Pages.",
-                true
-            );
-
-            inicializando =
-                false;
-
-            return;
-
-        }
-
-
-        /*
-         * SUPORTE
-         */
-
-        if (!suporteCamera()) {
-
-            mostrarLoading(
-                false
-            );
-
-            statusCamera(
-                "Este navegador não suporta câmera.",
-                true
-            );
-
-            toast(
-                "Seu navegador não suporta acesso à câmera.",
-                true
-            );
-
-            inicializando =
-                false;
-
-            return;
-
-        }
-
-
-        try {
-
-
-            /*
-             * IMPORTANTE:
-             *
-             * O getUserMedia é chamado
-             * diretamente após o clique.
-             */
-
-            await solicitarCamera();
-
-
-            statusCamera(
-                "Câmera ativada. Iniciando leitura..."
-            );
-
-
-            mostrarLoading(
-                true,
-                "Iniciando leitor de código..."
-            );
-
-
-            /*
-             * Pequeno atraso para garantir
-             * que o vídeo esteja pronto.
-             */
-
-            await new Promise(
-                resolve =>
-                    setTimeout(
-                        resolve,
-                        250
-                    )
-            );
-
-
-            /*
-             * Inicia ZXing.
-             */
-
-            await iniciarZXing();
-
-
-            mostrarLoading(
-                false
-            );
-
-
-            statusCamera(
-                "Aponte o código de barras para a área de leitura."
-            );
-
-
-            statusLeitor(
-                "Câmera ativa"
-            );
-
-
-        } catch (erro) {
-
-            console.error(
-                "Erro ao iniciar câmera:",
-                erro
-            );
-
-
-            pararCamera();
-
-
-            mostrarLoading(
-                false
-            );
-
-
-            let mensagem =
-                "Não foi possível iniciar a câmera.";
-
-
-            /*
-             * Erros conhecidos do navegador.
-             */
-
-            if (
-                erro?.name ===
-                "NotAllowedError"
-            ) {
-
-                mensagem =
-                    "Permissão da câmera foi negada.";
-
-            } else if (
-                erro?.name ===
-                "NotFoundError"
-            ) {
-
-                mensagem =
-                    "Nenhuma câmera foi encontrada.";
-
-            } else if (
-                erro?.name ===
-                "NotReadableError"
-            ) {
-
-                mensagem =
-                    "A câmera está sendo usada por outro aplicativo.";
-
-            } else if (
-                erro?.name ===
-                "OverconstrainedError"
-            ) {
-
-                mensagem =
-                    "A configuração da câmera não é compatível.";
-
-            } else if (
-                erro?.message
-            ) {
-
-                mensagem =
-                    erro.message;
-
-            }
-
-
-            statusCamera(
-                mensagem,
-                true
-            );
-
-
-            statusLeitor(
-                "Erro na câmera",
-                "error"
-            );
-
-
-            toast(
-                mensagem,
-                true
-            );
-
-        } finally {
-
-            inicializando =
-                false;
-
-        }
-
-    }
-
-
-    /* =====================================================
-       PARAR LEITOR
-    ===================================================== */
-
-    function pararLeitor() {
-
-        try {
-
-            if (controles) {
+                if (!button) return;
 
                 if (
-                    typeof controles.stop ===
-                    "function"
+                    button.dataset.cameraBound === "true"
                 ) {
-
-                    controles.stop();
-
+                    return;
                 }
 
-            }
-
-        } catch (erro) {
-
-            console.warn(
-                "Erro ao parar ZXing:",
-                erro
-            );
-
-        }
-
-        controles =
-            null;
-
-
-        try {
-
-            if (leitor) {
-
-                if (
-                    typeof leitor.reset ===
-                    "function"
-                ) {
-
-                    leitor.reset();
-
-                }
-
-            }
-
-        } catch (erro) {
-
-            console.warn(
-                "Erro ao resetar ZXing:",
-                erro
-            );
-
-        }
-
-        leitor =
-            null;
-
-    }
-
-
-    /* =====================================================
-       PARAR STREAM
-    ===================================================== */
-
-    function pararStream() {
-
-        try {
-
-            if (stream) {
-
-                stream
-                    .getTracks()
-                    .forEach(
-                        cameraTrack => {
-
-                            try {
-
-                                cameraTrack.stop();
-
-                            } catch (erro) {}
-
-                        }
-                    );
-
-            }
-
-        } catch (erro) {
-
-            console.warn(
-                "Erro ao parar stream:",
-                erro
-            );
-
-        }
-
-
-        if (track) {
-
-            try {
-
-                track.stop();
-
-            } catch (erro) {}
-
-        }
-
-
-        track =
-            null;
-
-        stream =
-            null;
-
-
-        const { video } =
-            elementos();
-
-        if (video) {
-
-            try {
-
-                video.pause();
-
-            } catch (erro) {}
-
-
-            try {
-
-                video.srcObject =
-                    null;
-
-            } catch (erro) {}
-
-        }
-
-    }
-
-
-    /* =====================================================
-       PARAR CÂMERA
-    ===================================================== */
-
-    function pararCamera() {
-
-        pararLeitor();
-
-        pararStream();
-
-        cameraAberta =
-            false;
-
-        flashAtivo =
-            false;
-
-
-        const { toggleFlash } =
-            elementos();
-
-        if (toggleFlash) {
-
-            toggleFlash.classList.remove(
-                "active"
-            );
-
-        }
-
-    }
-
-
-    /* =====================================================
-       FECHAR CÂMERA
-    ===================================================== */
-
-    function fecharCamera() {
-
-        pararCamera();
-
-        esconderModal();
-
-        statusCamera(
-            "Posicione o código de barras dentro da área de leitura."
-        );
-
-        mostrarLoading(
-            false
-        );
-
-        statusLeitor(
-            "Pronto"
-        );
-
-        lendoCodigo =
-            false;
-
-    }
-
-
-    /* =====================================================
-       LANTERNA
-    ===================================================== */
-
-    async function alternarFlash() {
-
-        if (!track) {
-
-            toast(
-                "A câmera ainda não está pronta.",
-                true
-            );
-
-            return;
-
-        }
-
-
-        if (
-            typeof track.getCapabilities !==
-            "function"
-        ) {
-
-            toast(
-                "Seu dispositivo não permite controlar a lanterna pelo navegador.",
-                true
-            );
-
-            return;
-
-        }
-
-
-        let capacidades;
-
-        try {
-
-            capacidades =
-                track.getCapabilities();
-
-        } catch (erro) {
-
-            capacidades =
-                null;
-
-        }
-
-
-        if (
-            !capacidades ||
-            !capacidades.torch
-        ) {
-
-            toast(
-                "A lanterna não é suportada nesta câmera.",
-                true
-            );
-
-            return;
-
-        }
-
-
-        const novoEstado =
-            !flashAtivo;
-
-
-        try {
-
-            await track.applyConstraints({
-
-                advanced: [
-
-                    {
-                        torch:
-                            novoEstado
-                    }
-
-                ]
+                button.dataset.cameraBound = "true";
+
+                button.addEventListener(
+                    "click",
+                    () => this.close()
+                );
 
             });
 
-
-            flashAtivo =
-                novoEstado;
-
-
-            const { toggleFlash } =
-                elementos();
-
-            if (toggleFlash) {
-
-                toggleFlash.classList.toggle(
-                    "active",
-                    flashAtivo
+            const torchButton =
+                document.getElementById(
+                    "toggleFlash"
                 );
 
+            if (
+                torchButton &&
+                torchButton.dataset.cameraBound !== "true"
+            ) {
+
+                torchButton.dataset.cameraBound =
+                    "true";
+
+                torchButton.addEventListener(
+                    "click",
+                    () => this.toggleTorch()
+                );
             }
 
+            /*
+             * Fechar clicando fora do modal.
+             */
 
-            toast(
-                flashAtivo
-                    ? "Lanterna ligada."
-                    : "Lanterna desligada."
-            );
+            if (
+                this.modal &&
+                this.modal.dataset.cameraBackdropBound !== "true"
+            ) {
 
+                this.modal.dataset.cameraBackdropBound =
+                    "true";
 
-        } catch (erro) {
+                this.modal.addEventListener(
+                    "click",
+                    event => {
 
-            console.error(
-                "Erro na lanterna:",
-                erro
-            );
+                        if (
+                            event.target === this.modal
+                        ) {
+                            this.close();
+                        }
 
-            toast(
-                "Não foi possível controlar a lanterna.",
-                true
-            );
+                    }
+                );
+            }
 
-        }
+            /*
+             * ESC fecha a câmera.
+             */
 
-    }
-
-
-    /* =====================================================
-       EVENTOS
-    ===================================================== */
-
-    function eventos() {
-
-
-        /*
-         * BOTÃO ABRIR CÂMERA
-         */
-
-        const abrir =
-            $("openCameraScanner");
-
-        if (abrir) {
-
-            abrir.addEventListener(
-                "click",
-                abrirCamera
-            );
-
-        }
-
-
-        /*
-         * BOTÃO FECHAR
-         */
-
-        const fechar =
-            $("closeCameraScanner");
-
-        if (fechar) {
-
-            fechar.addEventListener(
-                "click",
-                fecharCamera
-            );
-
-        }
-
-
-        /*
-         * BOTÃO FECHAR INFERIOR
-         */
-
-        const fecharButton =
-            $("closeCameraButton");
-
-        if (fecharButton) {
-
-            fecharButton.addEventListener(
-                "click",
-                fecharCamera
-            );
-
-        }
-
-
-        /*
-         * OVERLAY
-         */
-
-        const overlay =
-            $("closeCameraScannerOverlay");
-
-        if (overlay) {
-
-            overlay.addEventListener(
-                "click",
-                fecharCamera
-            );
-
-        }
-
-
-        /*
-         * LANTERNA
-         */
-
-        const flash =
-            $("toggleFlash");
-
-        if (flash) {
-
-            flash.addEventListener(
-                "click",
-                alternarFlash
-            );
-
-        }
-
-
-        /*
-         * ESC
-         */
-
-        document.addEventListener(
-            "keydown",
-            event => {
-
-                if (
-                    event.key ===
-                    "Escape"
-                ) {
-
-                    const modal =
-                        $("cameraScannerModal");
+            document.addEventListener(
+                "keydown",
+                event => {
 
                     if (
-                        modal &&
-                        modal.classList.contains(
-                            "active"
-                        )
+                        event.key === "Escape" &&
+                        this.running
                     ) {
-
-                        fecharCamera();
-
+                        this.close();
                     }
 
                 }
+            );
 
-            }
-        );
+            /*
+             * Quando a página fica invisível,
+             * a câmera é encerrada.
+             */
 
+            document.addEventListener(
+                "visibilitychange",
+                () => {
 
-        /*
-         * VISIBILIDADE
-         *
-         * Ao sair da aba,
-         * desligamos a câmera.
-         */
-
-        document.addEventListener(
-            "visibilitychange",
-            () => {
-
-                if (
-                    document.hidden &&
-                    cameraAberta
-                ) {
-
-                    fecharCamera();
+                    if (
+                        document.hidden &&
+                        this.running
+                    ) {
+                        this.close();
+                    }
 
                 }
+            );
+        },
 
+        /* =====================================================
+           ABRIR
+        ===================================================== */
+
+        async open(options = {}) {
+
+            if (this.starting) {
+                return false;
             }
-        );
 
-    }
+            /*
+             * Se já estiver funcionando,
+             * não inicia novamente.
+             */
 
+            if (this.running) {
 
-    /* =====================================================
-       EVENTO PARA PRODUTOS.JS
-    ===================================================== */
+                /*
+                 * Se o alvo mudou, encerramos
+                 * a sessão anterior.
+                 */
 
-    document.addEventListener(
-        "empire:barcode",
-        event => {
+                if (
+                    this.target !==
+                    (options.target || "main")
+                ) {
+                    this.close();
+                } else {
+                    return true;
+                }
+            }
 
-            const codigo =
-                event?.detail?.codigo;
+            this.target =
+                options.target || "main";
 
-            if (!codigo) {
+            this.callbacks.onResult =
+                typeof options.onResult === "function"
+                    ? options.onResult
+                    : null;
+
+            this.callbacks.onError =
+                typeof options.onError === "function"
+                    ? options.onError
+                    : null;
+
+            this.callbacks.onClose =
+                typeof options.onClose === "function"
+                    ? options.onClose
+                    : null;
+
+            this.detected = false;
+            this.torchEnabled = false;
+
+            this.showModal();
+
+            this.setStatus(
+                this.target === "product"
+                    ? "Aponte a câmera para o código de barras do produto."
+                    : "Aponte a câmera para o código de barras."
+            );
+
+            return await this.start();
+        },
+
+        /* =====================================================
+           INICIAR CÂMERA
+        ===================================================== */
+
+        async start() {
+
+            if (this.starting) {
+                return false;
+            }
+
+            this.starting = true;
+
+            try {
+
+                /*
+                 * Segurança:
+                 * garante que nenhuma câmera anterior
+                 * continue ativa.
+                 */
+
+                this.stopReader();
+
+                if (!window.ZXingBrowser) {
+
+                    throw new Error(
+                        "ZXing Browser não foi carregado."
+                    );
+                }
+
+                if (!this.video) {
+
+                    this.video =
+                        document.getElementById(
+                            "barcodeCamera"
+                        );
+                }
+
+                if (!this.video) {
+
+                    throw new Error(
+                        "Elemento da câmera não encontrado."
+                    );
+                }
+
+                /*
+                 * Configuração do vídeo.
+                 */
+
+                this.video.muted = true;
+                this.video.autoplay = true;
+                this.video.playsInline = true;
+
+                /*
+                 * Cria o leitor.
+                 */
+
+                this.reader =
+                    new window.ZXingBrowser
+                        .BrowserMultiFormatReader();
+
+                /*
+                 * Preferência pela câmera traseira.
+                 *
+                 * NÃO usamos video.play().
+                 *
+                 * O próprio ZXing controla a reprodução.
+                 */
+
+                const constraints = {
+
+                    video: {
+
+                        facingMode: {
+                            ideal: "environment"
+                        },
+
+                        width: {
+                            ideal: 1280
+                        },
+
+                        height: {
+                            ideal: 720
+                        }
+
+                    },
+
+                    audio: false
+                };
+
+                const resultCallback =
+                    (result, error, controls) => {
+
+                        /*
+                         * Alguns builds do ZXing
+                         * entregam os controles no callback.
+                         */
+
+                        if (
+                            controls &&
+                            !this.controls
+                        ) {
+                            this.controls =
+                                controls;
+                        }
+
+                        /*
+                         * Erros normais de leitura
+                         * não significam que a câmera falhou.
+                         */
+
+                        if (!result) {
+                            return;
+                        }
+
+                        if (this.detected) {
+                            return;
+                        }
+
+                        let code = "";
+
+                        try {
+
+                            if (
+                                typeof result.getText ===
+                                "function"
+                            ) {
+                                code =
+                                    result.getText();
+                            }
+
+                        } catch (error) {
+
+                            console.warn(
+                                "EMPIRE Camera: erro ao obter código.",
+                                error
+                            );
+
+                        }
+
+                        code =
+                            String(code || "")
+                                .replace(
+                                    /[^0-9A-Za-z\-_./]/g,
+                                    ""
+                                )
+                                .trim();
+
+                        if (!code) {
+                            return;
+                        }
+
+                        /*
+                         * Evita várias leituras
+                         * do mesmo código.
+                         */
+
+                        this.detected = true;
+
+                        this.setStatus(
+                            `Código detectado: ${code}`
+                        );
+
+                        if (
+                            typeof this.callbacks.onResult ===
+                            "function"
+                        ) {
+
+                            this.callbacks.onResult(
+                                code,
+                                this.target
+                            );
+                        }
+
+                    };
+
+                /*
+                 * decodeFromConstraints é usado para
+                 * priorizar a câmera traseira.
+                 */
+
+                const controls =
+                    this.reader.decodeFromConstraints(
+                        constraints,
+                        this.video,
+                        resultCallback
+                    );
+
+                /*
+                 * Dependendo da implementação do ZXing,
+                 * pode retornar os controles diretamente
+                 * ou uma Promise.
+                 */
+
+                if (
+                    controls &&
+                    typeof controls.then === "function"
+                ) {
+
+                    this.controls =
+                        await controls;
+
+                } else {
+
+                    this.controls =
+                        controls || null;
+                }
+
+                /*
+                 * Aguarda o stream aparecer no vídeo.
+                 */
+
+                await this.waitForVideoStream();
+
+                this.stream =
+                    this.video.srcObject || null;
+
+                if (this.stream) {
+
+                    const tracks =
+                        this.stream.getVideoTracks();
+
+                    if (tracks.length) {
+
+                        this.track =
+                            tracks[0];
+                    }
+                }
+
+                this.running = true;
+
+                this.updateTorchButton();
+
+                return true;
+
+            } catch (error) {
+
+                console.error(
+                    "EMPIRE Camera:",
+                    error
+                );
+
+                this.running = false;
+
+                this.setStatus(
+                    this.getCameraError(error)
+                );
+
+                if (
+                    typeof this.callbacks.onError ===
+                    "function"
+                ) {
+
+                    this.callbacks.onError(
+                        error
+                    );
+                }
+
+                this.stopReader();
+
+                return false;
+
+            } finally {
+
+                this.starting = false;
+            }
+        },
+
+        /* =====================================================
+           AGUARDAR STREAM
+        ===================================================== */
+
+        waitForVideoStream() {
+
+            return new Promise(resolve => {
+
+                const started =
+                    Date.now();
+
+                const check = () => {
+
+                    if (
+                        this.video &&
+                        this.video.srcObject
+                    ) {
+
+                        resolve(true);
+                        return;
+                    }
+
+                    if (
+                        Date.now() - started >
+                        5000
+                    ) {
+
+                        resolve(false);
+                        return;
+                    }
+
+                    setTimeout(
+                        check,
+                        100
+                    );
+                };
+
+                check();
+            });
+        },
+
+        /* =====================================================
+           STATUS
+        ===================================================== */
+
+        setStatus(message) {
+
+            if (!this.status) {
+
+                this.status =
+                    document.getElementById(
+                        "cameraStatus"
+                    );
+            }
+
+            if (this.status) {
+
+                this.status.textContent =
+                    String(message || "");
+            }
+        },
+
+        /* =====================================================
+           MODAL
+        ===================================================== */
+
+        showModal() {
+
+            if (!this.modal) {
+
+                this.modal =
+                    document.getElementById(
+                        "cameraModal"
+                    );
+            }
+
+            if (!this.modal) {
                 return;
             }
 
+            this.modal.classList.add(
+                "active"
+            );
 
-            /*
-             * Coloca o código no campo
-             * principal.
-             */
+            this.modal.classList.add(
+                "open"
+            );
 
-            const input =
-                $("barcodeScanner");
+            this.modal.style.display =
+                "flex";
 
-            if (input) {
+            document.body.classList.add(
+                "camera-open"
+            );
+        },
 
-                input.value =
-                    codigo;
+        /* =====================================================
+           FECHAR
+        ===================================================== */
 
+        close() {
+
+            this.stopReader();
+
+            this.target = null;
+            this.detected = false;
+            this.torchEnabled = false;
+
+            if (this.modal) {
+
+                this.modal.classList.remove(
+                    "active"
+                );
+
+                this.modal.classList.remove(
+                    "open"
+                );
+
+                this.modal.style.display =
+                    "none";
             }
 
+            document.body.classList.remove(
+                "camera-open"
+            );
 
-            /*
-             * Coloca também no campo
-             * do cadastro.
-             */
+            this.updateTorchButton();
 
-            const produtoBarcode =
-                $("productBarcode");
+            if (
+                typeof this.callbacks.onClose ===
+                "function"
+            ) {
 
-            if (produtoBarcode) {
-
-                produtoBarcode.value =
-                    codigo;
-
+                this.callbacks.onClose();
             }
 
+            this.callbacks.onResult = null;
+            this.callbacks.onError = null;
+            this.callbacks.onClose = null;
+        },
+
+        /* =====================================================
+           PARAR LEITOR
+        ===================================================== */
+
+        stopReader() {
+
+            try {
+
+                if (this.controls) {
+
+                    if (
+                        typeof this.controls.stop ===
+                        "function"
+                    ) {
+
+                        this.controls.stop();
+                    }
+
+                    this.controls = null;
+                }
+
+            } catch (error) {
+
+                console.warn(
+                    "EMPIRE Camera: erro ao parar controls.",
+                    error
+                );
+            }
+
+            try {
+
+                if (this.reader) {
+
+                    if (
+                        typeof this.reader.reset ===
+                        "function"
+                    ) {
+
+                        this.reader.reset();
+                    }
+
+                    this.reader = null;
+                }
+
+            } catch (error) {
+
+                console.warn(
+                    "EMPIRE Camera: erro ao resetar reader.",
+                    error
+                );
+            }
+
+            try {
+
+                if (this.video) {
+
+                    const stream =
+                        this.video.srcObject;
+
+                    if (stream) {
+
+                        stream
+                            .getTracks()
+                            .forEach(track => {
+
+                                try {
+                                    track.stop();
+                                } catch (_) {}
+
+                            });
+                    }
+
+                    this.video.pause();
+
+                    this.video.srcObject =
+                        null;
+                }
+
+            } catch (error) {
+
+                console.warn(
+                    "EMPIRE Camera: erro ao liberar vídeo.",
+                    error
+                );
+            }
+
+            this.stream = null;
+            this.track = null;
+            this.running = false;
+        },
+
+        /* =====================================================
+           FLASH / TOCHA
+        ===================================================== */
+
+        async toggleTorch() {
+
+            if (!this.track) {
+
+                this.setStatus(
+                    "A câmera ainda não está pronta."
+                );
+
+                return;
+            }
+
+            try {
+
+                const capabilities =
+                    this.track.getCapabilities
+                        ? this.track.getCapabilities()
+                        : {};
+
+                if (!capabilities.torch) {
+
+                    this.setStatus(
+                        "O flash não está disponível nesta câmera."
+                    );
+
+                    return;
+                }
+
+                this.torchEnabled =
+                    !this.torchEnabled;
+
+                await this.track.applyConstraints({
+                    advanced: [
+                        {
+                            torch:
+                                this.torchEnabled
+                        }
+                    ]
+                });
+
+                this.setStatus(
+                    this.torchEnabled
+                        ? "Flash ativado."
+                        : "Flash desativado."
+                );
+
+                this.updateTorchButton();
+
+            } catch (error) {
+
+                console.warn(
+                    "EMPIRE Camera: flash não disponível.",
+                    error
+                );
+
+                this.setStatus(
+                    "Não foi possível controlar o flash."
+                );
+            }
+        },
+
+        /* =====================================================
+           BOTÃO FLASH
+        ===================================================== */
+
+        updateTorchButton() {
+
+            const button =
+                document.getElementById(
+                    "toggleFlash"
+                );
+
+            if (!button) {
+                return;
+            }
+
+            if (!this.track) {
+
+                button.disabled = true;
+                button.style.opacity = ".45";
+
+                return;
+            }
+
+            const capabilities =
+                this.track.getCapabilities
+                    ? this.track.getCapabilities()
+                    : {};
+
+            if (!capabilities.torch) {
+
+                button.disabled = true;
+                button.style.opacity = ".45";
+
+                return;
+            }
+
+            button.disabled = false;
+            button.style.opacity = "1";
+
+            button.innerHTML =
+                this.torchEnabled
+                    ? '<i class="fa-solid fa-bolt"></i> Flash ligado'
+                    : '<i class="fa-solid fa-bolt"></i> Flash';
+        },
+
+        /* =====================================================
+           ERROS DA CÂMERA
+        ===================================================== */
+
+        getCameraError(error) {
+
+            if (!error) {
+
+                return (
+                    "Não foi possível iniciar a câmera."
+                );
+            }
+
+            const name =
+                String(
+                    error.name || ""
+                ).toLowerCase();
+
+            if (
+                name ===
+                "notallowederror"
+            ) {
+
+                return (
+                    "Permissão da câmera negada. " +
+                    "Autorize o acesso à câmera no navegador."
+                );
+            }
+
+            if (
+                name ===
+                "permissiondeniederror"
+            ) {
+
+                return (
+                    "Acesso à câmera foi bloqueado."
+                );
+            }
+
+            if (
+                name ===
+                "notfounderror"
+            ) {
+
+                return (
+                    "Nenhuma câmera foi encontrada neste dispositivo."
+                );
+            }
+
+            if (
+                name ===
+                "notreadableerror"
+            ) {
+
+                return (
+                    "A câmera está sendo utilizada por outro aplicativo."
+                );
+            }
+
+            if (
+                name ===
+                "overconstrainederror"
+            ) {
+
+                return (
+                    "A câmera não suporta as configurações solicitadas."
+                );
+            }
+
+            if (
+                name ===
+                "securityerror"
+            ) {
+
+                return (
+                    "O navegador bloqueou o acesso à câmera."
+                );
+            }
+
+            return (
+                error.message ||
+                "Não foi possível iniciar a câmera."
+            );
         }
-    );
-
-
-    /* =====================================================
-       API GLOBAL
-       ===================================================== */
-
-    window.EMPIRECAMERA = {
-
-        abrir:
-            abrirCamera,
-
-        fechar:
-            fecharCamera,
-
-        parar:
-            pararCamera,
-
-        flash:
-            alternarFlash,
-
-        estaAberta:
-            () => cameraAberta
-
     };
 
+    /*
+     * Disponibiliza globalmente.
+     */
 
-    /* =====================================================
-       INICIALIZAÇÃO
-    ===================================================== */
-
-    function iniciar() {
-
-        eventos();
-
-        console.log(
-            "EMPIRE CAMERA.JS iniciado."
-        );
-
-    }
-
-
-    if (
-        document.readyState ===
-        "loading"
-    ) {
-
-        document.addEventListener(
-            "DOMContentLoaded",
-            iniciar,
-            {
-                once: true
-            }
-        );
-
-    } else {
-
-        iniciar();
-
-    }
-
-
-    /* =====================================================
-       LIMPEZA
-    ===================================================== */
-
-    window.addEventListener(
-        "beforeunload",
-        () => {
-
-            pararCamera();
-
-        }
-    );
+    window.EmpireCamera = Camera;
 
 })();
