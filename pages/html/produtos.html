@@ -7,134 +7,62 @@
     <meta name="theme-color" content="#050505">
     <meta name="description" content="EMPIRE ERP - Gestão de Produtos">
 
-    <title>EMPIRE | Império da Moda Online</title>
+    <title>EMPIRE | Produtos</title>
 
-    <!-- Favicon -->
     <link rel="icon" href="../../assets/img/favicon.png">
 
-    <!-- Fontes -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
     <link
-        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
 
-    <!-- Font Awesome -->
     <link
         rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
-        crossorigin="anonymous"
-        referrerpolicy="no-referrer"
-    >
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
-    <!-- CSS global -->
-    <link rel="stylesheet" href="../../assets/css/style.css">
-
-    <!-- CSS da página -->
     <link rel="stylesheet" href="../../assets/css/produtos.css">
 </head>
 
 <body>
 
-    <!-- =====================================================
-         LOADER
-         ===================================================== -->
-
-    <div id="productsLoader">
-        <div class="loader-content">
-            <div class="loader-spinner"></div>
-
-            <div
-                style="
-                    color:#c7a24e;
-                    font-family:'Cinzel',serif;
-                    font-size:1.05rem;
-                    letter-spacing:.16em;
-                "
-            >
-                EMPIRE
-            </div>
-
-            <div
-                style="
-                    margin-top:7px;
-                    color:#716a5d;
-                    font-size:.65rem;
-                    letter-spacing:.12em;
-                    text-transform:uppercase;
-                "
-            >
-                Carregando produtos
-            </div>
-        </div>
+    <!-- LOADER -->
+    <div id="productsLoader" class="page-loader">
+        <div class="loader-logo">EMPIRE</div>
+        <div class="loader-line"></div>
+        <span>Carregando produtos...</span>
     </div>
 
+    <div class="app-shell">
 
-    <!-- =====================================================
-         APP
-         ===================================================== -->
-
-    <div class="app">
-
-        <!-- =================================================
-             SIDEBAR
-             ================================================= -->
-
+        <!-- SIDEBAR -->
         <aside class="sidebar" id="sidebar">
 
-            <div class="sidebar-header">
-
-                <a href="dashboard.html" class="sidebar-logo">
-                    <img
-                        src="../../assets/img/logo.png"
-                        alt="EMPIRE"
-                    >
-                </a>
-
-                <button
-                    type="button"
-                    id="mobileMenuButton"
-                    aria-label="Fechar menu"
-                >
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
-
+            <div class="sidebar-brand">
+                <img src="../../assets/img/logo.png" alt="EMPIRE">
+                <div>
+                    <strong>EMPIRE</strong>
+                    <span>ERP</span>
+                </div>
             </div>
 
-
-            <!-- Perfil -->
-
             <div class="sidebar-profile">
-
                 <div class="profile-avatar">
-                    <img
-                        src="../../assets/img/avatar.png"
-                        alt="Perfil"
-                    >
+                    <img src="../../assets/img/avatar.png" alt="Administrador">
+                    <span class="online-dot"></span>
                 </div>
 
                 <div class="profile-info">
-
-                    <strong id="profileName">
-                        Administrador
-                    </strong>
-
-                    <span id="profileRole">
-                        Online
-                    </span>
-
+                    <strong id="profileName">Administrador</strong>
+                    <span id="profileRole">Administrador</span>
                 </div>
-
             </div>
-
-
-            <!-- Navegação -->
 
             <nav class="sidebar-nav">
 
                 <a href="dashboard.html">
-                    <i class="fa-solid fa-house"></i>
+                    <i class="fa-solid fa-grid-2"></i>
                     <span>Tela Inicial</span>
                 </a>
 
@@ -164,25 +92,19 @@
                 </a>
 
                 <a href="fornecedores.html">
-                    <i class="fa-solid fa-truck"></i>
+                    <i class="fa-solid fa-truck-field"></i>
                     <span>Fornecedores</span>
                 </a>
 
                 <a href="relatorios.html">
-                    <i class="fa-solid fa-file-lines"></i>
+                    <i class="fa-solid fa-file-chart-column"></i>
                     <span>Relatórios</span>
                 </a>
 
-                <a href="notificacoes.html">
+                <a href="notificacoes.html" class="nav-notification">
                     <i class="fa-solid fa-bell"></i>
                     <span>Notificações</span>
-
-                    <span
-                        id="sidebarNotificationCount"
-                        class="nav-badge"
-                    >
-                        0
-                    </span>
+                    <b id="sidebarNotificationCount">0</b>
                 </a>
 
                 <a href="emails.html">
@@ -197,768 +119,404 @@
 
             </nav>
 
-
-            <!-- Rodapé Sidebar -->
-
-            <div class="sidebar-footer">
-
-                <div>
-                    <strong>EMPIRE ERP</strong>
-                    <span>Sistema de Gestão</span>
+            <div class="sidebar-bottom">
+                <div class="sidebar-system">
+                    <span>EMPIRE ERP</span>
+                    <small>Sistema de Gestão</small>
                 </div>
 
-                <button
-                    type="button"
-                    id="logoutButton"
-                    title="Sair do sistema"
-                >
+                <button id="logoutButton" class="logout-button">
                     <i class="fa-solid fa-right-from-bracket"></i>
+                    <span>Sair do sistema</span>
                 </button>
-
             </div>
 
         </aside>
 
+        <!-- MAIN -->
+        <main class="main-content">
 
-        <!-- =================================================
-             CONTEÚDO
-             ================================================= -->
-
-        <div class="main-wrapper">
-
-            <!-- =============================================
-                 HEADER
-                 ============================================= -->
-
+            <!-- TOPBAR -->
             <header class="topbar">
 
+                <button id="mobileMenuButton" class="mobile-menu-button">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+
                 <div class="topbar-left">
+                    <div class="system-status">
+                        <span></span>
+                        Sistema online
+                    </div>
 
-                    <button
-                        type="button"
-                        id="mobileMenuButtonTop"
-                        class="mobile-menu-trigger"
-                        aria-label="Abrir menu"
-                    >
-                        <i class="fa-solid fa-bars"></i>
-                    </button>
-
-                    <div id="systemClock">
+                    <div id="systemClock" class="system-clock">
                         --:--
                     </div>
-
                 </div>
-
-
-                <div class="topbar-center">
-
-                    <!-- Leitor físico -->
-                    <div id="barcodeScannerBox">
-
-                        <input
-                            type="text"
-                            id="barcodeScanner"
-                            inputmode="numeric"
-                            autocomplete="off"
-                            spellcheck="false"
-                            placeholder="Bipar código..."
-                            aria-label="Leitor de código de barras"
-                        >
-
-                        <span id="barcodeStatus">
-                            Pronto
-                        </span>
-
-                    </div>
-
-                </div>
-
 
                 <div class="topbar-right">
 
-                    <button
-                        type="button"
-                        id="notificationButton"
-                        class="icon-button"
-                        title="Notificações"
-                    >
-                        <i class="fa-regular fa-bell"></i>
+                    <!-- LEITOR FÍSICO -->
+                    <div id="barcodeScannerBox" class="barcode-scanner-box">
 
-                        <span id="notificationCount">
-                            0
-                        </span>
+                        <i class="fa-solid fa-barcode"></i>
+
+                        <input
+                            id="barcodeScanner"
+                            type="text"
+                            inputmode="numeric"
+                            autocomplete="off"
+                            placeholder="Bipar código..."
+                            aria-label="Leitor de código de barras">
+
+                        <span id="barcodeStatus">Pronto</span>
+
+                    </div>
+
+                    <button id="notificationButton" class="icon-button">
+                        <i class="fa-regular fa-bell"></i>
+                        <span id="notificationCount">0</span>
                     </button>
 
                 </div>
 
             </header>
 
+            <!-- PAGE -->
+            <section class="page-container">
 
-            <!-- =============================================
-                 MAIN
-                 ============================================= -->
-
-            <main class="products-main">
-
-                <!-- =========================================
-                     CABEÇALHO
-                     ========================================= -->
-
-                <section class="page-header">
+                <!-- PAGE HEADER -->
+                <div class="page-header">
 
                     <div>
+                        <span class="page-overline">GESTÃO COMERCIAL</span>
 
-                        <div class="page-overline">
-                            Gestão Comercial
-                        </div>
+                        <h1>Produtos</h1>
 
-                        <h1>
-                            Produtos
-                        </h1>
-
-                        <p class="page-subtitle">
+                        <p>
                             Catálogo, estoque e valores comerciais.
                         </p>
-
                     </div>
-
 
                     <div class="page-header-actions">
 
-                        <button
-                            type="button"
-                            id="refreshProducts"
-                            class="secondary-button"
-                        >
+                        <button id="refreshProducts" class="secondary-button">
                             <i class="fa-solid fa-rotate"></i>
-                            <span>Atualizar</span>
+                            Atualizar
                         </button>
 
-                        <button
-                            type="button"
-                            id="addProductButton"
-                            class="primary-button"
-                        >
+                        <button id="addProductButton" class="primary-button">
                             <i class="fa-solid fa-plus"></i>
-                            <span>Novo Produto</span>
+                            Novo Produto
                         </button>
 
                     </div>
 
-                </section>
+                </div>
 
-
-                <!-- =========================================
-                     MÉTRICAS PRINCIPAIS
-                     ========================================= -->
-
+                <!-- METRICS -->
                 <section class="metrics-grid">
 
-                    <!-- Total produtos -->
-
                     <article class="metric-card">
-
                         <div class="metric-icon">
                             <i class="fa-solid fa-boxes-stacked"></i>
                         </div>
 
                         <div class="metric-content">
-
-                            <span class="metric-label">
-                                Produtos
-                            </span>
-
-                            <strong id="totalProducts">
-                                0
-                            </strong>
-
-                            <small>
-                                cadastrados
-                            </small>
-
+                            <span>Total de produtos</span>
+                            <strong id="totalProducts">0</strong>
                         </div>
-
                     </article>
 
+                    <article class="metric-card">
+                        <div class="metric-icon">
+                            <i class="fa-solid fa-cubes"></i>
+                        </div>
 
-                    <!-- Estoque -->
+                        <div class="metric-content">
+                            <span>Estoque total</span>
+                            <strong id="totalStock">0</strong>
+                        </div>
+                    </article>
 
                     <article class="metric-card">
-
                         <div class="metric-icon">
                             <i class="fa-solid fa-layer-group"></i>
                         </div>
 
                         <div class="metric-content">
-
-                            <span class="metric-label">
-                                Estoque
-                            </span>
-
-                            <strong id="totalStock">
-                                0
-                            </strong>
-
-                            <small>
-                                unidades
-                            </small>
-
+                            <span>Categorias</span>
+                            <strong id="totalCategories">0</strong>
                         </div>
-
                     </article>
 
-
-                    <!-- Categorias -->
-
-                    <article class="metric-card">
-
+                    <article class="metric-card metric-warning">
                         <div class="metric-icon">
-                            <i class="fa-solid fa-tags"></i>
-                        </div>
-
-                        <div class="metric-content">
-
-                            <span class="metric-label">
-                                Categorias
-                            </span>
-
-                            <strong id="totalCategories">
-                                0
-                            </strong>
-
-                            <small>
-                                categorias ativas
-                            </small>
-
-                        </div>
-
-                    </article>
-
-
-                    <!-- Baixo estoque -->
-
-                    <article class="metric-card">
-
-                        <div class="metric-icon warning">
                             <i class="fa-solid fa-triangle-exclamation"></i>
                         </div>
 
                         <div class="metric-content">
-
-                            <span class="metric-label">
-                                Baixo estoque
-                            </span>
-
-                            <strong id="lowStock">
-                                0
-                            </strong>
-
-                            <small>
-                                produtos
-                            </small>
-
+                            <span>Estoque baixo</span>
+                            <strong id="lowStock">0</strong>
                         </div>
-
                     </article>
 
                 </section>
 
-
-                <!-- =========================================
-                     VALORES DO ESTOQUE
-                     ========================================= -->
-
+                <!-- FINANCIAL SUMMARY -->
                 <section class="financial-grid">
 
                     <article class="financial-card">
-
-                        <span>
-                            Valor potencial de venda
-                        </span>
-
-                        <strong id="stockValue">
-                            R$ 0,00
-                        </strong>
-
+                        <span>Valor potencial de venda</span>
+                        <strong id="stockValue">R$ 0,00</strong>
                     </article>
 
-
                     <article class="financial-card">
-
-                        <span>
-                            Custo do estoque
-                        </span>
-
-                        <strong id="costValue">
-                            R$ 0,00
-                        </strong>
-
+                        <span>Custo do estoque</span>
+                        <strong id="costValue">R$ 0,00</strong>
                     </article>
 
-
-                    <article class="financial-card">
-
-                        <span>
-                            Margem potencial
-                        </span>
-
-                        <strong id="profitValue">
-                            R$ 0,00
-                        </strong>
-
+                    <article class="financial-card highlight">
+                        <span>Margem potencial</span>
+                        <strong id="profitValue">R$ 0,00</strong>
                     </article>
 
                 </section>
 
-
-                <!-- =========================================
-                     PAINEL DE PRODUTOS
-                     ========================================= -->
-
+                <!-- PRODUCTS -->
                 <section class="products-panel">
-
-                    <!-- Cabeçalho painel -->
 
                     <div class="panel-header">
 
                         <div>
+                            <span class="panel-overline">CATÁLOGO</span>
 
-                            <div class="panel-overline">
-                                Catálogo
-                            </div>
-
-                            <h2>
-                                Produtos cadastrados
-                            </h2>
+                            <h2>Produtos cadastrados</h2>
 
                             <span id="productCountLabel">
                                 0 produtos
                             </span>
-
                         </div>
 
-
-                        <div class="panel-header-actions">
-
-                            <button
-                                type="button"
-                                id="focusBarcode"
-                                class="small-button"
-                                title="Focar no leitor"
-                            >
-                                <i class="fa-solid fa-barcode"></i>
-                                <span>Leitor</span>
-                            </button>
-
-                            <button
-                                type="button"
-                                id="searchProductButton"
-                                class="small-button"
-                                title="Pesquisar produto"
-                            >
-                                <i class="fa-solid fa-magnifying-glass"></i>
-                            </button>
-
-                        </div>
+                        <button id="focusBarcode" class="outline-button">
+                            <i class="fa-solid fa-barcode"></i>
+                            Focar leitor
+                        </button>
 
                     </div>
 
-
-                    <!-- Filtros -->
-
-                    <div class="products-filters">
+                    <!-- FILTERS -->
+                    <div class="filters-bar">
 
                         <div class="search-field">
 
                             <i class="fa-solid fa-magnifying-glass"></i>
 
                             <input
-                                type="search"
                                 id="productSearch"
-                                placeholder="Pesquisar produto, SKU ou código..."
+                                type="search"
                                 autocomplete="off"
-                            >
+                                placeholder="Pesquisar produto, SKU ou código...">
+
+                            <button id="searchProductButton" type="button">
+                                <i class="fa-solid fa-arrow-right"></i>
+                            </button>
 
                         </div>
 
-
-                        <select id="categoryFilter">
-
-                            <option value="">
-                                Todas as categorias
-                            </option>
-
+                        <select id="categoryFilter" class="filter-select">
+                            <option value="">Todas as categorias</option>
                         </select>
 
-
-                        <select id="productSort">
-
-                            <option value="recent">
-                                Mais recentes
-                            </option>
-
-                            <option value="name">
-                                Nome A-Z
-                            </option>
-
-                            <option value="stock-low">
-                                Menor estoque
-                            </option>
-
-                            <option value="stock-high">
-                                Maior estoque
-                            </option>
-
-                            <option value="price-high">
-                                Maior preço
-                            </option>
-
-                            <option value="price-low">
-                                Menor preço
-                            </option>
-
+                        <select id="productSort" class="filter-select">
+                            <option value="recent">Mais recentes</option>
+                            <option value="name">Nome A-Z</option>
+                            <option value="stock-low">Menor estoque</option>
+                            <option value="stock-high">Maior estoque</option>
+                            <option value="price-high">Maior preço</option>
+                            <option value="price-low">Menor preço</option>
                         </select>
 
                     </div>
 
+                    <!-- TABLE -->
+                    <div class="table-container">
 
-                    <!-- Tabela -->
-
-                    <div class="products-table-wrapper">
-
-                        <table
-                            id="productsTable"
-                            class="products-table"
-                        >
+                        <table id="productsTable" class="products-table">
 
                             <thead>
-
                                 <tr>
-
-                                    <th>
-                                        Produto
-                                    </th>
-
-                                    <th>
-                                        Código
-                                    </th>
-
-                                    <th>
-                                        Categoria
-                                    </th>
-
-                                    <th>
-                                        Tamanho
-                                    </th>
-
-                                    <th>
-                                        Cor
-                                    </th>
-
-                                    <th>
-                                        Venda
-                                    </th>
-
-                                    <th>
-                                        Estoque
-                                    </th>
-
-                                    <th>
-                                        Status
-                                    </th>
-
-                                    <th>
-                                        Ações
-                                    </th>
-
+                                    <th>Produto</th>
+                                    <th>Código</th>
+                                    <th>Categoria</th>
+                                    <th>Tamanho</th>
+                                    <th>Cor</th>
+                                    <th>Venda</th>
+                                    <th>Estoque</th>
+                                    <th>Status</th>
+                                    <th>Ações</th>
                                 </tr>
-
                             </thead>
 
-
-                            <tbody id="productsTableBody">
-                                <!-- preenchido pelo produtos.js -->
-                            </tbody>
+                            <tbody id="productsTableBody"></tbody>
 
                         </table>
 
-                    </div>
-
-
-                    <!-- Estado vazio -->
-
-                    <div
-                        id="productsEmpty"
-                        class="empty-state hidden"
-                    >
-
-                        <div class="empty-icon">
-                            <i class="fa-solid fa-box-open"></i>
-                        </div>
-
-                        <h3>
-                            Nenhum produto cadastrado
-                        </h3>
-
-                        <p>
-                            Cadastre o primeiro produto para começar
-                            a controlar seu catálogo e estoque.
-                        </p>
-
-                        <button
-                            type="button"
-                            id="emptyAddProduct"
-                            class="text-button"
-                        >
-                            Cadastrar produto
-                        </button>
-
-                    </div>
-
-
-                    <!-- Sem resultados -->
-
-                    <div
-                        id="productsNoResults"
-                        class="empty-state hidden"
-                    >
-
-                        <div class="empty-icon">
-                            <i class="fa-solid fa-magnifying-glass"></i>
-                        </div>
-
-                        <h3>
-                            Nenhum resultado encontrado
-                        </h3>
-
-                        <p>
-                            Tente alterar a pesquisa ou os filtros.
-                        </p>
-
-                    </div>
-
-
-                    <!-- Rodapé tabela -->
-
-                    <div class="products-panel-footer">
-
-                        <div class="stock-summary">
-
-                            <span>
-                                Ocupação do estoque
-                            </span>
-
-                            <div
-                                id="stockProgress"
-                                class="stock-progress"
-                            >
-                                <span></span>
+                        <!-- EMPTY -->
+                        <div id="productsEmpty" class="table-empty hidden">
+                            <div>
+                                <i class="fa-solid fa-box-open"></i>
                             </div>
 
+                            <h3>Nenhum produto cadastrado</h3>
+
+                            <p>
+                                Comece cadastrando o primeiro produto do catálogo.
+                            </p>
+
+                            <button id="emptyAddProduct" class="primary-button">
+                                <i class="fa-solid fa-plus"></i>
+                                Novo Produto
+                            </button>
                         </div>
 
+                        <!-- NO RESULTS -->
+                        <div id="productsNoResults" class="table-empty hidden">
+                            <div>
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                            </div>
 
-                        <span id="lastUpdate">
-                            Última atualização: —
+                            <h3>Nenhum resultado encontrado</h3>
+
+                            <p>
+                                Tente pesquisar por outro nome, SKU ou código.
+                            </p>
+                        </div>
+
+                    </div>
+
+                    <div class="table-footer">
+
+                        <span>
+                            Última atualização:
+                            <strong id="lastUpdate">--</strong>
                         </span>
+
+                        <div class="stock-progress-area">
+                            <span>Controle de estoque</span>
+
+                            <div id="stockProgress" class="stock-progress">
+                                <span></span>
+                            </div>
+                        </div>
 
                     </div>
 
                 </section>
 
-
-                <!-- =========================================
-                     ANÁLISE
-                     ========================================= -->
-
+                <!-- ANALYSIS -->
                 <section class="analysis-grid">
-
-                    <!-- Gráfico -->
 
                     <article class="analysis-card">
 
                         <div class="analysis-header">
 
                             <div>
+                                <span class="panel-overline">
+                                    DISTRIBUIÇÃO
+                                </span>
 
-                                <div class="panel-overline">
-                                    Análise
-                                </div>
-
-                                <h2>
-                                    Estoque por categoria
-                                </h2>
-
+                                <h2>Estoque por categoria</h2>
                             </div>
 
-                            <strong id="chartTotal">
-                                0
-                            </strong>
+                            <strong id="chartTotal">0</strong>
 
                         </div>
 
+                        <div id="categoryChart" class="category-chart"></div>
 
-                        <div
-                            id="categoryChart"
-                            class="category-chart"
-                        >
-                            <!-- preenchido pelo produtos.js -->
-                        </div>
-
-
-                        <div
-                            id="chartEmpty"
-                            class="empty-chart hidden"
-                        >
-
+                        <div id="chartEmpty" class="chart-empty hidden">
                             <i class="fa-solid fa-chart-column"></i>
-
-                            <span>
-                                Sem dados para analisar
-                            </span>
-
+                            <span>Sem dados para analisar</span>
                         </div>
 
                     </article>
 
-
-                    <!-- Insight -->
-
                     <article class="analysis-card insight-card">
 
-                        <div class="analysis-header">
-
-                            <div>
-
-                                <div class="panel-overline">
-                                    Inteligência de estoque
-                                </div>
-
-                                <h2>
-                                    Visão geral
-                                </h2>
-
-                            </div>
-
-                            <i class="fa-solid fa-lightbulb"></i>
-
+                        <div class="insight-icon">
+                            <i class="fa-solid fa-chart-simple"></i>
                         </div>
 
+                        <div>
+                            <span class="panel-overline">ANÁLISE</span>
 
-                        <div class="insight-content">
-
-                            <h3 id="stockInsightTitle">
-                                Estoque saudável
-                            </h3>
+                            <h2 id="stockInsightTitle">
+                                Visão do estoque
+                            </h2>
 
                             <p id="stockInsightText">
-                                Carregando análise do estoque...
+                                Cadastre produtos para visualizar os indicadores do estoque.
                             </p>
-
                         </div>
 
                     </article>
 
                 </section>
 
-            </main>
+            </section>
 
-
-            <!-- =============================================
-                 FOOTER
-                 ============================================= -->
-
-            <footer class="main-footer">
-
-                <div>
-                    EMPIRE ERP
-                </div>
-
-                <span>
-                    Sistema de Gestão
-                </span>
-
-            </footer>
-
-        </div>
+        </main>
 
     </div>
 
-
-    <!-- =====================================================
-         MODAL — NOVO / EDITAR PRODUTO
-         ===================================================== -->
-
+    <!-- PRODUCT MODAL -->
     <div
         id="productModal"
         class="modal"
         hidden
-        aria-hidden="true"
-    >
+        aria-hidden="true">
 
-        <div
-            class="modal-content product-modal-content"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="modalTitle"
-        >
+        <div class="modal-backdrop"></div>
 
-            <!-- Cabeçalho -->
+        <div class="modal-dialog product-dialog">
 
             <div class="modal-header">
 
                 <div>
-
-                    <div id="modalOverline">
-                        Cadastro comercial
-                    </div>
+                    <span id="modalOverline" class="modal-overline">
+                        NOVO CADASTRO
+                    </span>
 
                     <h2 id="modalTitle">
                         Novo Produto
                     </h2>
 
+                    <p>
+                        Cadastre ou edite as informações comerciais.
+                    </p>
                 </div>
 
-
-                <button
-                    type="button"
-                    id="closeProductModal"
-                    class="modal-close"
-                    aria-label="Fechar"
-                >
+                <button id="closeProductModal" class="modal-close">
                     <i class="fa-solid fa-xmark"></i>
                 </button>
 
             </div>
 
+            <form id="productForm">
 
-            <!-- Formulário -->
-
-            <form
-                id="productForm"
-                autocomplete="off"
-                novalidate
-            >
-
-                <input
-                    type="hidden"
-                    id="productId"
-                    name="productId"
-                >
-
-
-                <!-- Código -->
+                <input type="hidden" id="productId">
 
                 <div class="form-section">
 
                     <div class="form-section-title">
+                        <i class="fa-solid fa-barcode"></i>
                         Identificação
                     </div>
 
+                    <div class="form-grid two">
 
-                    <div class="form-grid form-grid-barcode">
-
-                        <div class="form-field">
+                        <div class="form-group">
 
                             <label for="productBarcode">
                                 Código de barras
@@ -967,22 +525,20 @@
                             <div class="input-with-action">
 
                                 <input
-                                    type="text"
                                     id="productBarcode"
-                                    name="productBarcode"
+                                    type="text"
                                     inputmode="numeric"
-                                    maxlength="32"
                                     autocomplete="off"
-                                    placeholder="Ex.: 7891234567890"
-                                >
+                                    maxlength="32"
+                                    placeholder="Ex.: 7891234567890">
 
                                 <button
-                                    type="button"
                                     id="openProductCamera"
-                                    class="field-action"
-                                    title="Ler código de barras pela câmera"
-                                >
+                                    type="button"
+                                    title="Ler código de barras pela câmera">
+
                                     <i class="fa-solid fa-camera"></i>
+
                                 </button>
 
                             </div>
@@ -993,20 +549,17 @@
 
                         </div>
 
-
-                        <div class="form-field">
+                        <div class="form-group">
 
                             <label for="productSku">
                                 SKU
                             </label>
 
                             <input
-                                type="text"
                                 id="productSku"
-                                name="productSku"
+                                type="text"
                                 maxlength="80"
-                                placeholder="Ex.: CONJ-PRETO-M"
-                            >
+                                placeholder="Ex.: CONJ-PRETO-M">
 
                         </div>
 
@@ -1014,83 +567,70 @@
 
                 </div>
 
-
-                <!-- Dados -->
-
                 <div class="form-section">
 
                     <div class="form-section-title">
-                        Dados do produto
+                        <i class="fa-solid fa-shirt"></i>
+                        Informações do produto
                     </div>
 
+                    <div class="form-grid two">
 
-                    <div class="form-grid">
-
-                        <div class="form-field form-field-full">
-
+                        <div class="form-group full">
                             <label for="productName">
-                                Nome do produto
+                                Nome do produto *
                             </label>
 
                             <input
-                                type="text"
                                 id="productName"
-                                name="productName"
-                                maxlength="180"
+                                type="text"
+                                maxlength="160"
                                 required
-                                placeholder="Nome do produto"
-                            >
-
+                                placeholder="Nome do produto">
                         </div>
 
-
-                        <div class="form-field">
+                        <div class="form-group">
 
                             <label for="productSize">
-                                Tamanho
+                                Tamanho *
                             </label>
 
                             <input
-                                type="text"
                                 id="productSize"
-                                name="productSize"
-                                maxlength="30"
-                                placeholder="P, M, G, GG ou 38"
-                            >
+                                type="text"
+                                maxlength="40"
+                                required
+                                placeholder="P, M, G, GG ou 38">
 
                         </div>
 
-
-                        <div class="form-field">
+                        <div class="form-group">
 
                             <label for="productColor">
-                                Cor
+                                Cor *
                             </label>
 
                             <input
-                                type="text"
                                 id="productColor"
-                                name="productColor"
-                                maxlength="50"
-                                placeholder="Ex.: Preto"
-                            >
+                                type="text"
+                                maxlength="60"
+                                required
+                                placeholder="Ex.: Preto">
 
                         </div>
 
-
-                        <div class="form-field form-field-full">
+                        <div class="form-group full">
 
                             <label for="productCategory">
-                                Categoria
+                                Categoria *
                             </label>
 
                             <input
-                                type="text"
                                 id="productCategory"
-                                name="productCategory"
+                                type="text"
                                 maxlength="100"
-                                placeholder="Ex.: Conjuntos"
-                            >
+                                required
+                                placeholder="Ex.: Conjuntos">
 
                         </div>
 
@@ -1098,153 +638,133 @@
 
                 </div>
 
-
-                <!-- Valores -->
-
                 <div class="form-section">
 
                     <div class="form-section-title">
+                        <i class="fa-solid fa-coins"></i>
                         Valores e estoque
                     </div>
 
+                    <div class="form-grid three">
 
-                    <div class="form-grid">
-
-                        <div class="form-field">
+                        <div class="form-group">
 
                             <label for="salePrice">
-                                Preço de venda
+                                Preço de venda *
                             </label>
 
                             <div class="money-input">
-
-                                <span>
-                                    R$
-                                </span>
+                                <span>R$</span>
 
                                 <input
-                                    type="text"
                                     id="salePrice"
-                                    name="salePrice"
-                                    inputmode="decimal"
-                                    placeholder="0,00"
-                                >
-
+                                    type="number"
+                                    min="0"
+                                    step="0.01"
+                                    required
+                                    placeholder="0,00">
                             </div>
 
                         </div>
 
-
-                        <div class="form-field">
+                        <div class="form-group">
 
                             <label for="stockPrice">
                                 Preço de custo
                             </label>
 
                             <div class="money-input">
-
-                                <span>
-                                    R$
-                                </span>
+                                <span>R$</span>
 
                                 <input
-                                    type="text"
                                     id="stockPrice"
-                                    name="stockPrice"
-                                    inputmode="decimal"
-                                    placeholder="0,00"
-                                >
-
+                                    type="number"
+                                    min="0"
+                                    step="0.01"
+                                    placeholder="0,00">
                             </div>
 
                         </div>
 
-
-                        <div class="form-field">
+                        <div class="form-group">
 
                             <label for="productQuantity">
-                                Quantidade em estoque
+                                Quantidade *
                             </label>
 
                             <input
-                                type="number"
                                 id="productQuantity"
-                                name="productQuantity"
+                                type="number"
                                 min="0"
                                 step="1"
-                                inputmode="numeric"
-                                placeholder="0"
-                            >
+                                required
+                                placeholder="0">
 
                         </div>
 
                     </div>
 
                 </div>
-
-
-                <!-- Imagem -->
 
                 <div class="form-section">
 
                     <div class="form-section-title">
-                        Imagem do produto
+                        <i class="fa-solid fa-image"></i>
+                        Imagem
                     </div>
 
+                    <div class="image-upload-area">
 
-                    <div class="form-field">
+                        <label
+                            for="productImage"
+                            class="image-upload-box">
 
-                        <label for="productImage">
-                            Foto
+                            <input
+                                id="productImage"
+                                type="file"
+                                accept="image/*">
+
+                            <div id="imagePreview" class="image-preview">
+
+                                <i class="fa-solid fa-cloud-arrow-up"></i>
+
+                                <strong>
+                                    Selecionar imagem
+                                </strong>
+
+                                <span>
+                                    JPG, PNG ou WEBP
+                                </span>
+
+                            </div>
+
                         </label>
-
-                        <input
-                            type="file"
-                            id="productImage"
-                            name="productImage"
-                            accept="image/jpeg,image/png,image/webp,image/gif"
-                        >
-
-                        <div id="imagePreview">
-                            <span>
-                                Nenhuma imagem selecionada
-                            </span>
-                        </div>
 
                     </div>
 
                 </div>
 
-
-                <!-- Mensagem -->
-
-                <div
-                    id="formMessage"
-                    role="alert"
-                    aria-live="polite"
-                ></div>
-
-
-                <!-- Ações -->
+                <div id="formMessage" class="form-message"></div>
 
                 <div class="modal-footer">
 
                     <button
-                        type="button"
                         id="cancelProduct"
-                        class="secondary-button"
-                    >
+                        type="button"
+                        class="secondary-button">
+
                         Cancelar
+
                     </button>
 
-
                     <button
-                        type="submit"
                         id="saveProductButton"
-                        class="primary-button"
-                    >
+                        type="submit"
+                        class="primary-button">
+
                         <i class="fa-solid fa-check"></i>
-                        <span>Salvar Produto</span>
+                        Salvar Produto
+
                     </button>
 
                 </div>
@@ -1255,57 +775,36 @@
 
     </div>
 
-
-    <!-- =====================================================
-         MODAL — CÂMERA
-         ===================================================== -->
-
+    <!-- CAMERA MODAL -->
     <div
         id="cameraModal"
-        class="modal"
+        class="modal camera-modal"
         hidden
-        aria-hidden="true"
-    >
+        aria-hidden="true">
 
-        <div
-            class="modal-content camera-modal-content"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="cameraTitle"
-        >
+        <div class="modal-backdrop"></div>
 
-            <div class="modal-header">
+        <div class="camera-dialog">
+
+            <div class="camera-header">
 
                 <div>
+                    <span class="modal-overline">
+                        LEITOR ÓPTICO
+                    </span>
 
-                    <div class="modal-overline">
-                        Leitor óptico
-                    </div>
-
-                    <h2 id="cameraTitle">
-                        Ler código de barras
-                    </h2>
+                    <h2>Ler código de barras</h2>
 
                     <p>
-                        Aponte a câmera para o código de barras.
+                        Aponte a câmera para um código de barras.
                     </p>
-
                 </div>
 
-
-                <button
-                    type="button"
-                    id="closeCameraModal"
-                    class="modal-close"
-                    aria-label="Fechar câmera"
-                >
+                <button id="closeCameraModal" class="modal-close">
                     <i class="fa-solid fa-xmark"></i>
                 </button>
 
             </div>
-
-
-            <!-- Área da câmera -->
 
             <div class="camera-view">
 
@@ -1313,128 +812,96 @@
                     id="barcodeCamera"
                     autoplay
                     muted
-                    playsinline
-                    aria-label="Câmera para leitura de código de barras"
-                ></video>
+                    playsinline></video>
 
+                <div class="camera-frame">
 
-                <div
-                    id="cameraLoading"
-                    class="camera-loading"
-                >
-                    <div>
-                        <i class="fa-solid fa-camera"></i>
-                        <span>
-                            Iniciando câmera...
-                        </span>
-                    </div>
+                    <span class="corner top-left"></span>
+                    <span class="corner top-right"></span>
+                    <span class="corner bottom-left"></span>
+                    <span class="corner bottom-right"></span>
+
+                    <div class="scan-line"></div>
+
+                </div>
+
+                <div id="cameraLoading" class="camera-loading">
+
+                    <div class="camera-spinner"></div>
+
+                    <span>
+                        Iniciando câmera...
+                    </span>
+
                 </div>
 
             </div>
 
+            <div class="camera-info">
 
-            <div class="camera-guide">
+                <div class="camera-status">
 
-                <span>
-                    Posicione o código dentro da área de leitura.
-                </span>
+                    <span class="status-dot"></span>
 
-            </div>
+                    <span id="cameraStatus">
+                        Preparando leitor...
+                    </span>
 
+                </div>
 
-            <div class="camera-controls">
-
-                <button
-                    type="button"
-                    id="toggleFlash"
-                    class="secondary-button"
-                >
+                <button id="toggleFlash" type="button">
                     <i class="fa-solid fa-bolt"></i>
-                    <span>Lanterna</span>
-                </button>
-
-
-                <button
-                    type="button"
-                    id="closeCamera"
-                    class="secondary-button"
-                >
-                    Fechar
+                    Lanterna
                 </button>
 
             </div>
 
-
-            <div
-                id="cameraStatus"
-                aria-live="polite"
-            >
-                Aguardando câmera...
-            </div>
+            <button id="closeCamera" class="camera-cancel">
+                Fechar leitor
+            </button>
 
         </div>
 
     </div>
 
-
-    <!-- =====================================================
-         MODAL — VISUALIZAR PRODUTO
-         ===================================================== -->
-
+    <!-- VIEW MODAL -->
     <div
         id="viewModal"
         class="modal"
         hidden
-        aria-hidden="true"
-    >
+        aria-hidden="true">
 
-        <div
-            class="modal-content view-modal-content"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="viewName"
-        >
+        <div class="modal-backdrop"></div>
+
+        <div class="modal-dialog view-dialog">
 
             <div class="modal-header">
 
                 <div>
-
-                    <div class="modal-overline">
-                        Detalhes do produto
-                    </div>
+                    <span class="modal-overline">
+                        DETALHES
+                    </span>
 
                     <h2 id="viewName">
                         Produto
                     </h2>
 
+                    <p id="viewDescription">
+                        Informações do produto.
+                    </p>
                 </div>
 
-
-                <button
-                    type="button"
-                    id="closeViewModal"
-                    class="modal-close"
-                    aria-label="Fechar"
-                >
+                <button id="closeViewModal" class="modal-close">
                     <i class="fa-solid fa-xmark"></i>
                 </button>
 
             </div>
 
+            <div class="view-content">
 
-            <div class="view-product-layout">
-
-                <!-- Imagem -->
-
-                <div
-                    id="viewImage"
-                    class="view-image"
-                >
-                    <!-- JS insere a imagem aqui -->
+                <div id="viewImage" class="view-image">
+                    <i class="fa-solid fa-image"></i>
                 </div>
-
-
-                <!-- Informações -->
 
                 <div class="view-product-main">
 
@@ -1442,128 +909,57 @@
                         Produto
                     </h3>
 
-                    <p id="viewDescription">
-                        —
-                    </p>
+                    <div class="view-details">
 
-
-                    <div class="view-details-grid">
-
-                        <div class="view-detail">
-
-                            <span>
-                                Código de barras
-                            </span>
-
-                            <strong id="viewBarcode">
-                                —
-                            </strong>
-
+                        <div>
+                            <span>Código</span>
+                            <strong id="viewBarcode">—</strong>
                         </div>
 
-
-                        <div class="view-detail">
-
-                            <span>
-                                SKU
-                            </span>
-
-                            <strong id="viewSku">
-                                —
-                            </strong>
-
+                        <div>
+                            <span>SKU</span>
+                            <strong id="viewSku">—</strong>
                         </div>
 
-
-                        <div class="view-detail">
-
-                            <span>
-                                Tamanho
-                            </span>
-
-                            <strong id="viewSize">
-                                —
-                            </strong>
-
+                        <div>
+                            <span>Tamanho</span>
+                            <strong id="viewSize">—</strong>
                         </div>
 
-
-                        <div class="view-detail">
-
-                            <span>
-                                Cor
-                            </span>
-
-                            <strong id="viewColor">
-                                —
-                            </strong>
-
+                        <div>
+                            <span>Cor</span>
+                            <strong id="viewColor">—</strong>
                         </div>
 
-
-                        <div class="view-detail">
-
-                            <span>
-                                Categoria
-                            </span>
-
-                            <strong id="viewCategoryText">
-                                —
-                            </strong>
-
+                        <div>
+                            <span>Categoria</span>
+                            <strong id="viewCategoryText">—</strong>
                         </div>
 
-
-                        <div class="view-detail">
-
-                            <span>
-                                Venda
-                            </span>
-
-                            <strong id="viewSale">
-                                R$ 0,00
-                            </strong>
-
+                        <div>
+                            <span>Venda</span>
+                            <strong id="viewSale">R$ 0,00</strong>
                         </div>
 
-
-                        <div class="view-detail">
-
-                            <span>
-                                Custo
-                            </span>
-
-                            <strong id="viewCost">
-                                R$ 0,00
-                            </strong>
-
+                        <div>
+                            <span>Custo</span>
+                            <strong id="viewCost">R$ 0,00</strong>
                         </div>
 
-
-                        <div class="view-detail">
-
-                            <span>
-                                Estoque
-                            </span>
-
-                            <strong id="viewStock">
-                                0
-                            </strong>
-
+                        <div>
+                            <span>Estoque</span>
+                            <strong id="viewStock">0</strong>
                         </div>
 
+                    </div>
 
-                        <div class="view-detail">
+                    <div class="view-status-row">
 
-                            <span>
-                                Status
-                            </span>
+                        <span>Status</span>
 
-                            <strong id="viewStatus">
-                                —
-                            </strong>
-
-                        </div>
+                        <strong id="viewStatus" class="status-badge">
+                            Ativo
+                        </strong>
 
                     </div>
 
@@ -1571,24 +967,25 @@
 
             </div>
 
-
             <div class="modal-footer">
 
                 <button
-                    type="button"
                     id="viewCloseButton"
-                    class="secondary-button"
-                >
+                    type="button"
+                    class="secondary-button">
+
                     Fechar
+
                 </button>
 
                 <button
-                    type="button"
                     id="viewEditButton"
-                    class="primary-button"
-                >
+                    type="button"
+                    class="primary-button">
+
                     <i class="fa-solid fa-pen"></i>
-                    <span>Editar Produto</span>
+                    Editar produto
+
                 </button>
 
             </div>
@@ -1597,60 +994,31 @@
 
     </div>
 
+    <!-- TOAST -->
+    <div id="toast" class="toast">
 
-    <!-- =====================================================
-         TOAST
-         ===================================================== -->
-
-    <div
-        id="toast"
-        class="toast hidden"
-        role="status"
-        aria-live="polite"
-    >
-
-        <div class="toast-content">
-
-            <strong id="toastTitle">
-                EMPIRE
-            </strong>
-
-            <p id="toastMessage">
-                —
-            </p>
-
+        <div class="toast-icon">
+            <i class="fa-solid fa-check"></i>
         </div>
 
+        <div>
+            <strong id="toastTitle">Concluído</strong>
+            <span id="toastMessage">Operação realizada.</span>
+        </div>
 
-        <button
-            type="button"
-            id="closeToast"
-            class="toast-close"
-            aria-label="Fechar notificação"
-        >
+        <button id="closeToast">
             <i class="fa-solid fa-xmark"></i>
         </button>
 
     </div>
 
-
-    <!-- =====================================================
-         SCRIPTS
-         ===================================================== -->
-
-    <!-- Supabase -->
+    <!-- SCRIPTS -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-    <!-- ZXing — LEITOR DE CÓDIGO DE BARRAS -->
+    <!-- LEITOR DE CÓDIGO DE BARRAS -->
     <script src="https://unpkg.com/@zxing/browser@0.1.5/umd/zxing-browser.min.js"></script>
 
-    <!-- Configuração Supabase -->
     <script src="../../assets/js/supabase.js"></script>
-
-    <!-- Câmera — único responsável pela câmera -->
-    <script src="../../assets/js/camera.js"></script>
-
-    <!-- Produtos -->
     <script src="../../assets/js/produtos.js"></script>
 
 </body>
