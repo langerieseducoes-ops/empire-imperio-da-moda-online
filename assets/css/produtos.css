@@ -1,133 +1,169 @@
 /* =========================================================
    EMPIRE ERP — PRODUTOS
-   CSS PREMIUM / RESPONSIVO
-========================================================= */
-
-:root {
-    --empire-bg: #050505;
-    --empire-bg-2: #090909;
-    --empire-panel: rgba(18, 18, 18, 0.92);
-    --empire-panel-2: rgba(24, 24, 24, 0.88);
-    --empire-border: rgba(212, 175, 55, 0.16);
-    --empire-border-light: rgba(255, 255, 255, 0.08);
-
-    --gold: #d4af37;
-    --gold-light: #f0d77b;
-    --gold-dark: #92761d;
-
-    --text: #f4f1e8;
-    --text-soft: #b8b4aa;
-    --text-muted: #77736b;
-
-    --green: #4ade80;
-    --green-soft: rgba(74, 222, 128, 0.12);
-
-    --yellow: #facc15;
-    --yellow-soft: rgba(250, 204, 21, 0.12);
-
-    --red: #f87171;
-    --red-soft: rgba(248, 113, 113, 0.12);
-
-    --blue: #60a5fa;
-    --blue-soft: rgba(96, 165, 250, 0.12);
-
-    --shadow: 0 24px 70px rgba(0, 0, 0, 0.38);
-    --shadow-small: 0 10px 30px rgba(0, 0, 0, 0.24);
-
-    --radius: 18px;
-    --radius-small: 12px;
-}
+   assets/css/produtos.css
+   Compatível com o produtos.html atual
+   ========================================================= */
 
 /* =========================================================
-   RESET LOCAL
-========================================================= */
+   1. RESET / BASE
+   ========================================================= */
 
-.products-page,
-.products-page *,
-.camera-dialog,
-.camera-dialog *,
-.product-modal-dialog,
-.product-modal-dialog *,
-.view-modal-dialog,
-.view-modal-dialog * {
+*,
+*::before,
+*::after {
     box-sizing: border-box;
 }
 
-.products-page button,
-.products-page input,
-.products-page select,
-.products-page textarea,
-.modal button,
-.modal input,
-.modal select,
-.modal textarea {
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    color: #f4f0e8;
+    background:
+        radial-gradient(circle at 10% 10%, rgba(184, 148, 67, 0.08), transparent 28%),
+        radial-gradient(circle at 90% 20%, rgba(255, 255, 255, 0.025), transparent 25%),
+        radial-gradient(circle at 50% 100%, rgba(184, 148, 67, 0.055), transparent 35%),
+        #050505;
     font-family: "Poppins", sans-serif;
+    overflow-x: hidden;
+}
+
+/* Textura geral */
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    opacity: 0.32;
+    background-image:
+        linear-gradient(rgba(255, 255, 255, 0.018) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.014) 1px, transparent 1px);
+    background-size: 34px 34px;
+    mask-image: linear-gradient(to bottom, black, transparent 90%);
+}
+
+body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -2;
+    pointer-events: none;
+    background:
+        radial-gradient(circle at 50% 0%, rgba(201, 164, 78, 0.06), transparent 40%);
+}
+
+button,
+input,
+select,
+textarea {
+    font: inherit;
+}
+
+button {
+    cursor: pointer;
+}
+
+button:disabled {
+    cursor: not-allowed;
+    opacity: 0.55;
+}
+
+img {
+    max-width: 100%;
+    display: block;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.hidden {
+    display: none !important;
 }
 
 /* =========================================================
-   LOADER
-========================================================= */
+   2. SCROLLBAR
+   ========================================================= */
 
-.page-loader {
+::-webkit-scrollbar {
+    width: 9px;
+    height: 9px;
+}
+
+::-webkit-scrollbar-track {
+    background: #080808;
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(
+        180deg,
+        rgba(196, 159, 76, 0.65),
+        rgba(111, 82, 28, 0.75)
+    );
+    border-radius: 999px;
+    border: 2px solid #080808;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(
+        180deg,
+        rgba(218, 181, 94, 0.85),
+        rgba(137, 101, 36, 0.9)
+    );
+}
+
+/* =========================================================
+   3. LOADER
+   ========================================================= */
+
+#productsLoader {
     position: fixed;
     inset: 0;
-    z-index: 99999;
-
+    z-index: 9999;
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-direction: column;
-
-    gap: 14px;
-
     background:
-        radial-gradient(circle at 50% 40%, rgba(212, 175, 55, 0.08), transparent 32%),
+        radial-gradient(circle at center, rgba(185, 146, 59, 0.10), transparent 32%),
         #050505;
-
-    color: var(--text);
-
     transition:
         opacity 0.35s ease,
         visibility 0.35s ease;
 }
 
-.page-loader.hidden {
+#productsLoader.hidden {
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
 }
 
-.loader-brand {
-    display: flex;
-    align-items: center;
-    flex-direction: column;
+#productsLoader .loader-content,
+#productsLoader > div {
+    text-align: center;
 }
 
-.loader-brand span {
-    font-family: "Cinzel", serif;
-    font-size: 30px;
-    font-weight: 700;
-    letter-spacing: 0.18em;
-    color: var(--gold-light);
+#productsLoader .loader-logo {
+    width: 76px;
+    height: 76px;
+    margin: 0 auto 18px;
+    object-fit: contain;
+    filter: drop-shadow(0 0 18px rgba(201, 164, 78, 0.18));
 }
 
-.loader-brand small {
-    margin-top: -2px;
-    color: var(--text-muted);
-    font-size: 10px;
-    letter-spacing: 0.35em;
-}
-
-.loader-spinner {
-    width: 28px;
-    height: 28px;
-
-    border: 2px solid rgba(255, 255, 255, 0.08);
-    border-top-color: var(--gold);
-
+#productsLoader .loader-spinner {
+    width: 38px;
+    height: 38px;
+    margin: 0 auto 16px;
+    border: 2px solid rgba(255, 255, 255, 0.10);
+    border-top-color: #c7a24e;
+    border-right-color: rgba(199, 162, 78, 0.35);
     border-radius: 50%;
-
-    animation: empireSpin 0.8s linear infinite;
+    animation: empireSpin 0.85s linear infinite;
 }
 
 @keyframes empireSpin {
@@ -137,665 +173,434 @@
 }
 
 /* =========================================================
-   MAIN
-========================================================= */
+   4. LAYOUT PRINCIPAL
+   ========================================================= */
 
-.main-content {
+/*
+   O CSS não depende de uma classe específica para a página.
+   Ele trabalha com os elementos existentes no HTML.
+*/
+
+main {
     min-width: 0;
 }
 
-.products-page {
-    width: 100%;
-    max-width: 1700px;
-
-    margin: 0 auto;
-    padding: 28px 32px 50px;
-
-    color: var(--text);
-}
-
 /* =========================================================
-   TOPBAR
-========================================================= */
+   5. SIDEBAR / NAVEGAÇÃO
+   ========================================================= */
 
-.topbar-page {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-}
-
-.topbar-overline,
-.page-overline,
-.panel-overline,
-.modal-overline,
-.scanner-overline {
-    font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--gold);
-}
-
-.topbar-title {
-    font-family: "Cinzel", serif;
-    font-size: 15px;
-    color: var(--text);
-}
-
-.system-clock {
-    font-family: "Poppins", sans-serif;
-    font-size: 12px;
-    font-variant-numeric: tabular-nums;
-    color: var(--text-soft);
-}
-
-/* =========================================================
-   PAGE HEADING
-========================================================= */
-
-.page-heading {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-
-    gap: 24px;
-    margin-bottom: 26px;
-}
-
-.page-heading-copy h1 {
-    margin: 5px 0 5px;
-
-    font-family: "Cinzel", serif;
-    font-size: clamp(28px, 3vw, 42px);
-    font-weight: 600;
-
-    color: var(--text);
-}
-
-.page-heading-copy p {
-    margin: 0;
-    color: var(--text-muted);
-    font-size: 13px;
-}
-
-.page-heading-actions {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-/* =========================================================
-   BUTTONS
-========================================================= */
-
-.primary-button,
-.secondary-button,
-.filter-search-button,
-.panel-action-button,
-.camera-input-button,
-.camera-control-button,
-.logout-button {
-    border: 0;
-    cursor: pointer;
-
-    transition:
-        transform 0.2s ease,
-        background 0.2s ease,
-        border-color 0.2s ease,
-        box-shadow 0.2s ease,
-        color 0.2s ease;
-}
-
-.primary-button {
-    min-height: 44px;
-
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 9px;
-
-    padding: 0 18px;
-
-    border: 1px solid rgba(212, 175, 55, 0.35);
-    border-radius: 11px;
-
+.sidebar {
     background:
         linear-gradient(
-            135deg,
-            rgba(212, 175, 55, 0.95),
-            rgba(164, 126, 28, 0.95)
+            180deg,
+            rgba(14, 14, 14, 0.98),
+            rgba(7, 7, 7, 0.98)
         );
-
-    color: #090909;
-
-    font-size: 12px;
-    font-weight: 700;
-}
-
-.primary-button:hover {
-    transform: translateY(-1px);
-
+    border-right: 1px solid rgba(198, 160, 74, 0.13);
     box-shadow:
-        0 10px 30px rgba(212, 175, 55, 0.15);
+        16px 0 50px rgba(0, 0, 0, 0.28),
+        inset -1px 0 rgba(255, 255, 255, 0.018);
 }
 
-.secondary-button {
-    min-height: 44px;
-
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 9px;
-
-    padding: 0 16px;
-
-    border: 1px solid var(--empire-border-light);
-    border-radius: 11px;
-
-    background: rgba(255, 255, 255, 0.035);
-    color: var(--text-soft);
-
-    font-size: 12px;
-    font-weight: 500;
+.sidebar::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: -1px;
+    width: 1px;
+    height: 100%;
+    background: linear-gradient(
+        to bottom,
+        transparent,
+        rgba(201, 164, 78, 0.28),
+        transparent
+    );
 }
 
-.secondary-button:hover {
-    border-color: rgba(212, 175, 55, 0.3);
-    color: var(--gold-light);
-    background: rgba(212, 175, 55, 0.06);
+.sidebar-logo img,
+.logo img {
+    object-fit: contain;
 }
 
-.primary-button:disabled,
-.secondary-button:disabled {
-    opacity: 0.55;
-    cursor: not-allowed;
-    transform: none;
+.sidebar .logo,
+.sidebar-logo {
+    filter: drop-shadow(0 0 16px rgba(194, 157, 70, 0.12));
+}
+
+.profileName,
+#profileName {
+    color: #f5f0e6;
+    font-weight: 600;
+}
+
+.profileRole,
+#profileRole {
+    color: #aa9b7b;
+}
+
+.sidebar a,
+.sidebar button {
+    transition:
+        background 0.2s ease,
+        color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.sidebar a:hover,
+.sidebar button:hover {
+    color: #d7b766;
+    background: rgba(196, 160, 76, 0.055);
+}
+
+.sidebar .active,
+.sidebar a.active {
+    color: #e0bd6d;
+    background:
+        linear-gradient(
+            90deg,
+            rgba(197, 161, 76, 0.13),
+            rgba(197, 161, 76, 0.035)
+        );
+    border-color: rgba(197, 161, 76, 0.20);
 }
 
 /* =========================================================
-   BARCODE SCANNER
-========================================================= */
+   6. TOPO / HEADER
+   ========================================================= */
 
-.barcode-scanner-box {
-    position: relative;
-
-    display: grid;
-    grid-template-columns: auto minmax(220px, 1fr) minmax(260px, 390px);
-
-    align-items: center;
-    gap: 18px;
-
-    padding: 18px 20px;
-
-    margin-bottom: 22px;
-
-    border: 1px solid var(--empire-border);
-    border-radius: var(--radius);
-
-    background:
-        linear-gradient(
-            135deg,
-            rgba(212, 175, 55, 0.065),
-            rgba(255, 255, 255, 0.018)
-        ),
-        var(--empire-panel);
-
-    box-shadow: var(--shadow-small);
-}
-
-.scanner-icon {
-    width: 52px;
-    height: 52px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    border-radius: 14px;
-
-    background: rgba(212, 175, 55, 0.08);
-    border: 1px solid rgba(212, 175, 55, 0.18);
-
-    color: var(--gold-light);
-    font-size: 21px;
-}
-
-.scanner-content {
-    min-width: 0;
-}
-
-.scanner-heading {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    gap: 15px;
-}
-
-.scanner-heading > div {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-}
-
-.scanner-heading strong {
-    color: var(--text);
-    font-size: 13px;
-    font-weight: 600;
-}
-
-.barcode-scanner-box p {
-    margin: 7px 0 0;
-
-    color: var(--text-muted);
-    font-size: 11px;
-}
-
-.scanner-status {
-    flex-shrink: 0;
-
-    padding: 5px 9px;
-
-    border-radius: 999px;
-
-    background: var(--green-soft);
-    color: var(--green);
-
-    font-size: 10px;
-    font-weight: 600;
-}
-
-.scanner-status.error {
-    background: var(--red-soft);
-    color: var(--red);
-}
-
-.scanner-status.searching {
-    background: var(--yellow-soft);
-    color: var(--yellow);
-}
-
-.scanner-input-wrapper {
+header,
+.topbar,
+.page-header {
     position: relative;
 }
 
-.scanner-input-wrapper > i {
+#systemClock {
+    color: #a99a7d;
+    font-size: 0.78rem;
+    letter-spacing: 0.04em;
+}
+
+#mobileMenuButton {
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    background: rgba(255, 255, 255, 0.035);
+    color: #e9e2d4;
+    border-radius: 10px;
+    transition: 0.2s ease;
+}
+
+#mobileMenuButton:hover {
+    border-color: rgba(199, 162, 78, 0.35);
+    color: #d5b35f;
+}
+
+/* =========================================================
+   7. LEITOR DE CÓDIGO DE BARRAS SUPERIOR
+   ========================================================= */
+
+#barcodeScannerBox {
+    position: relative;
+    display: flex;
+    align-items: center;
+    min-width: 260px;
+}
+
+#barcodeScannerBox::before {
+    content: "⌁";
     position: absolute;
     left: 14px;
-    top: 50%;
-
-    transform: translateY(-50%);
-
-    color: var(--gold);
-    font-size: 15px;
-
+    color: #c9a65b;
+    font-size: 1.15rem;
     pointer-events: none;
+    opacity: 0.8;
 }
 
-.scanner-input-wrapper input {
+#barcodeScanner {
     width: 100%;
-    height: 46px;
-
-    padding: 0 14px 0 42px;
-
-    border: 1px solid rgba(212, 175, 55, 0.22);
-    border-radius: 11px;
-
+    height: 42px;
+    padding: 0 78px 0 38px;
+    border: 1px solid rgba(201, 164, 78, 0.18);
+    border-radius: 10px;
     outline: none;
-
-    background: rgba(0, 0, 0, 0.3);
-    color: var(--text);
-
-    font-size: 12px;
-
+    background:
+        linear-gradient(
+            135deg,
+            rgba(255, 255, 255, 0.045),
+            rgba(255, 255, 255, 0.018)
+        );
+    color: #f5f0e8;
+    box-shadow:
+        inset 0 1px rgba(255, 255, 255, 0.025),
+        0 10px 30px rgba(0, 0, 0, 0.14);
     transition:
         border-color 0.2s ease,
         box-shadow 0.2s ease;
 }
 
-.scanner-input-wrapper input:focus {
-    border-color: rgba(212, 175, 55, 0.55);
-
-    box-shadow:
-        0 0 0 3px rgba(212, 175, 55, 0.06);
+#barcodeScanner::placeholder {
+    color: #706b61;
 }
 
-.scanner-input-wrapper input::placeholder {
-    color: #5d5a54;
+#barcodeScanner:focus {
+    border-color: rgba(201, 164, 78, 0.55);
+    box-shadow:
+        0 0 0 3px rgba(201, 164, 78, 0.07),
+        0 12px 35px rgba(0, 0, 0, 0.20);
+}
+
+#barcodeStatus {
+    position: absolute;
+    right: 11px;
+    padding: 4px 7px;
+    border-radius: 6px;
+    color: #b9aa8b;
+    background: rgba(255, 255, 255, 0.045);
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.03em;
 }
 
 /* =========================================================
-   METRICS
-========================================================= */
+   8. NOTIFICAÇÕES
+   ========================================================= */
 
-.metrics-grid {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 14px;
-
-    margin-bottom: 14px;
+#notificationButton {
+    position: relative;
 }
 
-.metric-card {
-    display: flex;
-    align-items: center;
-
-    gap: 15px;
-
-    min-height: 112px;
-    padding: 18px;
-
-    border: 1px solid var(--empire-border-light);
-    border-radius: var(--radius);
-
-    background: var(--empire-panel);
-
-    box-shadow: var(--shadow-small);
-}
-
-.metric-icon {
-    width: 46px;
-    height: 46px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    flex-shrink: 0;
-
-    border-radius: 13px;
-
-    background: rgba(212, 175, 55, 0.07);
-    color: var(--gold-light);
-
-    font-size: 17px;
-}
-
-.metric-content {
-    min-width: 0;
-
-    display: flex;
-    flex-direction: column;
-}
-
-.metric-content > span {
-    color: var(--text-muted);
-    font-size: 10px;
-}
-
-.metric-content > strong {
-    margin-top: 2px;
-
-    font-size: 25px;
-    font-weight: 600;
-
-    color: var(--text);
-
+#notificationCount,
+#sidebarNotificationCount {
     font-variant-numeric: tabular-nums;
 }
 
-.metric-content > small {
-    margin-top: 2px;
+/* =========================================================
+   9. TÍTULO DA PÁGINA
+   ========================================================= */
 
-    color: #64615a;
-    font-size: 9px;
+.page-overline,
+.overline {
+    color: #ae9562;
+    font-size: 0.67rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
 }
 
-.metric-warning .metric-icon {
-    background: var(--yellow-soft);
-    color: var(--yellow);
+h1,
+.page-title {
+    margin: 0;
+    color: #f4eee3;
+    font-family: "Cinzel", serif;
+    font-weight: 500;
+    letter-spacing: 0.015em;
+}
+
+.page-subtitle {
+    color: #928a7b;
 }
 
 /* =========================================================
-   FINANCIAL METRICS
-========================================================= */
+   10. BOTÕES
+   ========================================================= */
 
-.financial-metrics {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-
-    gap: 14px;
-    margin-bottom: 22px;
+#refreshProducts,
+#addProductButton,
+#searchProductButton,
+#focusBarcode,
+#openProductCamera,
+#saveProductButton,
+#cancelProduct,
+#viewEditButton,
+#viewCloseButton,
+#closeProductModal,
+#closeCameraModal,
+#closeViewModal,
+#closeCamera,
+#toggleFlash,
+#closeToast {
+    transition:
+        transform 0.18s ease,
+        border-color 0.18s ease,
+        background 0.18s ease,
+        box-shadow 0.18s ease,
+        color 0.18s ease;
 }
 
-.financial-card {
-    min-height: 100px;
-
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    gap: 20px;
-
-    padding: 18px 20px;
-
-    border: 1px solid var(--empire-border-light);
-    border-radius: var(--radius);
-
+#addProductButton,
+#saveProductButton {
     background:
         linear-gradient(
             135deg,
-            rgba(255, 255, 255, 0.025),
-            rgba(212, 175, 55, 0.025)
-        ),
-        var(--empire-panel);
+            #d6b15f,
+            #a67d2d
+        );
+    border: 1px solid rgba(241, 213, 139, 0.38);
+    color: #090806;
+    font-weight: 700;
+    box-shadow:
+        0 10px 28px rgba(174, 130, 42, 0.17),
+        inset 0 1px rgba(255, 255, 255, 0.30);
 }
 
-.financial-card > div {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
+#addProductButton:hover,
+#saveProductButton:hover {
+    transform: translateY(-1px);
+    box-shadow:
+        0 14px 34px rgba(174, 130, 42, 0.25),
+        inset 0 1px rgba(255, 255, 255, 0.35);
 }
 
-.financial-card span {
-    color: var(--text-muted);
-    font-size: 10px;
+#refreshProducts,
+#searchProductButton,
+#focusBarcode,
+#openProductCamera,
+#toggleFlash,
+#cancelProduct,
+#viewCloseButton {
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    background: rgba(255, 255, 255, 0.035);
+    color: #d7d0c2;
 }
 
-.financial-card strong {
-    color: var(--text);
-    font-size: 19px;
-    font-weight: 600;
-    font-variant-numeric: tabular-nums;
+#refreshProducts:hover,
+#searchProductButton:hover,
+#focusBarcode:hover,
+#openProductCamera:hover,
+#toggleFlash:hover,
+#cancelProduct:hover,
+#viewCloseButton:hover {
+    border-color: rgba(199, 162, 78, 0.30);
+    background: rgba(199, 162, 78, 0.07);
+    color: #d8b967;
 }
 
-.financial-card > i {
-    color: var(--gold);
-    font-size: 20px;
+#refreshProducts:active,
+#addProductButton:active,
+#saveProductButton:active,
+#searchProductButton:active,
+#focusBarcode:active {
+    transform: scale(0.98);
 }
 
 /* =========================================================
-   PRODUCTS PANEL
-========================================================= */
+   11. MÉTRICAS
+   ========================================================= */
 
-.products-panel,
-.analysis-card {
-    border: 1px solid var(--empire-border-light);
-    border-radius: var(--radius);
-
-    background: var(--empire-panel);
-
-    box-shadow: var(--shadow-small);
-}
-
-.products-panel {
+.metric-card,
+.metrics-card,
+.dashboard-card {
+    position: relative;
     overflow: hidden;
 }
 
-.panel-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    gap: 20px;
-
-    padding: 22px 22px 18px;
-
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.panel-title {
-    display: flex;
-    flex-direction: column;
-}
-
-.panel-title h2,
-.analysis-header h2 {
-    margin: 4px 0;
-
-    font-family: "Cinzel", serif;
-    font-size: 17px;
-    font-weight: 600;
-
-    color: var(--text);
-}
-
-.panel-title > span:last-child {
-    color: var(--text-muted);
-    font-size: 10px;
-}
-
-.panel-actions {
-    display: flex;
-    gap: 8px;
-}
-
-.panel-action-button {
-    height: 38px;
-
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-
-    padding: 0 12px;
-
-    border: 1px solid var(--empire-border-light);
-    border-radius: 9px;
-
-    background: rgba(255, 255, 255, 0.025);
-
-    color: var(--text-soft);
-    font-size: 10px;
-}
-
-.panel-action-button:hover {
-    color: var(--gold-light);
-    border-color: rgba(212, 175, 55, 0.25);
-}
-
-/* =========================================================
-   FILTERS
-========================================================= */
-
-.products-filters {
-    display: grid;
-
-    grid-template-columns: minmax(240px, 1fr) 190px 190px auto;
-
-    gap: 10px;
-
-    padding: 16px 20px;
-
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.search-box {
-    position: relative;
-}
-
-.search-box > i {
+.metric-card::before,
+.metrics-card::before,
+.dashboard-card::before {
+    content: "";
     position: absolute;
-    left: 14px;
-    top: 50%;
-
-    transform: translateY(-50%);
-
-    color: var(--text-muted);
-    font-size: 12px;
-
+    top: 0;
+    left: 18px;
+    right: 18px;
+    height: 1px;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(201, 164, 78, 0.25),
+        transparent
+    );
     pointer-events: none;
 }
 
-.search-box input,
-.filter-box select {
-    width: 100%;
+#totalProducts,
+#totalStock,
+#totalCategories,
+#lowStock,
+#stockValue,
+#costValue,
+#profitValue {
+    font-variant-numeric: tabular-nums;
+}
+
+#profitValue {
+    color: #d6b765;
+}
+
+/* =========================================================
+   12. ÁREA DE PRODUTOS
+   ========================================================= */
+
+.products-panel,
+.products-section,
+.table-panel,
+.panel {
+    position: relative;
+    min-width: 0;
+    border: 1px solid rgba(255, 255, 255, 0.065);
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255, 255, 255, 0.045),
+            rgba(255, 255, 255, 0.018)
+        );
+    border-radius: 16px;
+    box-shadow:
+        0 20px 60px rgba(0, 0, 0, 0.18),
+        inset 0 1px rgba(255, 255, 255, 0.035);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+}
+
+/* =========================================================
+   13. PESQUISA / FILTROS
+   ========================================================= */
+
+#productSearch,
+#categoryFilter,
+#productSort {
     height: 42px;
-
+    border: 1px solid rgba(255, 255, 255, 0.085);
+    border-radius: 9px;
     outline: none;
-
-    border: 1px solid var(--empire-border-light);
-    border-radius: 10px;
-
-    background: rgba(0, 0, 0, 0.22);
-    color: var(--text);
-
-    font-size: 11px;
-
-    transition: border-color 0.2s ease;
+    background:
+        linear-gradient(
+            135deg,
+            rgba(255, 255, 255, 0.045),
+            rgba(255, 255, 255, 0.018)
+        );
+    color: #eee8dc;
+    box-shadow: inset 0 1px rgba(255, 255, 255, 0.02);
+    transition:
+        border-color 0.2s ease,
+        background 0.2s ease,
+        box-shadow 0.2s ease;
 }
 
-.search-box input {
-    padding: 0 14px 0 38px;
+#productSearch {
+    min-width: 220px;
 }
 
-.filter-box {
-    display: flex;
-    align-items: center;
-
-    position: relative;
+#productSearch::placeholder {
+    color: #716c63;
 }
 
-.filter-box label {
-    position: absolute;
-
-    left: 11px;
-    top: 3px;
-
-    z-index: 1;
-
-    color: #666159;
-    font-size: 7px;
-
-    pointer-events: none;
+#productSearch:focus,
+#categoryFilter:focus,
+#productSort:focus {
+    border-color: rgba(201, 164, 78, 0.45);
+    background: rgba(255, 255, 255, 0.05);
+    box-shadow: 0 0 0 3px rgba(201, 164, 78, 0.06);
 }
 
-.filter-box select {
-    padding: 7px 30px 0 11px;
-    cursor: pointer;
-}
-
-.search-box input:focus,
-.filter-box select:focus {
-    border-color: rgba(212, 175, 55, 0.42);
-}
-
-.filter-search-button {
-    min-height: 42px;
-
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-
-    padding: 0 16px;
-
-    border: 1px solid rgba(212, 175, 55, 0.25);
-    border-radius: 10px;
-
-    background: rgba(212, 175, 55, 0.07);
-    color: var(--gold-light);
-
-    font-size: 10px;
-}
-
-.filter-search-button:hover {
-    background: rgba(212, 175, 55, 0.12);
+#categoryFilter option,
+#productSort option {
+    background: #111;
+    color: #f2ede3;
 }
 
 /* =========================================================
-   TABLE
-========================================================= */
+   14. TABELA DE PRODUTOS
+   ========================================================= */
 
+.products-table-wrapper,
 .table-wrapper {
     width: 100%;
     overflow-x: auto;
@@ -804,1787 +609,1163 @@
 
 .products-table {
     width: 100%;
-    min-width: 980px;
-
-    border-collapse: collapse;
+    min-width: 920px;
+    border-collapse: separate;
+    border-spacing: 0;
 }
 
-.products-table th {
+.products-table thead th {
+    position: sticky;
+    top: 0;
+    z-index: 2;
     padding: 13px 14px;
-
-    text-align: left;
-
-    color: #706c64;
-
-    font-size: 9px;
+    border-bottom: 1px solid rgba(201, 164, 78, 0.12);
+    background: rgba(9, 9, 9, 0.94);
+    color: #9d917b;
+    font-size: 0.64rem;
     font-weight: 600;
-
+    letter-spacing: 0.09em;
+    text-align: left;
     text-transform: uppercase;
-    letter-spacing: 0.1em;
-
     white-space: nowrap;
-
-    background: rgba(255, 255, 255, 0.012);
 }
 
-.products-table td {
-    padding: 12px 14px;
-
-    border-top: 1px solid rgba(255, 255, 255, 0.045);
-
-    color: var(--text-soft);
-
-    font-size: 11px;
-
-    vertical-align: middle;
+.products-table thead th:first-child {
+    padding-left: 18px;
 }
 
 .products-table tbody tr {
-    transition: background 0.18s ease;
+    position: relative;
+    transition:
+        background 0.18s ease,
+        transform 0.18s ease;
 }
 
 .products-table tbody tr:hover {
-    background: rgba(212, 175, 55, 0.025);
+    background:
+        linear-gradient(
+            90deg,
+            rgba(201, 164, 78, 0.045),
+            rgba(255, 255, 255, 0.018),
+            rgba(201, 164, 78, 0.025)
+        );
+}
+
+.products-table tbody td {
+    padding: 12px 14px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.045);
+    color: #d8d1c4;
+    font-size: 0.77rem;
+    vertical-align: middle;
+    white-space: nowrap;
+}
+
+.products-table tbody tr:last-child td {
+    border-bottom: 0;
+}
+
+.products-table tbody td:first-child {
+    padding-left: 18px;
 }
 
 /* =========================================================
-   PRODUCT CELL
-========================================================= */
-
-.product-cell {
-    display: flex;
-    align-items: center;
-
-    gap: 11px;
-
-    min-width: 200px;
-}
+   15. MINIATURA DO PRODUTO
+   ========================================================= */
 
 .product-thumb {
-    width: 42px;
-    height: 42px;
+    width: 42px !important;
+    height: 42px !important;
+    min-width: 42px !important;
+    max-width: 42px !important;
+    min-height: 42px !important;
+    max-height: 42px !important;
 
+    overflow: hidden;
     flex: 0 0 42px;
 
     display: flex;
     align-items: center;
     justify-content: center;
 
-    overflow: hidden;
-
     border-radius: 9px;
-
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(201, 164, 78, 0.15);
 
     background:
-        linear-gradient(
-            135deg,
-            rgba(212, 175, 55, 0.05),
-            rgba(255, 255, 255, 0.025)
+        radial-gradient(
+            circle at center,
+            rgba(255, 255, 255, 0.055),
+            rgba(255, 255, 255, 0.018)
         );
+
+    box-shadow:
+        0 6px 16px rgba(0, 0, 0, 0.20),
+        inset 0 1px rgba(255, 255, 255, 0.035);
 }
 
 .product-thumb img {
-    width: 100%;
-    height: 100%;
-
-    display: block;
-
-    object-fit: contain;
-
-    padding: 3px;
+    width: 100% !important;
+    height: 100% !important;
+    max-width: 100% !important;
+    max-height: 100% !important;
+    object-fit: contain !important;
+    object-position: center;
 }
 
-.product-thumb-placeholder {
-    color: #57534d;
-    font-size: 14px;
-}
-
-.product-cell-info {
-    min-width: 0;
-
-    display: flex;
-    flex-direction: column;
-}
-
-.product-cell-info strong {
-    max-width: 230px;
-
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-
-    color: var(--text);
-    font-size: 11px;
-    font-weight: 600;
-}
-
-.product-cell-info span {
-    margin-top: 2px;
-
-    color: #625f58;
-    font-size: 9px;
+.product-thumb.empty,
+.product-thumb.no-image {
+    color: #625b50;
+    font-size: 0.72rem;
 }
 
 /* =========================================================
-   BARCODE / SKU
-========================================================= */
+   16. INFORMAÇÕES DO PRODUTO
+   ========================================================= */
 
-.barcode-cell {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-
-    white-space: nowrap;
-}
-
-.barcode-cell strong {
-    color: var(--text-soft);
-    font-family: monospace;
-    font-size: 10px;
-}
-
-.barcode-cell small {
-    color: #55524c;
-    font-size: 8px;
-}
-
-/* =========================================================
-   PRICE
-========================================================= */
-
-.price-cell {
-    color: var(--text);
+.product-name,
+.product-title {
+    color: #f0eade;
     font-weight: 600;
+}
+
+.product-code,
+.product-sku,
+.barcode-text {
+    color: #a79b86;
+    font-family: "Poppins", sans-serif;
+    font-size: 0.68rem;
+    letter-spacing: 0.025em;
+}
+
+.product-category {
+    color: #b7a27a;
+}
+
+.product-price {
+    color: #ded3bf;
     font-variant-numeric: tabular-nums;
-    white-space: nowrap;
 }
 
-.cost-cell {
-    color: #aaa59b;
+.product-stock {
+    color: #e1d8c9;
     font-variant-numeric: tabular-nums;
-    white-space: nowrap;
 }
 
 /* =========================================================
-   STOCK
-========================================================= */
+   17. BADGES / STATUS
+   ========================================================= */
 
-.stock-cell {
-    display: flex;
-    align-items: center;
-    gap: 7px;
-
-    white-space: nowrap;
-}
-
-.stock-number {
-    min-width: 24px;
-
-    color: var(--text);
-    font-weight: 600;
-}
-
-.stock-pill {
+.status-badge,
+.stock-status,
+.badge {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-
-    min-width: 58px;
-
-    padding: 4px 7px;
-
+    min-height: 25px;
+    padding: 4px 9px;
     border-radius: 999px;
-
-    font-size: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    font-size: 0.62rem;
     font-weight: 600;
+    letter-spacing: 0.025em;
 }
 
-.stock-pill.stock-good {
-    background: var(--green-soft);
-    color: var(--green);
-}
-
-.stock-pill.stock-medium {
-    background: var(--yellow-soft);
-    color: var(--yellow);
-}
-
-.stock-pill.stock-low {
-    background: var(--red-soft);
-    color: var(--red);
-}
-
-.stock-pill.stock-zero {
-    background: rgba(255, 255, 255, 0.06);
-    color: #88847c;
-}
-
-/* =========================================================
-   STATUS
-========================================================= */
-
-.status-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-
-    padding: 5px 8px;
-
-    border-radius: 999px;
-
-    font-size: 8px;
-    font-weight: 600;
-}
-
-.status-badge::before {
+.status-badge::before,
+.stock-status::before,
+.badge::before {
     content: "";
-
     width: 5px;
     height: 5px;
-
+    margin-right: 6px;
     border-radius: 50%;
-
     background: currentColor;
+    box-shadow: 0 0 7px currentColor;
 }
 
-.status-active {
-    color: var(--green);
-    background: var(--green-soft);
+.status-active,
+.stock-good,
+.status-good,
+.badge-success {
+    color: #87c596;
+    background: rgba(70, 157, 93, 0.09);
+    border-color: rgba(87, 174, 108, 0.17);
 }
 
-.status-low {
-    color: var(--yellow);
-    background: var(--yellow-soft);
+.status-warning,
+.stock-medium,
+.status-medium,
+.badge-warning {
+    color: #d7b55f;
+    background: rgba(197, 159, 66, 0.09);
+    border-color: rgba(197, 159, 66, 0.17);
 }
 
-.status-out {
-    color: var(--red);
-    background: var(--red-soft);
+.status-danger,
+.stock-low,
+.status-low,
+.badge-danger {
+    color: #dc8c82;
+    background: rgba(177, 72, 61, 0.09);
+    border-color: rgba(177, 72, 61, 0.17);
 }
 
-.status-inactive {
-    color: #85817a;
-    background: rgba(255, 255, 255, 0.05);
+.status-inactive,
+.badge-muted {
+    color: #858078;
+    background: rgba(255, 255, 255, 0.035);
 }
 
 /* =========================================================
-   ACTIONS
-========================================================= */
+   18. AÇÕES DA TABELA
+   ========================================================= */
 
 .product-actions {
     display: flex;
     align-items: center;
-    gap: 5px;
+    gap: 6px;
 }
 
-.product-action {
-    width: 32px;
-    height: 32px;
-
+.product-actions button,
+.table-action,
+.action-button {
+    width: 31px;
+    height: 31px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-
-    border: 1px solid rgba(255, 255, 255, 0.07);
+    padding: 0;
+    border: 1px solid rgba(255, 255, 255, 0.075);
     border-radius: 8px;
-
     background: rgba(255, 255, 255, 0.025);
-
-    color: #8b877f;
-
-    cursor: pointer;
-
+    color: #aaa092;
     transition:
-        color 0.2s ease,
-        border-color 0.2s ease,
-        background 0.2s ease;
+        color 0.18s ease,
+        border-color 0.18s ease,
+        background 0.18s ease,
+        transform 0.18s ease;
 }
 
-.product-action:hover {
-    color: var(--gold-light);
-    border-color: rgba(212, 175, 55, 0.3);
-    background: rgba(212, 175, 55, 0.06);
-}
-
-.product-action.danger:hover {
-    color: var(--red);
-    border-color: rgba(248, 113, 113, 0.25);
-    background: var(--red-soft);
-}
-
-/* =========================================================
-   EMPTY STATES
-========================================================= */
-
-.products-empty {
-    min-height: 280px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-
-    padding: 40px 20px;
-
-    text-align: center;
-}
-
-.empty-icon {
-    width: 58px;
-    height: 58px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    margin-bottom: 15px;
-
-    border: 1px solid rgba(212, 175, 55, 0.14);
-    border-radius: 16px;
-
-    background: rgba(212, 175, 55, 0.05);
-
-    color: var(--gold);
-    font-size: 20px;
-}
-
-.products-empty h3 {
-    margin: 0 0 6px;
-
-    color: var(--text);
-    font-size: 14px;
-    font-weight: 600;
-}
-
-.products-empty p {
-    max-width: 430px;
-
-    margin: 0 0 18px;
-
-    color: var(--text-muted);
-    font-size: 10px;
-    line-height: 1.7;
+.product-actions button:hover,
+.table-action:hover,
+.action-button:hover {
+    color: #d5b361;
+    border-color: rgba(201, 164, 78, 0.27);
+    background: rgba(201, 164, 78, 0.07);
+    transform: translateY(-1px);
 }
 
 /* =========================================================
-   TABLE FOOTER
-========================================================= */
+   19. ESTADOS VAZIOS
+   ========================================================= */
 
-.table-footer {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    gap: 20px;
-
-    padding: 13px 20px;
-
-    border-top: 1px solid rgba(255, 255, 255, 0.045);
-
-    color: #5f5c55;
-    font-size: 9px;
+#productsEmpty,
+#productsNoResults,
+#chartEmpty {
+    color: #777166;
 }
 
-.stock-progress-wrapper {
-    display: flex;
-    align-items: center;
-    gap: 9px;
+#productsEmpty h3,
+#productsNoResults h3 {
+    color: #cfc6b7;
+    font-family: "Cinzel", serif;
+    font-weight: 500;
 }
 
-.stock-progress {
-    width: 100px;
-    height: 5px;
+#productsEmpty p,
+#productsNoResults p {
+    color: #777166;
+}
 
+#emptyAddProduct {
+    color: #d4b35f;
+    transition: 0.2s ease;
+}
+
+#emptyAddProduct:hover {
+    color: #e8cc82;
+}
+
+/* =========================================================
+   20. BARRA DE PROGRESSO DO ESTOQUE
+   ========================================================= */
+
+#stockProgress {
+    position: relative;
     overflow: hidden;
-
+    height: 7px;
     border-radius: 999px;
-
     background: rgba(255, 255, 255, 0.06);
+    box-shadow: inset 0 1px rgba(0, 0, 0, 0.3);
 }
 
-.stock-progress > span {
+#stockProgress span {
     display: block;
-
     width: 0;
     height: 100%;
-
     border-radius: inherit;
-
-    background: linear-gradient(
-        90deg,
-        var(--gold-dark),
-        var(--gold-light)
-    );
-
-    transition: width 0.5s ease;
+    background:
+        linear-gradient(
+            90deg,
+            #806325,
+            #c6a252,
+            #ddc278
+        );
+    box-shadow: 0 0 14px rgba(201, 164, 78, 0.20);
+    transition: width 0.7s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 /* =========================================================
-   ANALYSIS
-========================================================= */
+   21. GRÁFICO DE CATEGORIAS / ESTOQUE
+   ========================================================= */
 
-.analysis-grid {
-    display: grid;
-    grid-template-columns: minmax(0, 1.55fr) minmax(320px, 0.8fr);
-
-    gap: 14px;
-
-    margin-top: 14px;
-}
-
-.analysis-card {
-    padding: 21px;
-}
-
-.analysis-header {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-
-    gap: 20px;
-
-    margin-bottom: 22px;
-}
-
-.analysis-header strong {
-    color: var(--gold-light);
-
-    font-size: 20px;
-    font-weight: 600;
-
-    font-variant-numeric: tabular-nums;
-}
-
-/* =========================================================
-   CATEGORY CHART
-========================================================= */
-
-.category-chart {
+#categoryChart {
+    width: 100%;
     display: flex;
     flex-direction: column;
     gap: 13px;
 }
 
 .chart-row {
+    width: 100%;
     display: grid;
-
-    grid-template-columns: minmax(90px, 150px) minmax(100px, 1fr) 50px;
-
+    grid-template-columns: minmax(105px, 0.35fr) minmax(140px, 1fr) 45px;
     align-items: center;
-
     gap: 12px;
 }
 
 .chart-label {
+    min-width: 0;
     overflow: hidden;
-
-    color: var(--text-soft);
-
-    font-size: 9px;
-
+    color: #bcb2a2;
+    font-size: 0.67rem;
+    font-weight: 500;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
 
 .chart-track {
     position: relative;
-
-    height: 10px;
-
+    width: 100%;
+    height: 9px;
     overflow: hidden;
-
     border-radius: 999px;
-
-    background: rgba(255, 255, 255, 0.055);
+    background:
+        linear-gradient(
+            90deg,
+            rgba(255, 255, 255, 0.035),
+            rgba(255, 255, 255, 0.065)
+        );
+    box-shadow: inset 0 1px rgba(0, 0, 0, 0.28);
 }
 
 .chart-fill {
     width: 0;
     height: 100%;
-
     border-radius: inherit;
-
-    transition: width 0.65s ease;
+    transition:
+        width 0.8s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .chart-fill.stock-green {
-    background: linear-gradient(
-        90deg,
-        rgba(74, 222, 128, 0.45),
-        var(--green)
-    );
+    background: linear-gradient(90deg, #3c8151, #78bd83);
+    box-shadow: 0 0 12px rgba(96, 176, 111, 0.18);
 }
 
 .chart-fill.stock-yellow {
-    background: linear-gradient(
-        90deg,
-        rgba(250, 204, 21, 0.45),
-        var(--yellow)
-    );
+    background: linear-gradient(90deg, #a27725, #d5b254);
+    box-shadow: 0 0 12px rgba(211, 174, 76, 0.18);
 }
 
 .chart-fill.stock-red {
-    background: linear-gradient(
-        90deg,
-        rgba(248, 113, 113, 0.45),
-        var(--red)
-    );
+    background: linear-gradient(90deg, #873f39, #cb7067);
+    box-shadow: 0 0 12px rgba(203, 112, 103, 0.17);
 }
 
 .chart-value {
+    color: #ded5c6;
+    font-size: 0.67rem;
+    font-weight: 600;
     text-align: right;
-
-    color: var(--text);
-
-    font-size: 9px;
-    font-weight: 600;
-}
-
-.chart-empty {
-    min-height: 150px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-
-    gap: 8px;
-
-    color: #5d5a54;
-    font-size: 10px;
-}
-
-.chart-empty i {
-    color: #6e685e;
-    font-size: 18px;
+    font-variant-numeric: tabular-nums;
 }
 
 /* =========================================================
-   STOCK INSIGHT
-========================================================= */
+   22. INSIGHT DE ESTOQUE
+   ========================================================= */
 
-.stock-insight {
-    display: flex;
-    align-items: flex-start;
-
-    gap: 16px;
-}
-
-.insight-icon {
-    width: 44px;
-    height: 44px;
-
-    flex: 0 0 44px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    border-radius: 13px;
-
-    background: rgba(212, 175, 55, 0.08);
-    border: 1px solid rgba(212, 175, 55, 0.14);
-
-    color: var(--gold-light);
-}
-
-.insight-content {
-    min-width: 0;
-}
-
-.insight-content h2 {
-    margin: 4px 0 10px;
-
+#stockInsightTitle {
+    color: #d8b968;
     font-family: "Cinzel", serif;
-    font-size: 16px;
-    font-weight: 600;
-
-    color: var(--text);
+    font-size: 0.92rem;
+    font-weight: 500;
 }
 
-.insight-content p {
-    margin: 0;
-
-    color: var(--text-muted);
-
-    font-size: 11px;
-    line-height: 1.8;
+#stockInsightText {
+    color: #91897d;
+    font-size: 0.73rem;
+    line-height: 1.65;
 }
 
 /* =========================================================
-   MODAL BASE
-========================================================= */
-
-.modal {
-    position: fixed;
-    inset: 0;
-
-    z-index: 5000;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    padding: 24px;
-
-    opacity: 0;
-    visibility: hidden;
-
-    pointer-events: none;
-
-    transition:
-        opacity 0.22s ease,
-        visibility 0.22s ease;
-}
-
-.modal.open {
-    opacity: 1;
-    visibility: visible;
-    pointer-events: auto;
-}
+   23. MODAIS — BASE
+   ========================================================= */
 
 .modal[hidden] {
     display: none !important;
 }
 
-.modal-backdrop {
-    position: absolute;
+.modal {
+    position: fixed;
     inset: 0;
-
-    background: rgba(0, 0, 0, 0.78);
-
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-}
-
-.modal-dialog {
-    position: relative;
-    z-index: 2;
-
-    width: min(100%, 900px);
-    max-height: calc(100vh - 48px);
-
-    overflow: auto;
-
-    border: 1px solid rgba(212, 175, 55, 0.18);
-    border-radius: 20px;
-
+    z-index: 5000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
     background:
-        linear-gradient(
-            145deg,
-            rgba(27, 27, 27, 0.98),
-            rgba(9, 9, 9, 0.99)
-        );
-
-    box-shadow: var(--shadow);
-
-    transform: translateY(12px) scale(0.985);
-
-    transition: transform 0.22s ease;
+        radial-gradient(
+            circle at center,
+            rgba(201, 164, 78, 0.035),
+            rgba(0, 0, 0, 0.82) 48%
+        ),
+        rgba(0, 0, 0, 0.76);
+    backdrop-filter: blur(9px);
+    -webkit-backdrop-filter: blur(9px);
+    opacity: 1;
 }
 
-.modal.open .modal-dialog {
-    transform: translateY(0) scale(1);
+.modal:not(.open) {
+    /* JS pode controlar somente hidden; esta regra não força fechamento. */
 }
 
-.modal-header,
-.camera-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-
-    gap: 20px;
-
-    padding: 23px 24px 20px;
-
-    border-bottom: 1px solid rgba(255, 255, 255, 0.055);
+.modal.open {
+    animation: modalFadeIn 0.2s ease both;
 }
 
-.modal-header h2,
-.camera-header h2 {
-    margin: 4px 0 5px;
-
-    font-family: "Cinzel", serif;
-    font-size: 21px;
-    font-weight: 600;
-
-    color: var(--text);
-}
-
-.modal-header p,
-.camera-header p {
-    margin: 0;
-
-    color: var(--text-muted);
-    font-size: 10px;
-}
-
-.modal-close {
-    width: 36px;
-    height: 36px;
-
-    flex: 0 0 36px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    border: 1px solid rgba(255, 255, 255, 0.07);
-    border-radius: 9px;
-
-    background: rgba(255, 255, 255, 0.025);
-
-    color: #88847d;
-
-    cursor: pointer;
-
-    transition:
-        color 0.2s ease,
-        border-color 0.2s ease;
-}
-
-.modal-close:hover {
-    color: var(--gold-light);
-    border-color: rgba(212, 175, 55, 0.28);
-}
-
-/* =========================================================
-   PRODUCT FORM
-========================================================= */
-
-.product-modal-dialog {
-    width: min(100%, 960px);
-}
-
-#productForm {
-    padding: 22px 24px 24px;
-}
-
-.form-layout {
-    display: grid;
-
-    grid-template-columns: 1fr 1fr;
-
-    gap: 30px;
-}
-
-.form-section {
-    min-width: 0;
-}
-
-.form-section-title {
-    display: flex;
-    flex-direction: column;
-
-    gap: 2px;
-
-    padding-bottom: 13px;
-    margin-bottom: 16px;
-
-    border-bottom: 1px solid rgba(255, 255, 255, 0.055);
-}
-
-.form-section-title span {
-    color: var(--text);
-    font-size: 12px;
-    font-weight: 600;
-}
-
-.form-section-title small {
-    color: var(--text-muted);
-    font-size: 9px;
-}
-
-.form-group {
-    margin-bottom: 15px;
-}
-
-.form-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-}
-
-.form-group label {
-    display: block;
-
-    margin-bottom: 6px;
-
-    color: #a8a39a;
-
-    font-size: 9px;
-    font-weight: 500;
-}
-
-.form-group input,
-.form-group select {
-    width: 100%;
-    height: 43px;
-
-    padding: 0 12px;
-
-    outline: none;
-
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 10px;
-
-    background: rgba(0, 0, 0, 0.25);
-
-    color: var(--text);
-
-    font-size: 11px;
-
-    transition:
-        border-color 0.2s ease,
-        box-shadow 0.2s ease;
-}
-
-.form-group input:focus,
-.form-group select:focus {
-    border-color: rgba(212, 175, 55, 0.42);
-
-    box-shadow:
-        0 0 0 3px rgba(212, 175, 55, 0.05);
-}
-
-.form-group input::placeholder {
-    color: #55514a;
-}
-
-.field-help {
-    display: block;
-
-    margin-top: 5px;
-
-    color: #5e5a53;
-
-    font-size: 8px;
-    line-height: 1.5;
-}
-
-/* =========================================================
-   BARCODE FORM INPUT
-========================================================= */
-
-.input-with-button {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
-    gap: 7px;
-}
-
-.input-icon {
-    position: relative;
-}
-
-.input-icon > i {
-    position: absolute;
-
-    left: 13px;
-    top: 50%;
-
-    transform: translateY(-50%);
-
-    color: var(--gold);
-
-    font-size: 13px;
-
-    pointer-events: none;
-}
-
-.input-icon input {
-    padding-left: 37px;
-}
-
-.camera-input-button {
-    min-width: 90px;
-
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-
-    gap: 7px;
-
-    border: 1px solid rgba(212, 175, 55, 0.2);
-    border-radius: 10px;
-
-    background: rgba(212, 175, 55, 0.055);
-
-    color: var(--gold-light);
-
-    font-size: 9px;
-}
-
-.camera-input-button:hover {
-    background: rgba(212, 175, 55, 0.1);
-}
-
-/* =========================================================
-   CURRENCY
-========================================================= */
-
-.currency-input {
-    position: relative;
-}
-
-.currency-input > span {
-    position: absolute;
-
-    left: 12px;
-    top: 50%;
-
-    transform: translateY(-50%);
-
-    color: var(--gold);
-
-    font-size: 10px;
-    font-weight: 600;
-
-    pointer-events: none;
-}
-
-.currency-input input {
-    padding-left: 36px;
-}
-
-/* =========================================================
-   IMAGE UPLOAD
-========================================================= */
-
-.image-upload-area {
-    display: flex;
-    flex-direction: column;
-    gap: 9px;
-}
-
-.image-upload-button {
-    min-height: 42px;
-
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-
-    gap: 8px;
-
-    border: 1px dashed rgba(212, 175, 55, 0.22);
-    border-radius: 10px;
-
-    background: rgba(212, 175, 55, 0.035);
-
-    color: var(--gold-light);
-
-    font-size: 9px;
-
-    cursor: pointer;
-
-    transition:
-        border-color 0.2s ease,
-        background 0.2s ease;
-}
-
-.image-upload-button:hover {
-    border-color: rgba(212, 175, 55, 0.42);
-    background: rgba(212, 175, 55, 0.06);
-}
-
-.image-preview {
-    width: 100%;
-    height: 170px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    overflow: hidden;
-
-    border: 1px solid rgba(255, 255, 255, 0.07);
-    border-radius: 11px;
-
-    background: rgba(0, 0, 0, 0.24);
-}
-
-.image-preview img {
-    width: 100%;
-    height: 100%;
-
-    display: block;
-
-    object-fit: contain;
-
-    padding: 8px;
-}
-
-.image-preview-placeholder {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-
-    gap: 8px;
-
-    color: #55514a;
-
-    font-size: 9px;
-}
-
-.image-preview-placeholder i {
-    font-size: 22px;
-}
-
-/* =========================================================
-   FORM MESSAGE
-========================================================= */
-
-.form-message {
-    margin: 0 24px 15px;
-
-    padding: 10px 12px;
-
-    border-radius: 9px;
-
-    font-size: 9px;
-    line-height: 1.6;
-}
-
-.form-message.success {
-    border: 1px solid rgba(74, 222, 128, 0.16);
-    background: var(--green-soft);
-    color: var(--green);
-}
-
-.form-message.error {
-    border: 1px solid rgba(248, 113, 113, 0.16);
-    background: var(--red-soft);
-    color: var(--red);
-}
-
-.form-message.warning {
-    border: 1px solid rgba(250, 204, 21, 0.16);
-    background: var(--yellow-soft);
-    color: var(--yellow);
-}
-
-.modal-footer {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-
-    gap: 9px;
-
-    padding: 17px 24px;
-
-    border-top: 1px solid rgba(255, 255, 255, 0.055);
-}
-
-/* =========================================================
-   CAMERA MODAL
-========================================================= */
-
-.camera-dialog {
-    width: min(100%, 620px);
-}
-
-.camera-content {
-    padding: 20px;
-}
-
-.camera-preview {
-    position: relative;
-
-    width: 100%;
-
-    min-height: 330px;
-
-    overflow: hidden;
-
-    border: 1px solid rgba(212, 175, 55, 0.17);
-    border-radius: 15px;
-
-    background: #000;
-}
-
-.camera-preview video {
-    width: 100%;
-    height: 420px;
-
-    display: block;
-
-    object-fit: cover;
-
-    background: #000;
-}
-
-.barcode-scan-frame {
-    position: absolute;
-
-    left: 12%;
-    right: 12%;
-
-    top: 30%;
-    bottom: 30%;
-
-    border-radius: 8px;
-
-    pointer-events: none;
-}
-
-.scan-corner {
-    position: absolute;
-
-    width: 30px;
-    height: 30px;
-
-    border-color: var(--gold-light);
-    border-style: solid;
-}
-
-.scan-corner.top-left {
-    left: 0;
-    top: 0;
-
-    border-width: 2px 0 0 2px;
-}
-
-.scan-corner.top-right {
-    right: 0;
-    top: 0;
-
-    border-width: 2px 2px 0 0;
-}
-
-.scan-corner.bottom-left {
-    left: 0;
-    bottom: 0;
-
-    border-width: 0 0 2px 2px;
-}
-
-.scan-corner.bottom-right {
-    right: 0;
-    bottom: 0;
-
-    border-width: 0 2px 2px 0;
-}
-
-.scan-line {
-    position: absolute;
-
-    left: 5%;
-    right: 5%;
-    top: 50%;
-
-    height: 1px;
-
-    background: var(--gold-light);
-
-    box-shadow:
-        0 0 8px rgba(212, 175, 55, 0.9);
-
-    animation: barcodeScan 1.8s ease-in-out infinite;
-}
-
-@keyframes barcodeScan {
-    0%,
-    100% {
-        transform: translateY(-65px);
-        opacity: 0.45;
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
     }
 
-    50% {
-        transform: translateY(65px);
+    to {
         opacity: 1;
     }
 }
 
-.camera-loading {
-    position: absolute;
-    inset: 0;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-
-    gap: 10px;
-
-    background: rgba(0, 0, 0, 0.62);
-
-    color: var(--text-soft);
-
-    font-size: 10px;
-}
-
-.camera-loading.hidden {
-    display: none;
-}
-
-.camera-status {
-    margin-top: 12px;
-
-    padding: 11px 12px;
-
-    border: 1px solid rgba(255, 255, 255, 0.06);
-    border-radius: 10px;
-
-    background: rgba(255, 255, 255, 0.025);
-
-    color: var(--text-muted);
-
-    text-align: center;
-
-    font-size: 10px;
-}
-
-.camera-status.success {
-    border-color: rgba(74, 222, 128, 0.18);
-    color: var(--green);
-    background: var(--green-soft);
-}
-
-.camera-status.error {
-    border-color: rgba(248, 113, 113, 0.18);
-    color: var(--red);
-    background: var(--red-soft);
-}
-
-.camera-controls {
-    display: flex;
-    justify-content: center;
-
-    gap: 8px;
-
-    margin-top: 12px;
-}
-
-.camera-control-button {
-    min-height: 40px;
-
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-
-    gap: 7px;
-
-    padding: 0 14px;
-
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 9px;
-
-    background: rgba(255, 255, 255, 0.03);
-
-    color: var(--text-soft);
-
-    font-size: 9px;
-}
-
-.camera-control-button:hover {
-    color: var(--gold-light);
-    border-color: rgba(212, 175, 55, 0.25);
-}
-
-.camera-control-button.active {
-    color: var(--gold-light);
-    border-color: rgba(212, 175, 55, 0.4);
-    background: rgba(212, 175, 55, 0.08);
-}
-
-.camera-close-button:hover {
-    color: var(--red);
-}
-
 /* =========================================================
-   VIEW PRODUCT
-========================================================= */
+   24. CONTEÚDO DOS MODAIS
+   ========================================================= */
 
-.view-modal-dialog {
-    width: min(100%, 900px);
-}
+.modal-content,
+.modal-container,
+.modal-dialog {
+    position: relative;
+    width: min(100%, 720px);
+    max-height: calc(100vh - 48px);
+    overflow: auto;
 
-.view-product-layout {
-    display: grid;
-
-    grid-template-columns: 260px minmax(0, 1fr);
-
-    gap: 25px;
-
-    padding: 24px;
-}
-
-.view-image {
-    width: 100%;
-    height: 300px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    overflow: hidden;
-
-    border: 1px solid rgba(255, 255, 255, 0.07);
-    border-radius: 15px;
+    border: 1px solid rgba(201, 164, 78, 0.14);
+    border-radius: 18px;
 
     background:
         radial-gradient(
-            circle at center,
-            rgba(212, 175, 55, 0.05),
-            transparent 60%
+            circle at 90% 0%,
+            rgba(201, 164, 78, 0.055),
+            transparent 30%
         ),
-        rgba(0, 0, 0, 0.25);
+        linear-gradient(
+            145deg,
+            rgba(22, 22, 22, 0.98),
+            rgba(9, 9, 9, 0.985)
+        );
+
+    box-shadow:
+        0 35px 100px rgba(0, 0, 0, 0.60),
+        inset 0 1px rgba(255, 255, 255, 0.04);
+
+    scrollbar-width: thin;
 }
 
-.view-image img {
-    width: 100%;
-    height: 100%;
-
-    object-fit: contain;
-
-    padding: 14px;
-}
-
-.view-image-placeholder {
-    color: #55514a;
-    font-size: 32px;
-}
-
-.view-product-main h3 {
-    margin: 2px 0 18px;
-
-    font-family: "Cinzel", serif;
-    font-size: 21px;
-    font-weight: 600;
-
-    color: var(--text);
-}
-
-.view-info-grid {
-    display: grid;
-
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-
-    gap: 9px;
-}
-
-.view-info-item {
-    min-height: 64px;
-
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-
-    gap: 4px;
-
-    padding: 11px 12px;
-
-    border: 1px solid rgba(255, 255, 255, 0.055);
-    border-radius: 10px;
-
-    background: rgba(255, 255, 255, 0.018);
-}
-
-.view-info-item span {
-    color: #656159;
-    font-size: 8px;
-}
-
-.view-info-item strong {
-    color: var(--text-soft);
-    font-size: 10px;
-    font-weight: 600;
-
-    overflow-wrap: anywhere;
+.modal-content::before,
+.modal-container::before,
+.modal-dialog::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 12%;
+    right: 12%;
+    height: 1px;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(205, 170, 84, 0.38),
+        transparent
+    );
 }
 
 /* =========================================================
-   TOAST
-========================================================= */
+   25. MODAL DE PRODUTO
+   ========================================================= */
 
-.toast {
-    position: fixed;
+#productModal .modal-content {
+    width: min(860px, 100%);
+}
 
-    right: 22px;
-    bottom: 22px;
+#modalOverline {
+    color: #ad9561;
+    font-size: 0.65rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+}
 
-    z-index: 10000;
+#modalTitle {
+    color: #f1eadf;
+    font-family: "Cinzel", serif;
+    font-weight: 500;
+}
 
-    width: min(390px, calc(100vw - 30px));
+/* =========================================================
+   26. FORMULÁRIO
+   ========================================================= */
 
-    display: flex;
-    align-items: center;
+#productForm {
+    width: 100%;
+}
 
-    gap: 11px;
+#productForm label,
+.form-label {
+    color: #9c9384;
+    font-size: 0.68rem;
+    font-weight: 500;
+}
 
-    padding: 13px;
-
-    border: 1px solid rgba(212, 175, 55, 0.2);
-    border-radius: 13px;
+#productForm input,
+#productForm select,
+#productForm textarea,
+.form-input,
+.form-select,
+.form-textarea {
+    width: 100%;
+    min-height: 43px;
+    border: 1px solid rgba(255, 255, 255, 0.085);
+    border-radius: 9px;
+    outline: none;
+    padding: 10px 12px;
 
     background:
         linear-gradient(
             135deg,
-            rgba(30, 30, 30, 0.98),
-            rgba(8, 8, 8, 0.98)
+            rgba(255, 255, 255, 0.045),
+            rgba(255, 255, 255, 0.018)
         );
 
-    box-shadow: var(--shadow);
-
-    transform: translateY(20px);
-    opacity: 0;
-    visibility: hidden;
+    color: #eee8dd;
+    box-shadow: inset 0 1px rgba(255, 255, 255, 0.025);
 
     transition:
-        transform 0.25s ease,
-        opacity 0.25s ease,
-        visibility 0.25s ease;
+        border-color 0.2s ease,
+        background 0.2s ease,
+        box-shadow 0.2s ease;
 }
 
-.toast.show {
-    transform: translateY(0);
-    opacity: 1;
-    visibility: visible;
+#productForm textarea,
+.form-textarea {
+    resize: vertical;
 }
 
-.toast[hidden] {
-    display: none;
+#productForm input::placeholder,
+#productForm textarea::placeholder {
+    color: #625e56;
 }
 
-.toast-icon {
-    width: 32px;
-    height: 32px;
+#productForm input:focus,
+#productForm select:focus,
+#productForm textarea:focus,
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus {
+    border-color: rgba(201, 164, 78, 0.46);
+    background: rgba(255, 255, 255, 0.052);
+    box-shadow:
+        0 0 0 3px rgba(201, 164, 78, 0.055),
+        inset 0 1px rgba(255, 255, 255, 0.035);
+}
 
-    flex: 0 0 32px;
+#productForm select option,
+.form-select option {
+    background: #111;
+    color: #f1eadf;
+}
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
+/* Número */
+#salePrice,
+#stockPrice,
+#productQuantity {
+    font-variant-numeric: tabular-nums;
+}
 
+/* =========================================================
+   27. BARCODE DO PRODUTO
+   ========================================================= */
+
+#productBarcode {
+    font-family: "Poppins", sans-serif;
+    letter-spacing: 0.05em;
+}
+
+#openProductCamera {
+    min-height: 43px;
+}
+
+/* =========================================================
+   28. UPLOAD / IMAGEM DO PRODUTO
+   ========================================================= */
+
+#productImage {
+    width: 100%;
+    min-height: 43px;
+    padding: 8px;
+    border: 1px dashed rgba(201, 164, 78, 0.20);
     border-radius: 9px;
-
-    background: var(--green-soft);
-    color: var(--green);
-
-    font-size: 12px;
+    background: rgba(255, 255, 255, 0.018);
+    color: #aaa092;
 }
 
-.toast.error .toast-icon {
-    background: var(--red-soft);
-    color: var(--red);
-}
-
-.toast.warning .toast-icon {
-    background: var(--yellow-soft);
-    color: var(--yellow);
-}
-
-.toast-content {
-    min-width: 0;
-
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-}
-
-.toast-content strong {
-    color: var(--text);
-    font-size: 10px;
-}
-
-.toast-content span {
-    color: var(--text-muted);
-    font-size: 9px;
-    line-height: 1.5;
-}
-
-.toast-close {
-    width: 27px;
-    height: 27px;
-
-    margin-left: auto;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    flex-shrink: 0;
-
-    border: 0;
-    background: transparent;
-
-    color: #68645d;
-
+#productImage::file-selector-button {
+    margin-right: 10px;
+    padding: 7px 11px;
+    border: 1px solid rgba(201, 164, 78, 0.22);
+    border-radius: 7px;
+    background: rgba(201, 164, 78, 0.07);
+    color: #cdb16c;
     cursor: pointer;
 }
 
-.toast-close:hover {
-    color: var(--text);
-}
-
-/* =========================================================
-   FOOTER
-========================================================= */
-
-.main-footer {
-    display: flex;
-    justify-content: space-between;
-
-    gap: 20px;
-
-    padding: 22px 3px 0;
-
-    color: #4f4c46;
-
-    font-size: 8px;
-    letter-spacing: 0.04em;
-}
-
-/* =========================================================
-   BODY MODAL LOCK
-========================================================= */
-
-body.modal-open {
+#imagePreview {
+    width: 100%;
+    min-height: 110px;
+    max-height: 220px;
+    margin-top: 10px;
     overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(255, 255, 255, 0.065);
+    border-radius: 11px;
+    background:
+        radial-gradient(
+            circle at center,
+            rgba(255, 255, 255, 0.035),
+            rgba(255, 255, 255, 0.012)
+        );
+}
+
+#imagePreview img {
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: 200px;
+    object-fit: contain;
+    object-position: center;
 }
 
 /* =========================================================
-   RESPONSIVE — 1200
-========================================================= */
+   29. MENSAGEM DO FORMULÁRIO
+   ========================================================= */
+
+#formMessage {
+    min-height: 20px;
+    color: #a79b87;
+    font-size: 0.7rem;
+    line-height: 1.5;
+}
+
+#formMessage.success {
+    color: #88bf91;
+}
+
+#formMessage.error {
+    color: #d9867d;
+}
+
+#formMessage.warning {
+    color: #d6b35e;
+}
+
+/* =========================================================
+   30. CÂMERA / LEITOR ÓPTICO
+   ========================================================= */
+
+#cameraModal .modal-content {
+    width: min(620px, 100%);
+}
+
+.camera-view,
+.camera-container,
+.scanner-view {
+    position: relative;
+    overflow: hidden;
+    border-radius: 14px;
+    border: 1px solid rgba(201, 164, 78, 0.15);
+    background: #000;
+    box-shadow:
+        0 25px 70px rgba(0, 0, 0, 0.45),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.025);
+}
+
+#barcodeCamera {
+    width: 100%;
+    height: min(52vh, 420px);
+    display: block;
+    object-fit: cover;
+    background: #000;
+}
+
+/* Área de leitura */
+.camera-view::before,
+.camera-container::before,
+.scanner-view::before {
+    content: "";
+    position: absolute;
+    z-index: 3;
+    left: 12%;
+    right: 12%;
+    top: 50%;
+    height: 2px;
+    transform: translateY(-50%);
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(215, 180, 92, 0.82),
+        transparent
+    );
+    box-shadow: 0 0 15px rgba(215, 180, 92, 0.32);
+    pointer-events: none;
+}
+
+.camera-view::after,
+.camera-container::after,
+.scanner-view::after {
+    content: "";
+    position: absolute;
+    z-index: 2;
+    inset: 25% 9%;
+    border: 1px solid rgba(215, 180, 92, 0.25);
+    border-radius: 9px;
+    pointer-events: none;
+}
+
+#cameraLoading {
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.42);
+    backdrop-filter: blur(2px);
+    color: #d8bd78;
+    font-size: 0.75rem;
+}
+
+#cameraLoading.hidden {
+    display: none !important;
+}
+
+#cameraStatus {
+    color: #a69b88;
+    font-size: 0.7rem;
+    line-height: 1.5;
+}
+
+#toggleFlash {
+    min-height: 38px;
+}
+
+/* =========================================================
+   31. MODAL DE VISUALIZAÇÃO
+   ========================================================= */
+
+#viewModal .modal-content {
+    width: min(800px, 100%);
+}
+
+#viewName,
+#viewProductName {
+    color: #f0e9dc;
+    font-family: "Cinzel", serif;
+    font-weight: 500;
+}
+
+#viewDescription {
+    color: #91897c;
+    font-size: 0.74rem;
+    line-height: 1.65;
+}
+
+/*
+   IMPORTANTE:
+   #viewImage no HTML é uma DIV.
+   O JS deve inserir o <img> dentro dela.
+*/
+
+#viewImage {
+    width: 100%;
+    min-height: 260px;
+    max-height: 380px;
+    overflow: hidden;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 1px solid rgba(201, 164, 78, 0.12);
+    border-radius: 14px;
+
+    background:
+        radial-gradient(
+            circle at center,
+            rgba(255, 255, 255, 0.045),
+            rgba(255, 255, 255, 0.012)
+        );
+
+    box-shadow:
+        inset 0 1px rgba(255, 255, 255, 0.03);
+}
+
+#viewImage img {
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: 350px;
+    object-fit: contain;
+}
+
+#viewBarcode,
+#viewSku,
+#viewSize,
+#viewColor,
+#viewCategoryText,
+#viewSale,
+#viewCost,
+#viewStock,
+#viewStatus {
+    color: #ddd4c5;
+}
+
+/* =========================================================
+   32. TOAST
+   ========================================================= */
+
+#toast {
+    position: fixed;
+    right: 22px;
+    bottom: 22px;
+    z-index: 9000;
+    width: min(380px, calc(100vw - 44px));
+
+    border: 1px solid rgba(201, 164, 78, 0.18);
+    border-radius: 13px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(23, 23, 23, 0.97),
+            rgba(8, 8, 8, 0.98)
+        );
+
+    box-shadow:
+        0 25px 65px rgba(0, 0, 0, 0.48),
+        inset 0 1px rgba(255, 255, 255, 0.035);
+
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+
+    animation: toastIn 0.28s ease both;
+}
+
+@keyframes toastIn {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+#toast.hidden {
+    display: none !important;
+}
+
+#toast::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 16px;
+    right: 16px;
+    height: 1px;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(201, 164, 78, 0.40),
+        transparent
+    );
+}
+
+#toastTitle {
+    color: #e1c274;
+    font-size: 0.78rem;
+    font-weight: 600;
+}
+
+#toastMessage {
+    color: #aaa195;
+    font-size: 0.7rem;
+    line-height: 1.55;
+}
+
+#closeToast {
+    color: #8c8479;
+}
+
+#closeToast:hover {
+    color: #d4b56a;
+}
+
+/* =========================================================
+   33. FOOTER
+   ========================================================= */
+
+footer {
+    color: #625d54;
+}
+
+#lastUpdate {
+    color: #827a6e;
+    font-variant-numeric: tabular-nums;
+}
+
+/* =========================================================
+   34. ANIMAÇÕES DE ENTRADA
+   ========================================================= */
+
+.metric-card,
+.products-panel,
+.products-section,
+.table-panel,
+.panel {
+    animation: empireSectionIn 0.45s ease both;
+}
+
+@keyframes empireSectionIn {
+    from {
+        opacity: 0;
+        transform: translateY(7px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* =========================================================
+   35. FOCUS ACCESSIBILITY
+   ========================================================= */
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+    outline: 2px solid rgba(201, 164, 78, 0.65);
+    outline-offset: 2px;
+}
+
+/* =========================================================
+   36. RESPONSIVIDADE — 1200PX
+   ========================================================= */
 
 @media (max-width: 1200px) {
-
-    .products-page {
-        padding-left: 22px;
-        padding-right: 22px;
+    #barcodeScannerBox {
+        min-width: 220px;
     }
 
-    .barcode-scanner-box {
-        grid-template-columns: auto 1fr;
-    }
-
-    .scanner-input-wrapper {
-        grid-column: 1 / -1;
-    }
-
-    .metrics-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-
-    .products-filters {
-        grid-template-columns: 1fr 1fr;
-    }
-
-    .filter-search-button {
-        min-height: 42px;
-    }
-
-    .analysis-grid {
-        grid-template-columns: 1fr;
+    .chart-row {
+        grid-template-columns: minmax(90px, 0.35fr) minmax(120px, 1fr) 40px;
+        gap: 9px;
     }
 }
 
 /* =========================================================
-   RESPONSIVE — 800
-========================================================= */
+   37. RESPONSIVIDADE — 900PX
+   ========================================================= */
 
-@media (max-width: 800px) {
-
-    .products-page {
-        padding: 20px 15px 40px;
+@media (max-width: 900px) {
+    #barcodeScannerBox {
+        min-width: 200px;
     }
 
-    .page-heading {
-        align-items: flex-start;
-        flex-direction: column;
+    .products-table {
+        min-width: 850px;
     }
 
-    .page-heading-actions {
-        width: 100%;
+    #viewImage {
+        min-height: 220px;
     }
 
-    .page-heading-actions button {
-        flex: 1;
-    }
-
-    .financial-metrics {
-        grid-template-columns: 1fr;
-    }
-
-    .form-layout {
-        grid-template-columns: 1fr;
-        gap: 10px;
-    }
-
-    .view-product-layout {
-        grid-template-columns: 1fr;
-    }
-
-    .view-image {
-        height: 250px;
-        max-width: 320px;
-        margin: 0 auto;
+    .chart-row {
+        grid-template-columns: 90px minmax(100px, 1fr) 38px;
     }
 }
 
 /* =========================================================
-   RESPONSIVE — 600
-========================================================= */
+   38. RESPONSIVIDADE — 700PX
+   ========================================================= */
 
-@media (max-width: 600px) {
-
-    .products-page {
-        padding: 16px 11px 30px;
-    }
-
-    .barcode-scanner-box {
-        grid-template-columns: 1fr;
-        text-align: center;
-    }
-
-    .scanner-icon {
-        margin: 0 auto;
-    }
-
-    .scanner-heading {
-        align-items: center;
-        flex-direction: column;
-    }
-
-    .metrics-grid {
-        grid-template-columns: 1fr 1fr;
-        gap: 9px;
-    }
-
-    .metric-card {
-        min-height: 100px;
-        padding: 13px;
-        gap: 9px;
-    }
-
-    .metric-icon {
-        width: 38px;
-        height: 38px;
+@media (max-width: 700px) {
+    body {
         font-size: 14px;
     }
 
-    .metric-content > strong {
-        font-size: 20px;
-    }
-
-    .metric-content > span {
-        font-size: 8px;
-    }
-
-    .metric-content > small {
-        display: none;
-    }
-
-    .products-filters {
-        grid-template-columns: 1fr;
-    }
-
-    .panel-header {
-        align-items: flex-start;
-        flex-direction: column;
-    }
-
-    .panel-actions {
+    #barcodeScannerBox {
+        min-width: 0;
         width: 100%;
     }
 
-    .panel-action-button {
-        flex: 1;
-        justify-content: center;
+    #barcodeScanner {
+        height: 40px;
     }
 
-    .table-footer {
-        align-items: flex-start;
-        flex-direction: column;
+    .products-panel,
+    .products-section,
+    .table-panel,
+    .panel {
+        border-radius: 13px;
     }
 
-    .stock-progress-wrapper {
-        width: 100%;
-        justify-content: space-between;
+    .products-table {
+        min-width: 800px;
     }
 
-    .stock-progress {
-        width: 130px;
-    }
-
-    .form-row {
-        grid-template-columns: 1fr;
-        gap: 0;
+    .product-thumb {
+        width: 40px !important;
+        height: 40px !important;
+        min-width: 40px !important;
+        max-width: 40px !important;
+        min-height: 40px !important;
+        max-height: 40px !important;
+        flex-basis: 40px;
     }
 
     .modal {
-        padding: 8px;
-    }
-
-    .modal-dialog {
-        max-height: calc(100vh - 16px);
-        border-radius: 15px;
-    }
-
-    .modal-header,
-    .camera-header {
-        padding: 18px;
-    }
-
-    #productForm {
-        padding: 18px;
-    }
-
-    .form-message {
-        margin-left: 18px;
-        margin-right: 18px;
-    }
-
-    .modal-footer {
-        padding: 14px 18px;
-    }
-
-    .modal-footer button {
-        flex: 1;
-    }
-
-    .camera-content {
         padding: 12px;
     }
 
-    .camera-preview video {
-        height: 360px;
+    .modal-content,
+    .modal-container,
+    .modal-dialog {
+        width: 100%;
+        max-height: calc(100vh - 24px);
+        border-radius: 15px;
     }
 
-    .barcode-scan-frame {
-        left: 8%;
-        right: 8%;
-        top: 32%;
-        bottom: 32%;
+    #barcodeCamera {
+        height: 48vh;
+        min-height: 280px;
     }
 
-    .view-product-layout {
-        padding: 18px;
+    #viewImage {
+        min-height: 190px;
+        max-height: 300px;
     }
 
-    .view-info-grid {
-        grid-template-columns: 1fr;
+    #viewImage img {
+        max-height: 275px;
     }
 
-    .main-footer {
-        flex-direction: column;
-        gap: 5px;
+    #toast {
+        right: 12px;
+        bottom: 12px;
+        width: calc(100vw - 24px);
     }
 }
 
 /* =========================================================
-   REDUÇÃO DE MOVIMENTO
-========================================================= */
+   39. RESPONSIVIDADE — 520PX
+   ========================================================= */
+
+@media (max-width: 520px) {
+    #systemClock {
+        display: none;
+    }
+
+    #barcodeStatus {
+        display: none;
+    }
+
+    #barcodeScanner {
+        padding-right: 12px;
+    }
+
+    .chart-row {
+        grid-template-columns: 80px minmax(80px, 1fr) 34px;
+        gap: 7px;
+    }
+
+    .chart-label,
+    .chart-value {
+        font-size: 0.61rem;
+    }
+
+    .products-table {
+        min-width: 760px;
+    }
+
+    #barcodeCamera {
+        height: 42vh;
+        min-height: 260px;
+    }
+
+    #cameraModal .modal-content {
+        border-radius: 13px;
+    }
+}
+
+/* =========================================================
+   40. TELAS MUITO PEQUENAS
+   ========================================================= */
+
+@media (max-width: 380px) {
+    .chart-row {
+        grid-template-columns: 68px minmax(65px, 1fr) 30px;
+    }
+
+    #barcodeCamera {
+        min-height: 230px;
+    }
+
+    #viewImage {
+        min-height: 160px;
+    }
+}
+
+/* =========================================================
+   41. REDUÇÃO DE MOVIMENTO
+   ========================================================= */
 
 @media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
 
     *,
     *::before,
     *::after {
         animation-duration: 0.01ms !important;
         animation-iteration-count: 1 !important;
-        scroll-behavior: auto !important;
         transition-duration: 0.01ms !important;
     }
 }
